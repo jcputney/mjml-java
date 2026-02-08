@@ -1,0 +1,156 @@
+<mjml>
+  <mj-head>
+    <mj-title>Navbar Component Test</mj-title>
+    <mj-preview>Testing mj-navbar with and without hamburger mode</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+      <mj-navbar-link font-size="14px" color="#ffffff" font-weight="bold"
+                       text-transform="uppercase" padding="15px 20px" />
+    </mj-attributes>
+    <mj-style>
+      .nav-link a {
+        text-decoration: none !important;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Navbar without hamburger mode (inline links) -->
+    <mj-section background-color="#2C3E50" padding="0">
+      <mj-column width="30%" padding="10px 0">
+        <mj-image src="https://via.placeholder.com/140x40/2C3E50/ffffff?text=BRAND"
+                   alt="Brand logo" width="140px" align="left" padding="5px 20px" />
+      </mj-column>
+      <mj-column width="70%">
+        <mj-navbar>
+          <mj-navbar-link href="https://example.com" color="#ffffff">Home</mj-navbar-link>
+          <mj-navbar-link href="https://example.com/products" color="#ffffff">Products</mj-navbar-link>
+          <mj-navbar-link href="https://example.com/about" color="#ffffff">About</mj-navbar-link>
+          <mj-navbar-link href="https://example.com/contact" color="#ffffff">Contact</mj-navbar-link>
+        </mj-navbar>
+      </mj-column>
+    </mj-section>
+
+    <!-- Content -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="bold" color="#2C3E50">
+          Navbar Without Hamburger
+        </mj-text>
+        <mj-text>
+          The navbar above renders links inline without a hamburger toggle.
+          On mobile devices, the links will stack vertically. This mode is
+          best when you have a small number of navigation items.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f4f4f4" padding="10px">
+      <mj-column>
+        <mj-spacer height="10px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Navbar with hamburger mode -->
+    <mj-section background-color="#E74C3C" padding="0">
+      <mj-column>
+        <mj-navbar hamburger="hamburger" ico-color="#ffffff" ico-font-size="20px"
+                    ico-padding="10px" ico-align="center"
+                    ico-open="&#9776;" ico-close="&#10005;">
+          <mj-navbar-link href="https://example.com" color="#ffffff"
+                           padding="15px 25px" font-size="15px">
+            Home
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/shop" color="#ffffff"
+                           padding="15px 25px" font-size="15px">
+            Shop
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/deals" color="#ffffff"
+                           padding="15px 25px" font-size="15px">
+            Deals
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/blog" color="#ffffff"
+                           padding="15px 25px" font-size="15px">
+            Blog
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/support" color="#ffffff"
+                           padding="15px 25px" font-size="15px">
+            Support
+          </mj-navbar-link>
+        </mj-navbar>
+      </mj-column>
+    </mj-section>
+
+    <!-- Content after hamburger navbar -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="bold" color="#E74C3C">
+          Navbar With Hamburger Menu
+        </mj-text>
+        <mj-text>
+          The red navbar above uses hamburger="hamburger" mode. On supported email
+          clients, a hamburger icon (&#9776;) appears on mobile, and clicking it
+          reveals the navigation links. The close icon (&#10005;) dismisses the menu.
+          This mode is ideal for navbars with many links.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#f4f4f4" padding="10px">
+      <mj-column>
+        <mj-spacer height="10px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Navbar with custom-styled links -->
+    <mj-section background-color="#1ABC9C" padding="0">
+      <mj-column>
+        <mj-navbar>
+          <mj-navbar-link href="https://example.com/dashboard" color="#ffffff"
+                           font-size="13px" text-transform="none" padding="12px 18px"
+                           font-weight="normal" font-family="Georgia, serif">
+            Dashboard
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/analytics" color="#ffffff"
+                           font-size="13px" text-transform="none" padding="12px 18px"
+                           font-weight="normal" font-family="Georgia, serif">
+            Analytics
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/settings" color="#ffffff"
+                           font-size="13px" text-transform="none" padding="12px 18px"
+                           font-weight="normal" font-family="Georgia, serif">
+            Settings
+          </mj-navbar-link>
+          <mj-navbar-link href="https://example.com/logout" color="#E8F8F5"
+                           font-size="13px" text-transform="none" padding="12px 18px"
+                           font-weight="normal" font-family="Georgia, serif"
+                           text-decoration="underline">
+            Log Out
+          </mj-navbar-link>
+        </mj-navbar>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="bold" color="#1ABC9C">
+          Custom-Styled Navbar Links
+        </mj-text>
+        <mj-text>
+          The teal navbar above uses custom font-family (Georgia), normal font-weight,
+          no text-transform, and one link has an underline decoration. This demonstrates
+          that each mj-navbar-link can be individually styled.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#7F8C8D" font-size="12px">
+          &copy; 2025 Navbar Component Test. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

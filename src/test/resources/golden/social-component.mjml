@@ -1,0 +1,235 @@
+<mjml>
+  <mj-head>
+    <mj-title>Social Component Test</mj-title>
+    <mj-preview>Testing mj-social with various networks and modes</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#34495E" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Social Icons Showcase
+        </mj-text>
+        <mj-text color="#BDC3C7" align="center">
+          Demonstrating mj-social in horizontal and vertical modes
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Horizontal mode (default) with common networks -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#34495E" align="center"
+                  padding-bottom="15px">
+          Follow Us (Horizontal Mode)
+        </mj-text>
+        <mj-social font-size="14px" icon-size="30px" mode="horizontal" align="center"
+                    icon-padding="5px" padding="10px 25px">
+          <mj-social-element name="facebook" href="https://facebook.com/example">
+            Facebook
+          </mj-social-element>
+          <mj-social-element name="twitter" href="https://twitter.com/example">
+            Twitter
+          </mj-social-element>
+          <mj-social-element name="linkedin" href="https://linkedin.com/company/example">
+            LinkedIn
+          </mj-social-element>
+          <mj-social-element name="instagram" href="https://instagram.com/example">
+            Instagram
+          </mj-social-element>
+          <mj-social-element name="youtube" href="https://youtube.com/example">
+            YouTube
+          </mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Vertical mode -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column width="50%">
+        <mj-text font-size="18px" font-weight="bold" color="#34495E"
+                  padding-bottom="15px">
+          Connect With Us
+        </mj-text>
+        <mj-text>
+          Our social media channels are updated daily with the latest news,
+          tips, and community highlights. Follow us on your preferred platform.
+        </mj-text>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-social mode="vertical" align="left" icon-size="25px" font-size="13px"
+                    padding="10px 25px" inner-padding="4px 10px"
+                    text-padding="4px 10px 4px 0" color="#34495E">
+          <mj-social-element name="facebook" href="https://facebook.com/example">
+            Facebook Page
+          </mj-social-element>
+          <mj-social-element name="twitter" href="https://twitter.com/example">
+            Twitter Feed
+          </mj-social-element>
+          <mj-social-element name="linkedin" href="https://linkedin.com/company/example">
+            LinkedIn Profile
+          </mj-social-element>
+          <mj-social-element name="instagram" href="https://instagram.com/example">
+            Instagram Gallery
+          </mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Extended social networks -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#34495E" align="center"
+                  padding-bottom="15px">
+          All Supported Networks
+        </mj-text>
+        <mj-social font-size="12px" icon-size="25px" mode="horizontal" align="center"
+                    icon-padding="3px" padding="10px 25px">
+          <mj-social-element name="facebook" href="https://facebook.com/example">
+            Facebook
+          </mj-social-element>
+          <mj-social-element name="twitter" href="https://twitter.com/example">
+            Twitter
+          </mj-social-element>
+          <mj-social-element name="google" href="https://google.com">
+            Google
+          </mj-social-element>
+          <mj-social-element name="pinterest" href="https://pinterest.com/example">
+            Pinterest
+          </mj-social-element>
+          <mj-social-element name="linkedin" href="https://linkedin.com/company/example">
+            LinkedIn
+          </mj-social-element>
+          <mj-social-element name="instagram" href="https://instagram.com/example">
+            Instagram
+          </mj-social-element>
+          <mj-social-element name="youtube" href="https://youtube.com/example">
+            YouTube
+          </mj-social-element>
+          <mj-social-element name="github" href="https://github.com/example">
+            GitHub
+          </mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Custom-styled social icons -->
+    <mj-section background-color="#34495E" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#ffffff" align="center"
+                  padding-bottom="15px">
+          Custom-Styled Social Icons
+        </mj-text>
+        <mj-social font-size="14px" icon-size="35px" mode="horizontal" align="center"
+                    color="#ffffff" icon-padding="8px" padding="10px 25px"
+                    border-radius="50%">
+          <mj-social-element name="facebook-noshare"
+                              href="https://facebook.com/example"
+                              background-color="#3B5998"
+                              border-radius="50%">
+            Facebook
+          </mj-social-element>
+          <mj-social-element name="twitter-noshare"
+                              href="https://twitter.com/example"
+                              background-color="#1DA1F2"
+                              border-radius="50%">
+            Twitter
+          </mj-social-element>
+          <mj-social-element name="linkedin-noshare"
+                              href="https://linkedin.com/company/example"
+                              background-color="#0077B5"
+                              border-radius="50%">
+            LinkedIn
+          </mj-social-element>
+          <mj-social-element name="instagram-noshare"
+                              href="https://instagram.com/example"
+                              background-color="#E4405F"
+                              border-radius="50%">
+            Instagram
+          </mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Social icons without text labels -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#34495E" align="center"
+                  padding-bottom="15px">
+          Icons Only (No Text Labels)
+        </mj-text>
+        <mj-social font-size="0px" icon-size="40px" mode="horizontal" align="center"
+                    icon-padding="8px" padding="10px 25px">
+          <mj-social-element name="facebook-noshare" href="https://facebook.com/example" />
+          <mj-social-element name="twitter-noshare" href="https://twitter.com/example" />
+          <mj-social-element name="linkedin-noshare" href="https://linkedin.com/company/example" />
+          <mj-social-element name="instagram-noshare" href="https://instagram.com/example" />
+          <mj-social-element name="youtube-noshare" href="https://youtube.com/example" />
+          <mj-social-element name="github-noshare" href="https://github.com/example" />
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Social with custom icon images -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#34495E" align="center"
+                  padding-bottom="15px">
+          Custom Icon Sources
+        </mj-text>
+        <mj-social font-size="13px" icon-size="30px" mode="horizontal" align="center"
+                    icon-padding="5px" padding="10px 25px" color="#34495E">
+          <mj-social-element src="https://via.placeholder.com/30x30/3B5998/ffffff?text=f"
+                              href="https://facebook.com/example"
+                              alt="Facebook">
+            Facebook
+          </mj-social-element>
+          <mj-social-element src="https://via.placeholder.com/30x30/1DA1F2/ffffff?text=t"
+                              href="https://twitter.com/example"
+                              alt="Twitter">
+            Twitter
+          </mj-social-element>
+          <mj-social-element src="https://via.placeholder.com/30x30/E4405F/ffffff?text=i"
+                              href="https://instagram.com/example"
+                              alt="Instagram">
+            Instagram
+          </mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Left-aligned social in two-column layout -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column width="60%">
+        <mj-text font-size="16px" font-weight="bold" color="#34495E" padding-bottom="10px">
+          Stay Connected
+        </mj-text>
+        <mj-text font-size="13px" color="#7F8C8D">
+          Follow us for the latest product updates, company news, and community events.
+          We post regularly across all our social platforms.
+        </mj-text>
+      </mj-column>
+      <mj-column width="40%">
+        <mj-social font-size="0px" icon-size="30px" mode="horizontal" align="right"
+                    icon-padding="4px" padding="15px 10px">
+          <mj-social-element name="facebook-noshare" href="https://facebook.com/example" />
+          <mj-social-element name="twitter-noshare" href="https://twitter.com/example" />
+          <mj-social-element name="instagram-noshare" href="https://instagram.com/example" />
+        </mj-social>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#34495E" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#7F8C8D" font-size="12px">
+          &copy; 2025 Social Component Test. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

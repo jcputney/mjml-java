@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="und" dir="auto" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+  <title>Carousel Component Test</title>
+  <!--[if !mso]><!-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--<![endif]-->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style type="text/css">
+    #outlook a {
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table,
+    td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+
+    p {
+      display: block;
+      margin: 13px 0;
+    }
+
+  </style>
+  <!--[if mso]>
+    <noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+  <!--[if lte mso 11]>
+    <style type="text/css">
+      .mj-outlook-group-fix { width:100% !important; }
+    </style>
+    <![endif]-->
+  <style type="text/css">
+    @media only screen and (min-width:480px) {
+      .mj-column-per-100 {
+        width: 100% !important;
+        max-width: 100%;
+      }
+    }
+
+  </style>
+  <style media="screen and (min-width:480px)">
+    .moz-text-html .mj-column-per-100 {
+      width: 100% !important;
+      max-width: 100%;
+    }
+
+  </style>
+  <style type="text/css">
+    .mj-carousel {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    .mj-carousel-112472a16f494df9-icons-cell {
+      display: table-cell !important;
+      width: 44px !important;
+    }
+
+    .mj-carousel-radio,
+    .mj-carousel-next,
+    .mj-carousel-previous {
+      display: none !important;
+    }
+
+    .mj-carousel-thumbnail,
+    .mj-carousel-next,
+    .mj-carousel-previous {
+      touch-action: manipulation;
+    }
+
+    .mj-carousel-112472a16f494df9-radio:checked+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-radio:checked+*+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-radio:checked+*+*+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-radio:checked+*+*+*+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-radio:checked+*+*+*+*+.mj-carousel-content .mj-carousel-image {
+      display: none !important;
+    }
+
+    .mj-carousel-112472a16f494df9-radio-1:checked+*+*+*+*+.mj-carousel-content .mj-carousel-image-1,
+    .mj-carousel-112472a16f494df9-radio-2:checked+*+*+*+.mj-carousel-content .mj-carousel-image-2,
+    .mj-carousel-112472a16f494df9-radio-3:checked+*+*+.mj-carousel-content .mj-carousel-image-3,
+    .mj-carousel-112472a16f494df9-radio-4:checked+*+.mj-carousel-content .mj-carousel-image-4,
+    .mj-carousel-112472a16f494df9-radio-5:checked+.mj-carousel-content .mj-carousel-image-5 {
+      display: block !important;
+    }
+
+    .mj-carousel-previous-icons,
+    .mj-carousel-next-icons,
+    .mj-carousel-112472a16f494df9-radio-1:checked+*+*+*+*+.mj-carousel-content .mj-carousel-next-2,
+    .mj-carousel-112472a16f494df9-radio-2:checked+*+*+*+.mj-carousel-content .mj-carousel-next-3,
+    .mj-carousel-112472a16f494df9-radio-3:checked+*+*+.mj-carousel-content .mj-carousel-next-4,
+    .mj-carousel-112472a16f494df9-radio-4:checked+*+.mj-carousel-content .mj-carousel-next-5,
+    .mj-carousel-112472a16f494df9-radio-5:checked+.mj-carousel-content .mj-carousel-next-1,
+    .mj-carousel-112472a16f494df9-radio-1:checked+*+*+*+*+.mj-carousel-content .mj-carousel-previous-5,
+    .mj-carousel-112472a16f494df9-radio-2:checked+*+*+*+.mj-carousel-content .mj-carousel-previous-1,
+    .mj-carousel-112472a16f494df9-radio-3:checked+*+*+.mj-carousel-content .mj-carousel-previous-2,
+    .mj-carousel-112472a16f494df9-radio-4:checked+*+.mj-carousel-content .mj-carousel-previous-3,
+    .mj-carousel-112472a16f494df9-radio-5:checked+.mj-carousel-content .mj-carousel-previous-4 {
+      display: block !important;
+    }
+
+    .mj-carousel-112472a16f494df9-radio-1:checked+*+*+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail-1,
+    .mj-carousel-112472a16f494df9-radio-2:checked+*+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail-2,
+    .mj-carousel-112472a16f494df9-radio-3:checked+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail-3,
+    .mj-carousel-112472a16f494df9-radio-4:checked+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail-4,
+    .mj-carousel-112472a16f494df9-radio-5:checked+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail-5 {
+      border-color: #C0392B !important;
+    }
+
+    .mj-carousel-112472a16f494df9-radio-1:checked+*+*+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail,
+    .mj-carousel-112472a16f494df9-radio-2:checked+*+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail,
+    .mj-carousel-112472a16f494df9-radio-3:checked+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail,
+    .mj-carousel-112472a16f494df9-radio-4:checked+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail,
+    .mj-carousel-112472a16f494df9-radio-5:checked+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail {
+      display: inline-block !important;
+    }
+
+    .mj-carousel-image img+div,
+    .mj-carousel-thumbnail img+div {
+      display: none !important;
+    }
+
+    .mj-carousel-112472a16f494df9-thumbnail:hover+*+*+*+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-thumbnail:hover+*+*+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-thumbnail:hover+*+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-thumbnail:hover+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-112472a16f494df9-thumbnail:hover+.mj-carousel-main .mj-carousel-image {
+      display: none !important;
+    }
+
+    .mj-carousel-thumbnail:hover {
+      border-color: #C0392B !important;
+    }
+
+    .mj-carousel-112472a16f494df9-thumbnail-1:hover+*+*+*+*+.mj-carousel-main .mj-carousel-image-1,
+    .mj-carousel-112472a16f494df9-thumbnail-2:hover+*+*+*+.mj-carousel-main .mj-carousel-image-2,
+    .mj-carousel-112472a16f494df9-thumbnail-3:hover+*+*+.mj-carousel-main .mj-carousel-image-3,
+    .mj-carousel-112472a16f494df9-thumbnail-4:hover+*+.mj-carousel-main .mj-carousel-image-4,
+    .mj-carousel-112472a16f494df9-thumbnail-5:hover+.mj-carousel-main .mj-carousel-image-5 {
+      display: block !important;
+    }
+
+    .mj-carousel noinput {
+      display: block !important;
+    }
+
+    .mj-carousel noinput .mj-carousel-image-1 {
+      display: block !important;
+    }
+
+    .mj-carousel noinput .mj-carousel-arrows,
+    .mj-carousel noinput .mj-carousel-thumbnails {
+      display: none !important;
+    }
+
+    [owa] .mj-carousel-thumbnail {
+      display: none !important;
+    }
+
+    @media screen yahoo {
+
+      .mj-carousel-112472a16f494df9-icons-cell,
+      .mj-carousel-previous-icons,
+      .mj-carousel-next-icons {
+        display: none !important;
+      }
+
+      .mj-carousel-112472a16f494df9-radio-1:checked+*+*+*+*+.mj-carousel-content .mj-carousel-112472a16f494df9-thumbnail-1 {
+        border-color: transparent;
+      }
+    }
+
+    .mj-carousel {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    .mj-carousel-d4264912791e2671-icons-cell {
+      display: table-cell !important;
+      width: 30px !important;
+    }
+
+    .mj-carousel-radio,
+    .mj-carousel-next,
+    .mj-carousel-previous {
+      display: none !important;
+    }
+
+    .mj-carousel-thumbnail,
+    .mj-carousel-next,
+    .mj-carousel-previous {
+      touch-action: manipulation;
+    }
+
+    .mj-carousel-d4264912791e2671-radio:checked+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-d4264912791e2671-radio:checked+*+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-d4264912791e2671-radio:checked+*+*+.mj-carousel-content .mj-carousel-image,
+    .mj-carousel-d4264912791e2671-radio:checked+*+*+*+.mj-carousel-content .mj-carousel-image {
+      display: none !important;
+    }
+
+    .mj-carousel-d4264912791e2671-radio-1:checked+*+*+*+.mj-carousel-content .mj-carousel-image-1,
+    .mj-carousel-d4264912791e2671-radio-2:checked+*+*+.mj-carousel-content .mj-carousel-image-2,
+    .mj-carousel-d4264912791e2671-radio-3:checked+*+.mj-carousel-content .mj-carousel-image-3,
+    .mj-carousel-d4264912791e2671-radio-4:checked+.mj-carousel-content .mj-carousel-image-4 {
+      display: block !important;
+    }
+
+    .mj-carousel-previous-icons,
+    .mj-carousel-next-icons,
+    .mj-carousel-d4264912791e2671-radio-1:checked+*+*+*+.mj-carousel-content .mj-carousel-next-2,
+    .mj-carousel-d4264912791e2671-radio-2:checked+*+*+.mj-carousel-content .mj-carousel-next-3,
+    .mj-carousel-d4264912791e2671-radio-3:checked+*+.mj-carousel-content .mj-carousel-next-4,
+    .mj-carousel-d4264912791e2671-radio-4:checked+.mj-carousel-content .mj-carousel-next-1,
+    .mj-carousel-d4264912791e2671-radio-1:checked+*+*+*+.mj-carousel-content .mj-carousel-previous-4,
+    .mj-carousel-d4264912791e2671-radio-2:checked+*+*+.mj-carousel-content .mj-carousel-previous-1,
+    .mj-carousel-d4264912791e2671-radio-3:checked+*+.mj-carousel-content .mj-carousel-previous-2,
+    .mj-carousel-d4264912791e2671-radio-4:checked+.mj-carousel-content .mj-carousel-previous-3 {
+      display: block !important;
+    }
+
+    .mj-carousel-d4264912791e2671-radio-1:checked+*+*+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail-1,
+    .mj-carousel-d4264912791e2671-radio-2:checked+*+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail-2,
+    .mj-carousel-d4264912791e2671-radio-3:checked+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail-3,
+    .mj-carousel-d4264912791e2671-radio-4:checked+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail-4 {
+      border-color: #2C3E50 !important;
+    }
+
+    .mj-carousel-d4264912791e2671-radio-1:checked+*+*+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail,
+    .mj-carousel-d4264912791e2671-radio-2:checked+*+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail,
+    .mj-carousel-d4264912791e2671-radio-3:checked+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail,
+    .mj-carousel-d4264912791e2671-radio-4:checked+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail {
+      display: inline-block !important;
+    }
+
+    .mj-carousel-image img+div,
+    .mj-carousel-thumbnail img+div {
+      display: none !important;
+    }
+
+    .mj-carousel-d4264912791e2671-thumbnail:hover+*+*+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-d4264912791e2671-thumbnail:hover+*+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-d4264912791e2671-thumbnail:hover+*+.mj-carousel-main .mj-carousel-image,
+    .mj-carousel-d4264912791e2671-thumbnail:hover+.mj-carousel-main .mj-carousel-image {
+      display: none !important;
+    }
+
+    .mj-carousel-thumbnail:hover {
+      border-color: #3498DB !important;
+    }
+
+    .mj-carousel-d4264912791e2671-thumbnail-1:hover+*+*+*+.mj-carousel-main .mj-carousel-image-1,
+    .mj-carousel-d4264912791e2671-thumbnail-2:hover+*+*+.mj-carousel-main .mj-carousel-image-2,
+    .mj-carousel-d4264912791e2671-thumbnail-3:hover+*+.mj-carousel-main .mj-carousel-image-3,
+    .mj-carousel-d4264912791e2671-thumbnail-4:hover+.mj-carousel-main .mj-carousel-image-4 {
+      display: block !important;
+    }
+
+    .mj-carousel noinput {
+      display: block !important;
+    }
+
+    .mj-carousel noinput .mj-carousel-image-1 {
+      display: block !important;
+    }
+
+    .mj-carousel noinput .mj-carousel-arrows,
+    .mj-carousel noinput .mj-carousel-thumbnails {
+      display: none !important;
+    }
+
+    [owa] .mj-carousel-thumbnail {
+      display: none !important;
+    }
+
+    @media screen yahoo {
+
+      .mj-carousel-d4264912791e2671-icons-cell,
+      .mj-carousel-previous-icons,
+      .mj-carousel-next-icons {
+        display: none !important;
+      }
+
+      .mj-carousel-d4264912791e2671-radio-1:checked+*+*+*+.mj-carousel-content .mj-carousel-d4264912791e2671-thumbnail-1 {
+        border-color: transparent;
+      }
+    }
+
+  </style>
+</head>
+
+<body style="word-spacing:normal;background-color:#f4f4f4;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">Testing mj-carousel with multiple images and configuration options</div>
+  <div aria-label="Carousel Component Test" aria-roledescription="email" style="background-color:#f4f4f4;" role="article" lang="und" dir="auto">
+    <!-- Header -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#C0392B" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#C0392B;background-color:#C0392B;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#C0392B;background-color:#C0392B;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:30px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:28px;font-weight:bold;line-height:1.6;text-align:center;color:#ffffff;">Image Carousel Gallery</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:15px;line-height:1.6;text-align:center;color:#F5B7B1;">Swipe or click to browse our featured collection</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Basic carousel with default settings -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:20px;font-weight:bold;line-height:1.6;text-align:center;color:#C0392B;">Featured Products</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;word-break:break-word;">
+                        <!--[if !mso]><!-->
+                        <div class="mj-carousel"><input class="mj-carousel-radio mj-carousel-112472a16f494df9-radio mj-carousel-112472a16f494df9-radio-1" checked="checked" type="radio" name="mj-carousel-radio-112472a16f494df9" id="mj-carousel-112472a16f494df9-radio-1" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-112472a16f494df9-radio mj-carousel-112472a16f494df9-radio-2" type="radio" name="mj-carousel-radio-112472a16f494df9" id="mj-carousel-112472a16f494df9-radio-2" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-112472a16f494df9-radio mj-carousel-112472a16f494df9-radio-3" type="radio" name="mj-carousel-radio-112472a16f494df9" id="mj-carousel-112472a16f494df9-radio-3" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-112472a16f494df9-radio mj-carousel-112472a16f494df9-radio-4" type="radio" name="mj-carousel-radio-112472a16f494df9" id="mj-carousel-112472a16f494df9-radio-4" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-112472a16f494df9-radio mj-carousel-112472a16f494df9-radio-5" type="radio" name="mj-carousel-radio-112472a16f494df9" id="mj-carousel-112472a16f494df9-radio-5" style="display:none;mso-hide:all;" />
+                          <div class="mj-carousel-content mj-carousel-112472a16f494df9-content" style="display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;"><a style="border:0px;border-radius:0px;display:inline-block;overflow:hidden;width:40px;" href="#1" target="_blank" class="mj-carousel-thumbnail mj-carousel-112472a16f494df9-thumbnail mj-carousel-112472a16f494df9-thumbnail-1 "><label for="mj-carousel-112472a16f494df9-radio-1"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/600x340/E74C3C/ffffff?text=Product+1" alt="Product 1 - Summer Collection" width="40" /></label></a><a style="border:0px;border-radius:0px;display:inline-block;overflow:hidden;width:40px;" href="#2" target="_blank" class="mj-carousel-thumbnail mj-carousel-112472a16f494df9-thumbnail mj-carousel-112472a16f494df9-thumbnail-2 "><label for="mj-carousel-112472a16f494df9-radio-2"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/600x340/3498DB/ffffff?text=Product+2" alt="Product 2 - New Arrival" width="40" /></label></a><a style="border:0px;border-radius:0px;display:inline-block;overflow:hidden;width:40px;" href="#3" target="_blank" class="mj-carousel-thumbnail mj-carousel-112472a16f494df9-thumbnail mj-carousel-112472a16f494df9-thumbnail-3 "><label for="mj-carousel-112472a16f494df9-radio-3"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/600x340/2ECC71/ffffff?text=Product+3" alt="Product 3 - Best Seller" width="40" /></label></a><a style="border:0px;border-radius:0px;display:inline-block;overflow:hidden;width:40px;" href="#4" target="_blank" class="mj-carousel-thumbnail mj-carousel-112472a16f494df9-thumbnail mj-carousel-112472a16f494df9-thumbnail-4 "><label for="mj-carousel-112472a16f494df9-radio-4"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/600x340/F39C12/ffffff?text=Product+4" alt="Product 4 - Limited Edition" width="40" /></label></a><a style="border:0px;border-radius:0px;display:inline-block;overflow:hidden;width:40px;" href="#5" target="_blank" class="mj-carousel-thumbnail mj-carousel-112472a16f494df9-thumbnail mj-carousel-112472a16f494df9-thumbnail-5 "><label for="mj-carousel-112472a16f494df9-radio-5"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/600x340/9B59B6/ffffff?text=Product+5" alt="Product 5 - Staff Pick" width="40" /></label></a>
+                            <table style="caption-side:top;display:table-caption;table-layout:fixed;width:100%;" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="mj-carousel-main">
+                              <tbody>
+                                <tr>
+                                  <td class="mj-carousel-112472a16f494df9-icons-cell" style="font-size:0px;display:none;mso-hide:all;padding:0px;">
+                                    <div class="mj-carousel-previous-icons" style="display:none;mso-hide:all;"><label for="mj-carousel-112472a16f494df9-radio-1" class="mj-carousel-previous mj-carousel-previous-1"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3C" alt="previous" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-2" class="mj-carousel-previous mj-carousel-previous-2"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3C" alt="previous" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-3" class="mj-carousel-previous mj-carousel-previous-3"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3C" alt="previous" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-4" class="mj-carousel-previous mj-carousel-previous-4"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3C" alt="previous" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-5" class="mj-carousel-previous mj-carousel-previous-5"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3C" alt="previous" style="display:block;width:44px;height:auto;" width="44" /></label></div>
+                                  </td>
+                                  <td style="padding:0px;">
+                                    <div class="mj-carousel-images">
+                                      <div class="mj-carousel-image mj-carousel-image-1 " style=""><a href="https://example.com/product/1" target="_blank"><img title="View Product 1" src="https://via.placeholder.com/600x340/E74C3C/ffffff?text=Product+1" alt="Product 1 - Summer Collection" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-2 " style="display:none;mso-hide:all;"><a href="https://example.com/product/2" target="_blank"><img title="View Product 2" src="https://via.placeholder.com/600x340/3498DB/ffffff?text=Product+2" alt="Product 2 - New Arrival" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-3 " style="display:none;mso-hide:all;"><a href="https://example.com/product/3" target="_blank"><img title="View Product 3" src="https://via.placeholder.com/600x340/2ECC71/ffffff?text=Product+3" alt="Product 3 - Best Seller" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-4 " style="display:none;mso-hide:all;"><a href="https://example.com/product/4" target="_blank"><img title="View Product 4" src="https://via.placeholder.com/600x340/F39C12/ffffff?text=Product+4" alt="Product 4 - Limited Edition" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-5 " style="display:none;mso-hide:all;"><a href="https://example.com/product/5" target="_blank"><img title="View Product 5" src="https://via.placeholder.com/600x340/9B59B6/ffffff?text=Product+5" alt="Product 5 - Staff Pick" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                    </div>
+                                  </td>
+                                  <td class="mj-carousel-112472a16f494df9-icons-cell" style="font-size:0px;display:none;mso-hide:all;padding:0px;">
+                                    <div class="mj-carousel-next-icons" style="display:none;mso-hide:all;"><label for="mj-carousel-112472a16f494df9-radio-1" class="mj-carousel-next mj-carousel-next-1"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3E" alt="next" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-2" class="mj-carousel-next mj-carousel-next-2"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3E" alt="next" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-3" class="mj-carousel-next mj-carousel-next-3"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3E" alt="next" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-4" class="mj-carousel-next mj-carousel-next-4"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3E" alt="next" style="display:block;width:44px;height:auto;" width="44" /></label><label for="mj-carousel-112472a16f494df9-radio-5" class="mj-carousel-next mj-carousel-next-5"><img src="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3E" alt="next" style="display:block;width:44px;height:auto;" width="44" /></label></div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div><!--<![endif]-->
+                        <!--[if mso]><div class="mj-carousel-image mj-carousel-image-1 " style="" ><a href="https://example.com/product/1" target="_blank"><img title="View Product 1" src="https://via.placeholder.com/600x340/E74C3C/ffffff?text=Product+1" alt="Product 1 - Summer Collection" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div><![endif]-->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Carousel with custom thumbnail styling -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ECF0F1" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ECF0F1;background-color:#ECF0F1;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ECF0F1;background-color:#ECF0F1;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:20px;font-weight:bold;line-height:1.6;text-align:center;color:#2C3E50;">Travel Destinations</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;word-break:break-word;">
+                        <!--[if !mso]><!-->
+                        <div class="mj-carousel"><input class="mj-carousel-radio mj-carousel-d4264912791e2671-radio mj-carousel-d4264912791e2671-radio-1" checked="checked" type="radio" name="mj-carousel-radio-d4264912791e2671" id="mj-carousel-d4264912791e2671-radio-1" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-d4264912791e2671-radio mj-carousel-d4264912791e2671-radio-2" type="radio" name="mj-carousel-radio-d4264912791e2671" id="mj-carousel-d4264912791e2671-radio-2" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-d4264912791e2671-radio mj-carousel-d4264912791e2671-radio-3" type="radio" name="mj-carousel-radio-d4264912791e2671" id="mj-carousel-d4264912791e2671-radio-3" style="display:none;mso-hide:all;" /><input class="mj-carousel-radio mj-carousel-d4264912791e2671-radio mj-carousel-d4264912791e2671-radio-4" type="radio" name="mj-carousel-radio-d4264912791e2671" id="mj-carousel-d4264912791e2671-radio-4" style="display:none;mso-hide:all;" />
+                          <div class="mj-carousel-content mj-carousel-d4264912791e2671-content" style="display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;"><a style="border:2px solid transparent;border-radius:4px;display:inline-block;overflow:hidden;width:60px;" href="#1" target="_blank" class="mj-carousel-thumbnail mj-carousel-d4264912791e2671-thumbnail mj-carousel-d4264912791e2671-thumbnail-1 "><label for="mj-carousel-d4264912791e2671-radio-1"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/60x60/1ABC9C/ffffff?text=PAR" alt="Paris, France" width="60" /></label></a><a style="border:2px solid transparent;border-radius:4px;display:inline-block;overflow:hidden;width:60px;" href="#2" target="_blank" class="mj-carousel-thumbnail mj-carousel-d4264912791e2671-thumbnail mj-carousel-d4264912791e2671-thumbnail-2 "><label for="mj-carousel-d4264912791e2671-radio-2"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/60x60/E74C3C/ffffff?text=TKY" alt="Tokyo, Japan" width="60" /></label></a><a style="border:2px solid transparent;border-radius:4px;display:inline-block;overflow:hidden;width:60px;" href="#3" target="_blank" class="mj-carousel-thumbnail mj-carousel-d4264912791e2671-thumbnail mj-carousel-d4264912791e2671-thumbnail-3 "><label for="mj-carousel-d4264912791e2671-radio-3"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/60x60/3498DB/ffffff?text=NYC" alt="New York, USA" width="60" /></label></a><a style="border:2px solid transparent;border-radius:4px;display:inline-block;overflow:hidden;width:60px;" href="#4" target="_blank" class="mj-carousel-thumbnail mj-carousel-d4264912791e2671-thumbnail mj-carousel-d4264912791e2671-thumbnail-4 "><label for="mj-carousel-d4264912791e2671-radio-4"><img style="display:block;width:100%;height:auto;" src="https://via.placeholder.com/60x60/F39C12/ffffff?text=SYD" alt="Sydney, Australia" width="60" /></label></a>
+                            <table style="caption-side:top;display:table-caption;table-layout:fixed;width:100%;" border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="mj-carousel-main">
+                              <tbody>
+                                <tr>
+                                  <td class="mj-carousel-d4264912791e2671-icons-cell" style="font-size:0px;display:none;mso-hide:all;padding:0px;">
+                                    <div class="mj-carousel-previous-icons" style="display:none;mso-hide:all;"><label for="mj-carousel-d4264912791e2671-radio-1" class="mj-carousel-previous mj-carousel-previous-1"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%97%80" alt="previous" style="display:block;width:30px;height:auto;" width="30" /></label><label for="mj-carousel-d4264912791e2671-radio-2" class="mj-carousel-previous mj-carousel-previous-2"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%97%80" alt="previous" style="display:block;width:30px;height:auto;" width="30" /></label><label for="mj-carousel-d4264912791e2671-radio-3" class="mj-carousel-previous mj-carousel-previous-3"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%97%80" alt="previous" style="display:block;width:30px;height:auto;" width="30" /></label><label for="mj-carousel-d4264912791e2671-radio-4" class="mj-carousel-previous mj-carousel-previous-4"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%97%80" alt="previous" style="display:block;width:30px;height:auto;" width="30" /></label></div>
+                                  </td>
+                                  <td style="padding:0px;">
+                                    <div class="mj-carousel-images">
+                                      <div class="mj-carousel-image mj-carousel-image-1 " style=""><a href="https://example.com/destinations/paris" target="_blank"><img src="https://via.placeholder.com/560x315/1ABC9C/ffffff?text=Paris" alt="Paris, France" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-2 " style="display:none;mso-hide:all;"><a href="https://example.com/destinations/tokyo" target="_blank"><img src="https://via.placeholder.com/560x315/E74C3C/ffffff?text=Tokyo" alt="Tokyo, Japan" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-3 " style="display:none;mso-hide:all;"><a href="https://example.com/destinations/newyork" target="_blank"><img src="https://via.placeholder.com/560x315/3498DB/ffffff?text=New+York" alt="New York, USA" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                      <div class="mj-carousel-image mj-carousel-image-4 " style="display:none;mso-hide:all;"><a href="https://example.com/destinations/sydney" target="_blank"><img src="https://via.placeholder.com/560x315/F39C12/ffffff?text=Sydney" alt="Sydney, Australia" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div>
+                                    </div>
+                                  </td>
+                                  <td class="mj-carousel-d4264912791e2671-icons-cell" style="font-size:0px;display:none;mso-hide:all;padding:0px;">
+                                    <div class="mj-carousel-next-icons" style="display:none;mso-hide:all;"><label for="mj-carousel-d4264912791e2671-radio-1" class="mj-carousel-next mj-carousel-next-1"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%96%B6" alt="next" style="display:block;width:30px;height:auto;" width="30" /></label><label for="mj-carousel-d4264912791e2671-radio-2" class="mj-carousel-next mj-carousel-next-2"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%96%B6" alt="next" style="display:block;width:30px;height:auto;" width="30" /></label><label for="mj-carousel-d4264912791e2671-radio-3" class="mj-carousel-next mj-carousel-next-3"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%96%B6" alt="next" style="display:block;width:30px;height:auto;" width="30" /></label><label for="mj-carousel-d4264912791e2671-radio-4" class="mj-carousel-next mj-carousel-next-4"><img src="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%96%B6" alt="next" style="display:block;width:30px;height:auto;" width="30" /></label></div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div><!--<![endif]-->
+                        <!--[if mso]><div class="mj-carousel-image mj-carousel-image-1 " style="" ><a href="https://example.com/destinations/paris" target="_blank"><img src="https://via.placeholder.com/560x315/1ABC9C/ffffff?text=Paris" alt="Paris, France" style="border-radius:6px;display:block;width:560px;max-width:100%;height:auto;" width="560" border="0" /></a></div><![endif]-->
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-top:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:13px;line-height:1.6;text-align:center;color:#7F8C8D;">Click on a thumbnail to jump to that destination</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- CTA section -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:center;color:#2C3E50;">Ready to Explore?</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 40px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:14px;line-height:1.6;text-align:center;color:#555555;">Browse our complete collection of featured products and travel destinations. New items are added weekly.</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
+                          <tbody>
+                            <tr>
+                              <td align="center" bgcolor="#C0392B" role="presentation" style="border:none;border-radius:4px;cursor:auto;mso-padding-alt:12px 30px;background:#C0392B;" valign="middle">
+                                <a href="https://example.com/browse" style="display:inline-block;background:#C0392B;color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:16px;font-weight:normal;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:12px 30px;mso-padding-alt:0px;border-radius:4px;" target="_blank"> Browse All </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Footer -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#C0392B" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#C0392B;background-color:#C0392B;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#C0392B;background-color:#C0392B;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:12px;line-height:1.6;text-align:center;color:#F5B7B1;">&copy; 2025 Carousel Component Test. Images are placeholders for testing.</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+  </div>
+</body>
+
+</html>
+

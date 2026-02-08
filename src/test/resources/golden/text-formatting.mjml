@@ -1,0 +1,277 @@
+<mjml>
+  <mj-head>
+    <mj-title>Text Formatting Test</mj-title>
+    <mj-preview>Testing mj-text with various formatting options and HTML content</mj-preview>
+    <mj-font name="Playfair Display" href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700" />
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#1a1a1a" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="30px" font-weight="bold" color="#ffffff" align="center"
+                  font-family="'Playfair Display', Georgia, serif">
+          Text Formatting Showcase
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Alignment variations -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Text Alignment
+        </mj-text>
+        <mj-text align="left" color="#333333" padding="5px 25px">
+          This text is left-aligned (the default alignment for most content).
+        </mj-text>
+        <mj-text align="center" color="#333333" padding="5px 25px">
+          This text is center-aligned, often used for headings and CTAs.
+        </mj-text>
+        <mj-text align="right" color="#333333" padding="5px 25px">
+          This text is right-aligned, useful for dates and secondary info.
+        </mj-text>
+        <mj-text align="justify" color="#333333" padding="5px 25px">
+          This text is justified, meaning it stretches to fill the full width of its
+          container. Justified text can sometimes create uneven spacing between words,
+          but it provides a clean, aligned look on both edges of the text block. This
+          is commonly used in print but less common in email design.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Color variations -->
+    <mj-section background-color="#ffffff" padding="10px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Text Colors
+        </mj-text>
+        <mj-text color="#E74C3C" padding="3px 25px">
+          Red text (#E74C3C) for warnings or emphasis.
+        </mj-text>
+        <mj-text color="#2ECC71" padding="3px 25px">
+          Green text (#2ECC71) for success messages.
+        </mj-text>
+        <mj-text color="#3498DB" padding="3px 25px">
+          Blue text (#3498DB) for informational content.
+        </mj-text>
+        <mj-text color="#F39C12" padding="3px 25px">
+          Orange text (#F39C12) for attention-grabbing content.
+        </mj-text>
+        <mj-text color="#9B59B6" padding="3px 25px">
+          Purple text (#9B59B6) for creative or premium content.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Font family variations -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Font Families
+        </mj-text>
+        <mj-text font-family="Helvetica, Arial, sans-serif" color="#333333" padding="5px 25px">
+          Helvetica / Arial (sans-serif) - Clean and modern, the most common email font.
+        </mj-text>
+        <mj-text font-family="Georgia, 'Times New Roman', serif" color="#333333" padding="5px 25px">
+          Georgia / Times New Roman (serif) - Classic and readable, great for body copy.
+        </mj-text>
+        <mj-text font-family="'Courier New', Courier, monospace" color="#333333" padding="5px 25px">
+          Courier New (monospace) - Fixed-width font, ideal for code or technical content.
+        </mj-text>
+        <mj-text font-family="Verdana, Geneva, sans-serif" color="#333333" padding="5px 25px">
+          Verdana / Geneva (sans-serif) - Wider characters for improved readability at small sizes.
+        </mj-text>
+        <mj-text font-family="'Playfair Display', Georgia, serif" color="#333333" padding="5px 25px"
+                  font-size="16px">
+          Playfair Display (web font with serif fallback) - Elegant display font loaded via mj-font.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Font size variations -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Font Sizes
+        </mj-text>
+        <mj-text font-size="10px" color="#333333" padding="3px 25px">
+          10px - Fine print and legal text
+        </mj-text>
+        <mj-text font-size="12px" color="#333333" padding="3px 25px">
+          12px - Small but readable caption text
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" padding="3px 25px">
+          14px - Standard body text size
+        </mj-text>
+        <mj-text font-size="16px" color="#333333" padding="3px 25px">
+          16px - Comfortable reading size
+        </mj-text>
+        <mj-text font-size="20px" color="#333333" padding="3px 25px">
+          20px - Subheading text
+        </mj-text>
+        <mj-text font-size="28px" color="#333333" padding="3px 25px">
+          28px - Heading text
+        </mj-text>
+        <mj-text font-size="36px" color="#333333" padding="3px 25px" font-weight="bold">
+          36px - Large display
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Line height variations -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Line Heights
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.0" padding="5px 25px 15px 25px">
+          Line-height 1.0 - This is very tight spacing between lines.
+          Multiple lines of text will appear cramped and hard to read.
+          Not recommended for body text in emails.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.4" padding="5px 25px 15px 25px">
+          Line-height 1.4 - This is a moderate spacing that works well for
+          most body text. It provides enough breathing room while keeping
+          content compact and efficient.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.8" padding="5px 25px 15px 25px">
+          Line-height 1.8 - This is generous spacing between lines. It makes
+          longer paragraphs much easier to read but uses more vertical space.
+          Good for important messages or luxury brand emails.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="24px" padding="5px 25px">
+          Line-height 24px - Using pixel values for line-height provides exact
+          control over the spacing between lines, regardless of the font size.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Letter spacing -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Letter Spacing
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" letter-spacing="0px" padding="5px 25px">
+          Letter-spacing: 0px (normal) - Default character spacing.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" letter-spacing="1px" padding="5px 25px">
+          Letter-spacing: 1px - Slightly expanded, gives a clean look.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" letter-spacing="2px" padding="5px 25px">
+          Letter-spacing: 2px - More open spacing, good for headings.
+        </mj-text>
+        <mj-text font-size="12px" color="#333333" letter-spacing="4px" padding="5px 25px"
+                  text-transform="uppercase" font-weight="bold">
+          Letter-spacing: 4px uppercase - Dramatic spacing for labels
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Text decoration and transform -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Text Decoration &amp; Transform
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" text-decoration="underline" padding="5px 25px">
+          Text-decoration: underline - Adds an underline to all text in this block.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" text-decoration="overline" padding="5px 25px">
+          Text-decoration: overline - Adds a line above the text.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" text-decoration="line-through" padding="5px 25px">
+          Text-decoration: line-through - Strikes through the text for deletions.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" text-transform="uppercase" padding="5px 25px">
+          Text-transform: uppercase - converts all characters to uppercase.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" text-transform="lowercase" padding="5px 25px">
+          Text-Transform: Lowercase - CONVERTS ALL CHARACTERS TO LOWERCASE.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" text-transform="capitalize" padding="5px 25px">
+          text-transform: capitalize - capitalizes the first letter of each word.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- HTML content inside mj-text -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Rich HTML Content
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.6" padding="5px 25px">
+          This paragraph contains <strong>bold text</strong>, <em>italic text</em>,
+          <u>underlined text</u>, and <strong><em>bold italic text</em></strong>.
+          You can also use <code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;">inline code</code>
+          and <a href="https://example.com" style="color:#3498DB;">hyperlinks</a> within text.
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.6" padding="5px 25px">
+          <h3 style="margin:0 0 10px 0;color:#1a1a1a;">Heading Level 3</h3>
+          <p style="margin:0 0 10px 0;">A paragraph with a heading above it. The heading uses an h3 tag
+          inside the mj-text component. Multiple HTML elements can be nested inside a single mj-text.</p>
+          <p style="margin:0;">Second paragraph with <span style="color:#E74C3C;font-weight:bold;">colored spans</span>
+          and <span style="font-size:18px;">size variations</span> inline.</p>
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.6" padding="5px 25px">
+          <ul style="padding-left:20px;margin:0;">
+            <li style="margin-bottom:5px;">Unordered list item one</li>
+            <li style="margin-bottom:5px;">Unordered list item two with <strong>bold</strong> text</li>
+            <li style="margin-bottom:5px;">Unordered list item three with a <a href="https://example.com" style="color:#3498DB;">link</a></li>
+          </ul>
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.6" padding="5px 25px">
+          <ol style="padding-left:20px;margin:0;">
+            <li style="margin-bottom:5px;">Ordered list item one</li>
+            <li style="margin-bottom:5px;">Ordered list item two</li>
+            <li style="margin-bottom:5px;">Ordered list item three</li>
+          </ol>
+        </mj-text>
+        <mj-text font-size="14px" color="#333333" line-height="1.6" padding="5px 25px">
+          <blockquote style="border-left:3px solid #3498DB;margin:0;padding:10px 15px;color:#666666;font-style:italic;">
+            "This is a blockquote element inside mj-text. It can be used to highlight
+            customer testimonials, quotes, or important callouts in your email."
+          </blockquote>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Container-level padding -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1a1a1a" padding-bottom="15px">
+          Padding Variations
+        </mj-text>
+        <mj-text color="#333333" padding="0">
+          Padding: 0 (no padding at all, text touches column edges)
+        </mj-text>
+        <mj-text color="#333333" padding="5px">
+          Padding: 5px (uniform small padding on all sides)
+        </mj-text>
+        <mj-text color="#333333" padding="10px 30px">
+          Padding: 10px 30px (vertical 10px, horizontal 30px)
+        </mj-text>
+        <mj-text color="#333333" padding="5px 10px 20px 40px">
+          Padding: 5px 10px 20px 40px (top, right, bottom, left)
+        </mj-text>
+        <mj-text color="#333333" padding-top="20px" padding-right="10px"
+                  padding-bottom="5px" padding-left="50px">
+          Individual padding properties: top=20px, right=10px, bottom=5px, left=50px
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#1a1a1a" padding="20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          &copy; 2025 Text Formatting Test &bull; All text styles demonstrated above
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

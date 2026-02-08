@@ -1,0 +1,25 @@
+# Maven build output
+target/
+
+# Generated golden test output
+*.actual.html
+
+# IDE files
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+*.swo
+*~
+.factorypath
+nb-project/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/settings.local.json

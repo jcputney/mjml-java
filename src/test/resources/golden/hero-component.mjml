@@ -1,0 +1,140 @@
+<mjml>
+  <mj-head>
+    <mj-title>Hero Component Test</mj-title>
+    <mj-preview>Testing mj-hero in fixed-height and fluid-height modes</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f0f0f0">
+    <!-- Hero in fixed-height mode -->
+    <mj-hero mode="fixed-height"
+             height="450px"
+             background-url="https://via.placeholder.com/600x450/2C3E50/2C3E50"
+             background-color="#2C3E50"
+             background-width="600px"
+             background-height="450px"
+             background-position="center center"
+             padding="100px 0"
+             vertical-align="middle">
+      <mj-text font-size="36px" font-weight="bold" color="#ffffff" align="center"
+               padding="0 40px 20px 40px">
+        Fixed-Height Hero
+      </mj-text>
+      <mj-text font-size="18px" color="#BDC3C7" align="center"
+               padding="0 60px 30px 60px" line-height="1.5">
+        This hero section uses mode="fixed-height" with an explicit height of 450px.
+        The content is vertically centered within the fixed height area.
+      </mj-text>
+      <mj-button background-color="#E74C3C" color="#ffffff" href="https://example.com"
+                  align="center" border-radius="30px" font-size="16px"
+                  inner-padding="14px 40px" font-weight="bold">
+        Get Started Free
+      </mj-button>
+    </mj-hero>
+
+    <!-- Spacer section between heroes -->
+    <mj-section background-color="#f0f0f0" padding="10px">
+      <mj-column>
+        <mj-spacer height="10px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Hero in fluid-height mode -->
+    <mj-hero mode="fluid-height"
+             background-url="https://via.placeholder.com/600x500/1ABC9C/1ABC9C"
+             background-color="#1ABC9C"
+             background-width="600px"
+             background-height="500px"
+             background-position="center top"
+             padding="80px 0"
+             vertical-align="top">
+      <mj-text font-size="32px" font-weight="bold" color="#ffffff" align="center"
+               padding="0 40px 15px 40px">
+        Fluid-Height Hero
+      </mj-text>
+      <mj-text font-size="16px" color="#E8F8F5" align="center"
+               padding="0 50px 25px 50px" line-height="1.6">
+        This hero section uses mode="fluid-height" which allows the section height
+        to expand based on its content. The background image adjusts accordingly.
+        This mode is more flexible and adapts to varying amounts of content without
+        leaving excessive whitespace.
+      </mj-text>
+      <mj-button background-color="#ffffff" color="#1ABC9C" href="https://example.com/learn"
+                  align="center" border-radius="4px" font-size="15px"
+                  inner-padding="12px 35px" font-weight="bold">
+        Learn More
+      </mj-button>
+    </mj-hero>
+
+    <!-- Spacer section -->
+    <mj-section background-color="#f0f0f0" padding="10px">
+      <mj-column>
+        <mj-spacer height="10px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Hero with vertical-align bottom -->
+    <mj-hero mode="fixed-height"
+             height="400px"
+             background-url="https://via.placeholder.com/600x400/8E44AD/8E44AD"
+             background-color="#8E44AD"
+             background-width="600px"
+             background-height="400px"
+             background-position="center center"
+             padding="40px 0"
+             vertical-align="bottom">
+      <mj-text font-size="28px" font-weight="bold" color="#ffffff" align="left"
+               padding="0 30px 10px 30px">
+        Bottom-Aligned Content
+      </mj-text>
+      <mj-text font-size="14px" color="#D2B4DE" align="left"
+               padding="0 30px 20px 30px" line-height="1.5">
+        This hero uses vertical-align="bottom" to push the content to the bottom
+        of the fixed-height container, leaving the background image visible above.
+      </mj-text>
+      <mj-button background-color="#F39C12" color="#ffffff" href="https://example.com/signup"
+                  align="left" border-radius="4px" font-size="14px"
+                  inner-padding="10px 25px" padding="0 30px">
+        Sign Up Today
+      </mj-button>
+    </mj-hero>
+
+    <!-- Hero with multiple content elements -->
+    <mj-hero mode="fluid-height"
+             background-url="https://via.placeholder.com/600x600/34495E/34495E"
+             background-color="#34495E"
+             background-width="600px"
+             background-height="600px"
+             background-position="center center"
+             padding="60px 0"
+             vertical-align="middle">
+      <mj-image src="https://via.placeholder.com/80x80/ffffff/34495E?text=LOGO"
+                 alt="Logo" width="80px" align="center" padding="0 0 20px 0" />
+      <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center"
+               padding="0 40px 10px 40px">
+        Rich Hero Content
+      </mj-text>
+      <mj-text font-size="15px" color="#ABB2B9" align="center"
+               padding="0 60px 25px 60px" line-height="1.6">
+        This hero demonstrates combining an image, headline, description text,
+        and a call-to-action button within a single hero component. All elements
+        can be individually styled and positioned.
+      </mj-text>
+      <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com/demo"
+                  align="center" border-radius="25px" font-size="15px"
+                  inner-padding="12px 35px" font-weight="bold">
+        Request a Demo
+      </mj-button>
+    </mj-hero>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#7F8C8D" align="center">
+          &copy; 2025 Hero Component Test &bull; Demonstrating fixed and fluid hero modes
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

@@ -1,0 +1,257 @@
+<mjml>
+  <mj-head>
+    <mj-title>Image Variants Test</mj-title>
+    <mj-preview>Testing mj-image with various configurations</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#16A085" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Image Component Showcase
+        </mj-text>
+        <mj-text color="#A3E4D7" align="center">
+          Demonstrating all mj-image attributes and options
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Basic image with href -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="10px">
+          Linked Image with Title
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/560x300/16A085/ffffff?text=Click+Me"
+                   alt="Clickable banner image"
+                   href="https://example.com/landing"
+                   title="Click to visit our landing page"
+                   width="560px"
+                   padding="10px 0" />
+        <mj-text font-size="12px" color="#999999" align="center">
+          This image has href, alt, and title attributes set
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Image with srcset for responsive images -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="10px">
+          Image with Srcset
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/560x300/2ECC71/ffffff?text=Responsive+Image"
+                   alt="Responsive image with srcset"
+                   width="560px"
+                   srcset="https://via.placeholder.com/280x150/2ECC71/ffffff?text=280w 280w,
+                           https://via.placeholder.com/560x300/2ECC71/ffffff?text=560w 560w,
+                           https://via.placeholder.com/1120x600/2ECC71/ffffff?text=1120w 1120w"
+                   sizes="(max-width: 480px) 280px, 560px"
+                   padding="10px 0" />
+        <mj-text font-size="12px" color="#999999" align="center">
+          Uses srcset to serve different image sizes based on screen width
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Width variants -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="15px">
+          Width Variants
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/100x100/E74C3C/ffffff?text=100px"
+                   alt="100px wide" width="100px" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999">width="100px"</mj-text>
+        <mj-image src="https://via.placeholder.com/200x100/3498DB/ffffff?text=200px"
+                   alt="200px wide" width="200px" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999">width="200px"</mj-text>
+        <mj-image src="https://via.placeholder.com/350x100/F39C12/ffffff?text=350px"
+                   alt="350px wide" width="350px" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999">width="350px"</mj-text>
+        <mj-image src="https://via.placeholder.com/560x100/9B59B6/ffffff?text=Full+Width"
+                   alt="Full width" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999">No width specified (fills column)</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Alignment variants -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="15px">
+          Alignment Variants
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/200x80/E74C3C/ffffff?text=Left"
+                   alt="Left aligned" width="200px" align="left" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999" align="left">align="left"</mj-text>
+        <mj-image src="https://via.placeholder.com/200x80/3498DB/ffffff?text=Center"
+                   alt="Center aligned" width="200px" align="center" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999" align="center">align="center"</mj-text>
+        <mj-image src="https://via.placeholder.com/200x80/2ECC71/ffffff?text=Right"
+                   alt="Right aligned" width="200px" align="right" padding="5px 0" />
+        <mj-text font-size="12px" color="#999999" align="right">align="right"</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Fluid on mobile -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="15px">
+          Fluid on Mobile
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" padding="0 20px 25px 20px">
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/250x180/16A085/ffffff?text=Fluid+Mobile"
+                   alt="Fluid on mobile"
+                   width="250px"
+                   fluid-on-mobile="true"
+                   padding="5px" />
+        <mj-text font-size="12px" color="#999999" align="center">
+          fluid-on-mobile="true" - expands to full width on mobile
+        </mj-text>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/250x180/2C3E50/ffffff?text=Normal"
+                   alt="Normal mobile behavior"
+                   width="250px"
+                   padding="5px" />
+        <mj-text font-size="12px" color="#999999" align="center">
+          Default behavior - maintains width on mobile
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Border radius on images -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="15px">
+          Border Radius
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ECF0F1" padding="0 20px 25px 20px">
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/E74C3C/ffffff?text=0px"
+                   alt="No radius" width="120px" border-radius="0px" />
+        <mj-text font-size="11px" color="#999999" align="center">0px</mj-text>
+      </mj-column>
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/3498DB/ffffff?text=8px"
+                   alt="Small radius" width="120px" border-radius="8px" />
+        <mj-text font-size="11px" color="#999999" align="center">8px</mj-text>
+      </mj-column>
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/F39C12/ffffff?text=20px"
+                   alt="Large radius" width="120px" border-radius="20px" />
+        <mj-text font-size="11px" color="#999999" align="center">20px</mj-text>
+      </mj-column>
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/9B59B6/ffffff?text=Circle"
+                   alt="Circle" width="120px" border-radius="60px" />
+        <mj-text font-size="11px" color="#999999" align="center">60px (circle)</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Image with border -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="15px">
+          Image with Border
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/400x200/ffffff/333333?text=Bordered+Image"
+                   alt="Image with border"
+                   width="400px"
+                   border="3px solid #16A085"
+                   border-radius="8px"
+                   padding="10px 0" />
+        <mj-text font-size="12px" color="#999999" align="center">
+          border="3px solid #16A085" with border-radius="8px"
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Images in multi-column layout -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="15px"
+                  align="center">
+          Product Grid
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ECF0F1" padding="0 20px 25px 20px">
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/170x200/E74C3C/ffffff?text=Product+A"
+                   alt="Product A"
+                   width="170px"
+                   href="https://example.com/product-a"
+                   border-radius="4px" />
+        <mj-text align="center" font-weight="bold" color="#333333" font-size="13px"
+                  padding-top="8px">
+          Product A
+        </mj-text>
+        <mj-text align="center" color="#16A085" font-size="15px" font-weight="bold">
+          $29.99
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/170x200/3498DB/ffffff?text=Product+B"
+                   alt="Product B"
+                   width="170px"
+                   href="https://example.com/product-b"
+                   border-radius="4px" />
+        <mj-text align="center" font-weight="bold" color="#333333" font-size="13px"
+                  padding-top="8px">
+          Product B
+        </mj-text>
+        <mj-text align="center" color="#16A085" font-size="15px" font-weight="bold">
+          $49.99
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/170x200/2ECC71/ffffff?text=Product+C"
+                   alt="Product C"
+                   width="170px"
+                   href="https://example.com/product-c"
+                   border-radius="4px" />
+        <mj-text align="center" font-weight="bold" color="#333333" font-size="13px"
+                  padding-top="8px">
+          Product C
+        </mj-text>
+        <mj-text align="center" color="#16A085" font-size="15px" font-weight="bold">
+          $39.99
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Image with container-background-color -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#16A085" padding-bottom="10px">
+          Image with Container Background
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/300x200/ffffff/333333?text=On+Dark+BG"
+                   alt="Image on dark background"
+                   width="300px"
+                   container-background-color="#2C3E50"
+                   padding="20px"
+                   align="center" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#16A085" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#A3E4D7" font-size="12px">
+          &copy; 2025 Image Variants Test. All placeholder images for testing.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

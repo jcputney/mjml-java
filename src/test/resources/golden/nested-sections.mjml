@@ -1,0 +1,215 @@
+<mjml>
+  <mj-head>
+    <mj-title>Nested Sections in Wrapper Test</mj-title>
+    <mj-preview>Testing sections inside mj-wrapper for grouped layouts</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#e8e8e8">
+    <!-- Standalone header section (not in wrapper) -->
+    <mj-section background-color="#6C3483" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="28px" font-weight="bold" color="#ffffff" align="center">
+          Newsletter Issue #42
+        </mj-text>
+        <mj-text font-size="14px" color="#D2B4DE" align="center">
+          January 2025 Edition
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Wrapper containing multiple sections with shared background -->
+    <mj-wrapper background-color="#ffffff" padding="0 0 20px 0">
+      <mj-section padding="25px 20px 10px 20px">
+        <mj-column>
+          <mj-text font-size="20px" font-weight="bold" color="#6C3483">
+            Featured Article
+          </mj-text>
+          <mj-text>
+            This wrapper groups multiple sections together with a shared white
+            background. Without a wrapper, each section would have gaps between
+            them showing the body background color.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="10px 20px">
+        <mj-column>
+          <mj-image src="https://via.placeholder.com/560x280/6C3483/ffffff?text=Featured+Article"
+                     alt="Featured article image" width="560px" />
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="10px 20px">
+        <mj-column width="50%">
+          <mj-text>
+            The first paragraph of the featured article continues here in a
+            two-column layout. This demonstrates that different section layouts
+            can be used within the same wrapper.
+          </mj-text>
+        </mj-column>
+        <mj-column width="50%">
+          <mj-text>
+            The second column of the article provides supplementary content.
+            All these sections share the same white background from the
+            parent wrapper element.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="10px 20px 20px 20px">
+        <mj-column>
+          <mj-button background-color="#6C3483" color="#ffffff"
+                      href="https://example.com/article" align="left"
+                      border-radius="4px" inner-padding="10px 25px">
+            Read Full Article
+          </mj-button>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <!-- Spacer between wrappers -->
+    <mj-section background-color="transparent" padding="5px">
+      <mj-column>
+        <mj-spacer height="5px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Wrapper with colored background and border -->
+    <mj-wrapper background-color="#F5EEF8" border="2px solid #D2B4DE" border-radius="8px"
+                 padding="0">
+      <mj-section padding="20px 20px 10px 20px">
+        <mj-column>
+          <mj-text font-size="18px" font-weight="bold" color="#6C3483">
+            Editor's Picks
+          </mj-text>
+          <mj-divider border-color="#D2B4DE" border-width="1px" padding="10px 0" />
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="0 20px 10px 20px">
+        <mj-column width="33.33%">
+          <mj-image src="https://via.placeholder.com/160x160/8E44AD/ffffff?text=Pick+1"
+                     alt="Editor pick 1" width="160px" />
+          <mj-text font-size="13px" font-weight="bold" color="#6C3483" align="center"
+                    padding-top="8px">
+            Design Trends
+          </mj-text>
+          <mj-text font-size="12px" align="center" padding-top="4px">
+            Top design trends for the new year
+          </mj-text>
+        </mj-column>
+        <mj-column width="33.33%">
+          <mj-image src="https://via.placeholder.com/160x160/9B59B6/ffffff?text=Pick+2"
+                     alt="Editor pick 2" width="160px" />
+          <mj-text font-size="13px" font-weight="bold" color="#6C3483" align="center"
+                    padding-top="8px">
+            Tech Reviews
+          </mj-text>
+          <mj-text font-size="12px" align="center" padding-top="4px">
+            Latest gadgets tested and reviewed
+          </mj-text>
+        </mj-column>
+        <mj-column width="33.33%">
+          <mj-image src="https://via.placeholder.com/160x160/A569BD/ffffff?text=Pick+3"
+                     alt="Editor pick 3" width="160px" />
+          <mj-text font-size="13px" font-weight="bold" color="#6C3483" align="center"
+                    padding-top="8px">
+            Travel Guide
+          </mj-text>
+          <mj-text font-size="12px" align="center" padding-top="4px">
+            Hidden gems worth visiting
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="10px 20px 20px 20px">
+        <mj-column>
+          <mj-button background-color="#6C3483" color="#ffffff"
+                      href="https://example.com/picks" align="center"
+                      border-radius="4px" inner-padding="10px 25px" font-size="13px">
+            View All Picks
+          </mj-button>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <!-- Spacer -->
+    <mj-section background-color="transparent" padding="5px">
+      <mj-column>
+        <mj-spacer height="5px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Wrapper for two-part content block -->
+    <mj-wrapper background-color="#ffffff" padding="0">
+      <mj-section padding="25px 20px 10px 20px">
+        <mj-column>
+          <mj-text font-size="18px" font-weight="bold" color="#6C3483">
+            Quick Updates
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="5px 20px">
+        <mj-column width="80px" vertical-align="top">
+          <mj-image src="https://via.placeholder.com/60x60/E74C3C/ffffff?text=1"
+                     alt="Update 1" width="60px" border-radius="30px" />
+        </mj-column>
+        <mj-column>
+          <mj-text font-weight="bold" color="#333333" padding-bottom="3px">
+            Platform Update v3.2 Released
+          </mj-text>
+          <mj-text font-size="13px" color="#777777">
+            We have rolled out significant performance improvements and new
+            collaboration features in this release.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="5px 20px">
+        <mj-column width="80px" vertical-align="top">
+          <mj-image src="https://via.placeholder.com/60x60/3498DB/ffffff?text=2"
+                     alt="Update 2" width="60px" border-radius="30px" />
+        </mj-column>
+        <mj-column>
+          <mj-text font-weight="bold" color="#333333" padding-bottom="3px">
+            Community Meetup in San Francisco
+          </mj-text>
+          <mj-text font-size="13px" color="#777777">
+            Join us on February 15th for our quarterly community meetup at
+            the downtown convention center.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="5px 20px 25px 20px">
+        <mj-column width="80px" vertical-align="top">
+          <mj-image src="https://via.placeholder.com/60x60/2ECC71/ffffff?text=3"
+                     alt="Update 3" width="60px" border-radius="30px" />
+        </mj-column>
+        <mj-column>
+          <mj-text font-weight="bold" color="#333333" padding-bottom="3px">
+            New Partnership Announced
+          </mj-text>
+          <mj-text font-size="13px" color="#777777">
+            We are excited to announce our strategic partnership with
+            TechCorp to bring you even better integrations.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <!-- Footer (not in wrapper) -->
+    <mj-section background-color="#6C3483" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#D2B4DE" font-size="12px">
+          &copy; 2025 Newsletter Test &bull; All rights reserved<br />
+          <a href="https://example.com/unsubscribe" style="color:#E8DAEF;">Unsubscribe</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

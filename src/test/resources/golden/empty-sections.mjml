@@ -1,0 +1,190 @@
+<mjml>
+  <mj-head>
+    <mj-title>Empty Sections Edge Cases</mj-title>
+    <mj-preview>Testing edge cases with empty sections and columns</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Normal section for reference -->
+    <mj-section background-color="#2C3E50" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold" color="#ffffff" align="center">
+          Empty Sections &amp; Columns Test
+        </mj-text>
+        <mj-text color="#BDC3C7" align="center" font-size="13px">
+          Testing edge cases with minimal or no content
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Empty section with no columns -->
+    <mj-section background-color="#E74C3C" padding="20px">
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Empty section (no columns) with red background and 20px padding
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with empty column -->
+    <mj-section background-color="#3498DB" padding="20px">
+      <mj-column>
+      </mj-column>
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Section with one empty column, blue background, 20px padding
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with multiple empty columns -->
+    <mj-section background-color="#2ECC71" padding="20px">
+      <mj-column width="33.33%">
+      </mj-column>
+      <mj-column width="33.33%">
+      </mj-column>
+      <mj-column width="33.33%">
+      </mj-column>
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Section with three empty columns, green background
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with mix of empty and content columns -->
+    <mj-section background-color="#F39C12" padding="20px">
+      <mj-column width="33.33%">
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-text color="#ffffff" align="center" font-weight="bold">
+          Middle column has content
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+      </mj-column>
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Three columns, only middle has content, orange background
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Empty section with zero padding -->
+    <mj-section background-color="#9B59B6" padding="0">
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Empty section with padding="0" and purple background (may be invisible)
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with only a spacer -->
+    <mj-section background-color="#1ABC9C" padding="0">
+      <mj-column>
+        <mj-spacer height="30px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Section with only a 30px spacer, teal background
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with only a divider -->
+    <mj-section background-color="#ffffff" padding="10px 20px">
+      <mj-column>
+        <mj-divider border-color="#E74C3C" border-width="3px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="0 20px 15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Section with only a red 3px divider
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Empty wrapper -->
+    <mj-wrapper background-color="#34495E" padding="20px">
+    </mj-wrapper>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Empty mj-wrapper with dark background and 20px padding
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Wrapper with empty section -->
+    <mj-wrapper background-color="#E8DAEF" padding="10px">
+      <mj-section padding="10px">
+      </mj-section>
+    </mj-wrapper>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Wrapper with one empty section inside, light purple background
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with column containing only whitespace text -->
+    <mj-section background-color="#D5F5E3" padding="20px">
+      <mj-column>
+        <mj-text>   </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Reference text -->
+    <mj-section background-color="#ffffff" padding="15px 20px">
+      <mj-column>
+        <mj-text font-size="12px" color="#999999" align="center">
+          Above: Section with mj-text containing only whitespace, light green background
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#7F8C8D" font-size="12px">
+          &copy; 2025 Empty Sections Test &bull; Edge cases for robust rendering
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

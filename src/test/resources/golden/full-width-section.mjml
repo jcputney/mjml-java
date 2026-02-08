@@ -1,0 +1,109 @@
+<mjml>
+  <mj-head>
+    <mj-title>Full-Width Section Test</mj-title>
+    <mj-preview>Testing full-width sections vs contained sections</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Georgia, Times New Roman, serif" />
+      <mj-text font-size="15px" color="#333333" line-height="1.7" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#eeeeee" width="600px">
+    <!-- Full-width section with background color -->
+    <mj-section full-width="full-width" background-color="#1B4F72" padding="40px 20px">
+      <mj-column>
+        <mj-text font-size="30px" font-weight="bold" color="#ffffff" align="center">
+          Full-Width Header
+        </mj-text>
+        <mj-text font-size="16px" color="#AED6F1" align="center">
+          This section stretches to the full width of the viewport
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Regular contained section for contrast -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" color="#1B4F72">
+          Regular Contained Section
+        </mj-text>
+        <mj-text>
+          This section is contained within the 600px body width. Notice how the
+          white background only extends to the content width, not the full viewport.
+          The gray body background is visible on either side.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Full-width section with background image -->
+    <mj-section full-width="full-width"
+                background-url="https://via.placeholder.com/1200x400/2E86C1/2E86C1"
+                background-color="#2E86C1"
+                background-size="cover"
+                padding="60px 20px">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold" color="#ffffff" align="center">
+          Full-Width with Background Image
+        </mj-text>
+        <mj-text color="#D6EAF8" align="center" padding="10px 50px">
+          This full-width section has a background image that covers the entire viewport
+          width. The content remains centered within the 600px container, but the background
+          extends edge to edge.
+        </mj-text>
+        <mj-button background-color="#F39C12" color="#ffffff" href="https://example.com"
+                    align="center" border-radius="4px" font-size="16px"
+                    inner-padding="14px 35px" font-family="Georgia, serif">
+          Take the Tour
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Another contained section -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/260x200/1B4F72/ffffff?text=Photo"
+                   alt="Product photo" width="260px" />
+      </mj-column>
+      <mj-column width="50%">
+        <mj-text font-size="18px" font-weight="bold" color="#1B4F72">
+          Back to Contained
+        </mj-text>
+        <mj-text>
+          After a full-width section, we return to a regular contained section.
+          The alternation between full-width and contained sections creates visual variety.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Full-width section with two columns -->
+    <mj-section full-width="full-width" background-color="#D4E6F1" padding="30px 20px">
+      <mj-column width="50%">
+        <mj-text font-size="18px" font-weight="bold" color="#1B4F72">
+          Full-Width Multi-Column
+        </mj-text>
+        <mj-text color="#2C3E50">
+          Full-width sections can contain multiple columns. The content columns
+          remain within the body width, but the section background goes full-width.
+        </mj-text>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-text font-size="18px" font-weight="bold" color="#1B4F72">
+          Second Column
+        </mj-text>
+        <mj-text color="#2C3E50">
+          Both columns are still constrained within the 600px body, even though
+          the light blue background extends to the edges of the viewport.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Full-width footer -->
+    <mj-section full-width="full-width" background-color="#1B4F72" padding="25px 20px">
+      <mj-column>
+        <mj-text align="center" color="#AED6F1" font-size="12px">
+          &copy; 2025 Full-Width Section Test &bull; All rights reserved<br />
+          This footer section is full-width, matching the header above.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

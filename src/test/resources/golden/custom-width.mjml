@@ -1,0 +1,132 @@
+<mjml>
+  <mj-head>
+    <mj-title>Custom Width Test</mj-title>
+    <mj-preview>Testing mj-body with custom width of 500px instead of default 600px</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#e0e0e0" width="500px">
+    <!-- Header -->
+    <mj-section background-color="#8E44AD" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold" color="#ffffff" align="center">
+          500px Wide Email
+        </mj-text>
+        <mj-text color="#D2B4DE" align="center" font-size="13px">
+          Custom body width instead of the default 600px
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Content explaining the narrower width -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="16px" font-weight="bold" color="#8E44AD" padding-bottom="10px">
+          Why Use a Narrower Width?
+        </mj-text>
+        <mj-text>
+          This email template uses a 500px body width instead of the standard 600px.
+          Narrower emails can be beneficial for several reasons:
+        </mj-text>
+        <mj-text padding="5px 25px">
+          <ul style="padding-left:20px;margin:0;">
+            <li style="margin-bottom:8px;">Improved readability with shorter line lengths</li>
+            <li style="margin-bottom:8px;">Better appearance on smaller desktop screens</li>
+            <li style="margin-bottom:8px;">Reduced need for horizontal scrolling in preview panes</li>
+            <li style="margin-bottom:8px;">More consistent rendering across email clients</li>
+          </ul>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Two columns within the narrower container -->
+    <mj-section background-color="#F5EEF8" padding="20px">
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/210x150/8E44AD/ffffff?text=Photo"
+                   alt="Product photo" width="210px" border-radius="4px" />
+      </mj-column>
+      <mj-column width="50%">
+        <mj-text font-weight="bold" color="#8E44AD" font-size="16px">
+          Product Feature
+        </mj-text>
+        <mj-text font-size="13px">
+          Even at 500px wide, two-column layouts work well. Each column
+          gets approximately 230px of usable width after padding.
+        </mj-text>
+        <mj-button background-color="#8E44AD" color="#ffffff" font-size="12px"
+                    inner-padding="8px 20px" border-radius="4px"
+                    href="https://example.com" align="left">
+          Details
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Full-width image in narrow container -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column>
+        <mj-image src="https://via.placeholder.com/460x200/2C3E50/ffffff?text=Full+Width+at+500px"
+                   alt="Full width image in narrow container" width="460px" />
+        <mj-text align="center" font-size="12px" color="#999999" padding-top="8px">
+          Full-width image constrained to the 500px body width
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Three columns in narrow container -->
+    <mj-section background-color="#F5EEF8" padding="20px">
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/130x130/E74C3C/ffffff?text=1"
+                   alt="Item 1" width="130px" />
+        <mj-text align="center" font-size="12px" font-weight="bold" color="#333333"
+                  padding-top="5px">
+          Item One
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/130x130/3498DB/ffffff?text=2"
+                   alt="Item 2" width="130px" />
+        <mj-text align="center" font-size="12px" font-weight="bold" color="#333333"
+                  padding-top="5px">
+          Item Two
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/130x130/2ECC71/ffffff?text=3"
+                   alt="Item 3" width="130px" />
+        <mj-text align="center" font-size="12px" font-weight="bold" color="#333333"
+                  padding-top="5px">
+          Item Three
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- CTA section -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text align="center" font-size="18px" font-weight="bold" color="#8E44AD">
+          Ready to Get Started?
+        </mj-text>
+        <mj-text align="center" padding="5px 30px">
+          Join thousands of users who prefer our compact email format.
+        </mj-text>
+        <mj-button background-color="#8E44AD" color="#ffffff" href="https://example.com/signup"
+                    align="center" border-radius="25px" font-size="16px"
+                    inner-padding="14px 40px" font-weight="bold">
+          Sign Up Now
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#8E44AD" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#D2B4DE" font-size="12px">
+          &copy; 2025 Custom Width Test &bull; Body width: 500px<br />
+          <a href="https://example.com/unsubscribe" style="color:#E8DAEF;">Unsubscribe</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

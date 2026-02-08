@@ -1,0 +1,199 @@
+<mjml>
+  <mj-head>
+    <mj-title>Multi-Column Layout Test</mj-title>
+    <mj-preview>Testing 1, 2, 3, and 4 column layouts</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.5" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header: Single column -->
+    <mj-section background-color="#2C3E50" padding="30px 20px">
+      <mj-column width="100%">
+        <mj-text font-size="28px" font-weight="bold" color="#ffffff" align="center">
+          Multi-Column Layouts
+        </mj-text>
+        <mj-text font-size="16px" color="#BDC3C7" align="center">
+          Demonstrating various column configurations
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Single column layout -->
+    <mj-section background-color="#ffffff" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="10px">
+          Single Column (100% width)
+        </mj-text>
+        <mj-text>
+          This section uses a single column that spans the full width of the email.
+          Single-column layouts are the most reliable across all email clients and
+          are ideal for hero sections, headers, and primary content areas.
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/560x200/3498DB/ffffff?text=Full+Width+Image"
+                   alt="Full width banner" width="560px" padding="10px 0" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Two column layout with explicit widths -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column width="60%">
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="10px">
+          Two Columns (60/40 Split)
+        </mj-text>
+        <mj-text>
+          The left column takes 60% of the width, providing more room for the
+          primary content. This layout works well for image-text combinations
+          or when you want to emphasize one side over the other.
+        </mj-text>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com">
+          Learn More
+        </mj-button>
+      </mj-column>
+      <mj-column width="40%">
+        <mj-image src="https://via.placeholder.com/220x220/E74C3C/ffffff?text=40%25"
+                   alt="Side image" width="220px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Two column layout with auto widths (50/50) -->
+    <mj-section background-color="#ECF0F1" padding="20px">
+      <mj-column>
+        <mj-image src="https://via.placeholder.com/270x180/2ECC71/ffffff?text=Left"
+                   alt="Left image" width="270px" />
+        <mj-text align="center" font-weight="bold" color="#2C3E50">
+          Auto-Width Left
+        </mj-text>
+        <mj-text align="center">
+          When no width is specified, columns split evenly.
+        </mj-text>
+      </mj-column>
+      <mj-column>
+        <mj-image src="https://via.placeholder.com/270x180/9B59B6/ffffff?text=Right"
+                   alt="Right image" width="270px" />
+        <mj-text align="center" font-weight="bold" color="#2C3E50">
+          Auto-Width Right
+        </mj-text>
+        <mj-text align="center">
+          Both columns receive 50% of the available width.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Three column layout -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/170x170/E74C3C/ffffff?text=1"
+                   alt="Feature 1" width="170px" />
+        <mj-text align="center" font-weight="bold" color="#2C3E50" padding="10px 0 5px 0">
+          Fast Delivery
+        </mj-text>
+        <mj-text align="center" font-size="13px">
+          Get your orders delivered within 24 hours with our express shipping.
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/170x170/3498DB/ffffff?text=2"
+                   alt="Feature 2" width="170px" />
+        <mj-text align="center" font-weight="bold" color="#2C3E50" padding="10px 0 5px 0">
+          Secure Payment
+        </mj-text>
+        <mj-text align="center" font-size="13px">
+          All transactions are protected with 256-bit SSL encryption.
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/170x170/2ECC71/ffffff?text=3"
+                   alt="Feature 3" width="170px" />
+        <mj-text align="center" font-weight="bold" color="#2C3E50" padding="10px 0 5px 0">
+          24/7 Support
+        </mj-text>
+        <mj-text align="center" font-size="13px">
+          Our support team is available around the clock to help you.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Four column layout -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/E74C3C/ffffff?text=Q1"
+                   alt="Q1" width="120px" border-radius="60px" />
+        <mj-text align="center" font-weight="bold" color="#ffffff" padding-top="10px">
+          Q1 2025
+        </mj-text>
+        <mj-text align="center" color="#BDC3C7" font-size="12px">
+          $1.2M Revenue
+        </mj-text>
+      </mj-column>
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/3498DB/ffffff?text=Q2"
+                   alt="Q2" width="120px" border-radius="60px" />
+        <mj-text align="center" font-weight="bold" color="#ffffff" padding-top="10px">
+          Q2 2025
+        </mj-text>
+        <mj-text align="center" color="#BDC3C7" font-size="12px">
+          $1.5M Revenue
+        </mj-text>
+      </mj-column>
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/2ECC71/ffffff?text=Q3"
+                   alt="Q3" width="120px" border-radius="60px" />
+        <mj-text align="center" font-weight="bold" color="#ffffff" padding-top="10px">
+          Q3 2025
+        </mj-text>
+        <mj-text align="center" color="#BDC3C7" font-size="12px">
+          $1.8M Revenue
+        </mj-text>
+      </mj-column>
+      <mj-column width="25%">
+        <mj-image src="https://via.placeholder.com/120x120/F39C12/ffffff?text=Q4"
+                   alt="Q4" width="120px" border-radius="60px" />
+        <mj-text align="center" font-weight="bold" color="#ffffff" padding-top="10px">
+          Q4 2025
+        </mj-text>
+        <mj-text align="center" color="#BDC3C7" font-size="12px">
+          $2.1M Revenue
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Three columns with pixel widths -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column width="150px">
+        <mj-image src="https://via.placeholder.com/130x130/E67E22/ffffff?text=Fixed"
+                   alt="Fixed width" width="130px" />
+        <mj-text align="center" font-size="12px" color="#E67E22">
+          150px fixed
+        </mj-text>
+      </mj-column>
+      <mj-column>
+        <mj-text font-weight="bold" color="#2C3E50">
+          Flexible Column
+        </mj-text>
+        <mj-text>
+          This middle column has no explicit width and takes the remaining space
+          after the two fixed-width columns are placed. This demonstrates mixing
+          fixed and fluid columns within the same section.
+        </mj-text>
+      </mj-column>
+      <mj-column width="150px">
+        <mj-image src="https://via.placeholder.com/130x130/E67E22/ffffff?text=Fixed"
+                   alt="Fixed width" width="130px" />
+        <mj-text align="center" font-size="12px" color="#E67E22">
+          150px fixed
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="15px">
+      <mj-column>
+        <mj-text align="center" color="#BDC3C7" font-size="12px">
+          &copy; 2025 Layout Test Co. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

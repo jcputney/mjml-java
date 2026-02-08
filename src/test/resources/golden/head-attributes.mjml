@@ -1,0 +1,141 @@
+<mjml>
+  <mj-head>
+    <mj-title>Head Attributes Test Email</mj-title>
+    <mj-preview>Testing all mj-head features including attributes, fonts, breakpoints, and styles</mj-preview>
+
+    <!-- Custom breakpoint -->
+    <mj-breakpoint width="480px" />
+
+    <!-- Google Fonts import -->
+    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
+    <mj-font name="Open Sans" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" />
+
+    <!-- Global attributes -->
+    <mj-attributes>
+      <!-- Apply to all elements -->
+      <mj-all font-family="Roboto, Helvetica, Arial, sans-serif" padding="0" />
+
+      <!-- Tag-specific defaults -->
+      <mj-text font-size="14px" color="#444444" line-height="1.6" padding="10px 25px" />
+      <mj-section padding="20px 0" />
+      <mj-column padding="0 10px" />
+      <mj-button background-color="#1A73E8" color="#ffffff" font-size="14px"
+                  border-radius="4px" inner-padding="10px 25px" font-weight="500" />
+      <mj-image padding="10px 25px" />
+      <mj-divider border-color="#DADCE0" border-width="1px" padding="15px 25px" />
+
+      <!-- Class-based styles -->
+      <mj-class name="headline" font-size="22px" font-weight="700" color="#202124" line-height="1.3" />
+      <mj-class name="subhead" font-size="16px" font-weight="400" color="#5F6368" />
+      <mj-class name="cta-primary" background-color="#1A73E8" color="#ffffff" font-weight="500" />
+      <mj-class name="cta-secondary" background-color="#ffffff" color="#1A73E8" border="2px solid #1A73E8" />
+      <mj-class name="small-text" font-size="12px" color="#9AA0A6" />
+      <mj-class name="dark-section" background-color="#202124" />
+    </mj-attributes>
+
+    <!-- Custom inline styles -->
+    <mj-style>
+      .link-color a {
+        color: #1A73E8;
+        text-decoration: none;
+      }
+      .link-color a:hover {
+        text-decoration: underline;
+      }
+      @media only screen and (max-width: 480px) {
+        .mobile-full-width table {
+          width: 100% !important;
+        }
+        .hide-mobile {
+          display: none !important;
+        }
+      }
+    </mj-style>
+
+    <!-- Inline style (non-minified) -->
+    <mj-style inline="inline">
+      .bold-text {
+        font-weight: 700;
+      }
+      .italic-text {
+        font-style: italic;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#F1F3F4" width="600px">
+    <!-- Header using class attributes -->
+    <mj-section mj-class="dark-section" padding="30px 0">
+      <mj-column>
+        <mj-image src="https://via.placeholder.com/180x50/202124/ffffff?text=LOGO"
+                   alt="Company Logo" width="180px" align="left" />
+      </mj-column>
+      <mj-column>
+        <mj-text mj-class="small-text" align="right" color="#9AA0A6" padding-top="18px">
+          Monthly Newsletter &bull; January 2025
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Content using inherited defaults (no explicit styles needed) -->
+    <mj-section background-color="#ffffff">
+      <mj-column>
+        <mj-text mj-class="headline">
+          Your Monthly Update
+        </mj-text>
+        <mj-text mj-class="subhead">
+          Here is what happened this month and what is coming next.
+        </mj-text>
+        <mj-divider />
+        <mj-text>
+          Thanks to our <strong>mj-attributes</strong> configuration, this text automatically
+          receives the correct font-family (Roboto), font-size (14px), color (#444444), and
+          line-height (1.6) without specifying any of those properties inline.
+        </mj-text>
+        <mj-text css-class="link-color">
+          Visit our <a href="https://example.com">website</a> for more details, or check
+          out the <a href="https://example.com/blog">blog</a> for the latest articles.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Buttons using class attributes -->
+    <mj-section background-color="#ffffff">
+      <mj-column>
+        <mj-button mj-class="cta-primary" href="https://example.com/primary">
+          Get Started
+        </mj-button>
+      </mj-column>
+      <mj-column>
+        <mj-button mj-class="cta-secondary" href="https://example.com/secondary">
+          Learn More
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section demonstrating default padding from mj-attributes -->
+    <mj-section background-color="#E8F0FE">
+      <mj-column>
+        <mj-text mj-class="headline" font-size="18px">
+          Feature Spotlight
+        </mj-text>
+        <mj-text>
+          This section has a different background but still inherits all the text
+          defaults from mj-attributes. The headline class overrides font-size and
+          weight while keeping the font-family from mj-all.
+        </mj-text>
+        <mj-image src="https://via.placeholder.com/500x250/1A73E8/ffffff?text=Feature+Image"
+                   alt="Feature spotlight" width="500px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section mj-class="dark-section" padding="20px 0">
+      <mj-column>
+        <mj-text mj-class="small-text" align="center" color="#9AA0A6">
+          &copy; 2025 Head Attributes Test. All rights reserved.<br />
+          123 Test Lane, Suite 100, San Francisco, CA 94105
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

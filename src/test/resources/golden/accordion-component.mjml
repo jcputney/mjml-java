@@ -1,0 +1,159 @@
+<mjml>
+  <mj-head>
+    <mj-title>Accordion Component Test</mj-title>
+    <mj-preview>Testing mj-accordion with multiple expandable elements</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+      <mj-accordion border="1px solid #E0E0E0" />
+      <mj-accordion-element icon-wrapped-url="https://via.placeholder.com/32x32/999999/ffffff?text=-"
+                             icon-unwrapped-url="https://via.placeholder.com/32x32/999999/ffffff?text=%2B"
+                             icon-width="24px"
+                             icon-height="24px"
+                             icon-position="right" />
+      <mj-accordion-title font-size="16px"
+                           color="#333333"
+                           background-color="#fafafa"
+                           padding="15px 20px" />
+      <mj-accordion-text font-size="14px"
+                          color="#666666"
+                          background-color="#ffffff"
+                          padding="15px 20px" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#2980B9" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Frequently Asked Questions
+        </mj-text>
+        <mj-text font-size="15px" color="#D6EAF8" align="center" padding-top="5px">
+          Click on any question below to reveal the answer
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Accordion section using defaults from mj-attributes -->
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2980B9" padding-bottom="15px">
+          General Questions
+        </mj-text>
+        <mj-accordion>
+          <mj-accordion-element>
+            <mj-accordion-title>What is your return policy?</mj-accordion-title>
+            <mj-accordion-text>
+              We offer a 30-day money-back guarantee on all purchases. If you are
+              not satisfied with your order, you can return it within 30 days of
+              delivery for a full refund. Items must be in their original condition
+              and packaging. Please contact our support team to initiate a return.
+            </mj-accordion-text>
+          </mj-accordion-element>
+          <mj-accordion-element>
+            <mj-accordion-title>How long does shipping take?</mj-accordion-title>
+            <mj-accordion-text>
+              Standard shipping typically takes 5-7 business days within the
+              continental United States. Express shipping (2-3 business days) and
+              overnight shipping are available for an additional fee. International
+              shipping times vary by destination, usually between 10-21 business days.
+            </mj-accordion-text>
+          </mj-accordion-element>
+          <mj-accordion-element>
+            <mj-accordion-title>Do you ship internationally?</mj-accordion-title>
+            <mj-accordion-text>
+              Yes, we ship to over 50 countries worldwide. International shipping
+              rates and delivery times vary depending on the destination. Please note
+              that international orders may be subject to import duties and taxes,
+              which are the responsibility of the recipient.
+            </mj-accordion-text>
+          </mj-accordion-element>
+        </mj-accordion>
+      </mj-column>
+    </mj-section>
+
+    <!-- Second accordion with custom per-element styling -->
+    <mj-section background-color="#ffffff" padding="0 20px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2980B9" padding-bottom="15px">
+          Account &amp; Billing
+        </mj-text>
+        <mj-accordion border="2px solid #2980B9">
+          <mj-accordion-element icon-position="left"
+                                 icon-wrapped-url="https://via.placeholder.com/32x32/2980B9/ffffff?text=-"
+                                 icon-unwrapped-url="https://via.placeholder.com/32x32/2980B9/ffffff?text=%2B">
+            <mj-accordion-title font-size="15px"
+                                 color="#2980B9"
+                                 background-color="#EBF5FB"
+                                 padding="12px 18px"
+                                 font-family="Helvetica, Arial, sans-serif">
+              How do I reset my password?
+            </mj-accordion-title>
+            <mj-accordion-text padding="15px 18px"
+                                color="#555555"
+                                background-color="#ffffff"
+                                font-family="Helvetica, Arial, sans-serif">
+              To reset your password, click the "Forgot Password" link on the login
+              page. Enter your email address and we will send you a password reset link.
+              The link expires after 24 hours. If you do not receive the email, check
+              your spam folder or contact support.
+            </mj-accordion-text>
+          </mj-accordion-element>
+          <mj-accordion-element icon-position="left"
+                                 icon-wrapped-url="https://via.placeholder.com/32x32/2980B9/ffffff?text=-"
+                                 icon-unwrapped-url="https://via.placeholder.com/32x32/2980B9/ffffff?text=%2B">
+            <mj-accordion-title font-size="15px"
+                                 color="#2980B9"
+                                 background-color="#EBF5FB"
+                                 padding="12px 18px"
+                                 font-family="Helvetica, Arial, sans-serif">
+              What payment methods do you accept?
+            </mj-accordion-title>
+            <mj-accordion-text padding="15px 18px"
+                                color="#555555"
+                                background-color="#ffffff"
+                                font-family="Helvetica, Arial, sans-serif">
+              We accept all major credit cards (Visa, MasterCard, American Express,
+              Discover), PayPal, Apple Pay, and Google Pay. For business accounts,
+              we also offer invoicing with net-30 payment terms. All transactions
+              are processed securely using 256-bit SSL encryption.
+            </mj-accordion-text>
+          </mj-accordion-element>
+          <mj-accordion-element icon-position="left"
+                                 icon-wrapped-url="https://via.placeholder.com/32x32/2980B9/ffffff?text=-"
+                                 icon-unwrapped-url="https://via.placeholder.com/32x32/2980B9/ffffff?text=%2B">
+            <mj-accordion-title font-size="15px"
+                                 color="#2980B9"
+                                 background-color="#EBF5FB"
+                                 padding="12px 18px"
+                                 font-family="Helvetica, Arial, sans-serif">
+              Can I cancel my subscription at any time?
+            </mj-accordion-title>
+            <mj-accordion-text padding="15px 18px"
+                                color="#555555"
+                                background-color="#ffffff"
+                                font-family="Helvetica, Arial, sans-serif">
+              Yes, you can cancel your subscription at any time from your account
+              settings. When you cancel, you will retain access to your account
+              until the end of your current billing period. No partial refunds are
+              given for unused time within a billing cycle.
+            </mj-accordion-text>
+          </mj-accordion-element>
+        </mj-accordion>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2980B9" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#D6EAF8" font-size="13px">
+          Still have questions? Contact us at
+          <a href="mailto:support@example.com" style="color:#ffffff;">support@example.com</a>
+        </mj-text>
+        <mj-text align="center" color="#85C1E9" font-size="11px" padding-top="10px">
+          &copy; 2025 Accordion Test Co. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

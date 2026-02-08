@@ -1,0 +1,127 @@
+<mjml>
+  <mj-head>
+    <mj-title>Carousel Component Test</mj-title>
+    <mj-preview>Testing mj-carousel with multiple images and configuration options</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#C0392B" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="28px" font-weight="bold" color="#ffffff" align="center">
+          Image Carousel Gallery
+        </mj-text>
+        <mj-text font-size="15px" color="#F5B7B1" align="center">
+          Swipe or click to browse our featured collection
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Basic carousel with default settings -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" color="#C0392B" align="center"
+                  padding-bottom="15px">
+          Featured Products
+        </mj-text>
+        <mj-carousel icon-width="44px"
+                      left-icon="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3C"
+                      right-icon="https://via.placeholder.com/44x44/C0392B/ffffff?text=%3E"
+                      tb-border="0px"
+                      tb-border-radius="0px"
+                      tb-hover-border-color="#C0392B"
+                      tb-selected-border-color="#C0392B"
+                      tb-width="40px">
+          <mj-carousel-image src="https://via.placeholder.com/600x340/E74C3C/ffffff?text=Product+1"
+                              alt="Product 1 - Summer Collection"
+                              href="https://example.com/product/1"
+                              title="View Product 1" />
+          <mj-carousel-image src="https://via.placeholder.com/600x340/3498DB/ffffff?text=Product+2"
+                              alt="Product 2 - New Arrival"
+                              href="https://example.com/product/2"
+                              title="View Product 2" />
+          <mj-carousel-image src="https://via.placeholder.com/600x340/2ECC71/ffffff?text=Product+3"
+                              alt="Product 3 - Best Seller"
+                              href="https://example.com/product/3"
+                              title="View Product 3" />
+          <mj-carousel-image src="https://via.placeholder.com/600x340/F39C12/ffffff?text=Product+4"
+                              alt="Product 4 - Limited Edition"
+                              href="https://example.com/product/4"
+                              title="View Product 4" />
+          <mj-carousel-image src="https://via.placeholder.com/600x340/9B59B6/ffffff?text=Product+5"
+                              alt="Product 5 - Staff Pick"
+                              href="https://example.com/product/5"
+                              title="View Product 5" />
+        </mj-carousel>
+      </mj-column>
+    </mj-section>
+
+    <!-- Carousel with custom thumbnail styling -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" color="#2C3E50" align="center"
+                  padding-bottom="15px">
+          Travel Destinations
+        </mj-text>
+        <mj-carousel icon-width="30px"
+                      left-icon="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%97%80"
+                      right-icon="https://via.placeholder.com/30x30/2C3E50/ffffff?text=%E2%96%B6"
+                      tb-border="2px solid transparent"
+                      tb-border-radius="4px"
+                      tb-hover-border-color="#3498DB"
+                      tb-selected-border-color="#2C3E50"
+                      tb-width="60px">
+          <mj-carousel-image src="https://via.placeholder.com/560x315/1ABC9C/ffffff?text=Paris"
+                              alt="Paris, France"
+                              href="https://example.com/destinations/paris"
+                              thumbnails-src="https://via.placeholder.com/60x60/1ABC9C/ffffff?text=PAR" />
+          <mj-carousel-image src="https://via.placeholder.com/560x315/E74C3C/ffffff?text=Tokyo"
+                              alt="Tokyo, Japan"
+                              href="https://example.com/destinations/tokyo"
+                              thumbnails-src="https://via.placeholder.com/60x60/E74C3C/ffffff?text=TKY" />
+          <mj-carousel-image src="https://via.placeholder.com/560x315/3498DB/ffffff?text=New+York"
+                              alt="New York, USA"
+                              href="https://example.com/destinations/newyork"
+                              thumbnails-src="https://via.placeholder.com/60x60/3498DB/ffffff?text=NYC" />
+          <mj-carousel-image src="https://via.placeholder.com/560x315/F39C12/ffffff?text=Sydney"
+                              alt="Sydney, Australia"
+                              href="https://example.com/destinations/sydney"
+                              thumbnails-src="https://via.placeholder.com/60x60/F39C12/ffffff?text=SYD" />
+        </mj-carousel>
+        <mj-text align="center" font-size="13px" color="#7F8C8D" padding-top="15px">
+          Click on a thumbnail to jump to that destination
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- CTA section -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" align="center">
+          Ready to Explore?
+        </mj-text>
+        <mj-text align="center" padding="10px 40px">
+          Browse our complete collection of featured products and travel destinations.
+          New items are added weekly.
+        </mj-text>
+        <mj-button background-color="#C0392B" color="#ffffff" href="https://example.com/browse"
+                    align="center" border-radius="4px" font-size="16px"
+                    inner-padding="12px 30px">
+          Browse All
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#C0392B" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#F5B7B1" font-size="12px">
+          &copy; 2025 Carousel Component Test. Images are placeholders for testing.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

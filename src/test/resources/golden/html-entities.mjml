@@ -1,0 +1,300 @@
+<mjml>
+  <mj-head>
+    <mj-title>HTML Entities Test</mj-title>
+    <mj-preview>Testing HTML entities &amp; special characters in email content</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.8" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#2C3E50" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          HTML Entities &amp; Special Characters
+        </mj-text>
+        <mj-text color="#BDC3C7" align="center">
+          Testing proper rendering of named and numeric HTML entities
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Common named entities -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Common Named Entities
+        </mj-text>
+        <mj-text>
+          Non-breaking space:&nbsp;between&nbsp;these&nbsp;words
+        </mj-text>
+        <mj-text>
+          Copyright: &copy; 2025 Example Corp.
+        </mj-text>
+        <mj-text>
+          Registered trademark: Brand Name&reg;
+        </mj-text>
+        <mj-text>
+          Trademark: Product&trade;
+        </mj-text>
+        <mj-text>
+          Em dash: Content &mdash; more content after the dash
+        </mj-text>
+        <mj-text>
+          En dash: Pages 10&ndash;25 of the document
+        </mj-text>
+        <mj-text>
+          Left double quote: &ldquo;Quoted text here&rdquo;
+        </mj-text>
+        <mj-text>
+          Left single quote: &lsquo;Single quoted&rsquo;
+        </mj-text>
+        <mj-text>
+          Ampersand: Tom &amp; Jerry
+        </mj-text>
+        <mj-text>
+          Less than / Greater than: 5 &lt; 10 &gt; 3
+        </mj-text>
+        <mj-text>
+          Quotation mark: She said &quot;hello&quot; to everyone
+        </mj-text>
+        <mj-text>
+          Apostrophe: It&apos;s a beautiful day
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Currency entities -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Currency Symbols
+        </mj-text>
+        <mj-text>
+          Dollar: $99.99 (plain character)
+        </mj-text>
+        <mj-text>
+          Euro: &euro;79.99
+        </mj-text>
+        <mj-text>
+          British Pound: &pound;65.00
+        </mj-text>
+        <mj-text>
+          Japanese Yen: &yen;8,500
+        </mj-text>
+        <mj-text>
+          Cent: 99&cent;
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Mathematical and scientific entities -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Mathematical &amp; Scientific
+        </mj-text>
+        <mj-text>
+          Multiplication: 5 &times; 3 = 15
+        </mj-text>
+        <mj-text>
+          Division: 15 &divide; 3 = 5
+        </mj-text>
+        <mj-text>
+          Plus/minus: &plusmn;5%
+        </mj-text>
+        <mj-text>
+          Not equal: A &ne; B
+        </mj-text>
+        <mj-text>
+          Less than or equal: x &le; 100
+        </mj-text>
+        <mj-text>
+          Greater than or equal: y &ge; 0
+        </mj-text>
+        <mj-text>
+          Degree: Temperature is 72&deg;F (22&deg;C)
+        </mj-text>
+        <mj-text>
+          Micro: 500&micro;g of vitamin D
+        </mj-text>
+        <mj-text>
+          Superscript numbers: x&sup2; + y&sup3;
+        </mj-text>
+        <mj-text>
+          Fractions: &frac14; + &frac12; = &frac34;
+        </mj-text>
+        <mj-text>
+          Infinity: &infin;
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Typography entities -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Typography &amp; Punctuation
+        </mj-text>
+        <mj-text>
+          Bullet point: &bull; Item one &bull; Item two &bull; Item three
+        </mj-text>
+        <mj-text>
+          Horizontal ellipsis: Wait for it&hellip;
+        </mj-text>
+        <mj-text>
+          Middle dot (interpunct): word&middot;separator&middot;style
+        </mj-text>
+        <mj-text>
+          Paragraph mark: &para;
+        </mj-text>
+        <mj-text>
+          Section sign: &sect; 1.2.3
+        </mj-text>
+        <mj-text>
+          Dagger: &dagger; footnote reference
+        </mj-text>
+        <mj-text>
+          Double dagger: &Dagger; another footnote
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Arrows and symbols -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Arrows &amp; Symbols
+        </mj-text>
+        <mj-text>
+          Left arrow: &larr; Go back
+        </mj-text>
+        <mj-text>
+          Right arrow: Continue &rarr;
+        </mj-text>
+        <mj-text>
+          Up arrow: &uarr; Scroll up
+        </mj-text>
+        <mj-text>
+          Down arrow: &darr; See below
+        </mj-text>
+        <mj-text>
+          Left-right arrow: &harr; Bidirectional
+        </mj-text>
+        <mj-text>
+          Check mark: &#10003; Completed
+        </mj-text>
+        <mj-text>
+          Cross mark: &#10007; Failed
+        </mj-text>
+        <mj-text>
+          Star: &#9733;&#9733;&#9733;&#9733;&#9734; (4 out of 5)
+        </mj-text>
+        <mj-text>
+          Heart: &#9829; Favorite
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Numeric character references -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Numeric Character References
+        </mj-text>
+        <mj-text>
+          Decimal &#169; (&#38;#169; = copyright)
+        </mj-text>
+        <mj-text>
+          Hexadecimal &#xA9; (&#38;#xA9; = copyright)
+        </mj-text>
+        <mj-text>
+          Em space: word&#8195;word (&#38;#8195;)
+        </mj-text>
+        <mj-text>
+          Thin space: word&#8201;word (&#38;#8201;)
+        </mj-text>
+        <mj-text>
+          Zero-width space: word&#8203;word (&#38;#8203;, invisible but allows line break)
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Entities in context -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Entities in Realistic Context
+        </mj-text>
+        <mj-text>
+          Your order total is &euro;149.99 (including &plusmn;5% tax adjustment).
+          Please allow 3&ndash;5 business days for delivery. Terms &amp; conditions
+          apply&mdash;see our website for details.
+        </mj-text>
+        <mj-text>
+          &ldquo;This product exceeded our expectations,&rdquo; said the reviewer.
+          &ldquo;I&rsquo;d give it &#9733;&#9733;&#9733;&#9733;&#9733; without hesitation.&rdquo;
+        </mj-text>
+        <mj-text>
+          Compatible with temperatures from &minus;20&deg;C to 85&deg;C.
+          Dimensions: 10&times;5&times;2&nbsp;cm. Weight: 150&nbsp;g &plusmn; 5&nbsp;g.
+        </mj-text>
+        <mj-text>
+          &copy; 2025 Example Corp&reg;. All rights reserved. Product Name&trade;
+          is a registered trademark. Patent pending (US &sect; 101).
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Entities in table -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Entities in Tables
+        </mj-text>
+        <mj-table font-size="13px" color="#555555" cellpadding="6">
+          <tr style="background-color:#2C3E50;color:#ffffff;">
+            <th style="padding:8px;">Symbol</th>
+            <th style="padding:8px;">Entity</th>
+            <th style="padding:8px;">Description</th>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:8px;">&amp;</td>
+            <td style="padding:8px;font-family:monospace;">&amp;amp;</td>
+            <td style="padding:8px;">Ampersand</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:8px;">&lt;</td>
+            <td style="padding:8px;font-family:monospace;">&amp;lt;</td>
+            <td style="padding:8px;">Less than</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:8px;">&gt;</td>
+            <td style="padding:8px;font-family:monospace;">&amp;gt;</td>
+            <td style="padding:8px;">Greater than</td>
+          </tr>
+          <tr style="border-bottom:1px solid #ddd;">
+            <td style="padding:8px;">&copy;</td>
+            <td style="padding:8px;font-family:monospace;">&amp;copy;</td>
+            <td style="padding:8px;">Copyright</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;">&euro;</td>
+            <td style="padding:8px;font-family:monospace;">&amp;euro;</td>
+            <td style="padding:8px;">Euro</td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#7F8C8D" font-size="12px">
+          &copy; 2025 HTML Entities Test &bull; All entities &amp; characters demonstrated
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

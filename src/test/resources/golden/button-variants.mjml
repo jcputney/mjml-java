@@ -1,0 +1,256 @@
+<mjml>
+  <mj-head>
+    <mj-title>Button Variants Test</mj-title>
+    <mj-preview>Testing mj-button with various configurations and styles</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#2C3E50" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Button Variants Gallery
+        </mj-text>
+        <mj-text color="#BDC3C7" align="center">
+          Every button configuration you might need
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Basic color variants -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Color Variants
+        </mj-text>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com"
+                    align="left">
+          Primary Blue
+        </mj-button>
+        <mj-button background-color="#2ECC71" color="#ffffff" href="https://example.com"
+                    align="left">
+          Success Green
+        </mj-button>
+        <mj-button background-color="#E74C3C" color="#ffffff" href="https://example.com"
+                    align="left">
+          Danger Red
+        </mj-button>
+        <mj-button background-color="#F39C12" color="#ffffff" href="https://example.com"
+                    align="left">
+          Warning Orange
+        </mj-button>
+        <mj-button background-color="#9B59B6" color="#ffffff" href="https://example.com"
+                    align="left">
+          Purple Accent
+        </mj-button>
+        <mj-button background-color="#1a1a1a" color="#ffffff" href="https://example.com"
+                    align="left">
+          Dark Button
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Border radius variants -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Border Radius Variants
+        </mj-text>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com"
+                    border-radius="0px" align="left">
+          No Radius (0px)
+        </mj-button>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com"
+                    border-radius="4px" align="left">
+          Small Radius (4px)
+        </mj-button>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com"
+                    border-radius="8px" align="left">
+          Medium Radius (8px)
+        </mj-button>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com"
+                    border-radius="20px" align="left">
+          Large Radius (20px)
+        </mj-button>
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com"
+                    border-radius="50px" align="left" inner-padding="12px 35px">
+          Pill Shape (50px)
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Width variants -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Width Variants
+        </mj-text>
+        <mj-button background-color="#2C3E50" color="#ffffff" href="https://example.com"
+                    width="150px" align="left" border-radius="4px">
+          150px Wide
+        </mj-button>
+        <mj-button background-color="#2C3E50" color="#ffffff" href="https://example.com"
+                    width="250px" align="left" border-radius="4px">
+          250px Wide
+        </mj-button>
+        <mj-button background-color="#2C3E50" color="#ffffff" href="https://example.com"
+                    width="350px" align="left" border-radius="4px">
+          350px Wide
+        </mj-button>
+        <mj-button background-color="#2C3E50" color="#ffffff" href="https://example.com"
+                    width="100%" align="center" border-radius="4px">
+          Full Width (100%)
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Inner padding variants -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Inner Padding Variants
+        </mj-text>
+        <mj-button background-color="#E74C3C" color="#ffffff" href="https://example.com"
+                    inner-padding="5px 10px" align="left" border-radius="4px" font-size="12px">
+          Compact (5px 10px)
+        </mj-button>
+        <mj-button background-color="#E74C3C" color="#ffffff" href="https://example.com"
+                    inner-padding="10px 25px" align="left" border-radius="4px">
+          Standard (10px 25px)
+        </mj-button>
+        <mj-button background-color="#E74C3C" color="#ffffff" href="https://example.com"
+                    inner-padding="15px 40px" align="left" border-radius="4px" font-size="16px">
+          Spacious (15px 40px)
+        </mj-button>
+        <mj-button background-color="#E74C3C" color="#ffffff" href="https://example.com"
+                    inner-padding="20px 60px" align="left" border-radius="4px" font-size="18px">
+          Extra Large (20px 60px)
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Alignment variants -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Alignment Variants
+        </mj-text>
+        <mj-button background-color="#2ECC71" color="#ffffff" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="10px 25px">
+          Left Aligned
+        </mj-button>
+        <mj-button background-color="#2ECC71" color="#ffffff" href="https://example.com"
+                    align="center" border-radius="4px" inner-padding="10px 25px">
+          Center Aligned
+        </mj-button>
+        <mj-button background-color="#2ECC71" color="#ffffff" href="https://example.com"
+                    align="right" border-radius="4px" inner-padding="10px 25px">
+          Right Aligned
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Outlined / bordered buttons -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Outlined / Bordered Buttons
+        </mj-text>
+        <mj-button background-color="transparent" color="#3498DB"
+                    border="2px solid #3498DB" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="10px 25px">
+          Outlined Blue
+        </mj-button>
+        <mj-button background-color="transparent" color="#E74C3C"
+                    border="2px solid #E74C3C" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="10px 25px">
+          Outlined Red
+        </mj-button>
+        <mj-button background-color="transparent" color="#2C3E50"
+                    border="1px solid #2C3E50" href="https://example.com"
+                    align="left" border-radius="20px" inner-padding="10px 30px">
+          Outlined Pill
+        </mj-button>
+        <mj-button background-color="#ffffff" color="#9B59B6"
+                    border="3px solid #9B59B6" href="https://example.com"
+                    align="left" border-radius="0px" inner-padding="12px 30px"
+                    font-weight="bold" text-transform="uppercase" letter-spacing="2px"
+                    font-size="12px">
+          Bold Outlined
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Font styling on buttons -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px">
+          Font Styling
+        </mj-text>
+        <mj-button background-color="#34495E" color="#ffffff" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="10px 25px"
+                    font-size="12px" font-weight="normal"
+                    text-transform="uppercase" letter-spacing="3px">
+          Uppercase Spaced
+        </mj-button>
+        <mj-button background-color="#34495E" color="#ffffff" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="12px 25px"
+                    font-size="18px" font-weight="bold"
+                    font-family="Georgia, serif">
+          Serif Font Button
+        </mj-button>
+        <mj-button background-color="#34495E" color="#ffffff" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="10px 25px"
+                    font-size="14px" font-weight="300"
+                    font-style="italic">
+          Light Italic Style
+        </mj-button>
+        <mj-button background-color="#34495E" color="#F1C40F" href="https://example.com"
+                    align="left" border-radius="4px" inner-padding="10px 25px"
+                    font-size="16px" font-weight="bold"
+                    text-decoration="underline">
+          Underlined Text
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Multiple buttons side by side -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#2C3E50" padding-bottom="15px"
+                  align="center">
+          Side-by-Side Buttons
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ECF0F1" padding="0 20px 25px 20px">
+      <mj-column width="50%">
+        <mj-button background-color="#3498DB" color="#ffffff" href="https://example.com/accept"
+                    align="center" border-radius="4px" inner-padding="12px 30px"
+                    width="100%">
+          Accept
+        </mj-button>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-button background-color="transparent" color="#E74C3C"
+                    border="2px solid #E74C3C" href="https://example.com/decline"
+                    align="center" border-radius="4px" inner-padding="10px 30px"
+                    width="100%">
+          Decline
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#7F8C8D" font-size="12px">
+          &copy; 2025 Button Variants Test. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

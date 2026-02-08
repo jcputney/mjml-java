@@ -1,0 +1,231 @@
+<mjml>
+  <mj-head>
+    <mj-title>Right-to-Left Direction Test</mj-title>
+    <mj-preview>Testing RTL direction on sections and columns for Arabic/Hebrew content</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Segoe UI', Tahoma, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.8" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- LTR Header for context -->
+    <mj-section background-color="#1A5276" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Right-to-Left (RTL) Layout Test
+        </mj-text>
+        <mj-text color="#AED6F1" align="center">
+          Testing direction="rtl" for Arabic and Hebrew content
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- RTL section with single column -->
+    <mj-section background-color="#ffffff" padding="25px 20px" direction="rtl">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1A5276" align="right">
+          RTL Single Column
+        </mj-text>
+        <mj-text align="right" direction="rtl">
+          This section has direction="rtl" applied. In a right-to-left layout,
+          the text alignment defaults to the right side, and content flows from
+          right to left. This is essential for languages like Arabic and Hebrew.
+        </mj-text>
+        <mj-text align="right" direction="rtl" font-size="20px" color="#333333"
+                  font-family="'Traditional Arabic', 'Simplified Arabic', Arial, sans-serif">
+          &#x0647;&#x0630;&#x0627; &#x0646;&#x0635; &#x0639;&#x0631;&#x0628;&#x064A;
+          &#x0644;&#x0644;&#x0627;&#x062E;&#x062A;&#x0628;&#x0627;&#x0631;
+        </mj-text>
+        <mj-text align="right" direction="rtl" font-size="13px" color="#999999">
+          (Arabic text: "This is Arabic text for testing")
+        </mj-text>
+        <mj-button background-color="#1A5276" color="#ffffff" href="https://example.com"
+                    align="right" border-radius="4px" inner-padding="10px 25px">
+          RTL Button
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- RTL two-column layout - columns should reverse -->
+    <mj-section background-color="#EBF5FB" padding="25px 20px" direction="rtl">
+      <mj-column width="60%">
+        <mj-text font-size="18px" font-weight="bold" color="#1A5276" align="right">
+          RTL Two-Column Layout
+        </mj-text>
+        <mj-text align="right">
+          In RTL mode with two columns, the column order is reversed. This column
+          is defined first in the markup (60% width) but appears on the RIGHT side
+          in RTL layout. The image column, defined second, appears on the LEFT.
+        </mj-text>
+        <mj-text align="right" font-size="13px" color="#666666">
+          This mirrors the natural reading flow for RTL languages where users
+          start reading from the right side of the page.
+        </mj-text>
+      </mj-column>
+      <mj-column width="40%">
+        <mj-image src="https://via.placeholder.com/220x200/1A5276/ffffff?text=RTL+Image"
+                   alt="RTL positioned image" width="220px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- LTR comparison section -->
+    <mj-section background-color="#ffffff" padding="25px 20px" direction="ltr">
+      <mj-column width="60%">
+        <mj-text font-size="18px" font-weight="bold" color="#1A5276" align="left">
+          LTR Comparison (Same Markup Order)
+        </mj-text>
+        <mj-text align="left">
+          This section uses direction="ltr" with the same column widths (60/40).
+          The 60% column appears on the LEFT as expected in LTR mode. Compare
+          this with the RTL section above where the same column appears on the right.
+        </mj-text>
+      </mj-column>
+      <mj-column width="40%">
+        <mj-image src="https://via.placeholder.com/220x200/27AE60/ffffff?text=LTR+Image"
+                   alt="LTR positioned image" width="220px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- RTL three-column layout -->
+    <mj-section background-color="#EBF5FB" padding="25px 20px" direction="rtl">
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/160x120/E74C3C/ffffff?text=1"
+                   alt="Item 1" width="160px" />
+        <mj-text align="center" font-weight="bold" color="#E74C3C" padding-top="8px">
+          First in Markup
+        </mj-text>
+        <mj-text align="center" font-size="12px">
+          Appears rightmost in RTL
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/160x120/F39C12/ffffff?text=2"
+                   alt="Item 2" width="160px" />
+        <mj-text align="center" font-weight="bold" color="#F39C12" padding-top="8px">
+          Second in Markup
+        </mj-text>
+        <mj-text align="center" font-size="12px">
+          Appears in the middle
+        </mj-text>
+      </mj-column>
+      <mj-column width="33.33%">
+        <mj-image src="https://via.placeholder.com/160x120/3498DB/ffffff?text=3"
+                   alt="Item 3" width="160px" />
+        <mj-text align="center" font-weight="bold" color="#3498DB" padding-top="8px">
+          Third in Markup
+        </mj-text>
+        <mj-text align="center" font-size="12px">
+          Appears leftmost in RTL
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Mixed LTR and RTL in same email -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1A5276" padding-bottom="10px">
+          Mixed Directional Content
+        </mj-text>
+        <mj-text align="left">
+          This is a left-to-right paragraph in English. Emails can contain both
+          LTR and RTL content. The direction can be set at the section level to
+          control column ordering, and at the text level for content flow.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="0 20px 25px 20px" direction="rtl">
+      <mj-column>
+        <mj-text align="right" direction="rtl" font-size="16px" color="#333333">
+          &#x05D6;&#x05D4; &#x05D8;&#x05E7;&#x05E1;&#x05D8;
+          &#x05D1;&#x05E2;&#x05D1;&#x05E8;&#x05D9;&#x05EA;
+          &#x05DC;&#x05D1;&#x05D3;&#x05D9;&#x05E7;&#x05D4;
+        </mj-text>
+        <mj-text align="right" font-size="12px" color="#999999">
+          (Hebrew text: "This is text in Hebrew for testing")
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- RTL section with content components -->
+    <mj-section background-color="#EBF5FB" padding="25px 20px" direction="rtl">
+      <mj-column width="50%">
+        <mj-text align="right" font-weight="bold" color="#1A5276" font-size="16px">
+          RTL Product Card
+        </mj-text>
+        <mj-text align="right" font-size="13px">
+          A product description in an RTL context. The text is right-aligned
+          and the layout mirrors for RTL readers. Pricing and details appear
+          in the natural reading order.
+        </mj-text>
+        <mj-text align="right" font-size="20px" font-weight="bold" color="#27AE60">
+          $49.99
+        </mj-text>
+        <mj-button background-color="#1A5276" color="#ffffff" href="https://example.com"
+                    align="right" border-radius="4px" inner-padding="8px 20px"
+                    font-size="13px">
+          Add to Cart
+        </mj-button>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/250x250/1A5276/ffffff?text=RTL+Product"
+                   alt="Product image" width="250px" />
+      </mj-column>
+    </mj-section>
+
+    <!-- RTL table content -->
+    <mj-section background-color="#ffffff" padding="25px 20px" direction="rtl">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#1A5276" align="right"
+                  padding-bottom="10px">
+          RTL Table
+        </mj-text>
+        <mj-table font-size="13px" color="#555555" cellpadding="6" direction="rtl">
+          <tr style="background-color:#1A5276;color:#ffffff;text-align:right;">
+            <th style="padding:8px;">Category</th>
+            <th style="padding:8px;">Status</th>
+            <th style="padding:8px;">Item</th>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0;text-align:right;">
+            <td style="padding:8px;">Electronics</td>
+            <td style="padding:8px;">In Stock</td>
+            <td style="padding:8px;">Laptop</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e0e0e0;text-align:right;">
+            <td style="padding:8px;">Books</td>
+            <td style="padding:8px;">Limited</td>
+            <td style="padding:8px;">Novel</td>
+          </tr>
+          <tr style="text-align:right;">
+            <td style="padding:8px;">Clothing</td>
+            <td style="padding:8px;">Pre-order</td>
+            <td style="padding:8px;">Jacket</td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+
+    <!-- RTL divider and spacer -->
+    <mj-section background-color="#EBF5FB" padding="20px" direction="rtl">
+      <mj-column>
+        <mj-divider border-color="#1A5276" border-width="2px" />
+        <mj-text align="right" font-size="13px" color="#1A5276" padding="10px 0">
+          Dividers and spacers work the same in RTL mode. The visual rendering
+          is symmetric, but the surrounding content context is right-to-left.
+        </mj-text>
+        <mj-spacer height="20px" />
+        <mj-divider border-color="#AED6F1" border-width="1px" border-style="dashed" />
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer (LTR) -->
+    <mj-section background-color="#1A5276" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#AED6F1" font-size="12px">
+          &copy; 2025 RTL Direction Test &bull; All rights reserved<br />
+          Testing bidirectional email layout support
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

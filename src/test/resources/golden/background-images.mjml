@@ -1,0 +1,194 @@
+<mjml>
+  <mj-head>
+    <mj-title>Background Images Test</mj-title>
+    <mj-preview>Testing background images on sections and wrappers</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text color="#ffffff" font-size="14px" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#1a1a2e">
+    <!-- Section with background-url only -->
+    <mj-section background-url="https://via.placeholder.com/600x300/16213e/16213e"
+                 padding="40px 20px">
+      <mj-column>
+        <mj-text font-size="24px" font-weight="bold" align="center">
+          Simple Background Image
+        </mj-text>
+        <mj-text align="center">
+          This section uses background-url with no additional background properties.
+          The image will tile by default.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with background-url and background-color fallback -->
+    <mj-section background-url="https://via.placeholder.com/600x400/0f3460/0f3460"
+                 background-color="#0f3460"
+                 padding="50px 20px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="bold" align="center">
+          Background with Color Fallback
+        </mj-text>
+        <mj-text align="center" padding="10px 40px">
+          This section has both a background-url and a background-color.
+          Email clients that do not support background images will show
+          the solid color instead.
+        </mj-text>
+        <mj-button background-color="#e94560" color="#ffffff" href="https://example.com"
+                    align="center" border-radius="25px" inner-padding="12px 30px">
+          Explore Now
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with background-size cover -->
+    <mj-section background-url="https://via.placeholder.com/800x400/533483/533483"
+                 background-color="#533483"
+                 background-size="cover"
+                 padding="60px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" align="center">
+          Background Size: Cover
+        </mj-text>
+        <mj-text align="center" padding="10px 40px">
+          The background-size is set to "cover", which scales the image to fill
+          the entire section while maintaining its aspect ratio. Parts of the
+          image may be cropped if the aspect ratios do not match.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with background-size contain -->
+    <mj-section background-url="https://via.placeholder.com/400x400/e94560/e94560"
+                 background-color="#1a1a2e"
+                 background-size="contain"
+                 padding="50px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" align="center">
+          Background Size: Contain
+        </mj-text>
+        <mj-text align="center" padding="10px 40px">
+          With background-size set to "contain", the image is scaled to fit
+          entirely within the section without cropping. This may leave gaps
+          on the sides or top/bottom.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with background-size in pixels -->
+    <mj-section background-url="https://via.placeholder.com/200x200/0f3460/0f3460"
+                 background-color="#16213e"
+                 background-size="200px 200px"
+                 padding="50px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" align="center">
+          Background Size: 200px 200px
+        </mj-text>
+        <mj-text align="center" padding="10px 40px">
+          This background uses explicit pixel dimensions for the background-size
+          property, creating a tiling pattern of 200x200 pixel images.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with background-position -->
+    <mj-section background-url="https://via.placeholder.com/800x600/533483/533483"
+                 background-color="#533483"
+                 background-size="cover"
+                 background-position="top center"
+                 padding="60px 20px">
+      <mj-column width="50%">
+        <mj-text font-size="20px" font-weight="bold">
+          Background Position: Top Center
+        </mj-text>
+        <mj-text>
+          The background-position is set to "top center", which anchors
+          the background image to the top-center of the section. This is
+          useful when the important part of the image is at the top.
+        </mj-text>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-text font-size="14px" color="#dddddd" align="right" padding-top="20px">
+          Two-column layout on top of a background image demonstrates how
+          columns overlay background content properly.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with background-position bottom right -->
+    <mj-section background-url="https://via.placeholder.com/800x400/e94560/e94560"
+                 background-color="#e94560"
+                 background-size="cover"
+                 background-position="bottom right"
+                 padding="50px 20px">
+      <mj-column>
+        <mj-text font-size="20px" font-weight="bold" align="center">
+          Background Position: Bottom Right
+        </mj-text>
+        <mj-text align="center">
+          The background image is anchored to the bottom-right corner.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- mj-wrapper with background image -->
+    <mj-wrapper background-url="https://via.placeholder.com/600x600/16213e/16213e"
+                 background-color="#16213e"
+                 background-size="cover"
+                 background-position="center center"
+                 padding="30px 0">
+      <mj-section padding="20px">
+        <mj-column>
+          <mj-text font-size="22px" font-weight="bold" align="center">
+            Wrapper Background Image
+          </mj-text>
+          <mj-text align="center">
+            This is the first section inside an mj-wrapper that has a background
+            image. The background spans across all sections within the wrapper.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section padding="20px">
+        <mj-column width="50%">
+          <mj-text font-weight="bold">Left Column</mj-text>
+          <mj-text font-size="13px">
+            Content in the left column of a second section, still within
+            the same wrapper background.
+          </mj-text>
+        </mj-column>
+        <mj-column width="50%">
+          <mj-text font-weight="bold">Right Column</mj-text>
+          <mj-text font-size="13px">
+            Content in the right column, demonstrating that the wrapper
+            background image extends behind multiple sections.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <!-- mj-wrapper with background-color only (no image) -->
+    <mj-wrapper background-color="#0f3460" padding="20px 0">
+      <mj-section padding="20px">
+        <mj-column>
+          <mj-text align="center" font-size="18px" font-weight="bold">
+            Wrapper with Background Color Only
+          </mj-text>
+          <mj-text align="center">
+            This wrapper uses only background-color without a background image,
+            providing a solid colored band across the email.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
+    <!-- Footer -->
+    <mj-section background-color="#1a1a2e" padding="20px">
+      <mj-column>
+        <mj-text align="center" font-size="12px" color="#666666">
+          &copy; 2025 Background Images Test. All backgrounds are for testing purposes.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

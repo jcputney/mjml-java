@@ -1,0 +1,276 @@
+<mjml>
+  <mj-head>
+    <mj-title>Padding and Border Test</mj-title>
+    <mj-preview>Testing various padding and border configurations on sections and columns</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#e0e0e0">
+    <!-- Header -->
+    <mj-section background-color="#27AE60" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Padding &amp; Border Showcase
+        </mj-text>
+        <mj-text color="#A9DFBF" align="center">
+          Testing spacing and border configurations
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section padding variations -->
+    <mj-section background-color="#ffffff" padding="0">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#27AE60"
+                  padding="25px 25px 10px 25px">
+          Section Padding: 0
+        </mj-text>
+        <mj-text padding="0 25px 25px 25px">
+          This section has padding="0", so the white background starts at the very
+          edge. The text elements provide their own padding.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#D5F5E3" padding="10px">
+      <mj-column>
+        <mj-text font-weight="bold" color="#27AE60">Section Padding: 10px</mj-text>
+        <mj-text>Uniform 10px padding on all four sides of the section.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="30px 50px">
+      <mj-column>
+        <mj-text font-weight="bold" color="#27AE60">Section Padding: 30px 50px</mj-text>
+        <mj-text>30px vertical, 50px horizontal padding creates wide side margins.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#D5F5E3" padding="10px 20px 40px 60px">
+      <mj-column>
+        <mj-text font-weight="bold" color="#27AE60">
+          Section Padding: 10px 20px 40px 60px
+        </mj-text>
+        <mj-text>
+          All four values specified: top=10px, right=20px, bottom=40px, left=60px.
+          Notice the asymmetric spacing around this content area.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Section with individual padding properties -->
+    <mj-section background-color="#ffffff"
+                 padding-top="40px"
+                 padding-right="15px"
+                 padding-bottom="5px"
+                 padding-left="15px">
+      <mj-column>
+        <mj-text font-weight="bold" color="#27AE60">
+          Individual Padding Properties
+        </mj-text>
+        <mj-text>
+          padding-top="40px", padding-right="15px", padding-bottom="5px",
+          padding-left="15px". Large top padding, minimal bottom.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Column padding variations -->
+    <mj-section background-color="#D5F5E3" padding="20px">
+      <mj-column padding="0" background-color="#ffffff">
+        <mj-text font-weight="bold" color="#27AE60">Column Padding: 0</mj-text>
+        <mj-text>This column has no padding. The white background shows the exact column bounds.</mj-text>
+      </mj-column>
+      <mj-column padding="20px" background-color="#ffffff">
+        <mj-text font-weight="bold" color="#27AE60">Column Padding: 20px</mj-text>
+        <mj-text>This column has 20px padding. Notice the green section background showing between columns.</mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="20px">
+      <mj-column padding="5px 30px" background-color="#EBF5FB">
+        <mj-text font-weight="bold" color="#27AE60" font-size="13px">
+          Col padding: 5px 30px
+        </mj-text>
+        <mj-text font-size="12px">
+          Narrow vertical, wide horizontal.
+        </mj-text>
+      </mj-column>
+      <mj-column padding="30px 5px" background-color="#FDEDEC">
+        <mj-text font-weight="bold" color="#27AE60" font-size="13px">
+          Col padding: 30px 5px
+        </mj-text>
+        <mj-text font-size="12px">
+          Wide vertical, narrow horizontal.
+        </mj-text>
+      </mj-column>
+      <mj-column padding="10px 10px 30px 10px" background-color="#FEF9E7">
+        <mj-text font-weight="bold" color="#27AE60" font-size="13px">
+          Col padding: 10px 10px 30px 10px
+        </mj-text>
+        <mj-text font-size="12px">
+          Extra bottom padding.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Border on sections -->
+    <mj-section background-color="#ffffff" padding="20px"
+                 border="2px solid #27AE60">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#27AE60" padding-bottom="10px">
+          Section with Border
+        </mj-text>
+        <mj-text>
+          This section has border="2px solid #27AE60" applied directly to the
+          section element, creating a green outlined box around the content.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="20px" border-radius="8px"
+                 border="1px solid #E0E0E0">
+      <mj-column>
+        <mj-text font-weight="bold" color="#27AE60" padding-bottom="5px">
+          Section with Border and Border-Radius
+        </mj-text>
+        <mj-text>
+          border="1px solid #E0E0E0" with border-radius="8px" creates a
+          rounded card-like appearance for this section.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Border on columns -->
+    <mj-section background-color="#ECF0F1" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#27AE60" padding-bottom="15px">
+          Bordered Columns
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ECF0F1" padding="0 20px 25px 20px">
+      <mj-column border="2px solid #E74C3C" background-color="#ffffff" padding="15px"
+                   border-radius="0px">
+        <mj-text font-weight="bold" color="#E74C3C" font-size="13px">
+          Red Border, Square
+        </mj-text>
+        <mj-text font-size="12px">
+          border="2px solid #E74C3C", border-radius="0px"
+        </mj-text>
+      </mj-column>
+      <mj-column border="2px solid #3498DB" background-color="#ffffff" padding="15px"
+                   border-radius="8px">
+        <mj-text font-weight="bold" color="#3498DB" font-size="13px">
+          Blue Border, Rounded
+        </mj-text>
+        <mj-text font-size="12px">
+          border="2px solid #3498DB", border-radius="8px"
+        </mj-text>
+      </mj-column>
+      <mj-column border="3px dashed #F39C12" background-color="#ffffff" padding="15px"
+                   border-radius="4px">
+        <mj-text font-weight="bold" color="#F39C12" font-size="13px">
+          Dashed Orange Border
+        </mj-text>
+        <mj-text font-size="12px">
+          border="3px dashed #F39C12", border-radius="4px"
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Individual border sides -->
+    <mj-section background-color="#ffffff" padding="25px 20px">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#27AE60" padding-bottom="15px">
+          Individual Border Sides
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" padding="0 20px 25px 20px">
+      <mj-column border-top="3px solid #E74C3C" background-color="#FDF2F2" padding="15px">
+        <mj-text font-weight="bold" font-size="13px" color="#E74C3C">
+          border-top only
+        </mj-text>
+        <mj-text font-size="12px">
+          Only the top border is visible, creating a top-accent effect.
+        </mj-text>
+      </mj-column>
+      <mj-column border-bottom="3px solid #3498DB" background-color="#EBF5FB" padding="15px">
+        <mj-text font-weight="bold" font-size="13px" color="#3498DB">
+          border-bottom only
+        </mj-text>
+        <mj-text font-size="12px">
+          Only the bottom border is visible, creating an underline effect.
+        </mj-text>
+      </mj-column>
+      <mj-column border-left="4px solid #27AE60" background-color="#EAFAF1" padding="15px">
+        <mj-text font-weight="bold" font-size="13px" color="#27AE60">
+          border-left only
+        </mj-text>
+        <mj-text font-size="12px">
+          Only the left border is visible, similar to a blockquote style.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Border on section with border-top/bottom only -->
+    <mj-section background-color="#FEF9E7" padding="20px"
+                 border-top="3px solid #F39C12"
+                 border-bottom="3px solid #F39C12">
+      <mj-column>
+        <mj-text font-weight="bold" color="#F39C12" padding-bottom="5px">
+          Section with Top and Bottom Borders Only
+        </mj-text>
+        <mj-text>
+          This section uses border-top and border-bottom to create horizontal rules
+          above and below the content, without side borders.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Nested padding (section + column + text) -->
+    <mj-section background-color="#EAFAF1" padding="15px" border="1px solid #27AE60">
+      <mj-column padding="15px" background-color="#ffffff" border="1px solid #82E0AA">
+        <mj-text padding="15px" font-weight="bold" color="#27AE60">
+          Nested Padding Layers
+        </mj-text>
+        <mj-text padding="0 15px 15px 15px" font-size="13px">
+          Section padding (15px, green bg) + Column padding (15px, white bg) +
+          Text padding (15px). Each layer adds its own spacing, creating a
+          compound effect.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Large padding section for visual emphasis -->
+    <mj-section background-color="#27AE60" padding="60px 40px">
+      <mj-column>
+        <mj-text font-size="22px" font-weight="bold" color="#ffffff" align="center">
+          Large Padding for Emphasis
+        </mj-text>
+        <mj-text color="#D5F5E3" align="center">
+          This section uses 60px vertical and 40px horizontal padding to create
+          a spacious, breathable layout with plenty of whitespace.
+        </mj-text>
+        <mj-button background-color="#ffffff" color="#27AE60"
+                    href="https://example.com" align="center"
+                    border-radius="4px" inner-padding="14px 35px"
+                    font-weight="bold" font-size="16px">
+          Breathe Easy
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#2C3E50" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#7F8C8D" font-size="12px">
+          &copy; 2025 Padding &amp; Border Test. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

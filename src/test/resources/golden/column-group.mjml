@@ -1,0 +1,262 @@
+<mjml>
+  <mj-head>
+    <mj-title>Column Group Test</mj-title>
+    <mj-preview>Testing mj-group with multiple mj-column children</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="#555555" line-height="1.6" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <!-- Header -->
+    <mj-section background-color="#D35400" padding="30px 20px">
+      <mj-column>
+        <mj-text font-size="26px" font-weight="bold" color="#ffffff" align="center">
+          Column Group Layouts
+        </mj-text>
+        <mj-text color="#F5CBA7" align="center">
+          Using mj-group to prevent columns from stacking on mobile
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Two columns in a group (will NOT stack on mobile) -->
+    <mj-section background-color="#ffffff" padding="25px 0">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#D35400" padding="10px 25px">
+          Grouped Columns (Non-Stacking)
+        </mj-text>
+        <mj-text padding="0 25px 15px 25px">
+          The columns below are wrapped in an mj-group, which prevents them from
+          stacking vertically on mobile devices. They remain side-by-side at all
+          screen sizes.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="0 0 25px 0">
+      <mj-group>
+        <mj-column width="50%">
+          <mj-image src="https://via.placeholder.com/260x160/E74C3C/ffffff?text=Grouped+Left"
+                     alt="Grouped left column" width="260px" padding="5px 10px" />
+          <mj-text align="center" font-weight="bold" color="#E74C3C" padding="5px 10px">
+            Left Column
+          </mj-text>
+          <mj-text align="center" font-size="12px" padding="0 10px">
+            This column stays side-by-side with the right column on all devices
+            because both are inside an mj-group.
+          </mj-text>
+        </mj-column>
+        <mj-column width="50%">
+          <mj-image src="https://via.placeholder.com/260x160/3498DB/ffffff?text=Grouped+Right"
+                     alt="Grouped right column" width="260px" padding="5px 10px" />
+          <mj-text align="center" font-weight="bold" color="#3498DB" padding="5px 10px">
+            Right Column
+          </mj-text>
+          <mj-text align="center" font-size="12px" padding="0 10px">
+            On mobile, ungrouped columns stack vertically, but grouped columns
+            maintain their horizontal arrangement.
+          </mj-text>
+        </mj-column>
+      </mj-group>
+    </mj-section>
+
+    <!-- Comparison: Regular columns (WILL stack on mobile) -->
+    <mj-section background-color="#ECF0F1" padding="25px 0">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#D35400" padding="10px 25px">
+          Regular Columns (Stacking on Mobile)
+        </mj-text>
+        <mj-text padding="0 25px 15px 25px">
+          For comparison, these columns are NOT in an mj-group. On mobile
+          devices, they will stack vertically as is the default behavior.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ECF0F1" padding="0 0 25px 0">
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/260x160/F39C12/ffffff?text=Regular+Left"
+                   alt="Regular left column" width="260px" padding="5px 10px" />
+        <mj-text align="center" font-weight="bold" color="#F39C12" padding="5px 10px">
+          Ungrouped Left
+        </mj-text>
+        <mj-text align="center" font-size="12px" padding="0 10px">
+          This column will stack above the right column on mobile devices.
+        </mj-text>
+      </mj-column>
+      <mj-column width="50%">
+        <mj-image src="https://via.placeholder.com/260x160/9B59B6/ffffff?text=Regular+Right"
+                   alt="Regular right column" width="260px" padding="5px 10px" />
+        <mj-text align="center" font-weight="bold" color="#9B59B6" padding="5px 10px">
+          Ungrouped Right
+        </mj-text>
+        <mj-text align="center" font-size="12px" padding="0 10px">
+          This column will appear below the left column on mobile devices.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Three columns in a group -->
+    <mj-section background-color="#ffffff" padding="25px 0">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#D35400" padding="10px 25px">
+          Three Grouped Columns
+        </mj-text>
+        <mj-text padding="0 25px 15px 25px">
+          Three columns grouped together maintain their three-across layout even
+          on mobile screens.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="0 0 25px 0">
+      <mj-group>
+        <mj-column width="33.33%">
+          <mj-image src="https://via.placeholder.com/170x170/E74C3C/ffffff?text=A"
+                     alt="Column A" width="150px" padding="5px" />
+          <mj-text align="center" font-weight="bold" color="#E74C3C" font-size="13px"
+                    padding="5px">
+            Column A
+          </mj-text>
+        </mj-column>
+        <mj-column width="33.33%">
+          <mj-image src="https://via.placeholder.com/170x170/3498DB/ffffff?text=B"
+                     alt="Column B" width="150px" padding="5px" />
+          <mj-text align="center" font-weight="bold" color="#3498DB" font-size="13px"
+                    padding="5px">
+            Column B
+          </mj-text>
+        </mj-column>
+        <mj-column width="33.33%">
+          <mj-image src="https://via.placeholder.com/170x170/2ECC71/ffffff?text=C"
+                     alt="Column C" width="150px" padding="5px" />
+          <mj-text align="center" font-weight="bold" color="#2ECC71" font-size="13px"
+                    padding="5px">
+            Column C
+          </mj-text>
+        </mj-column>
+      </mj-group>
+    </mj-section>
+
+    <!-- Mixed: group and regular column in same section -->
+    <mj-section background-color="#ECF0F1" padding="25px 0">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#D35400" padding="10px 25px">
+          Group Mixed with Regular Column
+        </mj-text>
+        <mj-text padding="0 25px 15px 25px">
+          An mj-group containing two columns alongside a standalone column.
+          The grouped pair stays side-by-side while the standalone column
+          behaves normally.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ECF0F1" padding="0 0 25px 0">
+      <mj-group width="50%">
+        <mj-column>
+          <mj-image src="https://via.placeholder.com/130x100/D35400/ffffff?text=G1"
+                     alt="Grouped 1" width="130px" padding="5px" />
+          <mj-text align="center" font-size="11px" color="#D35400" font-weight="bold">
+            Grouped 1
+          </mj-text>
+        </mj-column>
+        <mj-column>
+          <mj-image src="https://via.placeholder.com/130x100/E67E22/ffffff?text=G2"
+                     alt="Grouped 2" width="130px" padding="5px" />
+          <mj-text align="center" font-size="11px" color="#E67E22" font-weight="bold">
+            Grouped 2
+          </mj-text>
+        </mj-column>
+      </mj-group>
+      <mj-column width="50%">
+        <mj-text font-weight="bold" color="#2C3E50" padding="10px 15px">
+          Standalone Column
+        </mj-text>
+        <mj-text font-size="13px" padding="0 15px">
+          This column is outside the group and occupies the remaining 50%
+          of the section width. On mobile, it may stack below the grouped
+          pair while those two remain side-by-side.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <!-- Practical example: price comparison -->
+    <mj-section background-color="#ffffff" padding="25px 0">
+      <mj-column>
+        <mj-text font-size="18px" font-weight="bold" color="#D35400" padding="10px 25px"
+                  align="center">
+          Pricing Plans (Grouped)
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-section background-color="#ffffff" padding="0 0 25px 0">
+      <mj-group>
+        <mj-column width="33.33%" background-color="#fafafa" border="1px solid #e0e0e0"
+                     border-radius="4px">
+          <mj-text align="center" font-size="16px" font-weight="bold" color="#2C3E50"
+                    padding="15px 10px 5px 10px">
+            Basic
+          </mj-text>
+          <mj-text align="center" font-size="28px" font-weight="bold" color="#D35400"
+                    padding="5px">
+            $9
+          </mj-text>
+          <mj-text align="center" font-size="12px" color="#999999" padding="0 10px 10px 10px">
+            per month
+          </mj-text>
+          <mj-divider border-color="#e0e0e0" border-width="1px" padding="0 15px" />
+          <mj-text align="center" font-size="12px" color="#666666" padding="10px">
+            5 GB Storage<br />1 User<br />Email Support
+          </mj-text>
+        </mj-column>
+        <mj-column width="33.33%" background-color="#D35400" border-radius="4px">
+          <mj-text align="center" font-size="16px" font-weight="bold" color="#ffffff"
+                    padding="15px 10px 5px 10px">
+            Pro
+          </mj-text>
+          <mj-text align="center" font-size="28px" font-weight="bold" color="#ffffff"
+                    padding="5px">
+            $29
+          </mj-text>
+          <mj-text align="center" font-size="12px" color="#F5CBA7" padding="0 10px 10px 10px">
+            per month
+          </mj-text>
+          <mj-divider border-color="#E67E22" border-width="1px" padding="0 15px" />
+          <mj-text align="center" font-size="12px" color="#FEF9E7" padding="10px">
+            50 GB Storage<br />10 Users<br />Priority Support
+          </mj-text>
+        </mj-column>
+        <mj-column width="33.33%" background-color="#fafafa" border="1px solid #e0e0e0"
+                     border-radius="4px">
+          <mj-text align="center" font-size="16px" font-weight="bold" color="#2C3E50"
+                    padding="15px 10px 5px 10px">
+            Enterprise
+          </mj-text>
+          <mj-text align="center" font-size="28px" font-weight="bold" color="#D35400"
+                    padding="5px">
+            $99
+          </mj-text>
+          <mj-text align="center" font-size="12px" color="#999999" padding="0 10px 10px 10px">
+            per month
+          </mj-text>
+          <mj-divider border-color="#e0e0e0" border-width="1px" padding="0 15px" />
+          <mj-text align="center" font-size="12px" color="#666666" padding="10px">
+            Unlimited Storage<br />Unlimited Users<br />24/7 Phone Support
+          </mj-text>
+        </mj-column>
+      </mj-group>
+    </mj-section>
+
+    <!-- Footer -->
+    <mj-section background-color="#D35400" padding="20px">
+      <mj-column>
+        <mj-text align="center" color="#F5CBA7" font-size="12px">
+          &copy; 2025 Column Group Test. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
