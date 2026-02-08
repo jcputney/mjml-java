@@ -1,0 +1,23 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-class name="blue" color="#0000ff" />
+      <mj-class name="bold" font-weight="bold" />
+      <mj-class name="big" font-size="20px" />
+      <mj-class name="italic" font-style="italic" />
+      <mj-class name="red-bg" container-background-color="#ffcccc" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text mj-class="blue bold">Blue and bold text</mj-text>
+        <mj-text mj-class="big italic">Big and italic text</mj-text>
+        <mj-text mj-class="blue bold big">Blue, bold, and big text</mj-text>
+        <mj-text mj-class="blue bold" color="#ff0000">Inline color overrides class</mj-text>
+        <mj-divider mj-class="red-bg" />
+        <mj-text mj-class="red-bg blue">Text with background and color classes</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

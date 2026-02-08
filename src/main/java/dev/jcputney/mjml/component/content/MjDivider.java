@@ -62,10 +62,25 @@ public class MjDivider extends BodyComponent {
       msoWidth = (int) parseWidth(width);
     }
 
+    // Compute margin based on alignment
+    String align = getAttribute("align", "center");
+    String margin;
+    switch (align) {
+      case "left":
+        margin = "0px";
+        break;
+      case "right":
+        margin = "0px 0px 0px auto";
+        break;
+      default: // center
+        margin = "0px auto";
+        break;
+    }
+
     String dividerStyle = buildStyle(orderedMap(
         "border-top", borderTop,
         "font-size", "1px",
-        "margin", "0px auto",
+        "margin", margin,
         "width", width
     ));
 
@@ -76,11 +91,11 @@ public class MjDivider extends BodyComponent {
     sb.append("                        </p>\n");
 
     // MSO conditional AFTER
-    sb.append("                        <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
+    sb.append("                        <!--[if mso | IE]><table align=\"").append(align).append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"");
     sb.append(" style=\"").append(buildStyle(orderedMap(
         "border-top", borderTop,
         "font-size", "1px",
-        "margin", "0px auto",
+        "margin", margin,
         "width", msoWidth + "px"
     ))).append("\"");
     sb.append(" role=\"presentation\" width=\"").append(msoWidth).append("px\"");

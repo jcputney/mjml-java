@@ -6,6 +6,7 @@ import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.ColumnWidthCalculator;
 import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -74,8 +75,8 @@ public class MjGroup extends BodyComponent {
 
     // Render column children
     List<MjmlNode> columns = getColumnChildren();
-    double[] widths = calculateColumnWidths(columns, groupWidth);
-    String[] widthSpecs = calculateColumnWidthSpecs(columns, groupWidth);
+    double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, groupWidth, false);
+    String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
 
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
@@ -141,71 +142,6 @@ public class MjGroup extends BodyComponent {
       }
     }
     return columns;
-  }
-
-  private double[] calculateColumnWidths(List<MjmlNode> columns, double groupWidth) {
-    double[] widths = new double[columns.size()];
-    double totalUsed = 0;
-    int autoCount = 0;
-
-    for (int i = 0; i < columns.size(); i++) {
-      String widthAttr = columns.get(i).getAttribute("width");
-      if (widthAttr != null && !widthAttr.isEmpty()) {
-        if (widthAttr.endsWith("%")) {
-          widths[i] = groupWidth * CssUnitParser.parsePx(
-              widthAttr.replace("%", ""), 0) / 100.0;
-        } else {
-          widths[i] = CssUnitParser.parsePx(widthAttr, 0);
-        }
-        totalUsed += widths[i];
-      } else {
-        autoCount++;
-      }
-    }
-
-    if (autoCount > 0) {
-      double autoWidth = (groupWidth - totalUsed) / autoCount;
-      for (int i = 0; i < widths.length; i++) {
-        if (widths[i] == 0) {
-          widths[i] = autoWidth;
-        }
-      }
-    }
-
-    return widths;
-  }
-
-  /**
-   * Calculates column width specifications for responsive classes.
-   * Each column's percentage is relative to the GROUP width (not section width).
-   */
-  private String[] calculateColumnWidthSpecs(List<MjmlNode> columns, double groupWidth) {
-    String[] specs = new String[columns.size()];
-    int autoCount = 0;
-    for (MjmlNode col : columns) {
-      String widthAttr = col.getAttribute("width");
-      if (widthAttr == null || widthAttr.isEmpty()) {
-        autoCount++;
-      }
-    }
-
-    double autoPct = autoCount > 0 ? 100.0 / columns.size() : 0;
-
-    for (int i = 0; i < columns.size(); i++) {
-      String widthAttr = columns.get(i).getAttribute("width");
-      if (widthAttr != null && !widthAttr.isEmpty() && widthAttr.endsWith("%")) {
-        specs[i] = widthAttr.replace("%", "").trim();
-      } else if (widthAttr != null && !widthAttr.isEmpty()) {
-        specs[i] = widthAttr.trim();
-      } else {
-        if (autoPct == Math.floor(autoPct) && !Double.isInfinite(autoPct)) {
-          specs[i] = String.valueOf((int) autoPct);
-        } else {
-          specs[i] = String.valueOf(autoPct);
-        }
-      }
-    }
-    return specs;
   }
 
   private static String formatPxWidth(double width) {

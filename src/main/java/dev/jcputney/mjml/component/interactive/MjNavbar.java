@@ -88,7 +88,7 @@ public class MjNavbar extends BodyComponent {
     }
 
     StringBuilder sb = new StringBuilder();
-    String uniqueId = Long.toHexString(System.nanoTime());
+    String uniqueId = renderContext.nextUniqueId("navbar");
 
     if (hasHamburger) {
       // Checkbox input for hamburger toggle (non-MSO only)

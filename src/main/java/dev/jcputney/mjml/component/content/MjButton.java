@@ -4,6 +4,7 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -63,33 +64,14 @@ public class MjButton extends BodyComponent {
     String href = getAttribute("href", "#");
     String innerPadding = getAttribute("inner-padding", "10px 25px");
     String verticalAlign = getAttribute("vertical-align", "middle");
-    String fontStyle = getAttribute("font-style", "");
-
     // Build TD style: border, border-radius, cursor:auto, font-style (if italic),
     // mso-padding-alt, background
     Map<String, String> tdStyles = new LinkedHashMap<>();
     tdStyles.put("border", getAttribute("border", "none"));
-    String borderBottom = getAttribute("border-bottom", "");
-    if (!borderBottom.isEmpty()) {
-      tdStyles.put("border-bottom", borderBottom);
-    }
-    String borderLeft = getAttribute("border-left", "");
-    if (!borderLeft.isEmpty()) {
-      tdStyles.put("border-left", borderLeft);
-    }
-    String borderRight = getAttribute("border-right", "");
-    if (!borderRight.isEmpty()) {
-      tdStyles.put("border-right", borderRight);
-    }
-    String borderTop = getAttribute("border-top", "");
-    if (!borderTop.isEmpty()) {
-      tdStyles.put("border-top", borderTop);
-    }
+    addBorderStyles(tdStyles, "border-bottom", "border-left", "border-right", "border-top");
     tdStyles.put("border-radius", borderRadius);
     tdStyles.put("cursor", "auto");
-    if (!fontStyle.isEmpty()) {
-      tdStyles.put("font-style", fontStyle);
-    }
+    addIfPresent(tdStyles, "font-style");
     tdStyles.put("mso-padding-alt", innerPadding);
     tdStyles.put("background", backgroundColor);
 
@@ -113,15 +95,10 @@ public class MjButton extends BodyComponent {
     anchorStyles.put("color", getAttribute("color", "#ffffff"));
     anchorStyles.put("font-family", getAttribute("font-family"));
     anchorStyles.put("font-size", getAttribute("font-size", "13px"));
-    if (!fontStyle.isEmpty()) {
-      anchorStyles.put("font-style", fontStyle);
-    }
+    addIfPresent(anchorStyles, "font-style");
     anchorStyles.put("font-weight", getAttribute("font-weight", "normal"));
     anchorStyles.put("line-height", getAttribute("line-height", "120%"));
-    String letterSpacing = getAttribute("letter-spacing", "");
-    if (!letterSpacing.isEmpty()) {
-      anchorStyles.put("letter-spacing", letterSpacing);
-    }
+    addIfPresent(anchorStyles, "letter-spacing");
     anchorStyles.put("margin", "0");
     anchorStyles.put("text-decoration", getAttribute("text-decoration", "none"));
     anchorStyles.put("text-transform", getAttribute("text-transform", "none"));
@@ -167,16 +144,7 @@ public class MjButton extends BodyComponent {
   }
 
   private double calculateHorizontalPadding(String padding) {
-    String[] parts = padding.trim().split("\\s+");
-    if (parts.length == 1) {
-      return parseWidth(parts[0]) * 2;
-    } else if (parts.length == 2) {
-      return parseWidth(parts[1]) * 2;
-    } else if (parts.length == 3) {
-      return parseWidth(parts[1]) * 2;
-    } else if (parts.length == 4) {
-      return parseWidth(parts[1]) + parseWidth(parts[3]);
-    }
-    return 0;
+    double[] pad = CssUnitParser.parseShorthand(padding);
+    return pad[1] + pad[3];
   }
 }

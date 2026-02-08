@@ -113,10 +113,31 @@ public class MjBody extends BodyComponent {
     return mergeMsoSectionTransitions(sb.toString());
   }
 
+  /**
+   * Merges adjacent MSO conditional section transitions in the rendered body HTML.
+   *
+   * <p>Each mj-section renders its own self-contained MSO table wrapper:
+   * {@code <!--[if mso | IE]><table ...>...<![endif]-->}. When two sections
+   * are adjacent, this produces a close-then-open pattern:
+   * {@code ...<![endif]-->} followed by {@code <!--[if mso | IE]><table ...>}.
+   *
+   * <p>The official MJML renderer merges these into a single conditional block
+   * by removing the intermediate {@code <![endif]-->...<!--[if mso | IE]>},
+   * producing: {@code ...</td></tr></table><table ...>}. This keeps adjacent
+   * sections inside a single MSO conditional, which is semantically equivalent
+   * but produces cleaner output. Both VML and non-VML transitions are handled.
+   */
   private static String mergeMsoSectionTransitions(String html) {
-    return html.replace(
+    // Merge simple section transitions (no VML background)
+    html = html.replace(
         "<!--[if mso | IE]></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
         "<!--[if mso | IE]></td></tr></table><table "
     );
+    // Merge VML background section transitions (section ends with v:rect close)
+    html = html.replace(
+        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
+        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><table "
+    );
+    return html;
   }
 }

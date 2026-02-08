@@ -1,0 +1,54 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-table>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>Alice</td>
+            <td>alice@example.com</td>
+            <td>Active</td>
+          </tr>
+          <tr>
+            <td>Bob</td>
+            <td>bob@example.com</td>
+            <td>Inactive</td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-table table-layout="fixed" container-background-color="#f5f5f5">
+          <tr style="background-color: #e0e0e0;">
+            <th style="padding: 8px;">Product</th>
+            <th style="padding: 8px;">Price</th>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Widget A</td>
+            <td style="padding: 8px;">$10.00</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px;">Widget B</td>
+            <td style="padding: 8px;">$25.00</td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-table align="center" color="#333333" font-size="13px">
+          <tr>
+            <td style="padding: 4px 8px;">Item 1</td>
+            <td style="padding: 4px 8px;">Item 2</td>
+            <td style="padding: 4px 8px;">Item 3</td>
+          </tr>
+        </mj-table>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

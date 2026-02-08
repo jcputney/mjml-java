@@ -64,4 +64,45 @@ class CssUnitParserTest {
   void formatsIntValue() {
     assertEquals("100", CssUnitParser.formatInt(100.0));
   }
+
+  // --- parseIntPx tests (to cover MjHero:369-378, MjCarousel:472-481) ---
+
+  @Test
+  void parsePxReturnsIntegerForPixelValues() {
+    assertEquals(300.0, CssUnitParser.parsePx("300px", 0));
+    assertEquals(300.0, CssUnitParser.parsePx("300", 0));
+  }
+
+  @Test
+  void parsePxReturnsDefaultForNullAndEmpty() {
+    assertEquals(0.0, CssUnitParser.parsePx(null, 0));
+    assertEquals(0.0, CssUnitParser.parsePx("", 0));
+  }
+
+  @Test
+  void parsePxReturnsDefaultForInvalid() {
+    assertEquals(0.0, CssUnitParser.parsePx("abc", 0));
+  }
+
+  @Test
+  void parsePxReturnsCustomDefault() {
+    assertEquals(42.0, CssUnitParser.parsePx(null, 42));
+    assertEquals(42.0, CssUnitParser.parsePx("abc", 42));
+  }
+
+  // --- Horizontal padding extraction (covers MjButton:169-181) ---
+
+  @Test
+  void shorthandExtractsHorizontalPadding() {
+    // "10px 20px" -> right=20, left=20, total=40
+    double[] pad = CssUnitParser.parseShorthand("10px 20px");
+    assertEquals(40.0, pad[1] + pad[3]);
+  }
+
+  @Test
+  void shorthand4ValueExtractsHorizontalPadding() {
+    // "10px 20px 30px 40px" -> right=20, left=40, total=60
+    double[] pad = CssUnitParser.parseShorthand("10px 20px 30px 40px");
+    assertEquals(60.0, pad[1] + pad[3]);
+  }
 }

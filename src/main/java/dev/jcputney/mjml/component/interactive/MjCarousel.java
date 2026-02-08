@@ -6,6 +6,7 @@ import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class MjCarousel extends BodyComponent {
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
-    this.hexId = Long.toHexString(System.nanoTime());
+    this.hexId = renderContext.nextUniqueId("carousel");
   }
 
   @Override
@@ -466,17 +467,7 @@ public class MjCarousel extends BodyComponent {
     return sb.toString();
   }
 
-  /**
-   * Parses an integer from a string that may have "px" suffix.
-   */
   private int parseIntFromPx(String value) {
-    if (value == null || value.isEmpty()) {
-      return 0;
-    }
-    try {
-      return Integer.parseInt(value.replace("px", "").trim());
-    } catch (NumberFormatException e) {
-      return 0;
-    }
+    return CssUnitParser.parseIntPx(value);
   }
 }

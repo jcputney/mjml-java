@@ -1,0 +1,40 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text>Default divider:</mj-text>
+        <mj-divider />
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Dashed divider:</mj-text>
+        <mj-divider border-style="dashed" border-width="2px" border-color="#ff0000" />
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Dotted divider:</mj-text>
+        <mj-divider border-style="dotted" border-width="3px" border-color="#0000ff" />
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Half-width left-aligned divider:</mj-text>
+        <mj-divider width="50%" align="left" border-color="#009900" />
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Divider with container-background-color:</mj-text>
+        <mj-divider container-background-color="#ffffcc" border-width="4px" border-color="#cc6600" />
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Right-aligned thin divider:</mj-text>
+        <mj-divider width="30%" align="right" border-width="1px" border-color="#999999" />
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

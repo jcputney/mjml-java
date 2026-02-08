@@ -104,9 +104,14 @@ public class RenderPipeline {
         inlineCss.append(css).append("\n");
       }
       html = CssInliner.inlineAdditionalOnly(html, inlineCss.toString());
-      // Official MJML CSS inliner rewrites all elements, which has side effects:
-      // 1. Empty style attributes become bare: style="" -> style
-      // 2. Self-closing tags lose the slash: /> -> >
+      // Post-processing to match official MJML v4 output exactly.
+      // The official MJML toolchain uses juice for CSS inlining, which rewrites
+      // all HTML elements through cheerio. This round-trip serialization introduces
+      // two side effects in the final output:
+      // 1. cheerio serializes empty style attributes without quotes: style="" -> style
+      // 2. cheerio serializes self-closing tags without the slash: /> -> >
+      // Our CSS inliner preserves the original markup, so we apply these
+      // transformations explicitly to match the expected golden output.
       html = html.replace(" style=\"\"", " style");
       html = html.replace(" />", ">");
     }

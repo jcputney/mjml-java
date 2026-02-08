@@ -1,0 +1,23 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, sans-serif" font-size="14px" color="#333333" />
+      <mj-text font-size="16px" line-height="1.5" />
+      <mj-class name="highlight" color="#ff6600" font-weight="bold" />
+      <mj-class name="large" font-size="24px" />
+      <mj-class name="centered" align="center" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text>Default text (mj-all + mj-text defaults)</mj-text>
+        <mj-text mj-class="highlight">Highlighted text (mj-class override)</mj-text>
+        <mj-text mj-class="large">Large text (mj-class override)</mj-text>
+        <mj-text mj-class="highlight large">Highlighted and large (multiple classes)</mj-text>
+        <mj-text mj-class="highlight" color="#0000ff">Inline override beats mj-class</mj-text>
+        <mj-text font-size="10px">Inline font-size override</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

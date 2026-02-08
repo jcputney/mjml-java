@@ -12,6 +12,21 @@ import java.util.Set;
  * Document-wide context gathered during head processing.
  * Contains fonts, styles, attributes, title, preview text, breakpoint,
  * and media queries that apply across the entire document.
+ *
+ * <h3>Future decomposition target</h3>
+ * <p>This class currently acts as a catch-all for all document-level state.
+ * A future refactoring could split it into three focused contexts:
+ * <ul>
+ *   <li><b>MetadataContext</b> — title, previewText, breakpoint, language,
+ *       containerWidth, bodyBackgroundColor, headComments, configuration</li>
+ *   <li><b>StyleContext</b> — fonts, fontUrlOverrides, styles, componentStyles,
+ *       inlineStyles, mediaQueries, fluidOnMobileUsed</li>
+ *   <li><b>AttributeContext</b> — defaultAttributes, classAttributes,
+ *       htmlAttributes</li>
+ * </ul>
+ * <p>This decomposition would clarify which concerns each component depends on
+ * and prevent head components from accidentally coupling to rendering state.
+ * GlobalContext would become a thin facade delegating to the three sub-contexts.
  */
 public class GlobalContext {
 

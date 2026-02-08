@@ -100,14 +100,18 @@ class GoldenFileTest {
         .replaceAll("[ \\t]+", " ")
         .replaceAll(" *\\n *", "\n")
         .replaceAll("\\n{2,}", "\n")
-        // Normalize dynamic hex IDs (hamburger checkbox, carousel, etc.)
+        // Normalize dynamic IDs: hex (MJML golden) or deterministic (our output)
         .replaceAll("id=\"[0-9a-f]{6,20}\"", "id=\"DYNAMIC_ID\"")
+        .replaceAll("id=\"(?:carousel|navbar)-\\d+\"", "id=\"DYNAMIC_ID\"")
         .replaceAll("for=\"[0-9a-f]{6,20}\"", "for=\"DYNAMIC_ID\"")
+        .replaceAll("for=\"(?:carousel|navbar)-\\d+\"", "for=\"DYNAMIC_ID\"")
         // Normalize dynamic hex IDs embedded in carousel/navbar identifiers.
         // These appear in class names, CSS selectors, name/id attributes, etc.
         // Match hex strings (6-20 chars) that appear after a dash and before a dash or
         // word boundary, in contexts like mj-carousel-HEXID-radio, mj-carousel-radio-HEXID, etc.
         .replaceAll("(?<=-)[0-9a-f]{6,20}(?=-|\"| |\\.|\\{|\\+|:|\\)|\\n|$)", "HEXID")
+        // Normalize deterministic IDs in similar embedded contexts
+        .replaceAll("(?<=-)(?:carousel|navbar)-\\d+(?=-|\"| |\\.|\\{|\\+|:|\\)|\\n|$)", "HEXID")
         .trim();
   }
 

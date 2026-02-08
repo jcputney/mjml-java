@@ -1,0 +1,24 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column padding="10px" inner-background-color="#f0f0f0" inner-border="2px solid #333" inner-border-radius="8px">
+        <mj-text>Column with inner styles and padding (gutter trigger)</mj-text>
+      </mj-column>
+      <mj-column padding="10px" inner-background-color="#e0ffe0" inner-border="1px dashed #090" inner-border-radius="4px">
+        <mj-text>Second column with inner styles</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column padding="15px" vertical-align="top">
+        <mj-text>Top aligned</mj-text>
+      </mj-column>
+      <mj-column padding="15px" vertical-align="middle">
+        <mj-text>Middle aligned</mj-text>
+        <mj-text>Extra content</mj-text>
+      </mj-column>
+      <mj-column padding="15px" vertical-align="bottom">
+        <mj-text>Bottom aligned</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

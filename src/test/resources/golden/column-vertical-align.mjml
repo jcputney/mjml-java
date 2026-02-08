@@ -1,0 +1,29 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column vertical-align="top">
+        <mj-text>Top</mj-text>
+      </mj-column>
+      <mj-column vertical-align="middle">
+        <mj-text>Middle</mj-text>
+        <mj-text>With more content</mj-text>
+        <mj-text>To create height difference</mj-text>
+      </mj-column>
+      <mj-column vertical-align="bottom">
+        <mj-text>Bottom</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column vertical-align="top" width="33.33%">
+        <mj-image src="https://via.placeholder.com/100x200" width="100px" />
+        <mj-text font-size="12px">Short column</mj-text>
+      </mj-column>
+      <mj-column vertical-align="middle" width="33.33%">
+        <mj-text>Middle aligned column with moderate content to test vertical alignment.</mj-text>
+      </mj-column>
+      <mj-column vertical-align="bottom" width="33.33%">
+        <mj-text font-size="12px">Bottom</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

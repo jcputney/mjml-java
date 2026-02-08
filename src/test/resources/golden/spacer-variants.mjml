@@ -1,0 +1,32 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text>Before 1px spacer</mj-text>
+        <mj-spacer height="1px" />
+        <mj-text>After 1px spacer</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Before 50px spacer</mj-text>
+        <mj-spacer height="50px" />
+        <mj-text>After 50px spacer</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Before 100px spacer with background</mj-text>
+        <mj-spacer height="100px" container-background-color="#e0e0ff" />
+        <mj-text>After 100px spacer with background</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-text>Before spacer with padding</mj-text>
+        <mj-spacer height="30px" padding="10px 20px" />
+        <mj-text>After spacer with padding</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

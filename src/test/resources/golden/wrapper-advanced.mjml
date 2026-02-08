@@ -1,0 +1,30 @@
+<mjml>
+  <mj-body>
+    <mj-wrapper full-width="full-width" background-color="#f4f4f4">
+      <mj-section>
+        <mj-column>
+          <mj-text>Inside full-width wrapper</mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+    <mj-wrapper border="2px solid #cccccc" border-radius="10px" padding="20px">
+      <mj-section>
+        <mj-column>
+          <mj-text>Wrapper with border and border-radius</mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+    <mj-wrapper background-color="#333333" padding="30px">
+      <mj-section>
+        <mj-column>
+          <mj-text color="#ffffff">Dark wrapper with padding</mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section>
+        <mj-column>
+          <mj-text color="#cccccc">Second section in dark wrapper</mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+  </mj-body>
+</mjml>

@@ -1,0 +1,24 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text>Content before raw</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-raw>
+      <div style="margin: 0 auto; max-width: 600px; text-align: center;">
+        <p style="font-family: Arial; font-size: 14px;">This is raw HTML content between sections.</p>
+      </div>
+    </mj-raw>
+    <mj-section>
+      <mj-column>
+        <mj-raw>
+          <div style="background-color: #f0f0f0; padding: 10px;">
+            <span>Raw content inside a column</span>
+          </div>
+        </mj-raw>
+        <mj-text>Content after raw in column</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

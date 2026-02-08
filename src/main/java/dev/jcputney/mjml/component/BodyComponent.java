@@ -125,6 +125,42 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
   }
 
   /**
+   * Adds border styles from the given attribute names to the style map.
+   * Skips empty values and "none". Strips "inner-" prefix for CSS property names.
+   */
+  protected void addBorderStyles(Map<String, String> styles, String... attrNames) {
+    for (String attr : attrNames) {
+      String val = getAttribute(attr, "");
+      if (!val.isEmpty() && !"none".equals(val)) {
+        String cssName = attr.startsWith("inner-") ? attr.substring(6) : attr;
+        styles.put(cssName, val);
+      }
+    }
+  }
+
+  /**
+   * Adds an attribute value to the style map if the attribute is non-empty.
+   * The CSS property name defaults to the attribute name.
+   */
+  protected void addIfPresent(Map<String, String> styles, String attrName) {
+    String val = getAttribute(attrName, "");
+    if (!val.isEmpty()) {
+      styles.put(attrName, val);
+    }
+  }
+
+  /**
+   * Adds an attribute value to the style map under the given CSS property name
+   * if the attribute is non-empty.
+   */
+  protected void addIfPresent(Map<String, String> styles, String cssName, String attrName) {
+    String val = getAttribute(attrName, "");
+    if (!val.isEmpty()) {
+      styles.put(cssName, val);
+    }
+  }
+
+  /**
    * Parses a CSS unit value to pixels, using the container width for percentages.
    */
   protected double parseWidth(String value) {

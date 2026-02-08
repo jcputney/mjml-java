@@ -271,6 +271,7 @@ public class MjColumn extends BodyComponent {
     String innerRadius = getAttribute("inner-border-radius", "");
     if (!innerRadius.isEmpty()) {
       styles.put("border-radius", innerRadius);
+      styles.put("border-collapse", "separate");
     }
     return buildStyle(styles);
   }
@@ -295,24 +296,6 @@ public class MjColumn extends BodyComponent {
       styles.put("border-collapse", "separate");
     }
     return buildStyle(styles);
-  }
-
-  private void addBorderStyles(Map<String, String> styles, String... attrs) {
-    for (String attr : attrs) {
-      String val = getAttribute(attr, "");
-      if (!val.isEmpty() && !"none".equals(val)) {
-        // Map inner-border-* to border-*
-        String cssName = attr.startsWith("inner-") ? attr.substring(6) : attr;
-        styles.put(cssName, val);
-      }
-    }
-  }
-
-  private void addIfPresent(Map<String, String> styles, String attr) {
-    String val = getAttribute(attr, "");
-    if (!val.isEmpty()) {
-      styles.put(attr, val);
-    }
   }
 
   private String buildTdStyle(BodyComponent childComponent) {

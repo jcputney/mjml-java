@@ -52,34 +52,19 @@ public class MjNavbarLink extends BodyComponent {
   @Override
   public String render() {
     String href = getAttribute("href", "#");
-    String color = getAttribute("color", "#000000");
-    String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
-    String fontSize = getAttribute("font-size", "13px");
-    String fontStyle = getAttribute("font-style", "");
-    String fontWeight = getAttribute("font-weight", "");
-    String letterSpacing = getAttribute("letter-spacing", "");
-    String lineHeight = getAttribute("line-height", "22px");
-    String textDecoration = getAttribute("text-decoration", "none");
-    String textTransform = getAttribute("text-transform", "uppercase");
     String padding = getAttribute("padding", "15px 10px");
 
     Map<String, String> anchorStyles = new LinkedHashMap<>();
     anchorStyles.put("display", "inline-block");
-    anchorStyles.put("color", color);
-    anchorStyles.put("font-family", fontFamily);
-    anchorStyles.put("font-size", fontSize);
-    if (!fontStyle.isEmpty()) {
-      anchorStyles.put("font-style", fontStyle);
-    }
-    if (!fontWeight.isEmpty()) {
-      anchorStyles.put("font-weight", fontWeight);
-    }
-    if (!letterSpacing.isEmpty()) {
-      anchorStyles.put("letter-spacing", letterSpacing);
-    }
-    anchorStyles.put("line-height", lineHeight);
-    anchorStyles.put("text-decoration", textDecoration);
-    anchorStyles.put("text-transform", textTransform);
+    anchorStyles.put("color", getAttribute("color", "#000000"));
+    anchorStyles.put("font-family", getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif"));
+    anchorStyles.put("font-size", getAttribute("font-size", "13px"));
+    addIfPresent(anchorStyles, "font-style");
+    addIfPresent(anchorStyles, "font-weight");
+    addIfPresent(anchorStyles, "letter-spacing");
+    anchorStyles.put("line-height", getAttribute("line-height", "22px"));
+    anchorStyles.put("text-decoration", getAttribute("text-decoration", "none"));
+    anchorStyles.put("text-transform", getAttribute("text-transform", "uppercase"));
     anchorStyles.put("padding", padding);
 
     StringBuilder sb = new StringBuilder();

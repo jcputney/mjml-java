@@ -5,6 +5,7 @@ import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -367,46 +368,10 @@ public class MjHero extends BodyComponent {
   }
 
   private static int parseIntPx(String value) {
-    if (value == null || value.isEmpty()) {
-      return 0;
-    }
-    try {
-      return Integer.parseInt(value.replaceAll("[^0-9-]", ""));
-    } catch (NumberFormatException e) {
-      return 0;
-    }
+    return CssUnitParser.parseIntPx(value);
   }
 
-  /**
-   * Parses a specific part of a CSS padding shorthand.
-   * Index: 0=top, 1=right, 2=bottom, 3=left
-   */
   private static int parsePaddingPart(String padding, int index) {
-    if (padding == null || padding.isEmpty()) {
-      return 0;
-    }
-    String[] parts = padding.trim().split("\\s+");
-    String value;
-    switch (parts.length) {
-      case 1:
-        value = parts[0];
-        break;
-      case 2:
-        value = (index == 0 || index == 2) ? parts[0] : parts[1];
-        break;
-      case 3:
-        if (index == 0) {
-          value = parts[0];
-        } else if (index == 2) {
-          value = parts[2];
-        } else {
-          value = parts[1];
-        }
-        break;
-      default:
-        value = parts[Math.min(index, parts.length - 1)];
-        break;
-    }
-    return parseIntPx(value);
+    return (int) CssUnitParser.parseShorthand(padding)[index];
   }
 }

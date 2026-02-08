@@ -85,6 +85,22 @@ public final class CssUnitParser {
   }
 
   /**
+   * Parses an integer from a CSS pixel value like "10px", "10", or "10.5px".
+   * Strips non-numeric characters (except minus sign) and parses as integer.
+   * Returns 0 on failure.
+   */
+  public static int parseIntPx(String value) {
+    if (value == null || value.isEmpty()) {
+      return 0;
+    }
+    try {
+      return Integer.parseInt(value.replaceAll("[^0-9-]", ""));
+    } catch (NumberFormatException e) {
+      return 0;
+    }
+  }
+
+  /**
    * Formats a pixel value as an integer string with "px" suffix.
    */
   public static String formatPx(double value) {
@@ -96,6 +112,16 @@ public final class CssUnitParser {
    */
   public static String formatInt(double value) {
     return String.valueOf((int) value);
+  }
+
+  /**
+   * Formats a pixel width: integers without decimals, decimals as-is.
+   */
+  public static String formatPxWidth(double width) {
+    if (width == Math.floor(width) && !Double.isInfinite(width)) {
+      return String.valueOf((int) width);
+    }
+    return String.valueOf(width);
   }
 
   private static double parseNumber(String s) {
