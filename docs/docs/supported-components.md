@@ -5,7 +5,7 @@ title: "Supported Components"
 
 # Supported Components
 
-mjml-java implements all 33 standard MJML v4 components. Each component listed below links to the official MJML documentation for attribute details, behavior, and visual examples.
+mjml-java implements all 31 top-level MJML v4 renderable components. Each component listed below links to the official MJML documentation for attribute details, behavior, and visual examples.
 
 ## Head Components
 
@@ -60,7 +60,7 @@ mjml-java implements all 33 standard MJML v4 components. Each component listed b
 
 ## Include Support
 
-In addition to the 33 components above, mjml-java supports `mj-include` for splitting templates across files:
+In addition to the 31 components above, mjml-java supports `mj-include` for splitting templates across files:
 
 ```xml
 <mj-include path="./header.mjml" />
@@ -89,5 +89,7 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 ```
 
 Custom body components extend `BodyComponent` and implement the `render()` method. Custom head components extend `HeadComponent` and implement the `process()` method.
+
+Note: MJML control/helper tags such as `mj-all`, `mj-class`, `mj-selector`, and `mj-html-attribute` are supported as part of attribute processing, but they are not counted as top-level renderable components.
 
 For component attributes, behavior, and visual examples, see the [official MJML documentation](https://documentation.mjml.io/).

@@ -1,6 +1,6 @@
 # Component Cheat Sheet
 
-All 33 MJML v4 components supported by mjml-java.
+All 31 top-level MJML v4 renderable components supported by mjml-java.
 
 ## Head Components (8)
 
@@ -37,7 +37,7 @@ All 33 MJML v4 components supported by mjml-java.
 | `mj-table` | HTML table passthrough | [Docs](https://documentation.mjml.io/#mj-table) |
 | `mj-raw` | Raw HTML passthrough | [Docs](https://documentation.mjml.io/#mj-raw) |
 
-## Interactive Components (13)
+## Interactive Components (11)
 
 | Component | Description | MJML Docs |
 |-----------|-------------|-----------|

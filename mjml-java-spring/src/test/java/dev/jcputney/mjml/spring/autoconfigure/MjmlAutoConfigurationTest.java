@@ -46,6 +46,8 @@ class MjmlAutoConfigurationTest {
             "spring.mjml.sanitize-output=false",
             "spring.mjml.max-input-size=500000",
             "spring.mjml.max-nesting-depth=50",
+            "spring.mjml.max-include-depth=25",
+            "spring.mjml.include-allowed-schemes=classpath,file",
             "spring.mjml.template-location=classpath:templates/email/"
         )
         .run(context -> {
@@ -55,6 +57,7 @@ class MjmlAutoConfigurationTest {
           assertThat(config.isSanitizeOutput()).isFalse();
           assertThat(config.getMaxInputSize()).isEqualTo(500000);
           assertThat(config.getMaxNestingDepth()).isEqualTo(50);
+          assertThat(config.getMaxIncludeDepth()).isEqualTo(25);
         });
   }
 

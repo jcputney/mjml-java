@@ -40,6 +40,7 @@ classDiagram
         +isSanitizeOutput() boolean
         +getMaxInputSize() int
         +getMaxNestingDepth() int
+        +getMaxIncludeDepth() int
         +getContentSanitizer() ContentSanitizer
     }
 
@@ -106,7 +107,7 @@ classDiagram
 | Exception | Thrown When |
 |-----------|------------|
 | `MjmlParseException` | Malformed XML, missing `<mjml>` root element, invalid structure |
-| `MjmlValidationException` | Input exceeds `maxInputSize`, nesting exceeds `maxNestingDepth` |
+| `MjmlValidationException` | Input exceeds `maxInputSize` or nesting exceeds `maxNestingDepth` |
 | `MjmlIncludeException` | Include file not found, path traversal attempt, circular includes |
 | `MjmlRenderException` | Unexpected error during the render phase |
 | `MjmlException` | Base type -- catch this to handle all MJML errors |

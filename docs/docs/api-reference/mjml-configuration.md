@@ -37,6 +37,7 @@ MjmlConfiguration config = MjmlConfiguration.defaults();
 | `sanitizeOutput(boolean)` | `boolean` | `true` | Escape HTML special characters in attribute values to prevent XSS |
 | `maxInputSize(int)` | `int` | `1_048_576` (~1 MB for ASCII) | Maximum allowed input size in characters; inputs exceeding this are rejected before parsing |
 | `maxNestingDepth(int)` | `int` | `100` | Maximum allowed nesting depth for MJML elements |
+| `maxIncludeDepth(int)` | `int` | `50` | Maximum allowed nested include depth for `<mj-include>` |
 | `contentSanitizer(ContentSanitizer)` | `ContentSanitizer` | `null` | Optional sanitizer applied to inner HTML of `mj-text`, `mj-button`, and `mj-raw` elements |
 
 ## Validation
@@ -45,6 +46,7 @@ The `build()` method validates the configuration:
 
 - `maxInputSize` must be positive (throws `IllegalArgumentException`)
 - `maxNestingDepth` must be positive (throws `IllegalArgumentException`)
+- `maxIncludeDepth` must be positive (throws `IllegalArgumentException`)
 
 ```java
 // Throws IllegalArgumentException: maxInputSize must be positive, got: -1
@@ -83,6 +85,7 @@ After `build()` returns, the configuration cannot be changed. The custom compone
 | `isSanitizeOutput()` | Whether output sanitization is enabled |
 | `getMaxInputSize()` | Maximum input size in characters (not bytes) |
 | `getMaxNestingDepth()` | Maximum nesting depth |
+| `getMaxIncludeDepth()` | Maximum nested include depth |
 
 ## Custom Components
 
@@ -170,6 +173,7 @@ MjmlConfiguration config = MjmlConfiguration.builder()
     .sanitizeOutput(true)
     .maxInputSize(2_097_152) // 2 MB
     .maxNestingDepth(50)
+    .maxIncludeDepth(25)
     .contentSanitizer(html -> Jsoup.clean(html, Safelist.basic()))
     .build();
 

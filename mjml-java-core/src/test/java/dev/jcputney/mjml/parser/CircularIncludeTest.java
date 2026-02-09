@@ -63,6 +63,7 @@ class CircularIncludeTest {
 
     MjmlConfiguration config = MjmlConfiguration.builder()
         .includeResolver(resolver)
+        .maxIncludeDepth(50)
         .build();
 
     String mjml = """
@@ -302,6 +303,30 @@ class CircularIncludeTest {
 
     assertThrows(MjmlException.class, () -> MjmlRenderer.render(mjml, config),
         "Should throw when include depth limit (50) is exceeded");
+  }
+
+  @Test
+  void customIncludeDepthLimitIsEnforced() {
+    MapIncludeResolver resolver = new MapIncludeResolver()
+        .put("a.mjml", "<mjml><mj-body><mj-include path=\"b.mjml\" /></mj-body></mjml>")
+        .put("b.mjml", "<mjml><mj-body><mj-include path=\"c.mjml\" /></mj-body></mjml>")
+        .put("c.mjml",
+            "<mjml><mj-body><mj-section><mj-column><mj-text>Leaf</mj-text></mj-column></mj-section></mj-body></mjml>");
+
+    MjmlConfiguration config = MjmlConfiguration.builder()
+        .includeResolver(resolver)
+        .maxIncludeDepth(2)
+        .build();
+
+    String mjml = """
+        <mjml>
+          <mj-body>
+            <mj-include path="a.mjml" />
+          </mj-body>
+        </mjml>
+        """;
+
+    assertThrows(MjmlException.class, () -> MjmlRenderer.render(mjml, config));
   }
 
   @Test

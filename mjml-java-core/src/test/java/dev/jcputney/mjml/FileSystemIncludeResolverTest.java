@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -92,6 +93,32 @@ class FileSystemIncludeResolverTest {
     assertThrows(MjmlException.class,
         () -> resolver.resolve(null, TEST_CONTEXT),
         "Should throw on null path");
+  }
+
+  @Test
+  void preventsSymlinkEscapeOutsideBaseDir() throws IOException {
+    Path outsideDir = Files.createTempDirectory("mjml-outside-");
+    try {
+      Path outsideFile = outsideDir.resolve("outside.mjml");
+      Files.writeString(outsideFile, "<mj-text>Outside</mj-text>");
+
+      Path symlink = tempDir.resolve("linked-outside.mjml");
+      try {
+        Files.createSymbolicLink(symlink, outsideFile);
+      } catch (UnsupportedOperationException | SecurityException e) {
+        Assumptions.assumeTrue(false, "Symlinks are not supported in this environment");
+      } catch (IOException e) {
+        Assumptions.assumeTrue(false, "Cannot create symlink in this environment");
+      }
+
+      FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
+      assertThrows(MjmlException.class,
+          () -> resolver.resolve("linked-outside.mjml", TEST_CONTEXT),
+          "Should reject symlink targets that escape base directory");
+    } finally {
+      Files.deleteIfExists(outsideDir.resolve("outside.mjml"));
+      Files.deleteIfExists(outsideDir);
+    }
   }
 
   @Test

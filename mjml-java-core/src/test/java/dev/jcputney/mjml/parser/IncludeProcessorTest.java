@@ -42,6 +42,22 @@ class IncludeProcessorTest {
     }
   }
 
+  private static class TrackingIncludeResolver extends MapIncludeResolver {
+    private final Map<String, ResolverContext> contextsByPath = new HashMap<>();
+
+    @Override
+    TrackingIncludeResolver put(String path, String content) {
+      super.put(path, content);
+      return this;
+    }
+
+    @Override
+    public String resolve(String path, ResolverContext context) {
+      contextsByPath.put(path, context);
+      return super.resolve(path, context);
+    }
+  }
+
   @Test
   void includesMjmlFragment() {
     MapIncludeResolver resolver = new MapIncludeResolver()
@@ -194,6 +210,59 @@ class IncludeProcessorTest {
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
     assertTrue(html.contains("Full document include"));
+  }
+
+  @Test
+  void nestedIncludeContextUsesImmediateParentPathDeterministically() {
+    TrackingIncludeResolver resolver = new TrackingIncludeResolver()
+        .put("a.mjml", """
+            <mjml>
+              <mj-body>
+                <mj-include path="b.mjml" />
+              </mj-body>
+            </mjml>
+            """)
+        .put("b.mjml", """
+            <mjml>
+              <mj-body>
+                <mj-include path="c.mjml" />
+              </mj-body>
+            </mjml>
+            """)
+        .put("c.mjml", """
+            <mjml>
+              <mj-body>
+                <mj-section><mj-column><mj-text>Leaf</mj-text></mj-column></mj-section>
+              </mj-body>
+            </mjml>
+            """);
+
+    MjmlConfiguration config = MjmlConfiguration.builder()
+        .includeResolver(resolver)
+        .build();
+
+    String mjml = """
+        <mjml>
+          <mj-body>
+            <mj-include path="a.mjml" />
+          </mj-body>
+        </mjml>
+        """;
+
+    String html = MjmlRenderer.render(mjml, config).html();
+    assertNotNull(html);
+    assertTrue(html.contains("Leaf"));
+
+    ResolverContext aContext = resolver.contextsByPath.get("a.mjml");
+    ResolverContext bContext = resolver.contextsByPath.get("b.mjml");
+    ResolverContext cContext = resolver.contextsByPath.get("c.mjml");
+
+    assertNotNull(aContext);
+    assertNotNull(bContext);
+    assertNotNull(cContext);
+    assertTrue(aContext.depth() == 0 && aContext.includingPath() == null);
+    assertTrue(bContext.depth() == 1 && "a.mjml".equals(bContext.includingPath()));
+    assertTrue(cContext.depth() == 2 && "b.mjml".equals(cContext.includingPath()));
   }
 
   @Test

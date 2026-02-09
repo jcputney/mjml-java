@@ -19,6 +19,8 @@ public final class MjmlConfiguration {
 
   /** Default maximum nesting depth. */
   public static final int DEFAULT_MAX_NESTING_DEPTH = 100;
+  /** Default maximum include depth. */
+  public static final int DEFAULT_MAX_INCLUDE_DEPTH = 50;
 
   private final String language;
   private final Direction direction;
@@ -27,6 +29,7 @@ public final class MjmlConfiguration {
   private final boolean sanitizeOutput;
   private final int maxInputSize;
   private final int maxNestingDepth;
+  private final int maxIncludeDepth;
   private final ContentSanitizer contentSanitizer;
 
   private MjmlConfiguration(Builder builder) {
@@ -37,6 +40,7 @@ public final class MjmlConfiguration {
     this.sanitizeOutput = builder.sanitizeOutput;
     this.maxInputSize = builder.maxInputSize;
     this.maxNestingDepth = builder.maxNestingDepth;
+    this.maxIncludeDepth = builder.maxIncludeDepth;
     this.contentSanitizer = builder.contentSanitizer;
   }
 
@@ -85,6 +89,14 @@ public final class MjmlConfiguration {
   }
 
   /**
+   * Maximum allowed include nesting depth for {@code mj-include}. Exceeding this depth
+   * during include resolution throws an exception. Default is 50.
+   */
+  public int getMaxIncludeDepth() {
+    return maxIncludeDepth;
+  }
+
+  /**
    * Returns the optional content sanitizer, or {@code null} if none is configured.
    * When set, the sanitizer is applied to the inner HTML content of {@code <mj-text>},
    * {@code <mj-button>}, and {@code <mj-raw>} elements before rendering.
@@ -109,6 +121,7 @@ public final class MjmlConfiguration {
     b.sanitizeOutput = this.sanitizeOutput;
     b.maxInputSize = this.maxInputSize;
     b.maxNestingDepth = this.maxNestingDepth;
+    b.maxIncludeDepth = this.maxIncludeDepth;
     b.contentSanitizer = this.contentSanitizer;
     return b;
   }
@@ -128,6 +141,7 @@ public final class MjmlConfiguration {
         + ", sanitizeOutput=" + sanitizeOutput
         + ", maxInputSize=" + maxInputSize
         + ", maxNestingDepth=" + maxNestingDepth
+        + ", maxIncludeDepth=" + maxIncludeDepth
         + ", customComponents=" + customComponents.size()
         + ", includeResolver=" + (includeResolver != null ? includeResolver.getClass().getSimpleName() : "null")
         + ", contentSanitizer=" + (contentSanitizer != null ? "configured" : "null")
@@ -143,6 +157,7 @@ public final class MjmlConfiguration {
     private boolean sanitizeOutput = true;
     private int maxInputSize = DEFAULT_MAX_INPUT_SIZE;
     private int maxNestingDepth = DEFAULT_MAX_NESTING_DEPTH;
+    private int maxIncludeDepth = DEFAULT_MAX_INCLUDE_DEPTH;
     private ContentSanitizer contentSanitizer;
 
     public Builder language(String language) {
@@ -222,6 +237,14 @@ public final class MjmlConfiguration {
     }
 
     /**
+     * Sets the maximum allowed include nesting depth for {@code mj-include}.
+     */
+    public Builder maxIncludeDepth(int maxIncludeDepth) {
+      this.maxIncludeDepth = maxIncludeDepth;
+      return this;
+    }
+
+    /**
      * Sets an optional content sanitizer that is applied to the inner HTML of
      * {@code <mj-text>}, {@code <mj-button>}, and {@code <mj-raw>} elements.
      * Pass {@code null} to disable (the default).
@@ -239,6 +262,9 @@ public final class MjmlConfiguration {
       }
       if (maxNestingDepth <= 0) {
         throw new IllegalArgumentException("maxNestingDepth must be positive, got: " + maxNestingDepth);
+      }
+      if (maxIncludeDepth <= 0) {
+        throw new IllegalArgumentException("maxIncludeDepth must be positive, got: " + maxIncludeDepth);
       }
       return new MjmlConfiguration(this);
     }

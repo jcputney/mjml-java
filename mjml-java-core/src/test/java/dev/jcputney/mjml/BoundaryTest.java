@@ -104,4 +104,12 @@ class BoundaryTest {
     assertThrows(IllegalArgumentException.class,
         () -> MjmlConfiguration.builder().maxInputSize(-1).build());
   }
+
+  @Test
+  void maxIncludeDepthZeroOrNegativeThrowsOnBuild() {
+    assertThrows(IllegalArgumentException.class,
+        () -> MjmlConfiguration.builder().maxIncludeDepth(0).build());
+    assertThrows(IllegalArgumentException.class,
+        () -> MjmlConfiguration.builder().maxIncludeDepth(-1).build());
+  }
 }

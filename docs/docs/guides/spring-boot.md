@@ -45,7 +45,9 @@ spring:
     sanitize-output: true
     max-input-size: 1048576
     max-nesting-depth: 100
+    max-include-depth: 50
     template-location: classpath:mjml/
+    include-allowed-schemes: classpath,file
     thymeleaf-enabled: true
 ```
 
@@ -56,7 +58,9 @@ spring:
 | `spring.mjml.sanitize-output` | `true` | Escape HTML special characters in attribute values |
 | `spring.mjml.max-input-size` | `1048576` | Maximum input size in characters |
 | `spring.mjml.max-nesting-depth` | `100` | Maximum element nesting depth |
+| `spring.mjml.max-include-depth` | `50` | Maximum nested include depth |
 | `spring.mjml.template-location` | `"classpath:mjml/"` | Base location for template resolution |
+| `spring.mjml.include-allowed-schemes` | `classpath,file` | Allowed schemes for include resource paths |
 | `spring.mjml.thymeleaf-enabled` | `true` | Enable Thymeleaf integration (auto-detected) |
 
 ## MjmlService
@@ -104,13 +108,20 @@ public class EmailService {
 
 ## SpringResourceIncludeResolver
 
-The auto-configured include resolver uses Spring's `ResourceLoader` to resolve include paths. It supports all Spring resource prefixes:
+The auto-configured include resolver uses Spring's `ResourceLoader` to resolve include paths. By default, only safe local schemes are allowed:
 
 - `classpath:` -- classpath resources
 - `file:` -- file system paths
-- `http:` / `https:` -- remote URLs
 
 Relative paths are resolved against the configured `template-location`.
+
+To allow remote schemes, configure them explicitly:
+
+```yaml
+spring:
+  mjml:
+    include-allowed-schemes: classpath,file,https
+```
 
 ```yaml
 # Templates in src/main/resources/mjml/

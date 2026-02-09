@@ -65,6 +65,18 @@ class HtmlSkeletonTest {
   }
 
   @Test
+  void configuredLanguageIsEscapedInOutput() {
+    MjmlConfiguration config = MjmlConfiguration.builder()
+        .language("en\" onload=\"alert(1)")
+        .build();
+    String html = render(MINIMAL_MJML, config);
+    assertTrue(html.contains("lang=\"en&quot; onload=&quot;alert(1)\""),
+        "Language value should be escaped before insertion into html tag");
+    assertFalse(html.contains("lang=\"en\" onload=\"alert(1)\""),
+        "Unescaped language value must not be emitted");
+  }
+
+  @Test
   void defaultDirectionIsAuto() {
     String html = render(MINIMAL_MJML);
     assertTrue(html.contains("dir=\"auto\""),

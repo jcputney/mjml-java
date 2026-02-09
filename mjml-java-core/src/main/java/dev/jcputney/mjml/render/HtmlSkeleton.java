@@ -44,7 +44,7 @@ public final class HtmlSkeleton {
 
     // DOCTYPE + html tag
     sb.append("<!doctype html>\n");
-    sb.append("<html lang=\"").append(lang).append("\" dir=\"").append(dir).append("\"");
+    sb.append("<html lang=\"").append(escapeHtml(lang)).append("\" dir=\"").append(dir).append("\"");
     sb.append(" xmlns=\"http://www.w3.org/1999/xhtml\"");
     sb.append(" xmlns:v=\"urn:schemas-microsoft-com:vml\"");
     sb.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n");

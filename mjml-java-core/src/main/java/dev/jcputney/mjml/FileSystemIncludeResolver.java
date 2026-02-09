@@ -2,6 +2,7 @@ package dev.jcputney.mjml;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 /**
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 public final class FileSystemIncludeResolver implements IncludeResolver {
 
   private final Path baseDir;
+  private final Path baseRealDir;
 
   /**
    * Creates a resolver that resolves paths relative to the given base directory.
@@ -25,6 +27,12 @@ public final class FileSystemIncludeResolver implements IncludeResolver {
    */
   public FileSystemIncludeResolver(Path baseDir) {
     this.baseDir = baseDir.toAbsolutePath().normalize();
+    try {
+      this.baseRealDir = this.baseDir.toRealPath();
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Base directory does not exist or is not accessible: "
+          + this.baseDir, e);
+    }
   }
 
   @Override
@@ -45,7 +53,13 @@ public final class FileSystemIncludeResolver implements IncludeResolver {
     }
 
     try {
-      return Files.readString(resolved);
+      Path resolvedReal = resolved.toRealPath();
+      if (!resolvedReal.startsWith(baseRealDir)) {
+        throw new MjmlIncludeException("Include path escapes base directory");
+      }
+      return Files.readString(resolvedReal);
+    } catch (NoSuchFileException e) {
+      throw new MjmlIncludeException("Include file not found: " + path, e);
     } catch (IOException e) {
       throw new MjmlIncludeException("Failed to read include file: " + path, e);
     }
