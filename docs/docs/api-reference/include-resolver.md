@@ -124,6 +124,8 @@ Since `IncludeResolver` is a functional interface, you can implement it with a l
 
 :::warning SSRF Risk
 An HTTP-based resolver is vulnerable to Server-Side Request Forgery (SSRF) attacks. If an attacker controls the MJML input, they could use `<mj-include>` to probe internal network resources. Always validate and restrict allowed hosts/URLs. Consider using the built-in `UrlIncludeResolver` from the `mjml-java-resolvers` module, which includes SSRF protection out of the box.
+
+When using `UrlIncludeResolver` with hostname URLs, configure `allowedHosts(...)`; hostname requests without an explicit allowlist are rejected.
 :::
 
 ```java

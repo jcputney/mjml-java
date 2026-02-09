@@ -23,13 +23,22 @@ import org.springframework.core.io.ResourceLoader;
 @ConditionalOnClass(MjmlRenderer.class)
 public class MjmlAutoConfiguration {
 
+  /**
+   * Auto-configures an include resolver backed by Spring {@link ResourceLoader}.
+   */
   @Bean
   @ConditionalOnMissingBean
   public IncludeResolver mjmlIncludeResolver(ResourceLoader resourceLoader,
       MjmlProperties properties) {
-    return new SpringResourceIncludeResolver(resourceLoader, properties.getTemplateLocation());
+    return new SpringResourceIncludeResolver(
+        resourceLoader,
+        properties.getTemplateLocation(),
+        properties.getIncludeAllowedSchemes());
   }
 
+  /**
+   * Auto-configures {@link MjmlConfiguration} from {@code spring.mjml.*} properties.
+   */
   @Bean
   @ConditionalOnMissingBean
   public MjmlConfiguration mjmlConfiguration(MjmlProperties properties,
@@ -40,10 +49,14 @@ public class MjmlAutoConfiguration {
         .sanitizeOutput(properties.isSanitizeOutput())
         .maxInputSize(properties.getMaxInputSize())
         .maxNestingDepth(properties.getMaxNestingDepth())
+        .maxIncludeDepth(properties.getMaxIncludeDepth())
         .includeResolver(includeResolver)
         .build();
   }
 
+  /**
+   * Auto-configures the primary Spring rendering service.
+   */
   @Bean
   @ConditionalOnMissingBean
   public MjmlService mjmlService(MjmlConfiguration configuration) {

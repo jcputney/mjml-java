@@ -13,9 +13,9 @@ const features = [
       'Pure Java implementation with no external runtime dependencies. Just add the JAR and go.',
   },
   {
-    title: 'All 33 Components',
+    title: 'All 31 Components',
     description:
-      'Full support for every standard MJML component, from mj-section and mj-column to mj-accordion and mj-navbar.',
+      'Full support for every top-level MJML renderable component, from mj-section and mj-column to mj-accordion and mj-navbar.',
   },
   {
     title: 'Thread-Safe',
@@ -42,8 +42,8 @@ const features = [
 const quickStartCode = `// Add to your pom.xml
 // <dependency>
 //   <groupId>dev.jcputney</groupId>
-//   <artifactId>mjml-java</artifactId>
-//   <version>1.0.0</version>
+//   <artifactId>mjml-java-core</artifactId>
+//   <version>1.0.0-SNAPSHOT</version>
 // </dependency>
 
 import dev.jcputney.mjml.MjmlRenderer;
@@ -130,7 +130,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={siteConfig.title}
-      description="Pure Java MJML-to-HTML renderer - zero dependencies, all 33 components, thread-safe">
+      description="Pure Java MJML-to-HTML renderer - zero dependencies, all 31 components, thread-safe">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

@@ -22,7 +22,7 @@ Every render call gets:
 
 - A new `RenderPipeline` instance
 - A new `GlobalContext` (document-level state: fonts, styles, attributes)
-- A new `ComponentRegistry` (component factories)
+- A frozen `ComponentRegistry` (reused from a bounded cache per configuration identity, or created once and then reused)
 - New component instances for each MJML element
 
 No mutable state is shared between concurrent render calls.
@@ -167,7 +167,8 @@ If your custom `IncludeResolver` maintains mutable state (caches, connection poo
 ```java
 // Thread-safe resolver with a concurrent cache
 public class CachingResolver implements IncludeResolver {
-    private final ConcurrentHashMap<String, String> cache =
+    private record Key(String path, String includingPath, String includeType) {}
+    private final ConcurrentHashMap<Key, String> cache =
         new ConcurrentHashMap<>();
     private final IncludeResolver delegate;
 
@@ -177,7 +178,8 @@ public class CachingResolver implements IncludeResolver {
 
     @Override
     public String resolve(String path, ResolverContext context) {
-        return cache.computeIfAbsent(path, p -> delegate.resolve(p, context));
+        Key key = new Key(path, context.includingPath(), context.includeType());
+        return cache.computeIfAbsent(key, k -> delegate.resolve(path, context));
     }
 }
 ```

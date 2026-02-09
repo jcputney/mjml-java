@@ -14,6 +14,12 @@ public class ThymeleafMjmlService {
   private final TemplateEngine templateEngine;
   private final MjmlService mjmlService;
 
+  /**
+   * Creates a Thymeleaf + MJML composition service.
+   *
+   * @param templateEngine Thymeleaf engine used for template processing
+   * @param mjmlService MJML rendering service applied to processed template output
+   */
   public ThymeleafMjmlService(TemplateEngine templateEngine, MjmlService mjmlService) {
     this.templateEngine = templateEngine;
     this.mjmlService = mjmlService;

@@ -136,6 +136,7 @@ IncludeResolver resolver = UrlIncludeResolver.builder()
 ```
 
 `UrlIncludeResolver` automatically blocks loopback, site-local, and link-local IP addresses.
+For hostname URLs, it also requires an explicit host allowlist via `allowedHosts(...)`.
 
 If you write a custom HTTP resolver instead, implement these safeguards:
 
@@ -173,11 +174,17 @@ mjml-java uses the built-in JDK XML parser (`javax.xml.parsers.DocumentBuilder`)
 
 ## Include Depth Limits
 
-The include processor enforces a maximum recursion depth of 50 levels to prevent stack overflow from deeply nested or circular includes. Circular includes are detected by tracking visited paths:
+The include processor enforces a configurable recursion depth limit (default: 50) to prevent stack overflow from deeply nested or circular includes. Circular includes are detected by tracking visited paths:
 
 ```xml
 <!-- a.mjml includes b.mjml, b.mjml includes a.mjml -->
 <!-- Throws: "Circular include detected for path: a.mjml" -->
+```
+
+```java
+MjmlConfiguration config = MjmlConfiguration.builder()
+    .maxIncludeDepth(25)
+    .build();
 ```
 
 ## CDATA Injection
@@ -216,6 +223,7 @@ If your MJML templates include any user-supplied content (e.g., user names, mess
 |---------|---------|-------------|
 | `maxInputSize` | 1,048,576 (~1 MB) | Maximum input size in characters |
 | `maxNestingDepth` | 100 | Maximum element nesting depth |
+| `maxIncludeDepth` | 50 | Maximum nested include depth |
 | `sanitizeOutput` | `true` | Escape HTML special characters in attribute values |
 | `contentSanitizer` | `null` | Optional sanitizer for inner HTML of `mj-text`, `mj-button`, `mj-raw` |
 
@@ -225,9 +233,10 @@ All settings are configured through the builder:
 MjmlConfiguration config = MjmlConfiguration.builder()
     .maxInputSize(2_097_152)   // 2 MB
     .maxNestingDepth(50)
+    .maxIncludeDepth(25)
     .sanitizeOutput(true)
     .contentSanitizer(html -> Jsoup.clean(html, Safelist.basic()))
     .build();
 ```
 
-The builder validates that `maxInputSize` and `maxNestingDepth` are positive integers, throwing `IllegalArgumentException` for zero or negative values.
+The builder validates that `maxInputSize`, `maxNestingDepth`, and `maxIncludeDepth` are positive integers, throwing `IllegalArgumentException` for zero or negative values.

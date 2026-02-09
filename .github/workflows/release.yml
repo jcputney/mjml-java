@@ -1,0 +1,46 @@
+---
+name: Release
+
+permissions:
+  contents: write
+  packages: write
+  statuses: write
+  checks: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.MAVEN_RELEASE_SSH_KEY }}
+      - uses: actions/setup-java@v5
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven"
+          server-id: central
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_TOKEN
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish package to Maven Central
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mvn -B -ntp -Dstyle.color=always release:prepare
+          cat release.properties
+          VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
+          mvn -B -ntp -Dstyle.color=always release:perform -DconnectionUrl=scm:git:https://github.com/${{ github.repository }}.git
+          echo "Released ${VERSION} 🚀" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

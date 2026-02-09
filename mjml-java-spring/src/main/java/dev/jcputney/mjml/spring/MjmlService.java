@@ -6,13 +6,23 @@ import dev.jcputney.mjml.MjmlRenderer;
 
 /**
  * Spring-managed service for rendering MJML templates to HTML.
+ *
+ * <p>This is a thin facade over a reusable {@link MjmlRenderer} instance created from
+ * the injected {@link MjmlConfiguration}.</p>
  */
 public class MjmlService {
 
   private final MjmlConfiguration configuration;
+  private final MjmlRenderer renderer;
 
+  /**
+   * Creates a service bound to the provided renderer configuration.
+   *
+   * @param configuration immutable renderer configuration
+   */
   public MjmlService(MjmlConfiguration configuration) {
     this.configuration = configuration;
+    this.renderer = MjmlRenderer.create(configuration);
   }
 
   /**
@@ -22,7 +32,7 @@ public class MjmlService {
    * @return the rendered HTML string
    */
   public String render(String mjml) {
-    return MjmlRenderer.render(mjml, configuration).html();
+    return renderer.renderTemplate(mjml).html();
   }
 
   /**
@@ -32,11 +42,13 @@ public class MjmlService {
    * @return the render result containing HTML, title, and preview text
    */
   public MjmlRenderResult renderResult(String mjml) {
-    return MjmlRenderer.render(mjml, configuration);
+    return renderer.renderTemplate(mjml);
   }
 
   /**
    * Returns the configuration used by this service.
+   *
+   * @return active renderer configuration
    */
   public MjmlConfiguration getConfiguration() {
     return configuration;

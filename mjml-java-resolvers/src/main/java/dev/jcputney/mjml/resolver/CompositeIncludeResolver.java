@@ -38,6 +38,11 @@ public final class CompositeIncludeResolver implements IncludeResolver {
     return new CompositeIncludeResolver(Arrays.asList(resolvers));
   }
 
+  /**
+   * Attempts resolution in configured order and returns the first successful result.
+   *
+   * @throws MjmlIncludeException if all delegates fail
+   */
   @Override
   public String resolve(String path, ResolverContext context) {
     MjmlIncludeException lastException = null;

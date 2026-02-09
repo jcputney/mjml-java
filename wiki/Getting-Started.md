@@ -95,6 +95,20 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 MjmlRenderResult result = MjmlRenderer.render(mjml, config);
 ```
 
+### Optional Resolver Module
+
+For additional resolver implementations (`UrlIncludeResolver`, `CachingIncludeResolver`, `CompositeIncludeResolver`, etc.), add:
+
+```xml
+<dependency>
+    <groupId>dev.jcputney</groupId>
+    <artifactId>mjml-java-resolvers</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+When using `UrlIncludeResolver` with hostname URLs, configure `allowedHosts(...)`.
+
 ## Error Handling
 
 ```java
@@ -119,5 +133,5 @@ try {
 ## Next Steps
 
 - [API Quick Reference](API-Quick-Reference) -- all public methods at a glance
-- [Component Cheat Sheet](Component-Cheat-Sheet) -- all 33 components in one table
+- [Component Cheat Sheet](Component-Cheat-Sheet) -- all 31 components in one table
 - [Full Documentation](https://jcputney.github.io/mjml-java/) -- guides, architecture, and more

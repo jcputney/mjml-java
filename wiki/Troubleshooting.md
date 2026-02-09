@@ -74,6 +74,23 @@ MjmlIncludeException: Include path escapes base directory
 
 **Solution:** Ensure all included files are within the base directory, or use an absolute path as the base directory that encompasses all template files.
 
+## MjmlIncludeException: Hostname URLs require explicit allowlist configuration
+
+**Symptom:**
+```
+MjmlIncludeException: Hostname URLs require explicit allowlist configuration: example.com
+```
+
+**Cause:** `UrlIncludeResolver` rejects hostname-based URLs unless an explicit `allowedHosts(...)` list is configured.
+
+**Solution:** Configure a host allowlist:
+
+```java
+IncludeResolver resolver = UrlIncludeResolver.builder()
+    .allowedHosts("cdn.example.com", "templates.example.com")
+    .build();
+```
+
 ## Module not found: dev.jcputney.mjml
 
 **Symptom:**

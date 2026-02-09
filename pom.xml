@@ -13,10 +13,27 @@
     <description>Pure Java MJML-to-HTML renderer with zero external dependencies</description>
     <url>https://github.com/jcputney/mjml-java</url>
 
+    <scm>
+        <url>${project.url}</url>
+        <connection>scm:git:https://github.com/jcputney/mjml-java.git</connection>
+        <developerConnection>scm:git:git@github.com:jcputney/mjml-java.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>jcputney</id>
+            <name>Jonathan Putney</name>
+            <email>jonathan@putney.io</email>
+            <url>https://github.com/jcputney</url>
+        </developer>
+    </developers>
+
     <licenses>
         <license>
             <name>MIT License</name>
             <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
@@ -29,9 +46,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <junit.version>5.10.2</junit.version>
+        <version.plugin.central-publishing>0.9.0</version.plugin.central-publishing>
+        <version.plugin.gpg>3.2.8</version.plugin.gpg>
+        <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
+        <version.plugin.release>3.1.1</version.plugin.release>
+        <version.plugin.source>3.3.1</version.plugin.source>
     </properties>
 
     <dependencyManagement>
@@ -67,7 +90,96 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.12</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${version.plugin.release}</version>
+                    <configuration>
+                        <arguments>-ntp</arguments>
+                        <scmCommentPrefix/>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <releaseProfiles>central</releaseProfiles>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${version.plugin.gpg}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${version.plugin.javadoc}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${version.plugin.source}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/jcputney/mjml-java</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>central</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${version.plugin.central-publishing}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                            <deploymentName>${project.artifactId}:${project.version}</deploymentName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -25,6 +25,13 @@ mjml-java is a complete Java implementation of the [MJML v4](https://mjml.io/) e
 - Input validation and security hardening
 - GraalVM native image compatible (no reflection)
 
+## Modules
+
+- `mjml-java-core`: renderer, components, CSS inliner
+- `mjml-java-resolvers`: URL/caching/composite include resolvers
+- `mjml-java-spring`: Spring Boot auto-configuration and services
+- `mjml-java-bom`: dependency version alignment across modules
+
 ## Installation
 
 **Maven:**

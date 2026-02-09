@@ -19,7 +19,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Spring Boot auto-configuration: `MjmlService`, `ThymeleafMjmlService`, `SpringResourceIncludeResolver`, `MjmlProperties`
 - SSRF protection in `UrlIncludeResolver` (blocks loopback/site-local/link-local addresses)
 - Href sanitization: blocks `javascript:`, `vbscript:`, `data:text/html` URIs
-- 655+ tests across all modules (up from 577)
+- Hundreds of tests across all modules, including golden-file compatibility coverage
+
+### Changed
+- `UrlIncludeResolver` now requires explicit `allowedHosts(...)` for hostname URLs to further reduce SSRF risk.
+- `CachingIncludeResolver` cache key now includes `ResolverContext` dimensions (`includingPath`, `includeType`) to avoid context-mismatch cache hits.
+- `CachingIncludeResolver.Builder` now validates `ttl` (must be positive) and `maxEntries` (must be > 0).
+- `mjml-java-spring` now generates JaCoCo reports alongside other modules for coverage visibility.
 
 ## [1.0.0-SNAPSHOT] - 2025
 
@@ -38,7 +44,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Output sanitization: HTML-escaping of attribute values (configurable via `sanitizeOutput`)
 - Path traversal protection in `FileSystemIncludeResolver`
 - Thread-safe static API (`MjmlRenderer.render()`)
-- 577 tests: 544 unit tests + 33 golden file compatibility tests
+- Extensive test suite including unit coverage and 33 golden file compatibility tests
 - JaCoCo code coverage reporting
 
 [Unreleased]: https://github.com/jcputney/mjml-java/compare/v1.0.0-SNAPSHOT...HEAD

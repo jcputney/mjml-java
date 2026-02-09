@@ -2,6 +2,7 @@ package dev.jcputney.mjml.resolver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.MjmlIncludeException;
 import dev.jcputney.mjml.ResolverContext;
@@ -47,6 +48,32 @@ class CachingIncludeResolverTest {
     assertEquals("content-a.mjml", caching.resolve("a.mjml", CTX));
     assertEquals("content-b.mjml", caching.resolve("b.mjml", CTX));
     assertEquals(2, callCount.get());
+  }
+
+  @Test
+  void cacheKeyIncludesResolverContext() {
+    var callCount = new AtomicInteger(0);
+    var countingDelegate = (dev.jcputney.mjml.IncludeResolver) (path, ctx) -> {
+      callCount.incrementAndGet();
+      String includer = ctx == null ? "null" : String.valueOf(ctx.includingPath());
+      String includeType = ctx == null ? "null" : String.valueOf(ctx.includeType());
+      return includer + ":" + includeType;
+    };
+
+    var caching = CachingIncludeResolver.builder()
+        .delegate(countingDelegate)
+        .ttl(Duration.ofMinutes(10))
+        .build();
+
+    ResolverContext rootMjml = ResolverContext.root("mjml");
+    ResolverContext rootHtml = ResolverContext.root("html");
+    ResolverContext nestedMjml = rootMjml.nested("parent.mjml");
+
+    assertEquals("null:mjml", caching.resolve("same.mjml", rootMjml));
+    assertEquals("null:mjml", caching.resolve("same.mjml", rootMjml));
+    assertEquals("null:html", caching.resolve("same.mjml", rootHtml));
+    assertEquals("parent.mjml:mjml", caching.resolve("same.mjml", nestedMjml));
+    assertEquals(3, callCount.get(), "Different contexts should use distinct cache entries");
   }
 
   @Test
@@ -134,6 +161,43 @@ class CachingIncludeResolverTest {
   void builderRequiresDelegate() {
     assertThrows(IllegalStateException.class,
         () -> CachingIncludeResolver.builder().build());
+  }
+
+  @Test
+  void builderRejectsInvalidTtl() {
+    var delegate = MapIncludeResolver.of("a.mjml", "A");
+    assertTrue(assertThrows(IllegalStateException.class,
+        () -> CachingIncludeResolver.builder()
+            .delegate(delegate)
+            .ttl(Duration.ZERO)
+            .build()).getMessage().contains("ttl"));
+
+    assertTrue(assertThrows(IllegalStateException.class,
+        () -> CachingIncludeResolver.builder()
+            .delegate(delegate)
+            .ttl(Duration.ofSeconds(-1))
+            .build()).getMessage().contains("ttl"));
+
+    assertTrue(assertThrows(IllegalStateException.class,
+        () -> CachingIncludeResolver.builder()
+            .delegate(delegate)
+            .ttl(null)
+            .build()).getMessage().contains("ttl"));
+  }
+
+  @Test
+  void builderRejectsInvalidMaxEntries() {
+    var delegate = MapIncludeResolver.of("a.mjml", "A");
+    assertTrue(assertThrows(IllegalStateException.class,
+        () -> CachingIncludeResolver.builder()
+            .delegate(delegate)
+            .maxEntries(0)
+            .build()).getMessage().contains("maxEntries"));
+    assertTrue(assertThrows(IllegalStateException.class,
+        () -> CachingIncludeResolver.builder()
+            .delegate(delegate)
+            .maxEntries(-1)
+            .build()).getMessage().contains("maxEntries"));
   }
 
   @Test

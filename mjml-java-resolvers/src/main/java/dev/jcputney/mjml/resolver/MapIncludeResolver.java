@@ -50,6 +50,11 @@ public final class MapIncludeResolver implements IncludeResolver {
     return new Builder();
   }
 
+  /**
+   * Resolves include content from the backing map.
+   *
+   * @throws MjmlIncludeException when no entry exists for the requested path
+   */
   @Override
   public String resolve(String path, ResolverContext context) {
     String content = templates.get(path);

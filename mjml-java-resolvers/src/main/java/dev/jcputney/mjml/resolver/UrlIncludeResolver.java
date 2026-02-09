@@ -3,7 +3,9 @@ package dev.jcputney.mjml.resolver;
 import dev.jcputney.mjml.IncludeResolver;
 import dev.jcputney.mjml.MjmlIncludeException;
 import dev.jcputney.mjml.ResolverContext;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,13 +13,21 @@ import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
  * An {@link IncludeResolver} that fetches content via HTTP/HTTPS using the JDK {@link HttpClient}.
  * Includes SSRF protection by blocking requests to private/loopback addresses and supporting
  * host allowlists and denylists.
+ *
+ * <p>For hostname-based URLs (for example {@code https://cdn.example.com/template.mjml}),
+ * configure {@code allowedHosts(...)}. Hostname requests without an explicit allowlist
+ * are rejected to reduce SSRF and DNS-rebinding risk.</p>
  */
 public final class UrlIncludeResolver implements IncludeResolver {
 
@@ -78,14 +88,22 @@ public final class UrlIncludeResolver implements IncludeResolver {
     if (host == null || host.isEmpty()) {
       throw new MjmlIncludeException("URL has no host: " + path);
     }
+    String normalizedHost = host.toLowerCase(Locale.ROOT);
 
     // Host denylist check
-    if (!deniedHosts.isEmpty() && deniedHosts.contains(host.toLowerCase())) {
+    if (!deniedHosts.isEmpty() && deniedHosts.contains(normalizedHost)) {
       throw new MjmlIncludeException("Host is denied: " + host);
     }
 
+    // To reduce DNS-rebinding risk, hostname-based URLs require explicit allowlisting.
+    // Keep localhost on the SSRF path so it is rejected as a local address.
+    if (isHostname(normalizedHost) && !"localhost".equals(normalizedHost) && allowedHosts.isEmpty()) {
+      throw new MjmlIncludeException(
+          "Hostname URLs require explicit allowlist configuration: " + host);
+    }
+
     // Host allowlist check
-    if (!allowedHosts.isEmpty() && !allowedHosts.contains(host.toLowerCase())) {
+    if (!allowedHosts.isEmpty() && !allowedHosts.contains(normalizedHost)) {
       throw new MjmlIncludeException("Host is not in allowlist: " + host);
     }
 
@@ -99,21 +117,15 @@ public final class UrlIncludeResolver implements IncludeResolver {
           .GET()
           .build();
 
-      HttpResponse<String> response = httpClient.send(request,
-          HttpResponse.BodyHandlers.ofString());
+      HttpResponse<InputStream> response = httpClient.send(request,
+          HttpResponse.BodyHandlers.ofInputStream());
 
       if (response.statusCode() != 200) {
         throw new MjmlIncludeException(
             "HTTP " + response.statusCode() + " for URL: " + path);
       }
 
-      String body = response.body();
-      if (body.length() > maxResponseSize) {
-        throw new MjmlIncludeException(
-            "Response exceeds maximum size (" + maxResponseSize + " bytes): " + path);
-      }
-
-      return body;
+      return readBodyWithLimit(response.body(), path);
     } catch (MjmlIncludeException e) {
       throw e;
     } catch (IOException e) {
@@ -122,6 +134,27 @@ public final class UrlIncludeResolver implements IncludeResolver {
       Thread.currentThread().interrupt();
       throw new MjmlIncludeException("Request interrupted for URL: " + path, e);
     }
+  }
+
+  private String readBodyWithLimit(InputStream responseBody, String path) throws IOException {
+    byte[] buffer = new byte[8192];
+    int initialCapacity = Math.min(maxResponseSize, buffer.length);
+    ByteArrayOutputStream out = new ByteArrayOutputStream(initialCapacity);
+    long totalRead = 0;
+
+    try (InputStream in = responseBody) {
+      int read;
+      while ((read = in.read(buffer)) != -1) {
+        totalRead += read;
+        if (totalRead > maxResponseSize) {
+          throw new MjmlIncludeException(
+              "Response exceeds maximum size (" + maxResponseSize + " bytes): " + path);
+        }
+        out.write(buffer, 0, read);
+      }
+    }
+
+    return out.toString(StandardCharsets.UTF_8);
   }
 
   private void checkSsrf(String host) {
@@ -137,6 +170,10 @@ public final class UrlIncludeResolver implements IncludeResolver {
     } catch (UnknownHostException e) {
       throw new MjmlIncludeException("Cannot resolve host: " + host, e);
     }
+  }
+
+  private static boolean isHostname(String host) {
+    return !host.contains(":") && !host.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$");
   }
 
   /**
@@ -166,24 +203,28 @@ public final class UrlIncludeResolver implements IncludeResolver {
     }
 
     /**
-     * Sets the allowed hosts. If non-empty, only these hosts are permitted.
+     * Sets the allowed hosts.
+     * Hostname-based URLs require an explicit allowlist; when configured, only listed hosts
+     * are permitted.
+     * Host values are normalized by trimming and lowercasing.
      *
      * @param hosts allowed host names
      * @return this builder
      */
     public Builder allowedHosts(String... hosts) {
-      this.allowedHosts = Set.of(hosts);
+      this.allowedHosts = normalizeHosts(hosts);
       return this;
     }
 
     /**
      * Sets the denied hosts. These hosts are always blocked.
+     * Host values are normalized by trimming and lowercasing.
      *
      * @param hosts denied host names
      * @return this builder
      */
     public Builder deniedHosts(String... hosts) {
-      this.deniedHosts = Set.of(hosts);
+      this.deniedHosts = normalizeHosts(hosts);
       return this;
     }
 
@@ -246,6 +287,25 @@ public final class UrlIncludeResolver implements IncludeResolver {
       }
       return new UrlIncludeResolver(client, allowedHosts, deniedHosts,
           connectTimeout, readTimeout, maxResponseSize, httpsOnly);
+    }
+
+    private static Set<String> normalizeHosts(String... hosts) {
+      if (hosts == null) {
+        throw new IllegalArgumentException("hosts cannot be null");
+      }
+
+      LinkedHashSet<String> normalized = new LinkedHashSet<>();
+      Arrays.stream(hosts).forEach(host -> {
+        if (host == null) {
+          throw new IllegalArgumentException("host cannot be null");
+        }
+        String value = host.trim().toLowerCase(Locale.ROOT);
+        if (value.isEmpty()) {
+          throw new IllegalArgumentException("host cannot be blank");
+        }
+        normalized.add(value);
+      });
+      return Set.copyOf(normalized);
     }
   }
 }

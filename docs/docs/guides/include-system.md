@@ -77,7 +77,7 @@ For inline CSS (applied directly to matching elements via the CSS inliner), add 
 
 ## Configuring the Include Resolver
 
-Includes require an `IncludeResolver` to be configured. Without one, `mj-include` tags are ignored during rendering.
+Includes require an `IncludeResolver` to be configured. Without one, `mj-include` tags are left unresolved and a warning is logged during rendering.
 
 ### FileSystemIncludeResolver
 
@@ -163,6 +163,8 @@ IncludeResolver dbResolver = (path, context) -> {
 
 :::warning SSRF Risk
 An HTTP-based resolver is vulnerable to **Server-Side Request Forgery (SSRF)**. If an attacker controls the MJML input, they can use `mj-include` paths to probe internal network resources. Only use HTTP resolvers with trusted input, and validate/restrict allowed hosts. Consider using the built-in `UrlIncludeResolver` from the `mjml-java-resolvers` module, which includes SSRF protection out of the box.
+
+For hostname URLs (for example `https://cdn.example.com/template.mjml`), configure an explicit host allowlist with `UrlIncludeResolver.builder().allowedHosts(...)`.
 :::
 
 ```java

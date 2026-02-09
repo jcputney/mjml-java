@@ -28,6 +28,7 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 | `sanitizeOutput(boolean)` | `boolean` | `true` | When `true`, HTML special characters (`"`, `<`, `>`, `&`) in attribute values are escaped in the rendered output to prevent XSS. |
 | `maxInputSize(int)` | `int` | `1048576` (1 MB) | Maximum allowed MJML input size in characters. Inputs exceeding this limit are rejected before processing. |
 | `maxNestingDepth(int)` | `int` | `100` | Maximum allowed element nesting depth. Exceeding this depth during parsing throws an exception. |
+| `maxIncludeDepth(int)` | `int` | `50` | Maximum allowed nested `<mj-include>` depth. Exceeding this depth during include resolution throws an exception. |
 | `contentSanitizer(ContentSanitizer)` | `ContentSanitizer` | `null` | Optional sanitizer applied to inner HTML of `mj-text`, `mj-button`, and `mj-raw` elements. See [Security](../guides/security.md#content-sanitization). |
 
 ## Default Configuration
@@ -74,6 +75,8 @@ public class MyCustomResolver implements IncludeResolver {
 
 :::caution
 Implementations that resolve paths over HTTP or other network protocols may be vulnerable to Server-Side Request Forgery (SSRF) attacks. An attacker who controls MJML input could use `<mj-include>` to probe internal network resources. HTTP-based resolvers should validate and restrict allowed hosts and URLs.
+
+If you use `UrlIncludeResolver` from `mjml-java-resolvers`, configure `allowedHosts(...)` for hostname URLs.
 :::
 
 ## Custom Components

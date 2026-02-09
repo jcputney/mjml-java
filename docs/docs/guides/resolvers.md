@@ -129,6 +129,8 @@ Cache management methods:
 | `size()` | Returns the current number of cached entries |
 
 When the cache is full, expired entries are evicted first, then the oldest 25% are removed.
+Cache entries are keyed by include path plus resolver context (`includingPath` and `includeType`), so context-sensitive delegates are cached safely.
+`ttl` must be a positive duration and `maxEntries` must be greater than 0.
 
 ### UrlIncludeResolver
 
@@ -150,7 +152,7 @@ Builder options:
 
 | Method | Default | Description |
 |---|---|---|
-| `allowedHosts(String...)` | (empty) | If non-empty, only these hosts are permitted |
+| `allowedHosts(String...)` | (empty) | Required for hostname URLs; if non-empty, only these hosts are permitted |
 | `deniedHosts(String...)` | (empty) | These hosts are always blocked |
 | `httpsOnly(boolean)` | `true` | Restrict to HTTPS URLs only |
 | `connectTimeout(Duration)` | 5 seconds | Connection timeout |
@@ -160,7 +162,11 @@ Builder options:
 
 :::warning SSRF Protection
 `UrlIncludeResolver` automatically blocks requests to loopback, site-local, link-local, and any-local IP addresses. This protects against SSRF attacks where an attacker uses `<mj-include>` to probe internal network resources.
+
+For hostname URLs (for example `https://cdn.example.com/file.mjml`), configure `allowedHosts(...)`. Without an explicit allowlist, hostname requests are rejected.
 :::
+
+Hostnames configured via `allowedHosts(...)` and `deniedHosts(...)` are normalized (trimmed + lowercased) at build time.
 
 ### PrefixRoutingIncludeResolver
 

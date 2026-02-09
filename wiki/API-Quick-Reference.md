@@ -51,6 +51,7 @@ Immutable configuration object. Create via `builder()` or use `defaults()`.
 | `getMaxInputSize()` | `int` | Maximum input size in characters (default: `1_048_576` / ~1 MB) |
 | `getContentSanitizer()` | `ContentSanitizer` | Optional content sanitizer for inner HTML (default: `null`) |
 | `getMaxNestingDepth()` | `int` | Maximum element nesting depth (default: `100`) |
+| `getMaxIncludeDepth()` | `int` | Maximum nested include depth (default: `50`) |
 
 ### MjmlConfiguration.Builder
 
@@ -63,6 +64,7 @@ Immutable configuration object. Create via `builder()` or use `defaults()`.
 | `sanitizeOutput(boolean)` | `Builder` | Enables/disables HTML escaping in attribute values |
 | `maxInputSize(int)` | `Builder` | Sets maximum allowed input size |
 | `maxNestingDepth(int)` | `Builder` | Sets maximum allowed nesting depth |
+| `maxIncludeDepth(int)` | `Builder` | Sets maximum allowed include nesting depth |
 | `contentSanitizer(ContentSanitizer)` | `Builder` | Sets optional content sanitizer |
 | `build()` | `MjmlConfiguration` | Builds the immutable configuration |
 
@@ -111,6 +113,13 @@ Record providing include chain metadata to resolvers.
 | `includingPath()` | `String` | Path of the file containing the `mj-include`, or `null` for root |
 | `includeType()` | `String` | Include type: `"mjml"`, `"html"`, `"css"`, `"css-inline"` |
 | `depth()` | `int` | Current nesting depth (0 for top-level) |
+
+## Resolver Module Notes
+
+If you use `mjml-java-resolvers`:
+
+- `UrlIncludeResolver` requires `allowedHosts(...)` for hostname URLs and blocks local/private address ranges for SSRF hardening.
+- `CachingIncludeResolver` caches by `path + ResolverContext` dimensions (`includingPath`, `includeType`) so context-sensitive resolvers remain correct.
 
 ## FileSystemIncludeResolver
 

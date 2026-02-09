@@ -47,8 +47,9 @@ import dev.jcputney.mjml.parser.IncludeProcessor;
 import dev.jcputney.mjml.parser.MjmlDocument;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.parser.MjmlParser;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -70,11 +71,19 @@ public final class RenderPipeline {
   /**
    * Cache of frozen registries keyed by configuration identity. The registry is stateless
    * once built and frozen, so it can be safely shared across threads and render calls.
-   * Uses an IdentityHashMap wrapped in a ConcurrentHashMap-style structure to cache by
-   * reference identity (MjmlConfiguration lacks equals/hashCode).
+   * Uses a synchronized access-ordered LinkedHashMap to provide a bounded LRU-style cache.
+   * Keys are compared by reference identity because MjmlConfiguration does not override
+   * equals/hashCode.
    */
-  private static final ConcurrentHashMap<MjmlConfiguration, ComponentRegistry> REGISTRY_CACHE =
-      new ConcurrentHashMap<>();
+  private static final int REGISTRY_CACHE_MAX_SIZE = 256;
+
+  private static final Map<MjmlConfiguration, ComponentRegistry> REGISTRY_CACHE =
+      Collections.synchronizedMap(new LinkedHashMap<>(REGISTRY_CACHE_MAX_SIZE, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<MjmlConfiguration, ComponentRegistry> eldest) {
+          return size() > REGISTRY_CACHE_MAX_SIZE;
+        }
+      });
 
   private final MjmlConfiguration configuration;
   private final ComponentRegistry registry;
@@ -82,8 +91,20 @@ public final class RenderPipeline {
 
   public RenderPipeline(MjmlConfiguration configuration) {
     this.configuration = configuration;
-    this.registry = REGISTRY_CACHE.computeIfAbsent(configuration, this::createAndFreezeRegistry);
+    this.registry = getOrCreateRegistry(configuration);
     this.fontScanner = new FontScanner(configuration, registry);
+  }
+
+  private ComponentRegistry getOrCreateRegistry(MjmlConfiguration config) {
+    synchronized (REGISTRY_CACHE) {
+      ComponentRegistry cached = REGISTRY_CACHE.get(config);
+      if (cached != null) {
+        return cached;
+      }
+      ComponentRegistry created = createAndFreezeRegistry(config);
+      REGISTRY_CACHE.put(config, created);
+      return created;
+    }
   }
 
   private ComponentRegistry createAndFreezeRegistry(MjmlConfiguration config) {
@@ -115,7 +136,9 @@ public final class RenderPipeline {
     // Phase 3: Resolve includes
     if (configuration.getIncludeResolver() != null) {
       IncludeProcessor includeProcessor = new IncludeProcessor(
-          configuration.getIncludeResolver(), configuration.getMaxInputSize());
+          configuration.getIncludeResolver(),
+          configuration.getMaxInputSize(),
+          configuration.getMaxIncludeDepth());
       includeProcessor.process(document);
     }
 

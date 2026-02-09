@@ -34,6 +34,12 @@ public final class PrefixRoutingIncludeResolver implements IncludeResolver {
     return new Builder();
   }
 
+  /**
+   * Resolves by matching the first configured prefix in insertion order.
+   * The matched prefix is stripped before delegating.
+   *
+   * @throws MjmlIncludeException if no prefix matches and no default resolver is configured
+   */
   @Override
   public String resolve(String path, ResolverContext context) {
     for (Map.Entry<String, IncludeResolver> entry : routes.entrySet()) {

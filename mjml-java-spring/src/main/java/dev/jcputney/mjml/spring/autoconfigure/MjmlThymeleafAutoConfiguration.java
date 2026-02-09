@@ -19,6 +19,9 @@ import org.thymeleaf.TemplateEngine;
     matchIfMissing = true)
 public class MjmlThymeleafAutoConfiguration {
 
+  /**
+   * Auto-configures {@link ThymeleafMjmlService} when Thymeleaf is available.
+   */
   @Bean
   @ConditionalOnMissingBean
   public ThymeleafMjmlService thymeleafMjmlService(TemplateEngine templateEngine,

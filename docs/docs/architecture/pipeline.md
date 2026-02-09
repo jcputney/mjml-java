@@ -72,11 +72,12 @@ The parser validates nesting depth against `MjmlConfiguration.getMaxNestingDepth
 If an `IncludeResolver` is configured, this phase walks the document tree looking for `<mj-include>` elements. Each include is resolved by:
 
 1. Reading the `path` attribute
-2. Calling `IncludeResolver.resolve(path)` to load the MJML source
+2. Calling `IncludeResolver.resolve(path, context)` to load the include content
 3. Parsing the included source
 4. Replacing the `<mj-include>` node with the parsed content
 
-Includes can target head content (`<mj-include path="styles.mjml" type="mj-head">`), body content, or raw CSS (`type="css"`).
+Supported include types are `mjml` (default), `html`, `css`, and `css-inline`.
+Include resolution enforces `maxIncludeDepth` from `MjmlConfiguration` to prevent excessive nesting.
 
 The built-in `FileSystemIncludeResolver` resolves paths relative to a configurable base directory with path traversal protection.
 
@@ -216,7 +217,7 @@ After inlining, two post-processing transformations are applied to match the out
 
 ## Pipeline Initialization
 
-The `RenderPipeline` constructor creates and freezes the `ComponentRegistry`, registering all 33 built-in components plus any custom components from the configuration. The registry is frozen after initialization to prevent modification during rendering.
+The `RenderPipeline` constructor obtains a frozen `ComponentRegistry` from a bounded, synchronized cache keyed by configuration identity. If no cached entry exists, it creates one by registering all 31 built-in top-level renderable components plus any custom components from the configuration, then freezes it to prevent modification during rendering.
 
 ```java
 MjmlRenderer.render(mjml)

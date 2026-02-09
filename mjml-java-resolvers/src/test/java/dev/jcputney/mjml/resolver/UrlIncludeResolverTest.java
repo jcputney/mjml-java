@@ -5,8 +5,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.MjmlIncludeException;
 import dev.jcputney.mjml.ResolverContext;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.Authenticator;
+import java.net.CookieHandler;
+import java.net.ProxySelector;
+import java.net.URI;
 import java.time.Duration;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpClient;
+import java.net.http.HttpClient.Version;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSession;
 import org.junit.jupiter.api.Test;
 
 class UrlIncludeResolverTest {
@@ -138,6 +155,38 @@ class UrlIncludeResolverTest {
   }
 
   @Test
+  void hostnameRequiresExplicitAllowlist() {
+    var resolver = UrlIncludeResolver.builder()
+        .httpsOnly(false)
+        .build();
+    var ex = assertThrows(MjmlIncludeException.class,
+        () -> resolver.resolve("http://example.com/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("require explicit allowlist"));
+  }
+
+  @Test
+  void allowlistNormalizationTrimsAndLowercases() {
+    var resolver = UrlIncludeResolver.builder()
+        .httpsOnly(false)
+        .allowedHosts(" THIS-HOST-DOES-NOT-EXIST-XYZ123.INVALID ")
+        .build();
+    var ex = assertThrows(MjmlIncludeException.class,
+        () -> resolver.resolve("http://this-host-does-not-exist-xyz123.invalid/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("Cannot resolve host"));
+  }
+
+  @Test
+  void denylistNormalizationTrimsAndLowercases() {
+    var resolver = UrlIncludeResolver.builder()
+        .httpsOnly(false)
+        .deniedHosts(" EVIL.COM ")
+        .build();
+    var ex = assertThrows(MjmlIncludeException.class,
+        () -> resolver.resolve("http://evil.com/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("denied"));
+  }
+
+  @Test
   void noHostThrows() {
     var resolver = UrlIncludeResolver.builder()
         .httpsOnly(false)
@@ -174,6 +223,7 @@ class UrlIncludeResolverTest {
   void unresolvedHostThrows() {
     var resolver = UrlIncludeResolver.builder()
         .httpsOnly(false)
+        .allowedHosts("this-host-does-not-exist-xyz123.invalid")
         .build();
     var ex = assertThrows(MjmlIncludeException.class,
         () -> resolver.resolve("http://this-host-does-not-exist-xyz123.invalid/path", CTX));
@@ -219,5 +269,162 @@ class UrlIncludeResolverTest {
     var ex = assertThrows(MjmlIncludeException.class,
         () -> resolver.resolve("http://0.0.0.0/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
+  }
+
+  @Test
+  void enforcesMaxResponseSizeInBytes() {
+    byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 3 chars, 6 bytes
+    var resolver = UrlIncludeResolver.builder()
+        .httpClient(new StubHttpClient(200, body))
+        .httpsOnly(false)
+        .maxResponseSize(5)
+        .build();
+
+    var ex = assertThrows(MjmlIncludeException.class,
+        () -> resolver.resolve("http://93.184.216.34/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("bytes"));
+  }
+
+  @Test
+  void returnsResponseWithinByteLimit() {
+    byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 6 bytes
+    var resolver = UrlIncludeResolver.builder()
+        .httpClient(new StubHttpClient(200, body))
+        .httpsOnly(false)
+        .maxResponseSize(6)
+        .build();
+
+    String content = resolver.resolve("http://93.184.216.34/template.mjml", CTX);
+    assertTrue(content.contains("ééé"));
+  }
+
+  private static final class StubHttpClient extends HttpClient {
+
+    private final int statusCode;
+    private final byte[] body;
+
+    private StubHttpClient(int statusCode, byte[] body) {
+      this.statusCode = statusCode;
+      this.body = body;
+    }
+
+    @Override
+    public Optional<CookieHandler> cookieHandler() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<Duration> connectTimeout() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Redirect followRedirects() {
+      return Redirect.NEVER;
+    }
+
+    @Override
+    public Optional<ProxySelector> proxy() {
+      return Optional.empty();
+    }
+
+    @Override
+    public SSLContext sslContext() {
+      return null;
+    }
+
+    @Override
+    public SSLParameters sslParameters() {
+      return new SSLParameters();
+    }
+
+    @Override
+    public Optional<Authenticator> authenticator() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Version version() {
+      return Version.HTTP_1_1;
+    }
+
+    @Override
+    public Optional<Executor> executor() {
+      return Optional.empty();
+    }
+
+    @Override
+    public <T> HttpResponse<T> send(HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler)
+        throws IOException, InterruptedException {
+      @SuppressWarnings("unchecked")
+      T responseBody = (T) new ByteArrayInputStream(body);
+      return new StubHttpResponse<>(statusCode, request, responseBody);
+    }
+
+    @Override
+    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
+        HttpResponse.BodyHandler<T> responseBodyHandler) {
+      throw new UnsupportedOperationException("sendAsync not used in tests");
+    }
+
+    @Override
+    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
+        HttpResponse.BodyHandler<T> responseBodyHandler,
+        HttpResponse.PushPromiseHandler<T> pushPromiseHandler) {
+      throw new UnsupportedOperationException("sendAsync not used in tests");
+    }
+  }
+
+  private static final class StubHttpResponse<T> implements HttpResponse<T> {
+
+    private final int statusCode;
+    private final HttpRequest request;
+    private final T body;
+
+    private StubHttpResponse(int statusCode, HttpRequest request, T body) {
+      this.statusCode = statusCode;
+      this.request = request;
+      this.body = body;
+    }
+
+    @Override
+    public int statusCode() {
+      return statusCode;
+    }
+
+    @Override
+    public HttpRequest request() {
+      return request;
+    }
+
+    @Override
+    public Optional<HttpResponse<T>> previousResponse() {
+      return Optional.empty();
+    }
+
+    @Override
+    public HttpHeaders headers() {
+      return HttpHeaders.of(java.util.Map.of(), (k, v) -> true);
+    }
+
+    @Override
+    public T body() {
+      return body;
+    }
+
+    @Override
+    public Optional<SSLSession> sslSession() {
+      return Optional.empty();
+    }
+
+    @Override
+    public URI uri() {
+      return request.uri();
+    }
+
+    @Override
+    public Version version() {
+      return Version.HTTP_1_1;
+    }
   }
 }

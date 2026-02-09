@@ -14,7 +14,7 @@ mjml-java is a multi-module project. Most users only need the core module:
 | Module | Artifact ID | Description |
 |---|---|---|
 | **Core** | `mjml-java-core` | MJML renderer, all 31 components, CSS inliner. Zero external dependencies. |
-| **Resolvers** | `mjml-java-resolvers` | Additional `IncludeResolver` implementations: URL, caching, composite, map, prefix-routing. Zero external dependencies (JDK `java.net.http`). |
+| **Resolvers** | `mjml-java-resolvers` | Additional `IncludeResolver` implementations: URL, caching, composite, map, prefix-routing. `UrlIncludeResolver` includes SSRF protections and explicit hostname allowlisting. Zero external dependencies (JDK `java.net.http`). |
 | **Spring** | `mjml-java-spring` | Spring Boot 3.2+ auto-configuration, `MjmlService`, Thymeleaf integration. |
 | **BOM** | `mjml-java-bom` | Bill of Materials for consistent version management. |
 
