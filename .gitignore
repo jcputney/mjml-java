@@ -26,5 +26,8 @@ docs/node_modules/
 docs/build/
 docs/.docusaurus/
 
+# Code review working documents
+reviews/
+
 # Claude Code local settings
 .claude/settings.local.json
