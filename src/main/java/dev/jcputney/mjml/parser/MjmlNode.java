@@ -15,6 +15,7 @@ public class MjmlNode {
   private final String tagName;
   private final Map<String, String> attributes;
   private final List<MjmlNode> children;
+  private List<MjmlNode> unmodifiableChildren;
   private String textContent;
   private MjmlNode parent;
 
@@ -41,21 +42,21 @@ public class MjmlNode {
     attributes.put(name, value);
   }
 
-  public boolean hasAttribute(String name) {
-    return attributes.containsKey(name);
-  }
-
   public Map<String, String> getAttributes() {
     return Collections.unmodifiableMap(attributes);
   }
 
   public List<MjmlNode> getChildren() {
-    return Collections.unmodifiableList(children);
+    if (unmodifiableChildren == null) {
+      unmodifiableChildren = Collections.unmodifiableList(children);
+    }
+    return unmodifiableChildren;
   }
 
   public void addChild(MjmlNode child) {
     child.parent = this;
     children.add(child);
+    unmodifiableChildren = null; // invalidate cache
   }
 
   /**
@@ -74,15 +75,8 @@ public class MjmlNode {
         replacement.parent = parent;
         parent.children.add(index + i, replacement);
       }
+      parent.unmodifiableChildren = null; // invalidate cache
     }
-  }
-
-  /**
-   * Inserts a child at the given index.
-   */
-  public void insertChild(int index, MjmlNode child) {
-    child.parent = this;
-    children.add(index, child);
   }
 
   public MjmlNode getParent() {
@@ -95,12 +89,6 @@ public class MjmlNode {
 
   public void setTextContent(String textContent) {
     this.textContent = textContent != null ? textContent : "";
-  }
-
-  public void appendTextContent(String text) {
-    if (text != null) {
-      this.textContent += text;
-    }
   }
 
   /**
@@ -126,24 +114,6 @@ public class MjmlNode {
       }
     }
     return null;
-  }
-
-  /**
-   * Recursively finds all descendants with the specified tag name.
-   */
-  public List<MjmlNode> findAll(String tag) {
-    List<MjmlNode> result = new ArrayList<>();
-    findAllRecursive(tag, result);
-    return result;
-  }
-
-  private void findAllRecursive(String tag, List<MjmlNode> result) {
-    for (MjmlNode child : children) {
-      if (child.tagName.equals(tag)) {
-        result.add(child);
-      }
-      child.findAllRecursive(tag, result);
-    }
   }
 
   /**

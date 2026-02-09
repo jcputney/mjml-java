@@ -4,14 +4,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Per-component render context that carries the current container width
- * and text direction as the rendering pipeline descends the component tree.
+ * as the rendering pipeline descends the component tree.
  * Width narrows: body(600) -> section -> column -> content component.
  */
 public class RenderContext {
 
   private final double containerWidth;
   private final String columnWidthSpec;
-  private final String direction;
   private final int index;
   private final boolean first;
   private final boolean last;
@@ -20,33 +19,14 @@ public class RenderContext {
   private final AtomicInteger idCounter;
 
   public RenderContext(double containerWidth) {
-    this(containerWidth, null, "ltr", 0, true, true, false, false, new AtomicInteger(0));
+    this(containerWidth, null, 0, true, true, false, false, new AtomicInteger(0));
   }
 
-  public RenderContext(double containerWidth, String columnWidthSpec, String direction,
-      int index, boolean first, boolean last) {
-    this(containerWidth, columnWidthSpec, direction, index, first, last, false, false,
-        new AtomicInteger(0));
-  }
-
-  public RenderContext(double containerWidth, String columnWidthSpec, String direction,
-      int index, boolean first, boolean last, boolean insideWrapper) {
-    this(containerWidth, columnWidthSpec, direction, index, first, last, insideWrapper, false,
-        new AtomicInteger(0));
-  }
-
-  public RenderContext(double containerWidth, String columnWidthSpec, String direction,
-      int index, boolean first, boolean last, boolean insideWrapper, boolean insideGroup) {
-    this(containerWidth, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup,
-        new AtomicInteger(0));
-  }
-
-  private RenderContext(double containerWidth, String columnWidthSpec, String direction,
+  private RenderContext(double containerWidth, String columnWidthSpec,
       int index, boolean first, boolean last, boolean insideWrapper, boolean insideGroup,
       AtomicInteger idCounter) {
     this.containerWidth = containerWidth;
     this.columnWidthSpec = columnWidthSpec;
-    this.direction = direction;
     this.index = index;
     this.first = first;
     this.last = last;
@@ -67,10 +47,6 @@ public class RenderContext {
    */
   public String getColumnWidthSpec() {
     return columnWidthSpec;
-  }
-
-  public String getDirection() {
-    return direction;
   }
 
   public int getIndex() {
@@ -105,41 +81,34 @@ public class RenderContext {
    * Creates a child context with a narrower container width.
    */
   public RenderContext withWidth(double width) {
-    return new RenderContext(width, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup, idCounter);
+    return new RenderContext(width, columnWidthSpec, index, first, last, insideWrapper, insideGroup, idCounter);
   }
 
   /**
    * Creates a child context with container width and column width percentage.
    */
   public RenderContext withColumnWidth(double width, String columnWidthSpec) {
-    return new RenderContext(width, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup, idCounter);
+    return new RenderContext(width, columnWidthSpec, index, first, last, insideWrapper, insideGroup, idCounter);
   }
 
   /**
    * Creates a child context with positioning info for column rendering.
    */
   public RenderContext withPosition(int index, boolean first, boolean last) {
-    return new RenderContext(containerWidth, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup, idCounter);
-  }
-
-  /**
-   * Creates a child context with a different text direction.
-   */
-  public RenderContext withDirection(String direction) {
-    return new RenderContext(containerWidth, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup, idCounter);
+    return new RenderContext(containerWidth, columnWidthSpec, index, first, last, insideWrapper, insideGroup, idCounter);
   }
 
   /**
    * Creates a child context indicating the component is inside a wrapper.
    */
   public RenderContext withInsideWrapper(boolean insideWrapper) {
-    return new RenderContext(containerWidth, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup, idCounter);
+    return new RenderContext(containerWidth, columnWidthSpec, index, first, last, insideWrapper, insideGroup, idCounter);
   }
 
   /**
    * Creates a child context indicating the component is inside a group.
    */
   public RenderContext withInsideGroup(boolean insideGroup) {
-    return new RenderContext(containerWidth, columnWidthSpec, direction, index, first, last, insideWrapper, insideGroup, idCounter);
+    return new RenderContext(containerWidth, columnWidthSpec, index, first, last, insideWrapper, insideGroup, idCounter);
   }
 }

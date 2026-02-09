@@ -374,8 +374,13 @@ public final class HtmlDocumentParser {
   }
 
   private static int indexOfIgnoreCase(String haystack, String needle, int fromIndex) {
-    String lowerHaystack = haystack.toLowerCase();
-    String lowerNeedle = needle.toLowerCase();
-    return lowerHaystack.indexOf(lowerNeedle, fromIndex);
+    int needleLen = needle.length();
+    int limit = haystack.length() - needleLen;
+    for (int i = fromIndex; i <= limit; i++) {
+      if (haystack.regionMatches(true, i, needle, 0, needleLen)) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

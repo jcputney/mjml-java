@@ -48,7 +48,7 @@ public record CssBoxModel(
     if (border == null || border.isEmpty() || "none".equals(border)) {
       return 0;
     }
-    String[] parts = border.trim().split("\\s+");
+    String[] parts = CssUnitParser.WHITESPACE.split(border.trim());
     if (parts.length > 0) {
       return CssUnitParser.parsePx(parts[0], 0);
     }

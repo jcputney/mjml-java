@@ -1,5 +1,6 @@
 package dev.jcputney.mjml;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +15,7 @@ class EdgeCaseTest {
 
   @Test
   void throwsOnNullInput() {
-    assertThrows(MjmlException.class, () -> MjmlRenderer.render(null));
+    assertThrows(MjmlException.class, () -> MjmlRenderer.render((String) null));
   }
 
   @Test
@@ -277,11 +278,68 @@ class EdgeCaseTest {
   }
 
   @Test
+  void handlesDirectionConfig() {
+    MjmlConfiguration config = MjmlConfiguration.builder()
+        .direction("rtl")
+        .build();
+    String html = MjmlRenderer.render("""
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-text>RTL content</mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """, config).html();
+    assertTrue(html.contains("dir=\"rtl\""), "Should set dir attribute to rtl");
+  }
+
+  @Test
+  void handlesImageUsemap() {
+    String html = MjmlRenderer.render("""
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-image src="test.png" usemap="#mymap" />
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+    assertTrue(html.contains("usemap=\"#mymap\""), "Should render usemap attribute");
+  }
+
+  @Test
+  void handlesMjRawFileStart() {
+    String html = MjmlRenderer.render("""
+        <mjml>
+          <mj-body>
+            <mj-raw position="file-start"><!-- Custom file start content --></mj-raw>
+            <mj-section>
+              <mj-column>
+                <mj-text>Body</mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+    int fileStartPos = html.indexOf("<!-- Custom file start content -->");
+    int doctypePos = html.indexOf("<!doctype html>");
+    assertTrue(fileStartPos >= 0, "Should contain file-start content");
+    assertTrue(doctypePos >= 0, "Should contain doctype");
+    assertTrue(fileStartPos < doctypePos, "File-start content should appear before doctype");
+  }
+
+  @Test
   void rendersRenderResult() {
     MjmlRenderResult result = MjmlRenderer.render("""
         <mjml>
           <mj-head>
             <mj-title>My Email</mj-title>
+            <mj-preview>Preview text here</mj-preview>
           </mj-head>
           <mj-body>
             <mj-section>
@@ -295,5 +353,69 @@ class EdgeCaseTest {
 
     assertNotNull(result.html());
     assertTrue(result.title().contains("My Email"));
+    assertEquals("Preview text here", result.previewText());
+  }
+
+  @Test
+  void toBuilderRoundTrip() {
+    MjmlConfiguration config = MjmlConfiguration.builder()
+        .language("fr")
+        .direction("rtl")
+        .sanitizeOutput(false)
+        .maxInputSize(500_000)
+        .maxNestingDepth(50)
+        .build();
+
+    MjmlConfiguration copy = config.toBuilder().build();
+
+    assertEquals("fr", copy.getLanguage());
+    assertEquals("rtl", copy.getDirection());
+    assertFalse(copy.isSanitizeOutput());
+    assertEquals(500_000, copy.getMaxInputSize());
+    assertEquals(50, copy.getMaxNestingDepth());
+  }
+
+  @Test
+  void toBuilderAllowsOverride() {
+    MjmlConfiguration config = MjmlConfiguration.builder()
+        .language("fr")
+        .build();
+
+    MjmlConfiguration modified = config.toBuilder()
+        .language("de")
+        .build();
+
+    assertEquals("de", modified.getLanguage());
+  }
+
+  @Test
+  void configurationToString() {
+    MjmlConfiguration config = MjmlConfiguration.defaults();
+    String str = config.toString();
+    assertTrue(str.contains("MjmlConfiguration"));
+    assertTrue(str.contains("language='und'"));
+    assertTrue(str.contains("sanitizeOutput=true"));
+  }
+
+  @Test
+  void renderPathFile() throws Exception {
+    java.nio.file.Path tempFile = java.nio.file.Files.createTempFile("test", ".mjml");
+    try {
+      java.nio.file.Files.writeString(tempFile, """
+          <mjml>
+            <mj-body>
+              <mj-section>
+                <mj-column>
+                  <mj-text>From file</mj-text>
+                </mj-column>
+              </mj-section>
+            </mj-body>
+          </mjml>
+          """);
+      String html = MjmlRenderer.render(tempFile);
+      assertTrue(html.contains("From file"));
+    } finally {
+      java.nio.file.Files.deleteIfExists(tempFile);
+    }
   }
 }

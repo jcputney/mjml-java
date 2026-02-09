@@ -13,7 +13,9 @@ import java.util.Map;
  */
 public class MjRaw extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.of();
+  private static final Map<String, String> DEFAULTS = Map.of(
+      "position", ""
+  );
 
   public MjRaw(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
@@ -31,6 +33,11 @@ public class MjRaw extends BodyComponent {
 
   @Override
   public String render() {
+    String position = getAttribute("position", "");
+    if ("file-start".equals(position)) {
+      globalContext.addFileStartContent(node.getInnerHtml());
+      return "";
+    }
     return node.getInnerHtml();
   }
 }

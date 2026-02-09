@@ -18,6 +18,7 @@ public class MjImage extends BodyComponent {
       Map.entry("align", "center"),
       Map.entry("border", "0"),
       Map.entry("border-radius", ""),
+      Map.entry("container-background-color", ""),
       Map.entry("height", "auto"),
       Map.entry("padding", "10px 25px"),
       Map.entry("src", ""),
@@ -27,8 +28,10 @@ public class MjImage extends BodyComponent {
       Map.entry("alt", ""),
       Map.entry("fluid-on-mobile", ""),
       Map.entry("href", ""),
+      Map.entry("rel", ""),
       Map.entry("srcset", ""),
-      Map.entry("sizes", "")
+      Map.entry("sizes", ""),
+      Map.entry("usemap", "")
   );
 
   public MjImage(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
@@ -73,26 +76,31 @@ public class MjImage extends BodyComponent {
     // Build <img> tag
     StringBuilder img = new StringBuilder();
     img.append("<img");
-    img.append(" alt=\"").append(getAttribute("alt", "")).append("\"");
-    img.append(" src=\"").append(getAttribute("src", "")).append("\"");
+    img.append(" alt=\"").append(escapeAttr(getAttribute("alt", ""))).append("\"");
+    img.append(" src=\"").append(escapeAttr(getAttribute("src", ""))).append("\"");
 
     String srcset = getAttribute("srcset", "");
     if (!srcset.isEmpty()) {
       // MJML formats srcset with newlines after each comma
       String formattedSrcset = srcset.replace(", ", ",\n");
-      img.append(" srcset=\"").append(formattedSrcset).append("\"");
+      img.append(" srcset=\"").append(escapeAttr(formattedSrcset)).append("\"");
     }
 
     String sizes = getAttribute("sizes", "");
     if (!sizes.isEmpty()) {
-      img.append(" sizes=\"").append(sizes).append("\"");
+      img.append(" sizes=\"").append(escapeAttr(sizes)).append("\"");
     }
 
     img.append(" style=\"").append(imgStyle).append("\"");
 
     String title = getAttribute("title", "");
     if (!title.isEmpty()) {
-      img.append(" title=\"").append(title).append("\"");
+      img.append(" title=\"").append(escapeAttr(title)).append("\"");
+    }
+
+    String usemap = getAttribute("usemap", "");
+    if (!usemap.isEmpty()) {
+      img.append(" usemap=\"").append(escapeAttr(usemap)).append("\"");
     }
 
     img.append(" width=\"").append(widthPx).append("\"");
@@ -122,10 +130,14 @@ public class MjImage extends BodyComponent {
     sb.append(">\n");
 
     if (!href.isEmpty()) {
-      sb.append("                                <a href=\"").append(href).append("\"");
-      sb.append(" target=\"").append(getAttribute("target", "_blank")).append("\"");
+      sb.append("                                <a href=\"").append(escapeAttr(href)).append("\"");
+      String rel = getAttribute("rel", "");
+      if (!rel.isEmpty()) {
+        sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
+      }
+      sb.append(" target=\"").append(escapeAttr(getAttribute("target", "_blank"))).append("\"");
       if (!title.isEmpty()) {
-        sb.append(" title=\"").append(title).append("\"");
+        sb.append(" title=\"").append(escapeAttr(title)).append("\"");
       }
       sb.append(">\n");
       sb.append("                                  ").append(img).append("\n");

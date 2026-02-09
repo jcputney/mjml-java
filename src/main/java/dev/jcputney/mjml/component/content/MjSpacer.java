@@ -16,7 +16,8 @@ public class MjSpacer extends BodyComponent {
   private static final Map<String, String> DEFAULTS = Map.ofEntries(
       Map.entry("height", "20px"),
       Map.entry("container-background-color", ""),
-      Map.entry("padding", "")
+      Map.entry("padding", ""),
+      Map.entry("vertical-align", "")
   );
 
   public MjSpacer(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {

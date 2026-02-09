@@ -187,36 +187,38 @@ public class MjNavbar extends BodyComponent {
 
   private String buildHamburgerCss() {
     int breakpoint = globalContext.getBreakpointPx() - 1;
-    return "noinput.mj-menu-checkbox {\n"
-        + "  display: block !important;\n"
-        + "  max-height: none !important;\n"
-        + "  visibility: visible !important;\n"
-        + "}\n"
-        + "\n"
-        + "@media only screen and (max-width:" + breakpoint + "px) {\n"
-        + "  .mj-menu-checkbox[type=\"checkbox\"]~.mj-inline-links {\n"
-        + "    display: none !important;\n"
-        + "  }\n"
-        + "\n"
-        + "  .mj-menu-checkbox[type=\"checkbox\"]:checked~.mj-inline-links,\n"
-        + "  .mj-menu-checkbox[type=\"checkbox\"]~.mj-menu-trigger {\n"
-        + "    display: block !important;\n"
-        + "    max-width: none !important;\n"
-        + "    max-height: none !important;\n"
-        + "    font-size: inherit !important;\n"
-        + "  }\n"
-        + "\n"
-        + "  .mj-menu-checkbox[type=\"checkbox\"]~.mj-inline-links>a {\n"
-        + "    display: block !important;\n"
-        + "  }\n"
-        + "\n"
-        + "  .mj-menu-checkbox[type=\"checkbox\"]:checked~.mj-menu-trigger .mj-menu-icon-close {\n"
-        + "    display: block !important;\n"
-        + "  }\n"
-        + "\n"
-        + "  .mj-menu-checkbox[type=\"checkbox\"]:checked~.mj-menu-trigger .mj-menu-icon-open {\n"
-        + "    display: none !important;\n"
-        + "  }\n"
-        + "}\n";
+    return """
+        noinput.mj-menu-checkbox {
+          display: block !important;
+          max-height: none !important;
+          visibility: visible !important;
+        }
+
+        @media only screen and (max-width:%dpx) {
+          .mj-menu-checkbox[type="checkbox"]~.mj-inline-links {
+            display: none !important;
+          }
+
+          .mj-menu-checkbox[type="checkbox"]:checked~.mj-inline-links,
+          .mj-menu-checkbox[type="checkbox"]~.mj-menu-trigger {
+            display: block !important;
+            max-width: none !important;
+            max-height: none !important;
+            font-size: inherit !important;
+          }
+
+          .mj-menu-checkbox[type="checkbox"]~.mj-inline-links>a {
+            display: block !important;
+          }
+
+          .mj-menu-checkbox[type="checkbox"]:checked~.mj-menu-trigger .mj-menu-icon-close {
+            display: block !important;
+          }
+
+          .mj-menu-checkbox[type="checkbox"]:checked~.mj-menu-trigger .mj-menu-icon-open {
+            display: none !important;
+          }
+        }
+        """.formatted(breakpoint);
   }
 }

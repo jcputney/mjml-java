@@ -152,21 +152,60 @@ public final class EntityTable {
   private EntityTable() {
   }
 
+  // Build a lookup map keyed by entity name (without & and ;) for single-pass scanning
+  private static final Map<String, String> ENTITY_BY_NAME = new HashMap<>();
+
+  static {
+    for (Map.Entry<String, String> entry : ENTITIES.entrySet()) {
+      // Strip leading & and trailing ; from key: "&nbsp;" -> "nbsp"
+      String key = entry.getKey();
+      String name = key.substring(1, key.length() - 1);
+      ENTITY_BY_NAME.put(name, entry.getValue());
+    }
+  }
+
   /**
    * Replaces all known HTML named entities in the input string with
    * their numeric character references. XML entities (&amp;amp;, &amp;lt;, &amp;gt;,
    * &amp;apos;, &amp;quot;) are left as-is since the XML parser handles them natively.
+   * <p>
+   * This is a single-pass O(n) implementation that scans for {@code &} characters
+   * and looks up the entity name in a hash map.
    */
   public static String replaceEntities(String input) {
     if (input == null || !input.contains("&")) {
       return input;
     }
-    String result = input;
-    for (Map.Entry<String, String> entry : ENTITIES.entrySet()) {
-      if (result.contains(entry.getKey())) {
-        result = result.replace(entry.getKey(), entry.getValue());
+    StringBuilder sb = new StringBuilder(input.length());
+    int pos = 0;
+    int len = input.length();
+    while (pos < len) {
+      int ampIdx = input.indexOf('&', pos);
+      if (ampIdx < 0) {
+        sb.append(input, pos, len);
+        break;
+      }
+      // Copy text before &
+      sb.append(input, pos, ampIdx);
+      // Look for ; within a reasonable range (max entity name ~10 chars)
+      int semiIdx = input.indexOf(';', ampIdx + 1);
+      if (semiIdx < 0 || semiIdx - ampIdx > 12) {
+        // Not a valid entity reference, copy the & and move on
+        sb.append('&');
+        pos = ampIdx + 1;
+        continue;
+      }
+      String name = input.substring(ampIdx + 1, semiIdx);
+      String replacement = ENTITY_BY_NAME.get(name);
+      if (replacement != null) {
+        sb.append(replacement);
+        pos = semiIdx + 1;
+      } else {
+        // Not a known entity (may be an XML entity like &amp;), keep as-is
+        sb.append('&');
+        pos = ampIdx + 1;
       }
     }
-    return result;
+    return sb.toString();
   }
 }

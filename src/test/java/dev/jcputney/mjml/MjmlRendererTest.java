@@ -162,7 +162,7 @@ class MjmlRendererTest {
 
   @Test
   void throwsOnNullInput() {
-    assertThrows(MjmlException.class, () -> MjmlRenderer.render(null));
+    assertThrows(MjmlException.class, () -> MjmlRenderer.render((String) null));
   }
 
   @Test

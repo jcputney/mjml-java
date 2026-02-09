@@ -92,6 +92,18 @@ public final class SocialNetworkRegistry {
     map.put("whatsapp", new NetworkInfo(
         "WhatsApp", "#25D366",
         "https://api.whatsapp.com/send?text=[[URL]]"));
+    map.put("mail", new NetworkInfo(
+        "Mail", "#000000",
+        "mailto:?body=[[URL]]"));
+    map.put("telegram", new NetworkInfo(
+        "Telegram", "#0088cc",
+        "https://t.me/share/url?url=[[URL]]"));
+    map.put("reddit", new NetworkInfo(
+        "Reddit", "#FF4500",
+        "https://www.reddit.com/submit?url=[[URL]]"));
+    map.put("line", new NetworkInfo(
+        "Line", "#00B900",
+        "https://social-plugins.line.me/lineit/share?url=[[URL]]"));
     NETWORKS = Collections.unmodifiableMap(map);
   }
 
@@ -139,12 +151,5 @@ public final class SocialNetworkRegistry {
     }
     String iconName = ICON_NAMES.getOrDefault(baseName, baseName);
     return ICON_BASE + iconName + ".png";
-  }
-
-  /**
-   * Returns the unmodifiable map of all registered networks.
-   */
-  public static Map<String, NetworkInfo> getAllNetworks() {
-    return NETWORKS;
   }
 }

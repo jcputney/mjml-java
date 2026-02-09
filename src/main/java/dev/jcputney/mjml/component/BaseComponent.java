@@ -51,12 +51,4 @@ public abstract sealed class BaseComponent permits BodyComponent, HeadComponent 
   public MjmlNode getNode() {
     return node;
   }
-
-  public GlobalContext getGlobalContext() {
-    return globalContext;
-  }
-
-  public RenderContext getRenderContext() {
-    return renderContext;
-  }
 }

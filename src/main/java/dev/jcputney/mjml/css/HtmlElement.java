@@ -1,7 +1,6 @@
 package dev.jcputney.mjml.css;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,6 +18,13 @@ public final class HtmlElement {
   private final Map<String, String> attributes;
   private final List<HtmlElement> children;
   private HtmlElement parent;
+
+  // Cached class names set (computed lazily)
+  private Set<String> cachedClassNames;
+  // Cached index in parent's children list (set during addChild)
+  private int cachedIndex = -1;
+  // Cached list of all descendants (computed lazily, tree is immutable after parse)
+  private List<HtmlElement> cachedDescendants;
 
   // Position in the original HTML string for in-place style modification
   private int tagStart = -1;   // position of '<'
@@ -49,11 +55,16 @@ public final class HtmlElement {
   }
 
   public Set<String> getClassNames() {
+    if (cachedClassNames != null) {
+      return cachedClassNames;
+    }
     String cls = attributes.get("class");
     if (cls == null || cls.isBlank()) {
-      return Set.of();
+      cachedClassNames = Set.of();
+    } else {
+      cachedClassNames = Set.of(cls.trim().split("\\s+"));
     }
-    return Set.of(cls.trim().split("\\s+"));
+    return cachedClassNames;
   }
 
   public String getStyle() {
@@ -74,6 +85,7 @@ public final class HtmlElement {
 
   public void addChild(HtmlElement child) {
     child.parent = this;
+    child.cachedIndex = children.size();
     children.add(child);
   }
 
@@ -84,7 +96,7 @@ public final class HtmlElement {
     if (parent == null) {
       return 0;
     }
-    return parent.children.indexOf(this);
+    return cachedIndex >= 0 ? cachedIndex : parent.children.indexOf(this);
   }
 
   /**
@@ -94,7 +106,7 @@ public final class HtmlElement {
     if (parent == null) {
       return null;
     }
-    int idx = parent.children.indexOf(this);
+    int idx = indexInParent();
     if (idx <= 0) {
       return null;
     }
@@ -117,10 +129,15 @@ public final class HtmlElement {
 
   /**
    * Returns all descendant elements in document order (depth-first).
+   * The result is cached since the tree is immutable after parsing.
    */
   public List<HtmlElement> allDescendants() {
+    if (cachedDescendants != null) {
+      return cachedDescendants;
+    }
     List<HtmlElement> result = new ArrayList<>();
     collectDescendants(this, result);
+    cachedDescendants = result;
     return result;
   }
 

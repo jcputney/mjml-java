@@ -1,7 +1,6 @@
 package dev.jcputney.mjml.context;
 
 import dev.jcputney.mjml.parser.MjmlNode;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -40,7 +39,7 @@ public final class AttributeResolver {
     // Level 2: mj-class attributes
     String mjClass = node.getAttribute("mj-class");
     if (mjClass != null) {
-      for (String className : mjClass.split("\\s+")) {
+      for (String className : dev.jcputney.mjml.util.CssUnitParser.WHITESPACE.split(mjClass)) {
         Map<String, String> classAttrs = globalContext.getClassAttributes(className);
         value = classAttrs.get(attributeName);
         if (value != null) {
@@ -65,36 +64,5 @@ public final class AttributeResolver {
 
     // Level 5: Component hardcoded defaults
     return componentDefaults.get(attributeName);
-  }
-
-  /**
-   * Resolves all attributes for a node, merging all cascade levels.
-   * Returns a map with all resolved values (higher priority overrides lower).
-   */
-  public static Map<String, String> resolveAll(MjmlNode node,
-      GlobalContext globalContext, Map<String, String> componentDefaults) {
-    Map<String, String> resolved = new LinkedHashMap<>();
-
-    // Start with component defaults (lowest priority)
-    resolved.putAll(componentDefaults);
-
-    // Layer 4: mj-all defaults
-    resolved.putAll(globalContext.getAllDefaults());
-
-    // Layer 3: Tag-specific defaults
-    resolved.putAll(globalContext.getDefaultAttributes(node.getTagName()));
-
-    // Layer 2: mj-class attributes
-    String mjClass = node.getAttribute("mj-class");
-    if (mjClass != null) {
-      for (String className : mjClass.split("\\s+")) {
-        resolved.putAll(globalContext.getClassAttributes(className));
-      }
-    }
-
-    // Layer 1: Inline attributes (highest priority)
-    resolved.putAll(node.getAttributes());
-
-    return resolved;
   }
 }

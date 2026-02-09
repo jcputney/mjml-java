@@ -1,6 +1,8 @@
 package dev.jcputney.mjml.parser;
 
 import dev.jcputney.mjml.MjmlException;
+import dev.jcputney.mjml.MjmlParseException;
+import dev.jcputney.mjml.MjmlValidationException;
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,6 +23,21 @@ import org.xml.sax.InputSource;
  */
 public final class MjmlParser {
 
+  private static final DocumentBuilderFactory FACTORY;
+
+  static {
+    try {
+      FACTORY = DocumentBuilderFactory.newInstance();
+      FACTORY.setNamespaceAware(false);
+      FACTORY.setValidating(false);
+      FACTORY.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      FACTORY.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      FACTORY.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    } catch (Exception e) {
+      throw new ExceptionInInitializerError(e);
+    }
+  }
+
   private MjmlParser() {
   }
 
@@ -31,7 +48,7 @@ public final class MjmlParser {
    */
   public static MjmlDocument parse(String mjmlSource) {
     if (mjmlSource == null || mjmlSource.isBlank()) {
-      throw new MjmlException("MJML source cannot be null or empty");
+      throw new MjmlParseException("MJML source cannot be null or empty");
     }
 
     String preprocessed = MjmlPreprocessor.preprocess(mjmlSource);
@@ -40,20 +57,12 @@ public final class MjmlParser {
 
   private static MjmlDocument parseXml(String xml) {
     try {
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      factory.setNamespaceAware(false);
-      factory.setValidating(false);
-      // Disable external entities for security
-      factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-      factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-      factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = FACTORY.newDocumentBuilder();
       Document document = builder.parse(new InputSource(new StringReader(xml)));
 
       Element root = document.getDocumentElement();
       if (!"mjml".equals(root.getTagName())) {
-        throw new MjmlException(
+        throw new MjmlParseException(
             "Root element must be <mjml>, found <" + root.getTagName() + ">");
       }
 
@@ -62,11 +71,20 @@ public final class MjmlParser {
     } catch (MjmlException e) {
       throw e;
     } catch (Exception e) {
-      throw new MjmlException("Failed to parse MJML: " + e.getMessage(), e);
+      throw new MjmlParseException("Failed to parse MJML: " + e.getMessage(), e);
     }
   }
 
+  private static final int DEFAULT_MAX_DEPTH = 100;
+
   private static MjmlNode convertElement(Element element) {
+    return convertElement(element, 0);
+  }
+
+  private static MjmlNode convertElement(Element element, int depth) {
+    if (depth > DEFAULT_MAX_DEPTH) {
+      throw new MjmlValidationException("Maximum nesting depth exceeded (" + DEFAULT_MAX_DEPTH + ")");
+    }
     MjmlNode node = new MjmlNode(element.getTagName());
 
     // Copy attributes
@@ -82,7 +100,7 @@ public final class MjmlParser {
       Node child = childNodes.item(i);
 
       switch (child.getNodeType()) {
-        case Node.ELEMENT_NODE -> node.addChild(convertElement((Element) child));
+        case Node.ELEMENT_NODE -> node.addChild(convertElement((Element) child, depth + 1));
         case Node.TEXT_NODE -> {
           String text = ((Text) child).getWholeText();
           if (!text.isBlank()) {

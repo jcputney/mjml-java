@@ -14,7 +14,7 @@ import java.nio.file.Path;
  *     .build();
  * }</pre>
  */
-public class FileSystemIncludeResolver implements IncludeResolver {
+public final class FileSystemIncludeResolver implements IncludeResolver {
 
   private final Path baseDir;
 
@@ -30,25 +30,24 @@ public class FileSystemIncludeResolver implements IncludeResolver {
   @Override
   public String resolve(String path) {
     if (path == null || path.isBlank()) {
-      throw new MjmlException("Include path cannot be empty");
+      throw new MjmlIncludeException("Include path cannot be empty");
     }
 
     Path resolved = baseDir.resolve(path).normalize();
 
     // Security: prevent path traversal outside base directory
     if (!resolved.startsWith(baseDir)) {
-      throw new MjmlException(
-          "Include path escapes base directory: " + path);
+      throw new MjmlIncludeException("Include path escapes base directory");
     }
 
     if (!Files.exists(resolved)) {
-      throw new MjmlException("Include file not found: " + resolved);
+      throw new MjmlIncludeException("Include file not found: " + path);
     }
 
     try {
       return Files.readString(resolved);
     } catch (IOException e) {
-      throw new MjmlException("Failed to read include file: " + resolved, e);
+      throw new MjmlIncludeException("Failed to read include file: " + path, e);
     }
   }
 }

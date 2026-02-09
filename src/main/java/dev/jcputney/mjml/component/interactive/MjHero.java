@@ -103,11 +103,11 @@ public class MjHero extends BodyComponent {
     if (!backgroundUrl.isEmpty()) {
       sb.append("<v:image style=\"border:0;");
       if (!height.isEmpty()) {
-        sb.append("height:").append(height).append(";");
+        sb.append("height:").append(escapeAttr(height)).append(";");
       }
       sb.append("mso-position-horizontal:center;position:absolute;top:0;width:")
           .append(containerWidth).append("px;z-index:-3;\" src=\"")
-          .append(backgroundUrl).append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
+          .append(escapeAttr(backgroundUrl)).append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
     }
     sb.append("<![endif]-->\n");
 
@@ -122,7 +122,7 @@ public class MjHero extends BodyComponent {
     // Main content td with background
     sb.append("            <td");
     if (!backgroundUrl.isEmpty()) {
-      sb.append(" background=\"").append(backgroundUrl).append("\"");
+      sb.append(" background=\"").append(escapeAttr(backgroundUrl)).append("\"");
     }
     sb.append(" style=\"");
     Map<String, String> tdStyles = new LinkedHashMap<>();
@@ -221,11 +221,11 @@ public class MjHero extends BodyComponent {
     if (!backgroundUrl.isEmpty()) {
       sb.append("<v:image style=\"border:0;");
       if (!bgHeight.isEmpty()) {
-        sb.append("height:").append(bgHeight).append(";");
+        sb.append("height:").append(escapeAttr(bgHeight)).append(";");
       }
       sb.append("mso-position-horizontal:center;position:absolute;top:0;width:")
           .append(containerWidth).append("px;z-index:-3;\" src=\"")
-          .append(backgroundUrl).append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
+          .append(escapeAttr(backgroundUrl)).append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
     }
     sb.append("<![endif]-->\n");
 
@@ -252,7 +252,7 @@ public class MjHero extends BodyComponent {
     // Main content td
     sb.append("            <td");
     if (!backgroundUrl.isEmpty()) {
-      sb.append(" background=\"").append(backgroundUrl).append("\"");
+      sb.append(" background=\"").append(escapeAttr(backgroundUrl)).append("\"");
     }
     sb.append(" style=\"");
     Map<String, String> tdStyles = new LinkedHashMap<>();

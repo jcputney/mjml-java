@@ -26,9 +26,19 @@ public final class HtmlSkeleton {
       lang = "und";
     }
 
+    // File-start content (mj-raw position="file-start")
+    for (String content : ctx.getFileStartContent()) {
+      sb.append(content).append("\n");
+    }
+
+    String dir = ctx.getConfiguration().getDirection();
+    if (dir == null || dir.isEmpty()) {
+      dir = "auto";
+    }
+
     // DOCTYPE + html tag
     sb.append("<!doctype html>\n");
-    sb.append("<html lang=\"").append(lang).append("\" dir=\"auto\"");
+    sb.append("<html lang=\"").append(lang).append("\" dir=\"").append(dir).append("\"");
     sb.append(" xmlns=\"http://www.w3.org/1999/xhtml\"");
     sb.append(" xmlns:v=\"urn:schemas-microsoft-com:vml\"");
     sb.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n");
@@ -108,7 +118,9 @@ public final class HtmlSkeleton {
 
     // Head comments (preserved from MJML source)
     for (String comment : ctx.getHeadComments()) {
-      sb.append("  <!-- ").append(comment).append(" -->\n");
+      // Strip -- sequences to prevent HTML comment injection
+      String safeComment = comment.replace("--", "");
+      sb.append("  <!-- ").append(safeComment).append(" -->\n");
     }
 
     sb.append("</head>\n");
@@ -147,12 +159,14 @@ public final class HtmlSkeleton {
     // Wrap link tags + @import in non-MSO conditional
     sb.append("  <!--[if !mso]><!-->\n");
     for (FontDef font : ctx.getFonts()) {
-      sb.append("  <link href=\"").append(font.href())
+      sb.append("  <link href=\"").append(escapeHtml(font.href()))
           .append("\" rel=\"stylesheet\" type=\"text/css\">\n");
     }
     sb.append("  <style type=\"text/css\">\n");
     for (FontDef font : ctx.getFonts()) {
-      sb.append("    @import url(").append(font.href()).append(");\n");
+      // Strip characters that could break out of @import url()
+      String safeUrl = font.href().replaceAll("[\"<>)]", "");
+      sb.append("    @import url(").append(safeUrl).append(");\n");
     }
     sb.append("\n");
     sb.append("  </style>\n");
@@ -160,38 +174,40 @@ public final class HtmlSkeleton {
   }
 
   private static void appendBaseStyles(StringBuilder sb) {
-    sb.append("    #outlook a {\n");
-    sb.append("      padding: 0;\n");
-    sb.append("    }\n");
-    sb.append("\n");
-    sb.append("    body {\n");
-    sb.append("      margin: 0;\n");
-    sb.append("      padding: 0;\n");
-    sb.append("      -webkit-text-size-adjust: 100%;\n");
-    sb.append("      -ms-text-size-adjust: 100%;\n");
-    sb.append("    }\n");
-    sb.append("\n");
-    sb.append("    table,\n");
-    sb.append("    td {\n");
-    sb.append("      border-collapse: collapse;\n");
-    sb.append("      mso-table-lspace: 0pt;\n");
-    sb.append("      mso-table-rspace: 0pt;\n");
-    sb.append("    }\n");
-    sb.append("\n");
-    sb.append("    img {\n");
-    sb.append("      border: 0;\n");
-    sb.append("      height: auto;\n");
-    sb.append("      line-height: 100%;\n");
-    sb.append("      outline: none;\n");
-    sb.append("      text-decoration: none;\n");
-    sb.append("      -ms-interpolation-mode: bicubic;\n");
-    sb.append("    }\n");
-    sb.append("\n");
-    sb.append("    p {\n");
-    sb.append("      display: block;\n");
-    sb.append("      margin: 13px 0;\n");
-    sb.append("    }\n");
-    sb.append("\n");
+    sb.append("""
+            #outlook a {
+              padding: 0;
+            }
+
+            body {
+              margin: 0;
+              padding: 0;
+              -webkit-text-size-adjust: 100%;
+              -ms-text-size-adjust: 100%;
+            }
+
+            table,
+            td {
+              border-collapse: collapse;
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+            }
+
+            img {
+              border: 0;
+              height: auto;
+              line-height: 100%;
+              outline: none;
+              text-decoration: none;
+              -ms-interpolation-mode: bicubic;
+            }
+
+            p {
+              display: block;
+              margin: 13px 0;
+            }
+
+        """);
   }
 
   private static void appendMediaQueries(StringBuilder sb, GlobalContext ctx) {

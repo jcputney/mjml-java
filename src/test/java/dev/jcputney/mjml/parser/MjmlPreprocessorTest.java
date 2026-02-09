@@ -2,6 +2,7 @@ package dev.jcputney.mjml.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,7 @@ class MjmlPreprocessorTest {
 
   @Test
   void handlesNullInput() {
-    assertEquals(null, MjmlPreprocessor.preprocess(null));
+    assertThrows(IllegalArgumentException.class, () -> MjmlPreprocessor.preprocess(null));
     assertEquals("", MjmlPreprocessor.preprocess(""));
   }
 }

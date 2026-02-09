@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.content;
 
+import static dev.jcputney.mjml.util.CssUnitParser.WHITESPACE;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
@@ -36,9 +38,11 @@ public class MjButton extends BodyComponent {
       Map.entry("line-height", "120%"),
       Map.entry("letter-spacing", ""),
       Map.entry("padding", "10px 25px"),
+      Map.entry("rel", ""),
       Map.entry("text-align", ""),
       Map.entry("text-decoration", "none"),
       Map.entry("text-transform", "none"),
+      Map.entry("target", "_blank"),
       Map.entry("vertical-align", "middle"),
       Map.entry("width", "")
   );
@@ -123,16 +127,20 @@ public class MjButton extends BodyComponent {
     sb.append("                          <tbody>\n");
     sb.append("                            <tr>\n");
     sb.append("                              <td align=\"center\"");
-    sb.append(" bgcolor=\"").append(backgroundColor).append("\"");
+    sb.append(" bgcolor=\"").append(escapeAttr(backgroundColor)).append("\"");
     sb.append(" role=\"presentation\"");
     sb.append(" style=\"").append(innerTableStyle).append("\"");
-    sb.append(" valign=\"").append(verticalAlign).append("\">\n");
+    sb.append(" valign=\"").append(escapeAttr(verticalAlign)).append("\">\n");
 
     // Anchor styled as button (no rel attribute)
-    sb.append("                                <a href=\"").append(href).append("\"");
+    sb.append("                                <a href=\"").append(escapeAttr(href)).append("\"");
+    String rel = getAttribute("rel", "");
+    if (!rel.isEmpty()) {
+      sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
+    }
     sb.append(" style=\"").append(anchorStyle).append("\"");
-    sb.append(" target=\"_blank\">");
-    sb.append(" ").append(node.getInnerHtml().replaceAll("\\s+", " ").trim()).append(" ");
+    sb.append(" target=\"").append(escapeAttr(getAttribute("target", "_blank"))).append("\">");
+    sb.append(" ").append(WHITESPACE.matcher(node.getInnerHtml()).replaceAll(" ").trim()).append(" ");
     sb.append("</a>\n");
 
     sb.append("                              </td>\n");

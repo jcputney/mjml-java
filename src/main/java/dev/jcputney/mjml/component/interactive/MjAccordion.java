@@ -30,72 +30,73 @@ public class MjAccordion extends BodyComponent {
       Map.entry("padding", "10px 25px")
   );
 
-  static final String ACCORDION_CSS =
-      "noinput.mj-accordion-checkbox {\n"
-      + "  display: block !important;\n"
-      + "}\n"
-      + "\n"
-      + "@media yahoo,\n"
-      + "only screen and (min-width:0) {\n"
-      + "  .mj-accordion-element {\n"
-      + "    display: block;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox,\n"
-      + "  .mj-accordion-less {\n"
-      + "    display: none !important;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox+* .mj-accordion-title {\n"
-      + "    cursor: pointer;\n"
-      + "    touch-action: manipulation;\n"
-      + "    -webkit-user-select: none;\n"
-      + "    -moz-user-select: none;\n"
-      + "    user-select: none;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox+* .mj-accordion-content {\n"
-      + "    overflow: hidden;\n"
-      + "    display: none;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox+* .mj-accordion-more {\n"
-      + "    display: block !important;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox:checked+* .mj-accordion-content {\n"
-      + "    display: block;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox:checked+* .mj-accordion-more {\n"
-      + "    display: none !important;\n"
-      + "  }\n"
-      + "\n"
-      + "  input.mj-accordion-checkbox:checked+* .mj-accordion-less {\n"
-      + "    display: block !important;\n"
-      + "  }\n"
-      + "}\n"
-      + "\n"
-      + ".moz-text-html input.mj-accordion-checkbox+* .mj-accordion-title {\n"
-      + "  cursor: auto;\n"
-      + "  touch-action: auto;\n"
-      + "  -webkit-user-select: auto;\n"
-      + "  -moz-user-select: auto;\n"
-      + "  user-select: auto;\n"
-      + "}\n"
-      + "\n"
-      + ".moz-text-html input.mj-accordion-checkbox+* .mj-accordion-content {\n"
-      + "  overflow: hidden;\n"
-      + "  display: block;\n"
-      + "}\n"
-      + "\n"
-      + ".moz-text-html input.mj-accordion-checkbox+* .mj-accordion-ico {\n"
-      + "  display: none;\n"
-      + "}\n"
-      + "\n"
-      + "@goodbye {\n"
-      + "  @gmail\n"
-      + "}\n";
+  private static final String ACCORDION_CSS = """
+      noinput.mj-accordion-checkbox {
+        display: block !important;
+      }
+
+      @media yahoo,
+      only screen and (min-width:0) {
+        .mj-accordion-element {
+          display: block;
+        }
+
+        input.mj-accordion-checkbox,
+        .mj-accordion-less {
+          display: none !important;
+        }
+
+        input.mj-accordion-checkbox+* .mj-accordion-title {
+          cursor: pointer;
+          touch-action: manipulation;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          user-select: none;
+        }
+
+        input.mj-accordion-checkbox+* .mj-accordion-content {
+          overflow: hidden;
+          display: none;
+        }
+
+        input.mj-accordion-checkbox+* .mj-accordion-more {
+          display: block !important;
+        }
+
+        input.mj-accordion-checkbox:checked+* .mj-accordion-content {
+          display: block;
+        }
+
+        input.mj-accordion-checkbox:checked+* .mj-accordion-more {
+          display: none !important;
+        }
+
+        input.mj-accordion-checkbox:checked+* .mj-accordion-less {
+          display: block !important;
+        }
+      }
+
+      .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-title {
+        cursor: auto;
+        touch-action: auto;
+        -webkit-user-select: auto;
+        -moz-user-select: auto;
+        user-select: auto;
+      }
+
+      .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-content {
+        overflow: hidden;
+        display: block;
+      }
+
+      .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-ico {
+        display: none;
+      }
+
+      @goodbye {
+        @gmail
+      }
+      """;
 
   private final ComponentRegistry registry;
 

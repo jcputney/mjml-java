@@ -64,7 +64,7 @@ public class MjBody extends BodyComponent {
     // aria-label from mj-title if set
     String title = globalContext.getTitle();
     if (title != null && !title.isEmpty()) {
-      sb.append(" aria-label=\"").append(title).append("\"");
+      sb.append(" aria-label=\"").append(escapeAttr(title)).append("\"");
     }
 
     sb.append(" aria-roledescription=\"email\"");
@@ -72,17 +72,17 @@ public class MjBody extends BodyComponent {
     // style attribute (always emit, even if empty)
     String style = "";
     if (!bgColor.isEmpty()) {
-      style = "background-color:" + bgColor + ";";
+      style = "background-color:" + escapeAttr(bgColor) + ";";
     }
     sb.append(" style=\"").append(style).append("\"");
 
     sb.append(" role=\"article\"");
-    sb.append(" lang=\"").append(lang).append("\"");
+    sb.append(" lang=\"").append(escapeAttr(lang)).append("\"");
     sb.append(" dir=\"auto\"");
 
     String cssClass = getAttribute("css-class", "");
     if (!cssClass.isEmpty()) {
-      sb.append(" class=\"").append(cssClass).append("\"");
+      sb.append(" class=\"").append(escapeAttr(cssClass)).append("\"");
     }
     sb.append(">\n");
 
@@ -107,37 +107,6 @@ public class MjBody extends BodyComponent {
 
     sb.append("  </div>\n");
 
-    // Merge adjacent MSO section transitions: when a section MSO close is
-    // immediately followed by a section MSO open (no content between),
-    // merge them onto a single conditional line.
-    return mergeMsoSectionTransitions(sb.toString());
-  }
-
-  /**
-   * Merges adjacent MSO conditional section transitions in the rendered body HTML.
-   *
-   * <p>Each mj-section renders its own self-contained MSO table wrapper:
-   * {@code <!--[if mso | IE]><table ...>...<![endif]-->}. When two sections
-   * are adjacent, this produces a close-then-open pattern:
-   * {@code ...<![endif]-->} followed by {@code <!--[if mso | IE]><table ...>}.
-   *
-   * <p>The official MJML renderer merges these into a single conditional block
-   * by removing the intermediate {@code <![endif]-->...<!--[if mso | IE]>},
-   * producing: {@code ...</td></tr></table><table ...>}. This keeps adjacent
-   * sections inside a single MSO conditional, which is semantically equivalent
-   * but produces cleaner output. Both VML and non-VML transitions are handled.
-   */
-  private static String mergeMsoSectionTransitions(String html) {
-    // Merge simple section transitions (no VML background)
-    html = html.replace(
-        "<!--[if mso | IE]></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
-        "<!--[if mso | IE]></td></tr></table><table "
-    );
-    // Merge VML background section transitions (section ends with v:rect close)
-    html = html.replace(
-        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
-        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><table "
-    );
-    return html;
+    return sb.toString();
   }
 }

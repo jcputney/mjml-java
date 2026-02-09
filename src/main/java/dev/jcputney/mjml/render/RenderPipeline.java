@@ -2,9 +2,9 @@ package dev.jcputney.mjml.render;
 
 import dev.jcputney.mjml.MjmlConfiguration;
 import dev.jcputney.mjml.MjmlRenderResult;
+import dev.jcputney.mjml.MjmlValidationException;
 import dev.jcputney.mjml.css.CssInliner;
 import dev.jcputney.mjml.component.BaseComponent;
-import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.component.HeadComponent;
 import dev.jcputney.mjml.component.body.MjBody;
@@ -38,14 +38,15 @@ import dev.jcputney.mjml.component.interactive.MjNavbar;
 import dev.jcputney.mjml.component.interactive.MjNavbarLink;
 import dev.jcputney.mjml.component.interactive.MjSocial;
 import dev.jcputney.mjml.component.interactive.MjSocialElement;
-import dev.jcputney.mjml.context.AttributeResolver;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
+import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.parser.IncludeProcessor;
 import dev.jcputney.mjml.parser.MjmlDocument;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.parser.MjmlParser;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Orchestrates the 7-phase rendering pipeline:
@@ -59,22 +60,37 @@ import java.util.Map;
  *   <li>Assemble skeleton + CSS inlining</li>
  * </ol>
  */
-public class RenderPipeline {
+public final class RenderPipeline {
+
+  private static final Logger LOG = Logger.getLogger(RenderPipeline.class.getName());
 
   private final MjmlConfiguration configuration;
   private final ComponentRegistry registry;
+  private final FontScanner fontScanner;
 
   public RenderPipeline(MjmlConfiguration configuration) {
     this.configuration = configuration;
     this.registry = createRegistry();
+    this.registry.freeze();
+    this.fontScanner = new FontScanner(configuration, registry);
   }
 
   /**
    * Renders MJML source to a complete HTML document.
    */
   public MjmlRenderResult render(String mjmlSource) {
+    // Validate input size
+    int maxSize = configuration.getMaxInputSize();
+    if (mjmlSource != null && mjmlSource.length() > maxSize) {
+      throw new MjmlValidationException(
+          "Input size " + mjmlSource.length() + " exceeds maximum allowed size " + maxSize);
+    }
+
+    LOG.fine("Starting render pipeline");
+
     // Phase 1 & 2: Preprocess and parse
     MjmlDocument document = MjmlParser.parse(mjmlSource);
+    LOG.fine("Parsed MJML document");
 
     // Create global context
     GlobalContext globalContext = new GlobalContext(configuration);
@@ -89,10 +105,18 @@ public class RenderPipeline {
     processHead(document, globalContext);
 
     // Phase 4b: Auto-register default fonts used by components
-    registerDefaultFonts(document, globalContext);
+    fontScanner.registerDefaultFonts(document, globalContext);
 
     // Phase 5 & 6: Render body (attribute cascade happens during rendering)
     String bodyHtml = renderBody(document, globalContext);
+
+    // Phase 6a: Merge adjacent MSO section transitions
+    bodyHtml = mergeMsoSectionTransitions(bodyHtml);
+
+    // Phase 6b: Apply mj-html-attributes to rendered body
+    if (!globalContext.getHtmlAttributes().isEmpty()) {
+      bodyHtml = HtmlAttributeApplier.apply(bodyHtml, globalContext);
+    }
 
     // Phase 7: Assemble skeleton
     String html = HtmlSkeleton.assemble(bodyHtml, globalContext);
@@ -116,7 +140,7 @@ public class RenderPipeline {
       html = html.replace(" />", ">");
     }
 
-    return new MjmlRenderResult(html, globalContext.getTitle());
+    return new MjmlRenderResult(html, globalContext.getTitle(), globalContext.getPreviewText());
   }
 
   private void processHead(MjmlDocument document, GlobalContext globalContext) {
@@ -153,13 +177,30 @@ public class RenderPipeline {
 
     // Parse body width
     String widthAttr = body.getAttribute("width", "600px");
-    int containerWidth = parsePixels(widthAttr, 600);
+    int containerWidth = CssUnitParser.parsePixels(widthAttr, 600);
     globalContext.setContainerWidth(containerWidth);
 
     RenderContext renderContext = new RenderContext(containerWidth);
 
     MjBody mjBody = new MjBody(body, globalContext, renderContext, registry);
     return mjBody.render();
+  }
+
+  /**
+   * Merges adjacent MSO conditional section transitions in the rendered body HTML.
+   * When two sections are adjacent, this merges the close/open pattern into a single
+   * conditional block.
+   */
+  private static String mergeMsoSectionTransitions(String html) {
+    html = html.replace(
+        "<!--[if mso | IE]></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
+        "<!--[if mso | IE]></td></tr></table><table "
+    );
+    html = html.replace(
+        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
+        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><table "
+    );
+    return html;
   }
 
   private ComponentRegistry createRegistry() {
@@ -225,51 +266,5 @@ public class RenderPipeline {
     }
 
     return reg;
-  }
-
-  private void registerDefaultFonts(MjmlDocument document, GlobalContext globalContext) {
-    MjmlNode body = document.getBody();
-    if (body == null) {
-      return;
-    }
-    scanFontsRecursive(body, globalContext);
-  }
-
-  private void scanFontsRecursive(MjmlNode node, GlobalContext globalContext) {
-    String tagName = node.getTagName();
-    if (tagName != null && !tagName.startsWith("#")) {
-      // Get the component's default attributes to resolve font-family
-      Map<String, String> defaults = getComponentDefaults(tagName);
-      String fontFamily = AttributeResolver.resolve(node, "font-family", globalContext, defaults);
-      if (fontFamily != null && !fontFamily.isEmpty()) {
-        DefaultFontRegistry.registerUsedFonts(fontFamily, globalContext);
-      }
-    }
-    for (MjmlNode child : node.getChildren()) {
-      scanFontsRecursive(child, globalContext);
-    }
-  }
-
-  private Map<String, String> getComponentDefaults(String tagName) {
-    RenderContext dummyContext = new RenderContext(600);
-    GlobalContext dummyGlobalContext = new GlobalContext(configuration);
-    try {
-      BaseComponent component = registry.createComponent(
-          new MjmlNode(tagName), dummyGlobalContext, dummyContext);
-      return component.getDefaultAttributes();
-    } catch (Exception e) {
-      return Map.of();
-    }
-  }
-
-  private static int parsePixels(String value, int defaultValue) {
-    if (value == null || value.isEmpty()) {
-      return defaultValue;
-    }
-    try {
-      return Integer.parseInt(value.replace("px", "").trim());
-    } catch (NumberFormatException e) {
-      return defaultValue;
-    }
   }
 }

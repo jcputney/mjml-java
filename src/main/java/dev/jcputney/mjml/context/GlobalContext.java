@@ -1,7 +1,9 @@
 package dev.jcputney.mjml.context;
 
 import dev.jcputney.mjml.MjmlConfiguration;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,6 +29,10 @@ import java.util.Set;
  * <p>This decomposition would clarify which concerns each component depends on
  * and prevent head components from accidentally coupling to rendering state.
  * GlobalContext would become a thin facade delegating to the three sub-contexts.
+ *
+ * <p><strong>Thread safety:</strong> This class is <em>not</em> thread-safe. Each
+ * {@link dev.jcputney.mjml.render.RenderPipeline} creates its own instance, so
+ * concurrent renders do not share a GlobalContext.</p>
  */
 public class GlobalContext {
 
@@ -47,6 +53,7 @@ public class GlobalContext {
   private int containerWidth = 600;
   private String bodyBackgroundColor = "";
   private final List<String> headComments = new ArrayList<>();
+  private final List<String> fileStartContent = new ArrayList<>();
 
   public GlobalContext(MjmlConfiguration configuration) {
     this.configuration = configuration;
@@ -77,7 +84,7 @@ public class GlobalContext {
   }
 
   public int getBreakpointPx() {
-    return parsePixels(breakpoint, 480);
+    return CssUnitParser.parsePixels(breakpoint, 480);
   }
 
   public void setBreakpoint(String breakpoint) {
@@ -108,7 +115,7 @@ public class GlobalContext {
   }
 
   public Set<FontDef> getFonts() {
-    return fonts;
+    return Collections.unmodifiableSet(fonts);
   }
 
   public void registerFontOverride(String name, String href) {
@@ -120,7 +127,7 @@ public class GlobalContext {
   }
 
   public Map<String, String> getFontUrlOverrides() {
-    return fontUrlOverrides;
+    return Collections.unmodifiableMap(fontUrlOverrides);
   }
 
   // Styles
@@ -141,7 +148,7 @@ public class GlobalContext {
   }
 
   public List<String> getComponentStyles() {
-    return componentStyles;
+    return Collections.unmodifiableList(componentStyles);
   }
 
   public void addInlineStyle(String css) {
@@ -151,11 +158,11 @@ public class GlobalContext {
   }
 
   public List<String> getStyles() {
-    return styles;
+    return Collections.unmodifiableList(styles);
   }
 
   public List<String> getInlineStyles() {
-    return inlineStyles;
+    return Collections.unmodifiableList(inlineStyles);
   }
 
   // Default attributes (mj-all, mj-section, etc.)
@@ -186,7 +193,7 @@ public class GlobalContext {
   }
 
   public Set<MediaQuery> getMediaQueries() {
-    return mediaQueries;
+    return Collections.unmodifiableSet(mediaQueries);
   }
 
   public boolean isFluidOnMobileUsed() {
@@ -203,7 +210,18 @@ public class GlobalContext {
   }
 
   public List<String> getHeadComments() {
-    return headComments;
+    return Collections.unmodifiableList(headComments);
+  }
+
+  // File-start content (mj-raw position="file-start")
+  public void addFileStartContent(String content) {
+    if (content != null && !content.isEmpty()) {
+      fileStartContent.add(content);
+    }
+  }
+
+  public List<String> getFileStartContent() {
+    return Collections.unmodifiableList(fileStartContent);
   }
 
   // HTML attributes
@@ -212,19 +230,7 @@ public class GlobalContext {
   }
 
   public Map<String, Map<String, String>> getHtmlAttributes() {
-    return htmlAttributes;
-  }
-
-  // Helpers
-  private static int parsePixels(String value, int defaultValue) {
-    if (value == null || value.isEmpty()) {
-      return defaultValue;
-    }
-    try {
-      return Integer.parseInt(value.replace("px", "").trim());
-    } catch (NumberFormatException e) {
-      return defaultValue;
-    }
+    return Collections.unmodifiableMap(htmlAttributes);
   }
 
   /**

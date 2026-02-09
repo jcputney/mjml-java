@@ -2,10 +2,12 @@ package dev.jcputney.mjml.parser;
 
 import dev.jcputney.mjml.IncludeResolver;
 import dev.jcputney.mjml.MjmlException;
+import dev.jcputney.mjml.MjmlIncludeException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Processes mj-include elements in the parsed MJML tree.
@@ -22,6 +24,7 @@ import java.util.Set;
  */
 public final class IncludeProcessor {
 
+  private static final Logger LOG = Logger.getLogger(IncludeProcessor.class.getName());
   private static final int MAX_INCLUDE_DEPTH = 50;
 
   private final IncludeResolver resolver;
@@ -55,22 +58,22 @@ public final class IncludeProcessor {
 
   private void resolveInclude(MjmlNode includeNode, Set<String> visitedPaths, int depth) {
     if (depth >= MAX_INCLUDE_DEPTH) {
-      throw new MjmlException("Maximum include depth exceeded (" + MAX_INCLUDE_DEPTH
+      throw new MjmlIncludeException("Maximum include depth exceeded (" + MAX_INCLUDE_DEPTH
           + "). Possible circular include.");
     }
 
     String path = includeNode.getAttribute("path");
     if (path == null || path.isBlank()) {
-      throw new MjmlException("mj-include requires a 'path' attribute");
+      throw new MjmlIncludeException("mj-include requires a 'path' attribute");
     }
 
     // Cycle detection
     if (visitedPaths.contains(path)) {
-      throw new MjmlException("Circular include detected: " + path
-          + " (include chain: " + visitedPaths + ")");
+      throw new MjmlIncludeException("Circular include detected for path: " + path);
     }
 
     String type = includeNode.getAttribute("type", "mjml");
+    LOG.fine(() -> "Resolving mj-include path=" + path + " type=" + type + " depth=" + depth);
     String content = resolver.resolve(path);
 
     Set<String> newVisited = new HashSet<>(visitedPaths);
@@ -80,7 +83,7 @@ public final class IncludeProcessor {
       case "mjml" -> resolveAsMjml(includeNode, content, newVisited, depth);
       case "html" -> resolveAsHtml(includeNode, content);
       case "css" -> resolveAsCss(includeNode, content);
-      default -> throw new MjmlException("Unknown mj-include type: " + type);
+      default -> throw new MjmlIncludeException("Unknown mj-include type: " + type);
     }
   }
 

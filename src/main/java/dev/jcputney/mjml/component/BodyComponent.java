@@ -5,6 +5,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlEscaper;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import java.util.Map;
  * and style building.
  */
 public abstract non-sealed class BodyComponent extends BaseComponent {
+
+  private CssBoxModel cachedBoxModel;
 
   protected BodyComponent(MjmlNode node, GlobalContext globalContext,
       RenderContext renderContext) {
@@ -36,14 +39,18 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
 
   /**
    * Returns the box model for this component based on its padding and border attributes.
+   * The result is cached for repeated access within the same render call.
    */
   public CssBoxModel getBoxModel() {
-    return CssBoxModel.fromAttributes(
-        getAttribute("padding", "0"),
-        getAttribute("border", "none"),
-        getAttribute("border-left", ""),
-        getAttribute("border-right", "")
-    );
+    if (cachedBoxModel == null) {
+      cachedBoxModel = CssBoxModel.fromAttributes(
+          getAttribute("padding", "0"),
+          getAttribute("border", "none"),
+          getAttribute("border-left", ""),
+          getAttribute("border-right", "")
+      );
+    }
+    return cachedBoxModel;
   }
 
   /**
@@ -64,15 +71,32 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
 
   /**
    * Helper to build HTML attributes string from a map.
+   * When sanitizeOutput is enabled, attribute values are HTML-escaped.
    */
   protected String buildAttributes(Map<String, String> attrs) {
+    boolean sanitize = globalContext.getConfiguration().isSanitizeOutput();
     StringBuilder sb = new StringBuilder();
     for (Map.Entry<String, String> entry : attrs.entrySet()) {
       if (entry.getValue() != null) {
-        sb.append(' ').append(entry.getKey()).append("=\"").append(entry.getValue()).append('"');
+        String value = sanitize ? HtmlEscaper.escapeAttributeValue(entry.getValue())
+            : entry.getValue();
+        sb.append(' ').append(entry.getKey()).append("=\"").append(value).append('"');
       }
     }
     return sb.toString();
+  }
+
+  /**
+   * Escapes an attribute value for safe HTML interpolation when sanitizeOutput is enabled.
+   * Use this for attribute values that are directly interpolated into HTML via sb.append()
+   * rather than going through buildAttributes().
+   */
+  protected String escapeAttr(String value) {
+    if (value == null) {
+      return "";
+    }
+    return globalContext.getConfiguration().isSanitizeOutput()
+        ? HtmlEscaper.escapeAttributeValue(value) : value;
   }
 
   /**
@@ -94,21 +118,6 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
       }
     }
     return sb.toString();
-  }
-
-  /**
-   * Returns a map with ordered style entries for the given style category.
-   * Subclasses override this to define style mappings.
-   */
-  protected Map<String, String> getStyles(String name) {
-    return Map.of();
-  }
-
-  /**
-   * Builds a style string for the given style category.
-   */
-  protected String buildStyleString(String name) {
-    return buildStyle(getStyles(name));
   }
 
   /**

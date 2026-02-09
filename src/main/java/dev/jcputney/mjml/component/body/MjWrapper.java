@@ -7,10 +7,7 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.render.VmlHelper;
-import dev.jcputney.mjml.util.BackgroundCssHelper;
-import dev.jcputney.mjml.util.BackgroundPositionHelper;
 import dev.jcputney.mjml.util.CssBoxModel;
-import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,7 +19,7 @@ import java.util.Map;
  * allowing a shared background color/image across sections.
  * Each child section stacks vertically within the wrapper.
  */
-public class MjWrapper extends BodyComponent {
+public class MjWrapper extends AbstractSectionComponent {
 
   private static final Map<String, String> DEFAULTS = Map.ofEntries(
       Map.entry("background-color", ""),
@@ -43,12 +40,9 @@ public class MjWrapper extends BodyComponent {
       Map.entry("text-align", "center")
   );
 
-  private final ComponentRegistry registry;
-
   public MjWrapper(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
       ComponentRegistry registry) {
-    super(node, globalContext, renderContext);
-    this.registry = registry;
+    super(node, globalContext, renderContext, registry);
   }
 
   @Override
@@ -62,32 +56,12 @@ public class MjWrapper extends BodyComponent {
   }
 
   @Override
-  public CssBoxModel getBoxModel() {
-    CssBoxModel base = super.getBoxModel();
-    String pt = getAttribute("padding-top", "");
-    String pr = getAttribute("padding-right", "");
-    String pb = getAttribute("padding-bottom", "");
-    String pl = getAttribute("padding-left", "");
-    double padTop = !pt.isEmpty() ? CssUnitParser.parsePx(pt, 0) : base.paddingTop();
-    double padRight = !pr.isEmpty() ? CssUnitParser.parsePx(pr, 0) : base.paddingRight();
-    double padBottom = !pb.isEmpty() ? CssUnitParser.parsePx(pb, 0) : base.paddingBottom();
-    double padLeft = !pl.isEmpty() ? CssUnitParser.parsePx(pl, 0) : base.paddingLeft();
-    return new CssBoxModel(padTop, padRight, padBottom, padLeft,
-        base.borderLeftWidth(), base.borderRightWidth());
-  }
-
-  @Override
   public String render() {
     boolean isFullWidth = "full-width".equals(getAttribute("full-width"));
     if (isFullWidth) {
       return renderFullWidth();
     }
     return renderNormal();
-  }
-
-  private boolean hasBackgroundUrl() {
-    String url = getAttribute("background-url", "");
-    return !url.isEmpty();
   }
 
   private String renderNormal() {
@@ -100,11 +74,11 @@ public class MjWrapper extends BodyComponent {
 
     // MSO wrapper table
     sb.append("    <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
-        .append(getCssClass())
+        .append(escapeAttr(getCssClass()))
         .append("\" role=\"presentation\" style=\"width:").append(containerWidth)
         .append("px;\" width=\"").append(containerWidth).append("\" ");
     if (hasBg) {
-      sb.append("bgcolor=\"").append(bgColor).append("\" ");
+      sb.append("bgcolor=\"").append(escapeAttr(bgColor)).append("\" ");
     }
     sb.append("><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">");
 
@@ -115,14 +89,14 @@ public class MjWrapper extends BodyComponent {
       sb.append("    <div style=\"").append(buildBgImageDivStyle()).append("\">\n");
       sb.append("      <div style=\"line-height:0;font-size:0;\">\n");
       // Inner table with background attribute
-      sb.append("        <table align=\"center\" background=\"").append(bgUrl)
+      sb.append("        <table align=\"center\" background=\"").append(escapeAttr(bgUrl))
           .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
       sb.append(" style=\"").append(buildBgImageTableStyle()).append("\"");
       sb.append(">\n");
     } else {
       sb.append("<![endif]-->\n");
       // Main wrapper div
-      sb.append("    <div style=\"").append(buildWrapperStyle()).append("\">\n");
+      sb.append("    <div style=\"").append(buildOuterDivStyle()).append("\">\n");
       // Inner table
       sb.append("      <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
       sb.append(" style=\"").append(buildInnerTableStyle()).append("\"");
@@ -171,11 +145,11 @@ public class MjWrapper extends BodyComponent {
 
     // MSO inner table for width constraint
     sb.append("            <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
-        .append(getCssClass())
+        .append(escapeAttr(getCssClass()))
         .append("\" role=\"presentation\" style=\"width:").append(containerWidth)
         .append("px;\" width=\"").append(containerWidth).append("\" ");
     if (hasBg) {
-      sb.append("bgcolor=\"").append(bgColor).append("\" ");
+      sb.append("bgcolor=\"").append(escapeAttr(bgColor)).append("\" ");
     }
     sb.append("><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
 
@@ -277,86 +251,10 @@ public class MjWrapper extends BodyComponent {
     return sections;
   }
 
-  private String getCssClass() {
-    return getAttribute("css-class", "");
-  }
-
-  // --- Background image support ---
-
-  private String resolveBackgroundPosition() {
-    String posX = getAttribute("background-position-x", "");
-    String posY = getAttribute("background-position-y", "");
-    if (!posX.isEmpty() && !posY.isEmpty()) {
-      return posX + " " + posY;
-    }
-    String pos = getAttribute("background-position", "top center");
-    return BackgroundPositionHelper.normalize(pos);
-  }
-
   private String buildVmlRect(String widthStyle, String bgUrl, String bgColor) {
     return VmlHelper.buildWrapperVmlRect(widthStyle, bgUrl, bgColor,
         resolveBackgroundPosition(),
         getAttribute("background-size", "auto"));
-  }
-
-  private String buildBackgroundCss() {
-    return BackgroundCssHelper.buildBackgroundCss(
-        getAttribute("background-color", ""),
-        getAttribute("background-url", ""),
-        resolveBackgroundPosition(),
-        getAttribute("background-size", "auto"),
-        getAttribute("background-repeat", "repeat"));
-  }
-
-  private String buildBgImageDivStyle() {
-    String bgPosition = resolveBackgroundPosition();
-    return buildStyle(BackgroundCssHelper.buildBgImageDivStyleMap(
-        buildBackgroundCss(), bgPosition,
-        getAttribute("background-repeat", "repeat"),
-        getAttribute("background-size", "auto"),
-        globalContext.getContainerWidth()));
-  }
-
-  private String buildBgImageTableStyle() {
-    String bgPosition = resolveBackgroundPosition();
-    return buildStyle(BackgroundCssHelper.buildBgImageTableStyleMap(
-        buildBackgroundCss(), bgPosition,
-        getAttribute("background-repeat", "repeat"),
-        getAttribute("background-size", "auto")));
-  }
-
-  // --- Style builders ---
-
-  private String buildWrapperStyle() {
-    Map<String, String> styles = new LinkedHashMap<>();
-    String bgColor = getAttribute("background-color");
-    if (bgColor != null && !bgColor.isEmpty()) {
-      styles.put("background", bgColor);
-      styles.put("background-color", bgColor);
-    }
-    styles.put("margin", "0px auto");
-    styles.put("max-width", globalContext.getContainerWidth() + "px");
-    String borderRadius = getAttribute("border-radius", "");
-    if (!borderRadius.isEmpty()) {
-      styles.put("border-radius", borderRadius);
-      styles.put("overflow", "hidden");
-    }
-    return buildStyle(styles);
-  }
-
-  private String buildInnerTableStyle() {
-    Map<String, String> styles = new LinkedHashMap<>();
-    String bgColor = getAttribute("background-color");
-    if (bgColor != null && !bgColor.isEmpty()) {
-      styles.put("background", bgColor);
-      styles.put("background-color", bgColor);
-    }
-    styles.put("width", "100%");
-    String borderRadius = getAttribute("border-radius", "");
-    if (!borderRadius.isEmpty()) {
-      styles.put("border-collapse", "separate");
-    }
-    return buildStyle(styles);
   }
 
   private String buildInnerTdStyle() {

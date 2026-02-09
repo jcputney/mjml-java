@@ -4,9 +4,9 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 
 /**
  * The text component (&lt;mj-text&gt;).
@@ -103,7 +103,7 @@ public class MjText extends BodyComponent {
 
     // If content contains no HTML tags at all, collapse all whitespace
     if (!trimmed.contains("<")) {
-      return content.replaceAll("\\s+", " ").trim();
+      return CssUnitParser.WHITESPACE.matcher(content).replaceAll(" ").trim();
     }
 
     // Has block elements: collapse whitespace within text runs but preserve
@@ -164,7 +164,7 @@ public class MjText extends BodyComponent {
           next = html.length();
         }
         String textRun = html.substring(i, next);
-        String collapsed = textRun.replaceAll("\\s+", " ");
+        String collapsed = CssUnitParser.WHITESPACE.matcher(textRun).replaceAll(" ");
         if (afterBlockBoundary && collapsed.trim().isEmpty()) {
           // Whitespace-only text run after a block boundary — emit newline
           sb.append("\n");

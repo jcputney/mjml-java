@@ -7,8 +7,6 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.render.VmlHelper;
-import dev.jcputney.mjml.util.BackgroundCssHelper;
-import dev.jcputney.mjml.util.BackgroundPositionHelper;
 import dev.jcputney.mjml.util.ColumnWidthCalculator;
 import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.CssUnitParser;
@@ -23,7 +21,7 @@ import java.util.Map;
  * Handles full-width sections, background colors/images, padding,
  * and MSO conditional column layout.
  */
-public class MjSection extends BodyComponent {
+public class MjSection extends AbstractSectionComponent {
 
   private static final Map<String, String> DEFAULTS = Map.ofEntries(
       Map.entry("background-color", ""),
@@ -46,12 +44,9 @@ public class MjSection extends BodyComponent {
       Map.entry("text-padding", "4px 4px 4px 0")
   );
 
-  private final ComponentRegistry registry;
-
   public MjSection(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
       ComponentRegistry registry) {
-    super(node, globalContext, renderContext);
-    this.registry = registry;
+    super(node, globalContext, renderContext, registry);
   }
 
   @Override
@@ -74,11 +69,6 @@ public class MjSection extends BodyComponent {
       return renderFullWidth();
     }
     return renderNormal();
-  }
-
-  private boolean hasBackgroundUrl() {
-    String url = getAttribute("background-url", "");
-    return !url.isEmpty();
   }
 
   private String renderNormal() {
@@ -104,17 +94,17 @@ public class MjSection extends BodyComponent {
       // Line-height wrapper div
       sb.append("      <div style=\"line-height:0;font-size:0;\">\n");
       // Inner table with background attribute and background CSS
-      sb.append("        <table align=\"center\" background=\"").append(bgUrl)
+      sb.append("        <table align=\"center\" background=\"").append(escapeAttr(bgUrl))
           .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
       sb.append(" style=\"").append(buildBgImageTableStyle()).append("\"");
       sb.append(">\n");
     } else {
       // Main section div
       sb.append("    <div");
-      sb.append(" style=\"").append(buildSectionStyle()).append("\"");
+      sb.append(" style=\"").append(buildOuterDivStyle()).append("\"");
       String cssClass = getAttribute("css-class", "");
       if (!cssClass.isEmpty()) {
-        sb.append(" class=\"").append(cssClass).append("\"");
+        sb.append(" class=\"").append(escapeAttr(cssClass)).append("\"");
       }
       sb.append(">\n");
       // Inner table
@@ -153,11 +143,11 @@ public class MjSection extends BodyComponent {
   private String buildMsoTableOpen(int containerWidth, String bgColor, boolean hasBg) {
     StringBuilder sb = new StringBuilder();
     sb.append("    <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
-        .append(getCssClass())
+        .append(escapeAttr(getCssClass()))
         .append("\" role=\"presentation\" style=\"width:").append(containerWidth)
         .append("px;\" width=\"").append(containerWidth).append("\" ");
     if (hasBg) {
-      sb.append("bgcolor=\"").append(bgColor).append("\" ");
+      sb.append("bgcolor=\"").append(escapeAttr(bgColor)).append("\" ");
     }
     sb.append("><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">");
     return sb.toString();
@@ -211,7 +201,7 @@ public class MjSection extends BodyComponent {
     // Outer full-width table (real HTML, not MSO conditional)
     sb.append("    <table align=\"center\" ");
     if (hasBgUrl) {
-      sb.append("background=\"").append(bgUrl).append("\" ");
+      sb.append("background=\"").append(escapeAttr(bgUrl)).append("\" ");
     }
     sb.append("border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"");
     if (hasBgUrl) {
@@ -233,11 +223,11 @@ public class MjSection extends BodyComponent {
       sb.append(buildVmlRect("mso-width-percent:1000;", bgUrl, bgColor));
     }
     sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
-        .append(getCssClass())
+        .append(escapeAttr(getCssClass()))
         .append("\" role=\"presentation\" style=\"width:").append(containerWidth)
         .append("px;\" width=\"").append(containerWidth).append("\" ");
     if (hasBg) {
-      sb.append("bgcolor=\"").append(bgColor).append("\" ");
+      sb.append("bgcolor=\"").append(escapeAttr(bgColor)).append("\" ");
     }
     sb.append("><tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
 
@@ -289,49 +279,6 @@ public class MjSection extends BodyComponent {
         getAttribute("background-repeat", "repeat"));
   }
 
-  /**
-   * Resolves background position from individual x/y properties or the combined property.
-   * Normalizes "top center" to "center top" format.
-   */
-  private String resolveBackgroundPosition() {
-    String posX = getAttribute("background-position-x", "");
-    String posY = getAttribute("background-position-y", "");
-    if (!posX.isEmpty() && !posY.isEmpty()) {
-      return posX + " " + posY;
-    }
-    String pos = getAttribute("background-position", "top center");
-    return BackgroundPositionHelper.normalize(pos);
-  }
-
-
-  private String buildBackgroundCss() {
-    return BackgroundCssHelper.buildBackgroundCss(
-        getAttribute("background-color", ""),
-        getAttribute("background-url", ""),
-        resolveBackgroundPosition(),
-        getAttribute("background-size", "auto"),
-        getAttribute("background-repeat", "repeat"));
-  }
-
-  private String buildBgImageDivStyle() {
-    String bgPosition = resolveBackgroundPosition();
-    return buildStyle(BackgroundCssHelper.buildBgImageDivStyleMap(
-        buildBackgroundCss(), bgPosition,
-        getAttribute("background-repeat", "repeat"),
-        getAttribute("background-size", "auto"),
-        globalContext.getContainerWidth()));
-  }
-
-  private String buildBgImageTableStyle() {
-    String bgPosition = resolveBackgroundPosition();
-    return buildStyle(BackgroundCssHelper.buildBgImageTableStyleMap(
-        buildBackgroundCss(), bgPosition,
-        getAttribute("background-repeat", "repeat"),
-        getAttribute("background-size", "auto")));
-  }
-
-
-
   private String renderColumnChildren() {
     StringBuilder sb = new StringBuilder();
     List<MjmlNode> columns = getColumnChildren();
@@ -355,7 +302,7 @@ public class MjSection extends BodyComponent {
       boolean isGroup = "mj-group".equals(col.getTagName());
 
       // MSO column td — groups don't get vertical-align
-      sb.append("<td class=\"").append(getCssClass()).append("\" style=\"");
+      sb.append("<td class=\"").append(escapeAttr(getCssClass())).append("\" style=\"");
       if (!isGroup) {
         String verticalAlign = col.getAttribute("vertical-align", "top");
         sb.append("vertical-align:").append(verticalAlign).append(";");
@@ -396,61 +343,12 @@ public class MjSection extends BodyComponent {
     return columns;
   }
 
-
-  @Override
-  public CssBoxModel getBoxModel() {
-    CssBoxModel base = super.getBoxModel();
-    // Individual padding properties override shorthand values
-    String pt = getAttribute("padding-top", "");
-    String pr = getAttribute("padding-right", "");
-    String pb = getAttribute("padding-bottom", "");
-    String pl = getAttribute("padding-left", "");
-    double padTop = !pt.isEmpty() ? CssUnitParser.parsePx(pt, 0) : base.paddingTop();
-    double padRight = !pr.isEmpty() ? CssUnitParser.parsePx(pr, 0) : base.paddingRight();
-    double padBottom = !pb.isEmpty() ? CssUnitParser.parsePx(pb, 0) : base.paddingBottom();
-    double padLeft = !pl.isEmpty() ? CssUnitParser.parsePx(pl, 0) : base.paddingLeft();
-    return new CssBoxModel(padTop, padRight, padBottom, padLeft,
-        base.borderLeftWidth(), base.borderRightWidth());
-  }
-
   @Override
   public double getContentWidth() {
     double containerWidth = renderContext.getContainerWidth();
     CssBoxModel box = getBoxModel();
     return containerWidth - box.paddingLeft() - box.paddingRight()
         - box.borderLeftWidth() - box.borderRightWidth();
-  }
-
-  private String buildSectionStyle() {
-    Map<String, String> styles = new LinkedHashMap<>();
-    String bgColor = getAttribute("background-color");
-    if (bgColor != null && !bgColor.isEmpty()) {
-      styles.put("background", bgColor);
-      styles.put("background-color", bgColor);
-    }
-    styles.put("margin", "0px auto");
-    styles.put("max-width", globalContext.getContainerWidth() + "px");
-    String borderRadius = getAttribute("border-radius", "");
-    if (!borderRadius.isEmpty()) {
-      styles.put("border-radius", borderRadius);
-      styles.put("overflow", "hidden");
-    }
-    return buildStyle(styles);
-  }
-
-  private String buildInnerTableStyle() {
-    Map<String, String> styles = new LinkedHashMap<>();
-    String bgColor = getAttribute("background-color");
-    if (bgColor != null && !bgColor.isEmpty()) {
-      styles.put("background", bgColor);
-      styles.put("background-color", bgColor);
-    }
-    styles.put("width", "100%");
-    String borderRadius = getAttribute("border-radius", "");
-    if (!borderRadius.isEmpty()) {
-      styles.put("border-collapse", "separate");
-    }
-    return buildStyle(styles);
   }
 
   private String buildInnerTdStyle() {
@@ -489,11 +387,5 @@ public class MjSection extends BodyComponent {
 
   private static String formatPxWidth(double width) {
     return CssUnitParser.formatPxWidth(width);
-  }
-
-  private String getCssClass() {
-    String cssClass = getAttribute("css-class", "");
-    // MJML outputs empty class="" for MSO elements
-    return cssClass;
   }
 }

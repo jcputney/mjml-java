@@ -3,6 +3,7 @@ package dev.jcputney.mjml.css;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 /**
  * Inlines CSS styles into HTML elements' style attributes.
@@ -26,7 +27,16 @@ import java.util.TreeMap;
  */
 public final class CssInliner {
 
+  private static final Logger LOG = Logger.getLogger(CssInliner.class.getName());
+
   private CssInliner() {
+  }
+
+  private record ParsedRule(CssSelector selector, CssRule rule) {
+  }
+
+  private record AppliedStyle(CssSpecificity specificity, int order,
+                              List<CssDeclaration> declarations) {
   }
 
   /**
@@ -79,67 +89,27 @@ public final class CssInliner {
 
     // 3. Parse HTML into element tree
     HtmlElement root = HtmlDocumentParser.parse(cleanHtml);
+    LOG.fine(() -> "CSS inliner: " + rules.size() + " rules parsed from style blocks");
 
-    // 4. Separate inlineable rules from pseudo rules
-    List<CssRule> inlineableRules = new ArrayList<>();
+    // 4. Parse selectors once and separate inlineable rules from pseudo rules
+    List<ParsedRule> inlineableRules = new ArrayList<>();
     List<CssRule> pseudoRules = new ArrayList<>();
 
     for (CssRule rule : rules) {
       CssSelector selector = CssSelectorParser.parse(rule.selectorText());
       if (selector != null && CssSelectorMatcher.hasPseudo(selector)) {
         pseudoRules.add(rule);
-      } else {
-        inlineableRules.add(rule);
+      } else if (selector != null) {
+        inlineableRules.add(new ParsedRule(selector, rule));
       }
     }
 
-    // 5. For each inlineable rule, match against all elements and collect styles
-    // We need to track rule order for source-order precedence
+    LOG.fine(() -> "CSS inliner: " + inlineableRules.size() + " inlineable, "
+        + pseudoRules.size() + " pseudo rules");
+
+    // 5. Match and apply styles to all elements
     List<HtmlElement> allElements = root.allDescendants();
-
-    // For each element, collect applicable declarations with their specificity and order
-    record AppliedStyle(CssSpecificity specificity, int order,
-                        List<CssDeclaration> declarations) {
-    }
-
-    for (HtmlElement element : allElements) {
-      // Collect all matching rules for this element
-      List<AppliedStyle> applicableStyles = new ArrayList<>();
-
-      for (int ruleIndex = 0; ruleIndex < inlineableRules.size(); ruleIndex++) {
-        CssRule rule = inlineableRules.get(ruleIndex);
-        CssSelector selector = CssSelectorParser.parse(rule.selectorText());
-        if (selector != null && CssSelectorMatcher.matches(selector, element)) {
-          applicableStyles.add(
-              new AppliedStyle(selector.specificity(), ruleIndex, rule.declarations()));
-        }
-      }
-
-      if (applicableStyles.isEmpty()) {
-        continue;
-      }
-
-      // Sort by specificity, then by source order
-      applicableStyles.sort((a, b) -> {
-        int cmp = a.specificity().compareTo(b.specificity());
-        if (cmp != 0) {
-          return cmp;
-        }
-        return Integer.compare(a.order(), b.order());
-      });
-
-      // Parse existing inline style
-      List<CssDeclaration> existingStyle = StyleAttribute.parse(element.getStyle());
-
-      // Merge each matching rule's declarations (in specificity + order)
-      List<CssDeclaration> merged = existingStyle;
-      for (AppliedStyle applied : applicableStyles) {
-        merged = StyleAttribute.merge(merged, applied.declarations(), applied.specificity());
-      }
-
-      // Serialize back
-      element.setStyle(StyleAttribute.serialize(merged));
-    }
+    matchAndApplyStyles(inlineableRules, allElements);
 
     // 6. Rebuild HTML with modified style attributes
     String result = rebuildHtml(cleanHtml, allElements);
@@ -182,12 +152,12 @@ public final class CssInliner {
     // 2. Parse HTML into element tree (with existing <style> blocks intact)
     HtmlElement root = HtmlDocumentParser.parse(html);
 
-    // 3. Only inline rules that don't have pseudo-selectors
-    List<CssRule> inlineableRules = new ArrayList<>();
+    // 3. Parse selectors once and filter to inlineable rules
+    List<ParsedRule> inlineableRules = new ArrayList<>();
     for (CssRule rule : rules) {
       CssSelector selector = CssSelectorParser.parse(rule.selectorText());
       if (selector != null && !CssSelectorMatcher.hasPseudo(selector)) {
-        inlineableRules.add(rule);
+        inlineableRules.add(new ParsedRule(selector, rule));
       }
     }
 
@@ -195,23 +165,37 @@ public final class CssInliner {
       return html;
     }
 
-    // 4. Match and apply styles — only track elements that are actually modified
+    // 4. Match and apply styles, tracking modified elements
     List<HtmlElement> allElements = root.allDescendants();
-    List<HtmlElement> modifiedElements = new ArrayList<>();
+    List<HtmlElement> modifiedElements = matchAndApplyStyles(inlineableRules, allElements);
 
-    record AppliedStyle(CssSpecificity specificity, int order,
-                        List<CssDeclaration> declarations) {
+    if (modifiedElements.isEmpty()) {
+      return html;
     }
 
-    for (HtmlElement element : allElements) {
+    // 5. Rebuild HTML with only modified style attributes (existing <style> blocks remain intact)
+    return rebuildHtml(html, modifiedElements);
+  }
+
+  /**
+   * Matches CSS rules against HTML elements and merges matched styles into
+   * each element's inline style attribute.
+   *
+   * @return the list of elements whose styles were actually modified
+   */
+  private static List<HtmlElement> matchAndApplyStyles(List<ParsedRule> inlineableRules,
+      List<HtmlElement> elements) {
+    List<HtmlElement> modified = new ArrayList<>();
+
+    for (HtmlElement element : elements) {
       List<AppliedStyle> applicableStyles = new ArrayList<>();
 
       for (int ruleIndex = 0; ruleIndex < inlineableRules.size(); ruleIndex++) {
-        CssRule rule = inlineableRules.get(ruleIndex);
-        CssSelector selector = CssSelectorParser.parse(rule.selectorText());
-        if (selector != null && CssSelectorMatcher.matches(selector, element)) {
+        ParsedRule parsed = inlineableRules.get(ruleIndex);
+        if (CssSelectorMatcher.matches(parsed.selector(), element)) {
           applicableStyles.add(
-              new AppliedStyle(selector.specificity(), ruleIndex, rule.declarations()));
+              new AppliedStyle(parsed.selector().specificity(), ruleIndex,
+                  parsed.rule().declarations()));
         }
       }
 
@@ -219,6 +203,7 @@ public final class CssInliner {
         continue;
       }
 
+      // Sort by specificity, then by source order
       applicableStyles.sort((a, b) -> {
         int cmp = a.specificity().compareTo(b.specificity());
         if (cmp != 0) {
@@ -227,6 +212,7 @@ public final class CssInliner {
         return Integer.compare(a.order(), b.order());
       });
 
+      // Parse existing inline style and merge
       List<CssDeclaration> existingStyle = StyleAttribute.parse(element.getStyle());
       List<CssDeclaration> merged = existingStyle;
       for (AppliedStyle applied : applicableStyles) {
@@ -234,15 +220,10 @@ public final class CssInliner {
       }
 
       element.setStyle(StyleAttribute.serialize(merged));
-      modifiedElements.add(element);
+      modified.add(element);
     }
 
-    if (modifiedElements.isEmpty()) {
-      return html;
-    }
-
-    // 5. Rebuild HTML with only modified style attributes (existing <style> blocks remain intact)
-    return rebuildHtml(html, modifiedElements);
+    return modified;
   }
 
   /**
@@ -299,14 +280,16 @@ public final class CssInliner {
   private static String insertStyleBlock(String html, String css) {
     String styleBlock = "<style type=\"text/css\">\n" + css + "</style>\n";
 
+    String lower = html.toLowerCase();
+
     // Try to insert before </head>
-    int headClose = html.toLowerCase().indexOf("</head>");
+    int headClose = lower.indexOf("</head>");
     if (headClose >= 0) {
       return html.substring(0, headClose) + styleBlock + html.substring(headClose);
     }
 
     // Fallback: insert after <body> tag
-    int bodyStart = html.toLowerCase().indexOf("<body");
+    int bodyStart = lower.indexOf("<body");
     if (bodyStart >= 0) {
       int bodyEnd = html.indexOf('>', bodyStart);
       if (bodyEnd >= 0) {

@@ -1,6 +1,9 @@
 package dev.jcputney.mjml.parser;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +18,8 @@ import java.util.regex.Pattern;
  * XML parser only supports the 5 XML entities.
  */
 public final class MjmlPreprocessor {
+
+  private static final Logger LOG = Logger.getLogger(MjmlPreprocessor.class.getName());
 
   /**
    * Tags whose content may contain raw HTML and needs CDATA wrapping.
@@ -31,6 +36,21 @@ public final class MjmlPreprocessor {
       "mj-html-attribute"
   );
 
+  /** Pre-compiled regex patterns for each ending tag. */
+  private static final Map<String, Pattern> TAG_PATTERNS = new LinkedHashMap<>();
+
+  static {
+    for (String tag : ENDING_TAGS) {
+      Pattern pattern = Pattern.compile(
+          "(<" + tag + "(\\s[^>]*)?(?<!/)>)" +
+              "(.*?)" +
+              "(</" + tag + "\\s*>)",
+          Pattern.DOTALL
+      );
+      TAG_PATTERNS.put(tag, pattern);
+    }
+  }
+
   private MjmlPreprocessor() {
   }
 
@@ -39,7 +59,10 @@ public final class MjmlPreprocessor {
    * Wraps ending tag content in CDATA sections and replaces HTML entities.
    */
   public static String preprocess(String mjml) {
-    if (mjml == null || mjml.isEmpty()) {
+    if (mjml == null) {
+      throw new IllegalArgumentException("MJML source cannot be null");
+    }
+    if (mjml.isEmpty()) {
       return mjml;
     }
 
@@ -91,17 +114,7 @@ public final class MjmlPreprocessor {
    * Self-closing tags are left as-is. Already-wrapped CDATA content is not double-wrapped.
    */
   private static String wrapTagContent(String input, String tagName) {
-    // Pattern matches opening tag (NOT self-closing) through closing tag.
-    // The negative lookbehind (?<!/) before > ensures we don't match />
-    // Using DOTALL so . matches newlines
-    Pattern pattern = Pattern.compile(
-        "(<" + tagName + "(\\s[^>]*)?(?<!/)>)" +  // Opening tag, not self-closing
-            "(.*?)" +                                // Content (non-greedy)
-            "(</" + tagName + "\\s*>)",              // Closing tag
-        Pattern.DOTALL
-    );
-
-    Matcher matcher = pattern.matcher(input);
+    Matcher matcher = TAG_PATTERNS.get(tagName).matcher(input);
     StringBuilder sb = new StringBuilder();
 
     while (matcher.find()) {
@@ -115,8 +128,11 @@ public final class MjmlPreprocessor {
         continue;
       }
 
+      // Escape any existing ]]> in content to prevent CDATA injection
+      String safeContent = content.replace("]]>", "]]]]><![CDATA[>");
       // Wrap content in CDATA
-      String replacement = openTag + "<![CDATA[" + content + "]]>" + closeTag;
+      String replacement = openTag + "<![CDATA[" + safeContent + "]]>" + closeTag;
+      LOG.fine(() -> "CDATA-wrapped content of <" + tagName + "> tag");
       matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
     }
     matcher.appendTail(sb);

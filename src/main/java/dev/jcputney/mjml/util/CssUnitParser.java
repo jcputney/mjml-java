@@ -1,9 +1,19 @@
 package dev.jcputney.mjml.util;
 
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
 /**
  * Parses CSS unit values (px, %, em) and converts them to pixel values.
  */
 public final class CssUnitParser {
+
+  private static final Logger LOG = Logger.getLogger(CssUnitParser.class.getName());
+
+  /** Pre-compiled whitespace pattern for splitting CSS shorthand values. */
+  public static final Pattern WHITESPACE = Pattern.compile("\\s+");
+
+  private static final Pattern NON_NUMERIC = Pattern.compile("[^0-9-]");
 
   private CssUnitParser() {
   }
@@ -41,9 +51,11 @@ public final class CssUnitParser {
     if (value.endsWith("px")) {
       value = value.substring(0, value.length() - 2);
     }
+    String parsed = value.trim();
     try {
-      return Double.parseDouble(value.trim());
+      return Double.parseDouble(parsed);
     } catch (NumberFormatException e) {
+      LOG.fine(() -> "Failed to parse pixel value: " + parsed + ", using default: " + defaultValue);
       return defaultValue;
     }
   }
@@ -55,7 +67,7 @@ public final class CssUnitParser {
     if (value == null || value.isEmpty()) {
       return new double[]{0, 0, 0, 0};
     }
-    String[] parts = value.trim().split("\\s+");
+    String[] parts = WHITESPACE.split(value.trim());
     double[] result = new double[4];
 
     switch (parts.length) {
@@ -94,7 +106,7 @@ public final class CssUnitParser {
       return 0;
     }
     try {
-      return Integer.parseInt(value.replaceAll("[^0-9-]", ""));
+      return Integer.parseInt(NON_NUMERIC.matcher(value).replaceAll(""));
     } catch (NumberFormatException e) {
       return 0;
     }
@@ -122,6 +134,21 @@ public final class CssUnitParser {
       return String.valueOf((int) width);
     }
     return String.valueOf(width);
+  }
+
+  /**
+   * Parses an integer pixel value from a string like "600px" or "600".
+   * Returns the default value if parsing fails.
+   */
+  public static int parsePixels(String value, int defaultValue) {
+    if (value == null || value.isEmpty()) {
+      return defaultValue;
+    }
+    try {
+      return Integer.parseInt(value.replace("px", "").trim());
+    } catch (NumberFormatException e) {
+      return defaultValue;
+    }
   }
 
   private static double parseNumber(String s) {

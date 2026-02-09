@@ -68,8 +68,16 @@ public class MjNavbarLink extends BodyComponent {
     anchorStyles.put("padding", padding);
 
     StringBuilder sb = new StringBuilder();
-    sb.append("<a class=\"mj-link\" href=\"").append(href).append("\"");
-    sb.append(" target=\"_blank\"");
+    sb.append("<a class=\"mj-link\" href=\"").append(escapeAttr(href)).append("\"");
+    String rel = getAttribute("rel", "");
+    if (!rel.isEmpty()) {
+      sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
+    }
+    String target = getAttribute("target", "");
+    if (target.isEmpty()) {
+      target = "_blank";
+    }
+    sb.append(" target=\"").append(escapeAttr(target)).append("\"");
     sb.append(" style=\"").append(buildStyle(anchorStyles)).append("\">");
     // Space before and after text content, matching official MJML output
     sb.append(" ").append(node.getInnerHtml().trim()).append(" ");
