@@ -1,0 +1,1134 @@
+<!doctype html>
+<html lang="und" dir="auto" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+  <title>Social Component Test</title>
+  <!--[if !mso]><!-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--<![endif]-->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style type="text/css">
+    #outlook a {
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table,
+    td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+
+    p {
+      display: block;
+      margin: 13px 0;
+    }
+
+  </style>
+  <!--[if mso]>
+    <noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+  <!--[if lte mso 11]>
+    <style type="text/css">
+      .mj-outlook-group-fix { width:100% !important; }
+    </style>
+    <![endif]-->
+  <style type="text/css">
+    @media only screen and (min-width:480px) {
+      .mj-column-per-100 {
+        width: 100% !important;
+        max-width: 100%;
+      }
+
+      .mj-column-per-50 {
+        width: 50% !important;
+        max-width: 50%;
+      }
+
+      .mj-column-per-60 {
+        width: 60% !important;
+        max-width: 60%;
+      }
+
+      .mj-column-per-40 {
+        width: 40% !important;
+        max-width: 40%;
+      }
+    }
+
+  </style>
+  <style media="screen and (min-width:480px)">
+    .moz-text-html .mj-column-per-100 {
+      width: 100% !important;
+      max-width: 100%;
+    }
+
+    .moz-text-html .mj-column-per-50 {
+      width: 50% !important;
+      max-width: 50%;
+    }
+
+    .moz-text-html .mj-column-per-60 {
+      width: 60% !important;
+      max-width: 60%;
+    }
+
+    .moz-text-html .mj-column-per-40 {
+      width: 40% !important;
+      max-width: 40%;
+    }
+
+  </style>
+</head>
+
+<body style="word-spacing:normal;background-color:#f4f4f4;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">Testing mj-social with various networks and modes</div>
+  <div aria-label="Social Component Test" aria-roledescription="email" style="background-color:#f4f4f4;" role="article" lang="und" dir="auto">
+    <!-- Header -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#34495E" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#34495E;background-color:#34495E;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#34495E;background-color:#34495E;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:30px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:26px;font-weight:bold;line-height:1.6;text-align:center;color:#ffffff;">Social Icons Showcase</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:14px;line-height:1.6;text-align:center;color:#BDC3C7;">Demonstrating mj-social in horizontal and vertical modes</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Horizontal mode (default) with common networks -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:center;color:#34495E;">Follow Us (Horizontal Mode)</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3b5998;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/example" style="color:#333333;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Facebook </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#55acee;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://twitter.com/intent/tweet?url=https://twitter.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://twitter.com/intent/tweet?url=https://twitter.com/example" style="color:#333333;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Twitter </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#0077b5;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://linkedin.com/company/example&amp;title=&amp;summary=&amp;source=" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://linkedin.com/company/example&amp;title=&amp;summary=&amp;source=" style="color:#333333;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> LinkedIn </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3f729b;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://instagram.com/example" style="color:#333333;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Instagram </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#EB3323;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://youtube.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/youtube.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://youtube.com/example" style="color:#333333;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> YouTube </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td></tr></table><![endif]-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Vertical mode -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ECF0F1" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ECF0F1;background-color:#ECF0F1;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ECF0F1;background-color:#ECF0F1;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:280px;" ><![endif]-->
+              <div class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:left;color:#34495E;">Connect With Us</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:14px;line-height:1.6;text-align:left;color:#555555;">Our social media channels are updated daily with the latest news, tips, and community highlights. Follow us on your preferred platform.</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:280px;" ><![endif]-->
+              <div class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0px;">
+<tbody>
+<tr>
+<td style="padding:4px 10px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3b5998;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 10px 4px 0;text-align:left;">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/example" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Facebook Page </a>
+</td>
+</tr>
+<tr>
+<td style="padding:4px 10px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#55acee;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://twitter.com/intent/tweet?url=https://twitter.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 10px 4px 0;text-align:left;">
+<a href="https://twitter.com/intent/tweet?url=https://twitter.com/example" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Twitter Feed </a>
+</td>
+</tr>
+<tr>
+<td style="padding:4px 10px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#0077b5;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://linkedin.com/company/example&amp;title=&amp;summary=&amp;source=" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 10px 4px 0;text-align:left;">
+<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://linkedin.com/company/example&amp;title=&amp;summary=&amp;source=" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> LinkedIn Profile </a>
+</td>
+</tr>
+<tr>
+<td style="padding:4px 10px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3f729b;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 10px 4px 0;text-align:left;">
+<a href="https://instagram.com/example" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Instagram Gallery </a>
+</td>
+</tr>
+</tbody>
+</table>
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Extended social networks -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:center;color:#34495E;">All Supported Networks</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3b5998;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://www.facebook.com/sharer/sharer.php?u=https://facebook.com/example" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Facebook </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#55acee;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://twitter.com/intent/tweet?url=https://twitter.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://twitter.com/intent/tweet?url=https://twitter.com/example" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Twitter </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#dc4e41;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://plus.google.com/share?url=https://google.com" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/google-plus.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://plus.google.com/share?url=https://google.com" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Google </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#bd081c;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://pinterest.com/pin/create/button/?url=https://pinterest.com/example&amp;media=&amp;description=" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/pinterest.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://pinterest.com/pin/create/button/?url=https://pinterest.com/example&amp;media=&amp;description=" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Pinterest </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#0077b5;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://linkedin.com/company/example&amp;title=&amp;summary=&amp;source=" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://linkedin.com/company/example&amp;title=&amp;summary=&amp;source=" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> LinkedIn </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3f729b;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://instagram.com/example" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Instagram </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#EB3323;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://youtube.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/youtube.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://youtube.com/example" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> YouTube </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#000000;border-radius:3px;width:25px;">
+<tbody>
+<tr>
+<td style="padding:3px;font-size:0;height:25px;vertical-align:middle;width:25px;">
+<a href="https://github.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/github.png" style="border-radius:3px;display:block;" width="25" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://github.com/example" style="color:#333333;font-size:12px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> GitHub </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td></tr></table><![endif]-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Custom-styled social icons -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#34495E" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#34495E;background-color:#34495E;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#34495E;background-color:#34495E;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:center;color:#ffffff;">Custom-Styled Social Icons</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3B5998;border-radius:50%;width:35px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:35px;vertical-align:middle;width:35px;">
+<a href="https://facebook.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:50%;display:block;" width="35" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://facebook.com/example" style="color:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Facebook </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#1DA1F2;border-radius:50%;width:35px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:35px;vertical-align:middle;width:35px;">
+<a href="https://twitter.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:50%;display:block;" width="35" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://twitter.com/example" style="color:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Twitter </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#0077B5;border-radius:50%;width:35px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:35px;vertical-align:middle;width:35px;">
+<a href="https://linkedin.com/company/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:50%;display:block;" width="35" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://linkedin.com/company/example" style="color:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> LinkedIn </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#E4405F;border-radius:50%;width:35px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:35px;vertical-align:middle;width:35px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:50%;display:block;" width="35" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://instagram.com/example" style="color:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Instagram </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td></tr></table><![endif]-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Social icons without text labels -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:center;color:#34495E;">Icons Only (No Text Labels)</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3b5998;border-radius:3px;width:40px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:40px;vertical-align:middle;width:40px;">
+<a href="https://facebook.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="40" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#55acee;border-radius:3px;width:40px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:40px;vertical-align:middle;width:40px;">
+<a href="https://twitter.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="40" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#0077b5;border-radius:3px;width:40px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:40px;vertical-align:middle;width:40px;">
+<a href="https://linkedin.com/company/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:3px;display:block;" width="40" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3f729b;border-radius:3px;width:40px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:40px;vertical-align:middle;width:40px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:3px;display:block;" width="40" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#EB3323;border-radius:3px;width:40px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:40px;vertical-align:middle;width:40px;">
+<a href="https://youtube.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/youtube.png" style="border-radius:3px;display:block;" width="40" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#000000;border-radius:3px;width:40px;">
+<tbody>
+<tr>
+<td style="padding:8px;font-size:0;height:40px;vertical-align:middle;width:40px;">
+<a href="https://github.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/github.png" style="border-radius:3px;display:block;" width="40" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td></tr></table><![endif]-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Social with custom icon images -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ECF0F1" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ECF0F1;background-color:#ECF0F1;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ECF0F1;background-color:#ECF0F1;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:center;color:#34495E;">Custom Icon Sources</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+<!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://facebook.com/example" target="_blank">
+<img alt="Facebook" src="https://via.placeholder.com/30x30/3B5998/ffffff?text=f" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://facebook.com/example" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Facebook </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://twitter.com/example" target="_blank">
+<img alt="Twitter" src="https://via.placeholder.com/30x30/1DA1F2/ffffff?text=t" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://twitter.com/example" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Twitter </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:5px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="Instagram" src="https://via.placeholder.com/30x30/E4405F/ffffff?text=i" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="vertical-align:middle;padding:4px 4px 4px 0;text-align:left;">
+<a href="https://instagram.com/example" style="color:#34495E;font-size:13px;font-family:Helvetica, Arial, sans-serif;line-height:22px;text-decoration:none;" target="_blank"> Instagram </a>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td></tr></table><![endif]-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Left-aligned social in two-column layout -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:25px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:336px;" ><![endif]-->
+              <div class="mj-column-per-60 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;padding-bottom:10px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:16px;font-weight:bold;line-height:1.6;text-align:left;color:#34495E;">Stay Connected</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:13px;line-height:1.6;text-align:left;color:#7F8C8D;">Follow us for the latest product updates, company news, and community events. We post regularly across all our social platforms.</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td><td class="" style="vertical-align:top;width:224px;" ><![endif]-->
+              <div class="mj-column-per-40 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="right" style="font-size:0px;padding:15px 10px;word-break:break-word;">
+<!--[if mso | IE]><table align="right" border="0" cellpadding="0" cellspacing="0" role="presentation" ><tr><td><![endif]-->
+<table align="right" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3b5998;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:4px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://facebook.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="right" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#55acee;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:4px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://twitter.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td><td><![endif]-->
+<table align="right" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
+<tbody>
+<tr>
+<td style="padding:4px;vertical-align:middle;">
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#3f729b;border-radius:3px;width:30px;">
+<tbody>
+<tr>
+<td style="padding:4px;font-size:0;height:30px;vertical-align:middle;width:30px;">
+<a href="https://instagram.com/example" target="_blank">
+<img alt="" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:3px;display:block;" width="30" />
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if mso | IE]></td></tr></table><![endif]-->
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Footer -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#34495E" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#34495E;background-color:#34495E;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#34495E;background-color:#34495E;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:12px;line-height:1.6;text-align:center;color:#7F8C8D;">&copy; 2025 Social Component Test. All rights reserved.</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+  </div>
+</body>
+
+</html>

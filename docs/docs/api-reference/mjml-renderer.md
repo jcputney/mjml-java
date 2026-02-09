@@ -14,13 +14,13 @@ title: MjmlRenderer
 Renders an MJML template to HTML using default configuration.
 
 ```java
-public static String render(String mjml)
+public static MjmlRenderResult render(String mjml)
 ```
 
 **Parameters:**
 - `mjml` -- the MJML source string
 
-**Returns:** the rendered HTML string
+**Returns:** an `MjmlRenderResult` record containing the rendered HTML and metadata
 
 **Throws:** `MjmlException` if parsing or rendering fails
 
@@ -39,12 +39,13 @@ String mjml = """
     </mjml>
     """;
 
-String html = MjmlRenderer.render(mjml);
+MjmlRenderResult result = MjmlRenderer.render(mjml);
+String html = result.html();
 ```
 
 ### render(String mjml, MjmlConfiguration config)
 
-Renders an MJML template to HTML with the given configuration, returning a result object with metadata.
+Renders an MJML template to HTML with the given configuration.
 
 ```java
 public static MjmlRenderResult render(String mjml, MjmlConfiguration configuration)
@@ -73,9 +74,47 @@ String title = result.title();         // From <mj-title>, or ""
 String preview = result.previewText(); // From <mj-preview>, or ""
 ```
 
+### render(Path mjmlFile)
+
+Renders an MJML file to HTML using default configuration. Automatically configures a `FileSystemIncludeResolver` using the file's parent directory.
+
+```java
+public static MjmlRenderResult render(Path mjmlFile)
+```
+
+**Parameters:**
+- `mjmlFile` -- path to the MJML file
+
+**Returns:** an `MjmlRenderResult` record
+
+**Throws:** `MjmlException` if reading, parsing, or rendering fails
+
+**Example:**
+
+```java
+MjmlRenderResult result = MjmlRenderer.render(Path.of("/templates/email.mjml"));
+String html = result.html();
+```
+
+### render(Path mjmlFile, MjmlConfiguration config)
+
+Renders an MJML file to HTML with the given configuration. If no `IncludeResolver` is configured, one is automatically created using the file's parent directory.
+
+```java
+public static MjmlRenderResult render(Path mjmlFile, MjmlConfiguration configuration)
+```
+
+**Parameters:**
+- `mjmlFile` -- path to the MJML file
+- `configuration` -- the rendering configuration
+
+**Returns:** an `MjmlRenderResult` record
+
+**Throws:** `MjmlException` if reading, parsing, or rendering fails
+
 ## MjmlRenderResult
 
-A Java `record` returned by the two-argument `render()` method.
+A Java `record` returned by all `render()` overloads.
 
 ```java
 public record MjmlRenderResult(String html, String title, String previewText) {}
@@ -109,7 +148,7 @@ All exceptions extend `MjmlException`, which is an unchecked `RuntimeException`.
 
 ```java
 try {
-    String html = MjmlRenderer.render(mjml, config);
+    MjmlRenderResult result = MjmlRenderer.render(mjml, config);
 } catch (MjmlValidationException e) {
     // Input rejected before parsing (too large, too deeply nested)
     log.warn("Validation failed: {}", e.getMessage());
@@ -119,6 +158,9 @@ try {
 } catch (MjmlIncludeException e) {
     // Include resolution failed
     log.warn("Include error: {}", e.getMessage());
+} catch (MjmlRenderException e) {
+    // Unexpected error during the render phase
+    log.error("Render phase error: {}", e.getMessage(), e);
 } catch (MjmlException e) {
     // Catch-all
     log.error("Render failed: {}", e.getMessage(), e);

@@ -2,7 +2,7 @@
 
 **Pure Java MJML-to-HTML renderer with zero external dependencies.**
 
-mjml-java is a complete Java implementation of the [MJML v4](https://mjml.io/) email framework. It converts MJML markup into responsive, email-client-compatible HTML without requiring Node.js, a JavaScript runtime, or any external dependencies beyond the JDK standard library. The library implements all 33 standard MJML components and includes a built-in CSS inlining engine.
+mjml-java is a complete Java implementation of the [MJML v4](https://mjml.io/) email framework. It converts MJML markup into responsive, email-client-compatible HTML without requiring Node.js, a JavaScript runtime, or any external dependencies beyond the JDK standard library. The library implements all 31 standard MJML components and includes a built-in CSS inlining engine.
 
 ## Quick Links
 
@@ -15,7 +15,7 @@ mjml-java is a complete Java implementation of the [MJML v4](https://mjml.io/) e
 
 ## Key Features
 
-- All 33 MJML v4 components supported
+- All 31 MJML v4 components supported
 - Zero runtime dependencies (JDK 17+ only)
 - JPMS module: `dev.jcputney.mjml`
 - Thread-safe rendering API
@@ -31,20 +31,21 @@ mjml-java is a complete Java implementation of the [MJML v4](https://mjml.io/) e
 ```xml
 <dependency>
     <groupId>dev.jcputney</groupId>
-    <artifactId>mjml-java</artifactId>
+    <artifactId>mjml-java-core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
 **Gradle:**
 ```groovy
-implementation 'dev.jcputney:mjml-java:1.0.0-SNAPSHOT'
+implementation 'dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT'
 ```
 
 ## Minimal Example
 
 ```java
 import dev.jcputney.mjml.MjmlRenderer;
+import dev.jcputney.mjml.MjmlRenderResult;
 
 String mjml = """
     <mjml>
@@ -58,7 +59,8 @@ String mjml = """
     </mjml>
     """;
 
-String html = MjmlRenderer.render(mjml);
+MjmlRenderResult result = MjmlRenderer.render(mjml);
+String html = result.html();
 ```
 
 ## License

@@ -9,12 +9,12 @@ mjml-java includes several security mechanisms to protect against common attack 
 
 ## Input Size Limits
 
-The `maxInputSize` setting rejects MJML input that exceeds a byte threshold **before** any processing occurs. This prevents denial-of-service through extremely large inputs.
+The `maxInputSize` setting rejects MJML input that exceeds a character count threshold **before** any processing occurs. This prevents denial-of-service through extremely large inputs.
 
 ```java
-// Default: 1 MB (1,048,576 bytes)
+// Default: 1,048,576 characters (approximately 1 MB for ASCII)
 MjmlConfiguration config = MjmlConfiguration.builder()
-    .maxInputSize(512_000)  // 512 KB
+    .maxInputSize(512_000)  // 512K characters
     .build();
 ```
 
@@ -121,10 +121,26 @@ If you implement a custom `IncludeResolver` that fetches content over HTTP or ot
 
 ### Mitigations for HTTP Resolvers
 
-If you need an HTTP-based resolver, implement these safeguards:
+The `mjml-java-resolvers` module provides `UrlIncludeResolver` with built-in SSRF protection:
 
 ```java
-IncludeResolver safeHttpResolver = path -> {
+import dev.jcputney.mjml.resolver.UrlIncludeResolver;
+
+IncludeResolver resolver = UrlIncludeResolver.builder()
+    .allowedHosts("cdn.example.com", "templates.example.com")
+    .httpsOnly(true)
+    .connectTimeout(Duration.ofSeconds(5))
+    .readTimeout(Duration.ofSeconds(10))
+    .maxResponseSize(1_048_576) // 1 MB
+    .build();
+```
+
+`UrlIncludeResolver` automatically blocks loopback, site-local, and link-local IP addresses.
+
+If you write a custom HTTP resolver instead, implement these safeguards:
+
+```java
+IncludeResolver safeHttpResolver = (path, context) -> {
     URI uri = URI.create(path);
 
     // 1. Allowlist: only permit known hosts
@@ -153,7 +169,7 @@ IncludeResolver safeHttpResolver = path -> {
 
 ## XXE Prevention
 
-mjml-java uses the built-in JDK XML parser (`javax.xml.parsers.SAXParser`) for parsing MJML documents. The parser is configured with safe defaults that prevent XML External Entity (XXE) attacks. External entities and DTD processing are not enabled.
+mjml-java uses the built-in JDK XML parser (`javax.xml.parsers.DocumentBuilder`) for parsing MJML documents. The parser is configured with safe defaults that prevent XML External Entity (XXE) attacks. External entities and DTD processing are not enabled.
 
 ## Include Depth Limits
 
@@ -168,13 +184,40 @@ The include processor enforces a maximum recursion depth of 50 levels to prevent
 
 The MJML preprocessor wraps content of certain tags (like `mj-text`, `mj-button`) in CDATA sections for XML parsing. The parser handles CDATA boundary sequences (`]]>`) within content safely, preventing CDATA injection attacks that could corrupt the document structure.
 
+## Content Sanitization
+
+By default, mjml-java passes through the inner HTML content of `<mj-text>`, `<mj-button>`, and `<mj-raw>` elements as-is, matching the official MJML behavior. This is safe when you control the MJML input, but **dangerous when rendering user-supplied content** -- an attacker could inject `<script>` tags or event handlers into the email body.
+
+The `contentSanitizer` option lets you plug in an HTML sanitizer that is applied to inner content before rendering:
+
+```java
+// Using Jsoup (add org.jsoup:jsoup as a dependency)
+MjmlConfiguration config = MjmlConfiguration.builder()
+    .contentSanitizer(html -> Jsoup.clean(html, Safelist.basic()))
+    .build();
+```
+
+The `ContentSanitizer` interface is a `@FunctionalInterface`:
+
+```java
+@FunctionalInterface
+public interface ContentSanitizer {
+    String sanitize(String html);
+}
+```
+
+:::warning
+If your MJML templates include any user-supplied content (e.g., user names, messages, dynamic text), always configure a `ContentSanitizer`. The built-in `sanitizeOutput` option only escapes attribute values -- it does **not** sanitize element content.
+:::
+
 ## Security Configuration Summary
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `maxInputSize` | 1,048,576 (1 MB) | Maximum input size in bytes |
+| `maxInputSize` | 1,048,576 (~1 MB) | Maximum input size in characters |
 | `maxNestingDepth` | 100 | Maximum element nesting depth |
 | `sanitizeOutput` | `true` | Escape HTML special characters in attribute values |
+| `contentSanitizer` | `null` | Optional sanitizer for inner HTML of `mj-text`, `mj-button`, `mj-raw` |
 
 All settings are configured through the builder:
 
@@ -183,6 +226,7 @@ MjmlConfiguration config = MjmlConfiguration.builder()
     .maxInputSize(2_097_152)   // 2 MB
     .maxNestingDepth(50)
     .sanitizeOutput(true)
+    .contentSanitizer(html -> Jsoup.clean(html, Safelist.basic()))
     .build();
 ```
 

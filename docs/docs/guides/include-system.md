@@ -114,18 +114,22 @@ Implement the `IncludeResolver` interface to load templates from any source:
 
 ```java
 import dev.jcputney.mjml.IncludeResolver;
+import dev.jcputney.mjml.ResolverContext;
 
+@FunctionalInterface
 public interface IncludeResolver {
-    String resolve(String path);
+    String resolve(String path, ResolverContext context);
 }
 ```
+
+The `ResolverContext` provides metadata about the include chain: the including file path, include type (`"mjml"`, `"html"`, `"css"`, `"css-inline"`), and nesting depth.
 
 ### Classpath Resolver
 
 Load templates from the Java classpath (useful for bundled application templates):
 
 ```java
-IncludeResolver classpathResolver = path -> {
+IncludeResolver classpathResolver = (path, context) -> {
     try (InputStream is = getClass().getResourceAsStream("/templates/" + path)) {
         if (is == null) {
             throw new MjmlException("Template not found: " + path);
@@ -146,7 +150,7 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 Load templates stored in a database:
 
 ```java
-IncludeResolver dbResolver = path -> {
+IncludeResolver dbResolver = (path, context) -> {
     String content = templateRepository.findByPath(path);
     if (content == null) {
         throw new MjmlException("Template not found: " + path);
@@ -158,11 +162,11 @@ IncludeResolver dbResolver = path -> {
 ### HTTP Resolver (with Security Caveats)
 
 :::warning SSRF Risk
-An HTTP-based resolver is vulnerable to **Server-Side Request Forgery (SSRF)**. If an attacker controls the MJML input, they can use `mj-include` paths to probe internal network resources. Only use HTTP resolvers with trusted input, and validate/restrict allowed hosts.
+An HTTP-based resolver is vulnerable to **Server-Side Request Forgery (SSRF)**. If an attacker controls the MJML input, they can use `mj-include` paths to probe internal network resources. Only use HTTP resolvers with trusted input, and validate/restrict allowed hosts. Consider using the built-in `UrlIncludeResolver` from the `mjml-java-resolvers` module, which includes SSRF protection out of the box.
 :::
 
 ```java
-IncludeResolver httpResolver = path -> {
+IncludeResolver httpResolver = (path, context) -> {
     // Validate the URL against an allowlist
     URI uri = URI.create(path);
     if (!ALLOWED_HOSTS.contains(uri.getHost())) {

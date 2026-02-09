@@ -11,11 +11,13 @@ Render MJML to HTML in a single line:
 
 ```java
 import dev.jcputney.mjml.MjmlRenderer;
+import dev.jcputney.mjml.MjmlRenderResult;
 
-String html = MjmlRenderer.render("<mjml><mj-body></mj-body></mjml>");
+MjmlRenderResult result = MjmlRenderer.render("<mjml><mj-body></mj-body></mjml>");
+String html = result.html();
 ```
 
-The static `render(String)` method accepts an MJML string and returns the rendered HTML directly.
+All `render()` overloads return an `MjmlRenderResult` record containing the rendered HTML, document title, and preview text.
 
 ## Working Example
 
@@ -23,6 +25,7 @@ Here is a complete example that renders an email with a heading and a text block
 
 ```java
 import dev.jcputney.mjml.MjmlRenderer;
+import dev.jcputney.mjml.MjmlRenderResult;
 
 public class EmailExample {
     public static void main(String[] args) {
@@ -43,8 +46,8 @@ public class EmailExample {
                 </mjml>
                 """;
 
-        String html = MjmlRenderer.render(mjml);
-        System.out.println(html);
+        MjmlRenderResult result = MjmlRenderer.render(mjml);
+        System.out.println(result.html());
     }
 }
 ```
@@ -68,12 +71,36 @@ String html = result.html();   // The rendered HTML
 String title = result.title(); // Title from <mj-title>, or empty string
 ```
 
-`MjmlRenderResult` is a Java record with two accessors:
+`MjmlRenderResult` is a Java record with three accessors:
 
 | Method | Return Type | Description |
 |---|---|---|
 | `html()` | `String` | The fully rendered HTML string |
 | `title()` | `String` | The document title extracted from `<mj-title>`, or an empty string if none was set |
+| `previewText()` | `String` | The preview text extracted from `<mj-preview>`, or an empty string if none was set |
+
+## Rendering a File
+
+You can render an MJML file directly from a `Path`. A `FileSystemIncludeResolver` is automatically configured using the file's parent directory:
+
+```java
+import dev.jcputney.mjml.MjmlRenderer;
+import dev.jcputney.mjml.MjmlRenderResult;
+import java.nio.file.Path;
+
+MjmlRenderResult result = MjmlRenderer.render(Path.of("/templates/email.mjml"));
+String html = result.html();
+```
+
+You can also pass a configuration. If no `IncludeResolver` is set, one is auto-created from the file's parent directory:
+
+```java
+MjmlConfiguration config = MjmlConfiguration.builder()
+        .language("en")
+        .build();
+
+MjmlRenderResult result = MjmlRenderer.render(Path.of("/templates/email.mjml"), config);
+```
 
 ## Using `mj-include`
 
@@ -115,7 +142,7 @@ All rendering errors throw `MjmlException` (unchecked):
 import dev.jcputney.mjml.MjmlException;
 
 try {
-    String html = MjmlRenderer.render(mjmlString);
+    MjmlRenderResult result = MjmlRenderer.render(mjmlString);
 } catch (MjmlException e) {
     System.err.println("Failed to render MJML: " + e.getMessage());
 }

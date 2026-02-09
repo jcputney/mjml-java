@@ -22,12 +22,13 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 | Method | Type | Default | Description |
 |---|---|---|---|
 | `language(String)` | `String` | `"und"` | Sets the `lang` attribute on the root `<html>` element. Use a BCP 47 language tag (e.g., `"en"`, `"fr"`, `"ja"`). |
-| `direction(String)` | `String` | `"auto"` | Sets the `dir` attribute on the root `<html>` element. Valid values: `"ltr"`, `"rtl"`, `"auto"`. |
+| `direction(String)` or `direction(Direction)` | `String` or `Direction` | `Direction.AUTO` | Sets the `dir` attribute on the root `<html>` element. Accepts a string (`"ltr"`, `"rtl"`, `"auto"`) or a `Direction` enum value. |
 | `includeResolver(IncludeResolver)` | `IncludeResolver` | `null` | Provides a resolver for `<mj-include>` elements. When `null`, any `<mj-include>` in the template will cause an error. |
 | `registerComponent(String, ComponentFactory)` | -- | -- | Registers a custom component under the given tag name. Can be called multiple times to register several components. |
 | `sanitizeOutput(boolean)` | `boolean` | `true` | When `true`, HTML special characters (`"`, `<`, `>`, `&`) in attribute values are escaped in the rendered output to prevent XSS. |
-| `maxInputSize(int)` | `int` | `1048576` (1 MB) | Maximum allowed MJML input size in bytes. Inputs exceeding this limit are rejected before processing. |
+| `maxInputSize(int)` | `int` | `1048576` (1 MB) | Maximum allowed MJML input size in characters. Inputs exceeding this limit are rejected before processing. |
 | `maxNestingDepth(int)` | `int` | `100` | Maximum allowed element nesting depth. Exceeding this depth during parsing throws an exception. |
+| `contentSanitizer(ContentSanitizer)` | `ContentSanitizer` | `null` | Optional sanitizer applied to inner HTML of `mj-text`, `mj-button`, and `mj-raw` elements. See [Security](../guides/security.md#content-sanitization). |
 
 ## Default Configuration
 
@@ -51,12 +52,14 @@ MjmlConfiguration config = MjmlConfiguration.builder()
         .build();
 ```
 
-You can also implement the `IncludeResolver` interface for custom resolution strategies (e.g., classpath resources, a database, or an HTTP endpoint):
+You can also implement the `IncludeResolver` interface for custom resolution strategies (e.g., classpath resources, a database, or an HTTP endpoint). The `resolve()` method receives a `ResolverContext` with metadata about the include chain:
 
 ```java
-public class ClasspathIncludeResolver implements IncludeResolver {
+public class MyCustomResolver implements IncludeResolver {
     @Override
-    public String resolve(String path) {
+    public String resolve(String path, ResolverContext context) {
+        // context.includeType() — "mjml", "html", "css", or "css-inline"
+        // context.depth() — nesting depth (0 for top-level)
         try (var stream = getClass().getResourceAsStream("/templates/" + path)) {
             if (stream == null) {
                 throw new MjmlException("Include not found: " + path);

@@ -4,7 +4,7 @@
 [![Java 17+](https://img.shields.io/badge/Java-17%2B-orange.svg)](https://openjdk.org/)
 [![Build](https://img.shields.io/github/actions/workflow/status/jcputney/mjml-java/ci.yml?branch=main)](https://github.com/jcputney/mjml-java/actions)
 
-**Pure Java MJML-to-HTML renderer -- zero dependencies, all 33 components, JPMS-ready.**
+**Pure Java MJML-to-HTML renderer -- zero dependencies, all 31 MJML components, JPMS-ready.**
 
 mjml-java converts [MJML](https://mjml.io/) email markup into responsive HTML entirely
 in Java. No Node.js runtime, no native binaries, no external libraries -- just add the
@@ -13,13 +13,24 @@ JAR and call `MjmlRenderer.render()`.
 ## Features
 
 - **Zero runtime dependencies** -- only the JDK standard library
-- **All 33 MJML components** -- full parity with MJML 4
+- **All 31 MJML components** -- full parity with MJML 4
 - **Thread-safe static API** -- safe for concurrent use in web servers
 - **JPMS module** -- `dev.jcputney.mjml`
 - **Standalone CSS inliner** -- `CssInliner.inline()` works on any HTML
 - **`mj-include` support** -- with pluggable `IncludeResolver`
 - **Custom components** -- register your own tags via `ComponentFactory`
 - **Security defaults** -- output sanitization, input size limits, nesting depth limits
+
+## Modules
+
+| Module | Artifact ID | Description |
+|---|---|---|
+| **Core** | `mjml-java-core` | MJML renderer, all 31 components, CSS inliner. Zero external dependencies. |
+| **Resolvers** | `mjml-java-resolvers` | Additional `IncludeResolver` implementations: URL, caching, composite, map, prefix-routing. Zero external dependencies (JDK `java.net.http`). |
+| **Spring** | `mjml-java-spring` | Spring Boot auto-configuration, `MjmlService`, Thymeleaf integration. |
+| **BOM** | `mjml-java-bom` | Bill of Materials for consistent version management across modules. |
+
+Most users only need `mjml-java-core`. Add `mjml-java-resolvers` if you need URL-based or caching resolvers, and `mjml-java-spring` for Spring Boot integration.
 
 ## Quick Start
 
@@ -28,7 +39,7 @@ JAR and call `MjmlRenderer.render()`.
 ```xml
 <dependency>
     <groupId>dev.jcputney</groupId>
-    <artifactId>mjml-java</artifactId>
+    <artifactId>mjml-java-core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -36,16 +47,18 @@ JAR and call `MjmlRenderer.render()`.
 ### Gradle
 
 ```groovy
-implementation 'dev.jcputney:mjml-java:1.0.0-SNAPSHOT'
+implementation 'dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT'
 ```
 
 ### Usage
 
 ```java
 import dev.jcputney.mjml.MjmlRenderer;
+import dev.jcputney.mjml.MjmlRenderResult;
 
 // One-liner with defaults
-String html = MjmlRenderer.render(mjmlString);
+MjmlRenderResult result = MjmlRenderer.render(mjmlString);
+String html = result.html();
 ```
 
 For more control, use `MjmlConfiguration`:
@@ -66,6 +79,17 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 MjmlRenderResult result = MjmlRenderer.render(mjmlString, config);
 String html = result.html();
 String title = result.title();
+String preview = result.previewText();
+```
+
+### Rendering a File
+
+```java
+import dev.jcputney.mjml.MjmlRenderer;
+import java.nio.file.Path;
+
+// Renders a file, automatically setting up a FileSystemIncludeResolver
+MjmlRenderResult result = MjmlRenderer.render(Path.of("/templates/email.mjml"));
 ```
 
 ### Standalone CSS Inliner

@@ -8,15 +8,21 @@ The main entry point for rendering MJML to HTML. All methods are static and thre
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `render(String mjml)` | `String` | Renders MJML to HTML using default configuration |
+| `render(String mjml)` | `MjmlRenderResult` | Renders MJML to HTML using default configuration |
 | `render(String mjml, MjmlConfiguration config)` | `MjmlRenderResult` | Renders MJML to HTML with custom configuration |
+| `render(Path mjmlFile)` | `MjmlRenderResult` | Renders an MJML file, auto-configuring a `FileSystemIncludeResolver` |
+| `render(Path mjmlFile, MjmlConfiguration config)` | `MjmlRenderResult` | Renders an MJML file with custom configuration |
 
 ```java
 // Simple
-String html = MjmlRenderer.render(mjmlString);
+MjmlRenderResult result = MjmlRenderer.render(mjmlString);
+String html = result.html();
 
 // With configuration
 MjmlRenderResult result = MjmlRenderer.render(mjmlString, config);
+
+// From file
+MjmlRenderResult result = MjmlRenderer.render(Path.of("/templates/email.mjml"));
 ```
 
 ## MjmlRenderResult
@@ -38,11 +44,12 @@ Immutable configuration object. Create via `builder()` or use `defaults()`.
 | `builder()` | `Builder` | Creates a new configuration builder |
 | `defaults()` | `MjmlConfiguration` | Returns a configuration with all defaults |
 | `getLanguage()` | `String` | HTML `lang` attribute (default: `"und"`) |
-| `getDirection()` | `String` | Text direction: `"auto"`, `"ltr"`, `"rtl"` (default: `"auto"`) |
+| `getDirection()` | `Direction` | Text direction enum: `LTR`, `RTL`, `AUTO` (default: `AUTO`) |
 | `getIncludeResolver()` | `IncludeResolver` | Resolver for `mj-include` paths (default: `null`) |
 | `getCustomComponents()` | `Map<String, ComponentFactory>` | Registered custom components |
 | `isSanitizeOutput()` | `boolean` | Whether to HTML-escape attribute values (default: `true`) |
-| `getMaxInputSize()` | `int` | Maximum input size in bytes (default: `1_048_576` / 1 MB) |
+| `getMaxInputSize()` | `int` | Maximum input size in characters (default: `1_048_576` / ~1 MB) |
+| `getContentSanitizer()` | `ContentSanitizer` | Optional content sanitizer for inner HTML (default: `null`) |
 | `getMaxNestingDepth()` | `int` | Maximum element nesting depth (default: `100`) |
 
 ### MjmlConfiguration.Builder
@@ -56,6 +63,7 @@ Immutable configuration object. Create via `builder()` or use `defaults()`.
 | `sanitizeOutput(boolean)` | `Builder` | Enables/disables HTML escaping in attribute values |
 | `maxInputSize(int)` | `Builder` | Sets maximum allowed input size |
 | `maxNestingDepth(int)` | `Builder` | Sets maximum allowed nesting depth |
+| `contentSanitizer(ContentSanitizer)` | `Builder` | Sets optional content sanitizer |
 | `build()` | `MjmlConfiguration` | Builds the immutable configuration |
 
 ```java
@@ -88,11 +96,21 @@ String inlined = CssInliner.inline(html, extraCss);
 
 ## IncludeResolver
 
-Interface for resolving `mj-include` paths to content.
+Functional interface for resolving `mj-include` paths to content.
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `resolve(String path)` | `String` | Resolves an include path to its content |
+| `resolve(String path, ResolverContext context)` | `String` | Resolves an include path to its content |
+
+## ResolverContext
+
+Record providing include chain metadata to resolvers.
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `includingPath()` | `String` | Path of the file containing the `mj-include`, or `null` for root |
+| `includeType()` | `String` | Include type: `"mjml"`, `"html"`, `"css"`, `"css-inline"` |
+| `depth()` | `int` | Current nesting depth (0 for top-level) |
 
 ## FileSystemIncludeResolver
 
@@ -158,6 +176,7 @@ All exceptions extend `MjmlException` (unchecked).
 | Exception | Thrown When |
 |-----------|------------|
 | `MjmlException` | General rendering errors |
+| `MjmlRenderException` | Unexpected error during the render phase |
 | `MjmlValidationException` | Input exceeds `maxInputSize` or `maxNestingDepth` |
 | `MjmlParseException` | Malformed MJML (invalid XML) |
 | `MjmlIncludeException` | Include path cannot be resolved |

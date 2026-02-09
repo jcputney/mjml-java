@@ -59,7 +59,7 @@ mjml-java renders MJML strings to HTML. For dynamic content, apply your template
 ```java
 // Using any template engine (Thymeleaf, FreeMarker, Mustache, etc.)
 String mjml = templateEngine.process("email-template", context);
-String html = MjmlRenderer.render(mjml);
+String html = MjmlRenderer.render(mjml).html();
 ```
 
 Or use simple string interpolation for basic cases:
@@ -76,7 +76,7 @@ String mjml = """
       </mj-body>
     </mjml>
     """.formatted(userName);
-String html = MjmlRenderer.render(mjml);
+String html = MjmlRenderer.render(mjml).html();
 ```
 
 ## What about performance?
@@ -106,13 +106,14 @@ mjml-java throws unchecked exceptions (subclasses of `MjmlException`):
 | `MjmlValidationException` | Input exceeds `maxInputSize` or `maxNestingDepth` |
 | `MjmlParseException` | Malformed MJML (invalid XML structure) |
 | `MjmlIncludeException` | `mj-include` path cannot be resolved |
-| `MjmlException` | General rendering errors |
+| `MjmlRenderException` | Unexpected error during the render phase |
+| `MjmlException` | General rendering errors (base type) |
 
 Example:
 
 ```java
 try {
-    String html = MjmlRenderer.render(mjml);
+    String html = MjmlRenderer.render(mjml).html();
 } catch (MjmlValidationException e) {
     // Input too large or too deeply nested
 } catch (MjmlParseException e) {

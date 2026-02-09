@@ -10,17 +10,36 @@ title: IncludeResolver
 ## Interface
 
 ```java
+@FunctionalInterface
 public interface IncludeResolver {
-    String resolve(String path);
+    String resolve(String path, ResolverContext context);
 }
 ```
 
 **Parameters:**
 - `path` -- the path from the `<mj-include>` element's `path` attribute
+- `context` -- a `ResolverContext` record providing metadata about the include chain (including path, type, depth)
 
 **Returns:** the resolved content as a string
 
 **Throws:** `MjmlIncludeException` if the path cannot be resolved
+
+### ResolverContext
+
+`ResolverContext` is a record passed to every `resolve()` call, providing include chain metadata:
+
+```java
+public record ResolverContext(String includingPath, String includeType, int depth) {
+    public static ResolverContext root(String includeType);
+    public ResolverContext nested(String newIncludingPath);
+}
+```
+
+| Field | Description |
+|---|---|
+| `includingPath` | The path of the file containing the `mj-include`, or `null` for the root document |
+| `includeType` | The include type: `"mjml"`, `"html"`, `"css"`, or `"css-inline"` |
+| `depth` | The current nesting depth (0 for top-level includes) |
 
 ## FileSystemIncludeResolver
 
@@ -67,40 +86,48 @@ The resolver will read `/templates/partials/header.mjml`.
 | File does not exist | `MjmlIncludeException: "Include file not found: ..."` |
 | I/O error reading file | `MjmlIncludeException: "Failed to read include file: ..."` |
 
+## ClasspathIncludeResolver
+
+The built-in `ClasspathIncludeResolver` resolves include paths from the Java classpath (e.g., resources bundled in a JAR).
+
+```java
+import dev.jcputney.mjml.ClasspathIncludeResolver;
+
+// Uses the current thread's context class loader
+IncludeResolver resolver = new ClasspathIncludeResolver();
+
+// Or specify a class loader explicitly
+IncludeResolver resolver = new ClasspathIncludeResolver(MyApp.class.getClassLoader());
+
+MjmlConfiguration config = MjmlConfiguration.builder()
+    .includeResolver(resolver)
+    .build();
+```
+
+`ClasspathIncludeResolver` includes the same path traversal protections as `FileSystemIncludeResolver` -- paths are normalized and `../` traversal above the root is rejected.
+
+### Error Cases
+
+| Condition | Exception |
+|-----------|-----------|
+| Path is null or blank | `MjmlIncludeException: "Include path cannot be empty"` |
+| Path contains null bytes | `MjmlIncludeException: "Include path contains null bytes"` |
+| Path traverses above root | `MjmlIncludeException: "Include path cannot traverse above root: ..."` |
+| Resource not found | `MjmlIncludeException: "Include resource not found on classpath: ..."` |
+| I/O error reading resource | `MjmlIncludeException: "Failed to read include resource: ..."` |
+
 ## Custom Resolvers
 
 Since `IncludeResolver` is a functional interface, you can implement it with a lambda or method reference.
 
-### Classpath Resolver
-
-Load templates from the classpath (e.g., bundled in a JAR):
-
-```java
-IncludeResolver classpathResolver = path -> {
-    InputStream is = getClass().getResourceAsStream("/mjml-templates/" + path);
-    if (is == null) {
-        throw new MjmlIncludeException("Template not found on classpath: " + path);
-    }
-    try (is) {
-        return new String(is.readAllBytes(), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-        throw new MjmlIncludeException("Failed to read classpath template: " + path, e);
-    }
-};
-
-MjmlConfiguration config = MjmlConfiguration.builder()
-    .includeResolver(classpathResolver)
-    .build();
-```
-
 ### HTTP Resolver
 
 :::warning SSRF Risk
-An HTTP-based resolver is vulnerable to Server-Side Request Forgery (SSRF) attacks. If an attacker controls the MJML input, they could use `<mj-include>` to probe internal network resources. Always validate and restrict allowed hosts/URLs.
+An HTTP-based resolver is vulnerable to Server-Side Request Forgery (SSRF) attacks. If an attacker controls the MJML input, they could use `<mj-include>` to probe internal network resources. Always validate and restrict allowed hosts/URLs. Consider using the built-in `UrlIncludeResolver` from the `mjml-java-resolvers` module, which includes SSRF protection out of the box.
 :::
 
 ```java
-IncludeResolver httpResolver = path -> {
+IncludeResolver httpResolver = (path, context) -> {
     URI uri = URI.create(path);
 
     // Validate against an allowlist

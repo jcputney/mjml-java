@@ -5,7 +5,7 @@ title: Architecture Overview
 
 # Architecture Overview
 
-mjml-java is a pure Java MJML-to-HTML renderer with **zero runtime dependencies** beyond the JDK itself. It targets Java 17+ and ships as a single JAR with full JPMS (Java Platform Module System) support.
+mjml-java is a pure Java MJML-to-HTML renderer. The core module has **zero runtime dependencies** beyond the JDK itself. It targets Java 17+ and ships as a multi-module Maven project with full JPMS (Java Platform Module System) support in the core module.
 
 ## Design Principles
 
@@ -25,6 +25,7 @@ module dev.jcputney.mjml {
     exports dev.jcputney.mjml;
     exports dev.jcputney.mjml.component;
     exports dev.jcputney.mjml.context;
+    exports dev.jcputney.mjml.css;
     exports dev.jcputney.mjml.parser;
 }
 ```
@@ -43,9 +44,14 @@ The top-level package contains the entry points and configuration:
 | `IncludeResolver` | Interface for resolving `mj-include` paths to MJML source |
 | `FileSystemIncludeResolver` | File-system implementation of `IncludeResolver` |
 | `MjmlException` | Base exception for rendering failures |
+| `MjmlRenderException` | Thrown on unexpected errors during the render phase |
 | `MjmlParseException` | Thrown on malformed MJML input |
 | `MjmlValidationException` | Thrown on constraint violations (input size, nesting depth) |
 | `MjmlIncludeException` | Thrown when include resolution fails |
+| `ClasspathIncludeResolver` | Classpath implementation of `IncludeResolver` |
+| `ContentSanitizer` | Optional `@FunctionalInterface` for sanitizing inner HTML content |
+| `Direction` | Enum for text direction: `LTR`, `RTL`, `AUTO` |
+| `ResolverContext` | Record providing include chain metadata to `IncludeResolver` (including path, type, depth) |
 
 ### `dev.jcputney.mjml.component` -- Component Hierarchy
 
@@ -129,6 +135,7 @@ classDiagram
 | `DefaultFontRegistry` | Maps standard web font names to their `<link>` import URLs |
 | `FontScanner` | Scans the component tree to auto-register default fonts |
 | `HtmlAttributeApplier` | Applies `mj-html-attributes` to the rendered body via CSS selector matching |
+| `VmlHelper` | Generates VML markup for Outlook background images |
 
 ### `dev.jcputney.mjml.util` -- Utilities
 
@@ -138,10 +145,13 @@ classDiagram
 | `CssUnitParser` | Converts CSS units (px, %, em) to pixel values |
 | `HtmlEscaper` | Escapes attribute values and text content for safe HTML output |
 | `SocialNetworkRegistry` | Maps social network names to icon URLs and link templates |
+| `BackgroundCssHelper` | Generates CSS background shorthand for section/hero backgrounds |
+| `BackgroundPositionHelper` | Computes VML origin/position values from CSS background-position |
+| `ColumnWidthCalculator` | Calculates column widths accounting for padding, borders, and percentage/pixel units |
 
 ## Component Categories
 
-The renderer supports all 33 standard MJML v4 components:
+The renderer supports all 31 standard MJML v4 components:
 
 **Head components** (8): `mj-head`, `mj-title`, `mj-preview`, `mj-font`, `mj-breakpoint`, `mj-style`, `mj-attributes`, `mj-html-attributes`
 
@@ -149,7 +159,7 @@ The renderer supports all 33 standard MJML v4 components:
 
 **Content components** (7): `mj-text`, `mj-image`, `mj-button`, `mj-divider`, `mj-spacer`, `mj-table`, `mj-raw`
 
-**Interactive components** (13): `mj-hero`, `mj-accordion`, `mj-accordion-element`, `mj-accordion-title`, `mj-accordion-text`, `mj-carousel`, `mj-carousel-image`, `mj-navbar`, `mj-navbar-link`, `mj-social`, `mj-social-element`
+**Interactive components** (11): `mj-hero`, `mj-accordion`, `mj-accordion-element`, `mj-accordion-title`, `mj-accordion-text`, `mj-carousel`, `mj-carousel-image`, `mj-navbar`, `mj-navbar-link`, `mj-social`, `mj-social-element`
 
 ## Data Flow
 

@@ -5,7 +5,7 @@ title: Package Overview
 
 # API Reference
 
-mjml-java exports six packages through its Java module `dev.jcputney.mjml`. This section documents the public API surface you interact with directly.
+mjml-java exports five packages through its Java module `dev.jcputney.mjml`. This section documents the public API surface you interact with directly.
 
 ## Module Exports
 
@@ -16,7 +16,6 @@ mjml-java exports six packages through its Java module `dev.jcputney.mjml`. This
 | `dev.jcputney.mjml.component` | Component base classes and factory interface for custom components |
 | `dev.jcputney.mjml.context` | Global and render context (advanced/internal use) |
 | `dev.jcputney.mjml.parser` | MJML parser and AST node types (advanced/internal use) |
-| `dev.jcputney.mjml.util` | Utility classes (CSS parsing, social networks, HTML escaping) |
 
 For most use cases, you only need the `dev.jcputney.mjml` package.
 
@@ -25,20 +24,23 @@ For most use cases, you only need the `dev.jcputney.mjml` package.
 ```mermaid
 classDiagram
     class MjmlRenderer {
-        +render(String mjml)$ String
+        +render(String mjml)$ MjmlRenderResult
         +render(String mjml, MjmlConfiguration config)$ MjmlRenderResult
+        +render(Path mjmlFile)$ MjmlRenderResult
+        +render(Path mjmlFile, MjmlConfiguration config)$ MjmlRenderResult
     }
 
     class MjmlConfiguration {
         +builder()$ Builder
         +defaults()$ MjmlConfiguration
         +getLanguage() String
-        +getDirection() String
+        +getDirection() Direction
         +getIncludeResolver() IncludeResolver
         +getCustomComponents() Map
         +isSanitizeOutput() boolean
         +getMaxInputSize() int
         +getMaxNestingDepth() int
+        +getContentSanitizer() ContentSanitizer
     }
 
     class MjmlRenderResult {
@@ -50,12 +52,12 @@ classDiagram
 
     class IncludeResolver {
         <<interface>>
-        +resolve(String path) String
+        +resolve(String path, ResolverContext context) String
     }
 
     class FileSystemIncludeResolver {
         +FileSystemIncludeResolver(Path baseDir)
-        +resolve(String path) String
+        +resolve(String path, ResolverContext context) String
     }
 
     class CssInliner {
@@ -90,11 +92,15 @@ classDiagram
     class MjmlIncludeException {
         Missing include file, path traversal
     }
+    class MjmlRenderException {
+        Unexpected error during render phase
+    }
 
     RuntimeException <|-- MjmlException
     MjmlException <|-- MjmlParseException
     MjmlException <|-- MjmlValidationException
     MjmlException <|-- MjmlIncludeException
+    MjmlException <|-- MjmlRenderException
 ```
 
 | Exception | Thrown When |
@@ -102,17 +108,20 @@ classDiagram
 | `MjmlParseException` | Malformed XML, missing `<mjml>` root element, invalid structure |
 | `MjmlValidationException` | Input exceeds `maxInputSize`, nesting exceeds `maxNestingDepth` |
 | `MjmlIncludeException` | Include file not found, path traversal attempt, circular includes |
+| `MjmlRenderException` | Unexpected error during the render phase |
 | `MjmlException` | Base type -- catch this to handle all MJML errors |
 
 ```java
 try {
-    String html = MjmlRenderer.render(userInput);
+    MjmlRenderResult result = MjmlRenderer.render(userInput);
 } catch (MjmlParseException e) {
     // Invalid MJML structure
 } catch (MjmlValidationException e) {
     // Input too large or too deeply nested
 } catch (MjmlIncludeException e) {
     // Include resolution failed
+} catch (MjmlRenderException e) {
+    // Unexpected error during render phase
 } catch (MjmlException e) {
     // Catch-all for any MJML error
 }

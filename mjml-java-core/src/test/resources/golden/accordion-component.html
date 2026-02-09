@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="und" dir="auto" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+  <title>Accordion Component Test</title>
+  <!--[if !mso]><!-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--<![endif]-->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style type="text/css">
+    #outlook a {
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table,
+    td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+
+    p {
+      display: block;
+      margin: 13px 0;
+    }
+
+  </style>
+  <!--[if mso]>
+    <noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+  <!--[if lte mso 11]>
+    <style type="text/css">
+      .mj-outlook-group-fix { width:100% !important; }
+    </style>
+    <![endif]-->
+  <style type="text/css">
+    @media only screen and (min-width:480px) {
+      .mj-column-per-100 {
+        width: 100% !important;
+        max-width: 100%;
+      }
+    }
+
+  </style>
+  <style media="screen and (min-width:480px)">
+    .moz-text-html .mj-column-per-100 {
+      width: 100% !important;
+      max-width: 100%;
+    }
+
+  </style>
+  <style type="text/css">
+    noinput.mj-accordion-checkbox {
+      display: block !important;
+    }
+
+    @media yahoo,
+    only screen and (min-width:0) {
+      .mj-accordion-element {
+        display: block;
+      }
+
+      input.mj-accordion-checkbox,
+      .mj-accordion-less {
+        display: none !important;
+      }
+
+      input.mj-accordion-checkbox+* .mj-accordion-title {
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      input.mj-accordion-checkbox+* .mj-accordion-content {
+        overflow: hidden;
+        display: none;
+      }
+
+      input.mj-accordion-checkbox+* .mj-accordion-more {
+        display: block !important;
+      }
+
+      input.mj-accordion-checkbox:checked+* .mj-accordion-content {
+        display: block;
+      }
+
+      input.mj-accordion-checkbox:checked+* .mj-accordion-more {
+        display: none !important;
+      }
+
+      input.mj-accordion-checkbox:checked+* .mj-accordion-less {
+        display: block !important;
+      }
+    }
+
+    .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-title {
+      cursor: auto;
+      touch-action: auto;
+      -webkit-user-select: auto;
+      -moz-user-select: auto;
+      user-select: auto;
+    }
+
+    .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-content {
+      overflow: hidden;
+      display: block;
+    }
+
+    .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-ico {
+      display: none;
+    }
+
+    @goodbye {
+      @gmail
+    }
+
+  </style>
+</head>
+
+<body style="word-spacing:normal;background-color:#f4f4f4;">
+  <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">Testing mj-accordion with multiple expandable elements</div>
+  <div aria-label="Accordion Component Test" aria-roledescription="email" style="background-color:#f4f4f4;" role="article" lang="und" dir="auto">
+    <!-- Header -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#2980B9" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#2980B9;background-color:#2980B9;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#2980B9;background-color:#2980B9;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:30px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:26px;font-weight:bold;line-height:1.6;text-align:center;color:#ffffff;">Frequently Asked Questions</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-top:5px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:15px;line-height:1.6;text-align:center;color:#D6EAF8;">Click on any question below to reveal the answer</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Accordion section using defaults from mj-attributes -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:left;color:#2980B9;">General Questions</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <table cellspacing="0" cellpadding="0" class="mj-accordion" style="width:100%;border-collapse:collapse;border:1px solid #E0E0E0;border-bottom:none;font-family:Helvetica, Arial, sans-serif;">
+                          <tbody>
+                            <tr>
+                              <td style="padding:0px;">
+                                <label class="mj-accordion-element" style="font-size:13px;font-family:Helvetica, Arial, sans-serif;">
+                                  <!--[if !mso | IE]><!--><input class="mj-accordion-checkbox" type="checkbox" style="display:none;" /><!--<![endif]-->
+                                  <div>
+                                    <div class="mj-accordion-title">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:1px solid #E0E0E0;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="width:100%;background-color:#fafafa;color:#333333;font-size:16px;font-family:Helvetica, Arial, sans-serif;padding:15px 20px;"> What is your return policy? </td>
+                                            <!--[if !mso | IE]><!-->
+                                            <td class="mj-accordion-ico" style="padding:16px;background:#fafafa;vertical-align:middle;"><img src="https://via.placeholder.com/32x32/999999/ffffff?text=-" alt="-" class="mj-accordion-more" style="display:none;width:24px;height:24px;" /><img src="https://via.placeholder.com/32x32/999999/ffffff?text=%2B" alt="+" class="mj-accordion-less" style="display:none;width:24px;height:24px;" /></td><!--<![endif]-->
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="mj-accordion-content">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:1px solid #E0E0E0;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="background:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:1;color:#666666;padding:15px 20px;"> We offer a 30-day money-back guarantee on all purchases. If you are not satisfied with your order, you can return it within 30 days of delivery for a full refund. Items must be in their original condition and packaging. Please contact our support team to initiate a return. </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding:0px;">
+                                <label class="mj-accordion-element" style="font-size:13px;font-family:Helvetica, Arial, sans-serif;">
+                                  <!--[if !mso | IE]><!--><input class="mj-accordion-checkbox" type="checkbox" style="display:none;" /><!--<![endif]-->
+                                  <div>
+                                    <div class="mj-accordion-title">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:1px solid #E0E0E0;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="width:100%;background-color:#fafafa;color:#333333;font-size:16px;font-family:Helvetica, Arial, sans-serif;padding:15px 20px;"> How long does shipping take? </td>
+                                            <!--[if !mso | IE]><!-->
+                                            <td class="mj-accordion-ico" style="padding:16px;background:#fafafa;vertical-align:middle;"><img src="https://via.placeholder.com/32x32/999999/ffffff?text=-" alt="-" class="mj-accordion-more" style="display:none;width:24px;height:24px;" /><img src="https://via.placeholder.com/32x32/999999/ffffff?text=%2B" alt="+" class="mj-accordion-less" style="display:none;width:24px;height:24px;" /></td><!--<![endif]-->
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="mj-accordion-content">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:1px solid #E0E0E0;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="background:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:1;color:#666666;padding:15px 20px;"> Standard shipping typically takes 5-7 business days within the continental United States. Express shipping (2-3 business days) and overnight shipping are available for an additional fee. International shipping times vary by destination, usually between 10-21 business days. </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding:0px;">
+                                <label class="mj-accordion-element" style="font-size:13px;font-family:Helvetica, Arial, sans-serif;">
+                                  <!--[if !mso | IE]><!--><input class="mj-accordion-checkbox" type="checkbox" style="display:none;" /><!--<![endif]-->
+                                  <div>
+                                    <div class="mj-accordion-title">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:1px solid #E0E0E0;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="width:100%;background-color:#fafafa;color:#333333;font-size:16px;font-family:Helvetica, Arial, sans-serif;padding:15px 20px;"> Do you ship internationally? </td>
+                                            <!--[if !mso | IE]><!-->
+                                            <td class="mj-accordion-ico" style="padding:16px;background:#fafafa;vertical-align:middle;"><img src="https://via.placeholder.com/32x32/999999/ffffff?text=-" alt="-" class="mj-accordion-more" style="display:none;width:24px;height:24px;" /><img src="https://via.placeholder.com/32x32/999999/ffffff?text=%2B" alt="+" class="mj-accordion-less" style="display:none;width:24px;height:24px;" /></td><!--<![endif]-->
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="mj-accordion-content">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:1px solid #E0E0E0;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="background:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:1;color:#666666;padding:15px 20px;"> Yes, we ship to over 50 countries worldwide. International shipping rates and delivery times vary depending on the destination. Please note that international orders may be subject to import duties and taxes, which are the responsibility of the recipient. </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Second accordion with custom per-element styling -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:0 20px 20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="font-size:0px;padding:10px 25px;padding-bottom:15px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:bold;line-height:1.6;text-align:left;color:#2980B9;">Account &amp; Billing</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <table cellspacing="0" cellpadding="0" class="mj-accordion" style="width:100%;border-collapse:collapse;border:2px solid #2980B9;border-bottom:none;font-family:Helvetica, Arial, sans-serif;">
+                          <tbody>
+                            <tr>
+                              <td style="padding:0px;">
+                                <label class="mj-accordion-element" style="font-size:13px;font-family:Helvetica, Arial, sans-serif;">
+                                  <!--[if !mso | IE]><!--><input class="mj-accordion-checkbox" type="checkbox" style="display:none;" /><!--<![endif]-->
+                                  <div>
+                                    <div class="mj-accordion-title">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:2px solid #2980B9;">
+                                        <tbody>
+                                          <tr>
+                                            <!--[if !mso | IE]><!-->
+                                            <td class="mj-accordion-ico" style="padding:16px;background:#EBF5FB;vertical-align:middle;"><img src="https://via.placeholder.com/32x32/2980B9/ffffff?text=-" alt="-" class="mj-accordion-more" style="display:none;width:24px;height:24px;" /><img src="https://via.placeholder.com/32x32/2980B9/ffffff?text=%2B" alt="+" class="mj-accordion-less" style="display:none;width:24px;height:24px;" /></td><!--<![endif]-->
+                                            <td style="width:100%;background-color:#EBF5FB;color:#2980B9;font-size:15px;font-family:Helvetica, Arial, sans-serif;padding:12px 18px;"> How do I reset my password? </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="mj-accordion-content">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:2px solid #2980B9;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="background:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:1;color:#555555;padding:15px 18px;"> To reset your password, click the "Forgot Password" link on the login page. Enter your email address and we will send you a password reset link. The link expires after 24 hours. If you do not receive the email, check your spam folder or contact support. </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding:0px;">
+                                <label class="mj-accordion-element" style="font-size:13px;font-family:Helvetica, Arial, sans-serif;">
+                                  <!--[if !mso | IE]><!--><input class="mj-accordion-checkbox" type="checkbox" style="display:none;" /><!--<![endif]-->
+                                  <div>
+                                    <div class="mj-accordion-title">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:2px solid #2980B9;">
+                                        <tbody>
+                                          <tr>
+                                            <!--[if !mso | IE]><!-->
+                                            <td class="mj-accordion-ico" style="padding:16px;background:#EBF5FB;vertical-align:middle;"><img src="https://via.placeholder.com/32x32/2980B9/ffffff?text=-" alt="-" class="mj-accordion-more" style="display:none;width:24px;height:24px;" /><img src="https://via.placeholder.com/32x32/2980B9/ffffff?text=%2B" alt="+" class="mj-accordion-less" style="display:none;width:24px;height:24px;" /></td><!--<![endif]-->
+                                            <td style="width:100%;background-color:#EBF5FB;color:#2980B9;font-size:15px;font-family:Helvetica, Arial, sans-serif;padding:12px 18px;"> What payment methods do you accept? </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="mj-accordion-content">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:2px solid #2980B9;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="background:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:1;color:#555555;padding:15px 18px;"> We accept all major credit cards (Visa, MasterCard, American Express, Discover), PayPal, Apple Pay, and Google Pay. For business accounts, we also offer invoicing with net-30 payment terms. All transactions are processed securely using 256-bit SSL encryption. </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="padding:0px;">
+                                <label class="mj-accordion-element" style="font-size:13px;font-family:Helvetica, Arial, sans-serif;">
+                                  <!--[if !mso | IE]><!--><input class="mj-accordion-checkbox" type="checkbox" style="display:none;" /><!--<![endif]-->
+                                  <div>
+                                    <div class="mj-accordion-title">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:2px solid #2980B9;">
+                                        <tbody>
+                                          <tr>
+                                            <!--[if !mso | IE]><!-->
+                                            <td class="mj-accordion-ico" style="padding:16px;background:#EBF5FB;vertical-align:middle;"><img src="https://via.placeholder.com/32x32/2980B9/ffffff?text=-" alt="-" class="mj-accordion-more" style="display:none;width:24px;height:24px;" /><img src="https://via.placeholder.com/32x32/2980B9/ffffff?text=%2B" alt="+" class="mj-accordion-less" style="display:none;width:24px;height:24px;" /></td><!--<![endif]-->
+                                            <td style="width:100%;background-color:#EBF5FB;color:#2980B9;font-size:15px;font-family:Helvetica, Arial, sans-serif;padding:12px 18px;"> Can I cancel my subscription at any time? </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                    <div class="mj-accordion-content">
+                                      <table cellspacing="0" cellpadding="0" style="width:100%;border-bottom:2px solid #2980B9;">
+                                        <tbody>
+                                          <tr>
+                                            <td style="background:#ffffff;font-size:14px;font-family:Helvetica, Arial, sans-serif;line-height:1;color:#555555;padding:15px 18px;"> Yes, you can cancel your subscription at any time from your account settings. When you cancel, you will retain access to your account until the end of your current billing period. No partial refunds are given for unused time within a billing cycle. </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </label>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+    <!-- Footer -->
+    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#2980B9" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#2980B9;background-color:#2980B9;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#2980B9;background-color:#2980B9;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:20px;text-align:center;">
+              <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:560px;" ><![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tbody>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:13px;line-height:1.6;text-align:center;color:#D6EAF8;">Still have questions? Contact us at <a href="mailto:support@example.com" style="color:#ffffff;">support@example.com</a></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td align="center" style="font-size:0px;padding:10px 25px;padding-top:10px;word-break:break-word;">
+                        <div style="font-family:Helvetica, Arial, sans-serif;font-size:11px;line-height:1.6;text-align:center;color:#85C1E9;">&copy; 2025 Accordion Test Co. All rights reserved.</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!--[if mso | IE]></td></tr></table><![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
+  </div>
+</body>
+
+</html>
+

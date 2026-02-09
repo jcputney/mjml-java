@@ -7,7 +7,7 @@
 ```xml
 <dependency>
     <groupId>dev.jcputney</groupId>
-    <artifactId>mjml-java</artifactId>
+    <artifactId>mjml-java-core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -15,13 +15,13 @@
 ### Gradle (Groovy DSL)
 
 ```groovy
-implementation 'dev.jcputney:mjml-java:1.0.0-SNAPSHOT'
+implementation 'dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT'
 ```
 
 ### Gradle (Kotlin DSL)
 
 ```kotlin
-implementation("dev.jcputney:mjml-java:1.0.0-SNAPSHOT")
+implementation("dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT")
 ```
 
 ### JPMS (module-info.java)
@@ -38,6 +38,7 @@ module my.app {
 
 ```java
 import dev.jcputney.mjml.MjmlRenderer;
+import dev.jcputney.mjml.MjmlRenderResult;
 
 String mjml = """
     <mjml>
@@ -56,8 +57,9 @@ String mjml = """
     </mjml>
     """;
 
-// One-liner: returns HTML string
-String html = MjmlRenderer.render(mjml);
+// One-liner: returns MjmlRenderResult with HTML, title, and preview text
+MjmlRenderResult result = MjmlRenderer.render(mjml);
+String html = result.html();
 ```
 
 ### With Configuration
@@ -97,15 +99,18 @@ MjmlRenderResult result = MjmlRenderer.render(mjml, config);
 
 ```java
 import dev.jcputney.mjml.MjmlException;
+import dev.jcputney.mjml.MjmlRenderException;
 import dev.jcputney.mjml.MjmlValidationException;
 import dev.jcputney.mjml.MjmlParseException;
 
 try {
-    String html = MjmlRenderer.render(mjml);
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
 } catch (MjmlValidationException e) {
     // Input too large or exceeds nesting depth
 } catch (MjmlParseException e) {
     // Malformed MJML (invalid XML)
+} catch (MjmlRenderException e) {
+    // Unexpected error during the render phase
 } catch (MjmlException e) {
     // Other rendering errors
 }

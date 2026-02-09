@@ -1,0 +1,2 @@
+dev.jcputney.mjml.spring.autoconfigure.MjmlAutoConfiguration
+dev.jcputney.mjml.spring.autoconfigure.MjmlThymeleafAutoConfiguration

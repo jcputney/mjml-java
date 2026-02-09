@@ -176,8 +176,8 @@ public class CachingResolver implements IncludeResolver {
     }
 
     @Override
-    public String resolve(String path) {
-        return cache.computeIfAbsent(path, delegate::resolve);
+    public String resolve(String path, ResolverContext context) {
+        return cache.computeIfAbsent(path, p -> delegate.resolve(p, context));
     }
 }
 ```
