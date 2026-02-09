@@ -21,5 +21,10 @@ nb-project/
 .DS_Store
 Thumbs.db
 
+# Docusaurus
+docs/node_modules/
+docs/build/
+docs/.docusaurus/
+
 # Claude Code local settings
 .claude/settings.local.json
