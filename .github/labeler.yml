@@ -1,0 +1,18 @@
+core:
+  - changed-files:
+      - any-glob-to-any-file: 'mjml-java-core/**'
+resolvers:
+  - changed-files:
+      - any-glob-to-any-file: 'mjml-java-resolvers/**'
+spring:
+  - changed-files:
+      - any-glob-to-any-file: 'mjml-java-spring/**'
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/**', '*.md', 'wiki/**']
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ['**/pom.xml', 'docs/package.json']
+ci:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
