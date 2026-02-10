@@ -4,7 +4,7 @@ All notable changes to mjml-java are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.0.0] - 2026-02-09
 
 ### Added
 - Multi-module project structure: `mjml-java-core`, `mjml-java-resolvers`, `mjml-java-spring`, `mjml-java-bom`
@@ -47,5 +47,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Extensive test suite including unit coverage and 33 golden file compatibility tests
 - JaCoCo code coverage reporting
 
-[Unreleased]: https://github.com/jcputney/mjml-java/compare/v1.0.0-SNAPSHOT...HEAD
+[1.0.0]: https://github.com/jcputney/mjml-java/releases/tag/v1.0.0
 [1.0.0-SNAPSHOT]: https://github.com/jcputney/mjml-java/releases/tag/v1.0.0-SNAPSHOT

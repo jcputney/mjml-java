@@ -13,7 +13,7 @@ import java.util.List;
  *   <li>@-rules (@media, @font-face, @keyframes) which are preserved but not parsed as rules</li>
  * </ul>
  * <p>
- * @-rules that should not be inlined are collected separately so they can be
+ * At-rules that should not be inlined are collected separately so they can be
  * placed back into {@code <style>} blocks in the output.
  */
 public final class CssParser {
