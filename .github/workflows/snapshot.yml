@@ -24,9 +24,9 @@ jobs:
       checks: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
@@ -35,7 +35,7 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Build with Maven
-        run: mvn -B -ntp -Dstyle.color=always verify
+        run: mvn -B -ntp -Dstyle.color=always verify -P sign
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
@@ -79,7 +79,7 @@ jobs:
 
       - name: Publish package to GitHub Packages
         if: github.event_name != 'pull_request'
-        run: mvn -B -ntp -Dstyle.color=always deploy -P github -DskipTests=true
+        run: mvn -B -ntp -Dstyle.color=always deploy -P github,sign -DskipTests=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
