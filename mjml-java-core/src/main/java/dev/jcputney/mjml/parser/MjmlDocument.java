@@ -1,8 +1,12 @@
 package dev.jcputney.mjml.parser;
 
 /**
- * Parsed MJML document model containing the root node and convenience accessors for head and body
- * sections.
+ * Represents an MJML document's structure, containing a root node
+ * and methods to access key elements such as the head and body nodes.
+ * This class encapsulates the MJML document's logical model, allowing
+ * for the retrieval of specific parts of its structure.
+ *
+ * @param root the root {@code <mjml>} node of the document
  */
 public record MjmlDocument(MjmlNode root) {
 
