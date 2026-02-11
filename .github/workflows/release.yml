@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.MAVEN_RELEASE_SSH_KEY }}
@@ -44,3 +46,37 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Create GitHub Release
+        run: |
+          VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
+
+          # Find previous release tag
+          PREV_TAG=$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || echo "")
+
+          if [ -n "$PREV_TAG" ]; then
+            COMMITS=$(git log "${PREV_TAG}..${VERSION}" --pretty=format:"- %s" \
+              | grep -v '\[maven-release-plugin\]')
+          else
+            COMMITS=$(git log "${VERSION}" --pretty=format:"- %s" \
+              | grep -v '\[maven-release-plugin\]')
+          fi
+
+          # Generate release notes via Claude API, fall back to raw commits on failure
+          NOTES=$(curl -sf https://api.anthropic.com/v1/messages \
+            -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "$(jq -n --arg commits "$COMMITS" '{
+              model: "claude-haiku-4-5-20251001",
+              max_tokens: 1024,
+              messages: [{role: "user", content: ("Categorize these git commits into GitHub release notes. Use these sections as needed: ## New Features, ## Bug Fixes, ## Dependency Updates, ## Other Changes. Use bulleted markdown lists. Only include sections that have entries. Do not add any preamble or explanation, just the categorized notes.\n\nCommits:\n" + $commits)}]
+            }')" | jq -r '.content[0].text') || NOTES="${COMMITS}"
+
+          gh release create "${VERSION}" \
+            --title "${VERSION}" \
+            --notes "${NOTES}" \
+            --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
