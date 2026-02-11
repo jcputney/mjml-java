@@ -87,7 +87,7 @@ public class MjCarousel extends BodyComponent {
     int containerWidth = (int) renderContext.getContainerWidth();
 
     // Inject carousel CSS into global context
-    globalContext.addComponentStyle(
+    globalContext.styles().addComponentStyle(
         buildCarouselCss(carouselId, count, iconWidthNum, tbHoverBorderColor,
             tbSelectedBorderColor));
 
@@ -510,11 +510,7 @@ public class MjCarousel extends BodyComponent {
    * of "+*" segments.
    */
   private String siblingChain(int starCount) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < starCount; i++) {
-      sb.append("+*");
-    }
-    return sb.toString();
+    return "+*".repeat(starCount);
   }
 
   private int parseIntFromPx(String value) {

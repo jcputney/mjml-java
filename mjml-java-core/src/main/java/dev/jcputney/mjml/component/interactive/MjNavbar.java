@@ -65,7 +65,7 @@ public class MjNavbar extends BodyComponent {
     boolean hasHamburger = "hamburger".equals(hamburger);
 
     if (hasHamburger) {
-      globalContext.addComponentStyle(buildHamburgerCss());
+      globalContext.styles().addComponentStyle(buildHamburgerCss());
       // Register the hamburger icon font (ico-font-family may use a web font like Ubuntu)
       String icoFontFamily = getAttribute("ico-font-family",
           "Ubuntu, Helvetica, Arial, sans-serif");
@@ -188,7 +188,7 @@ public class MjNavbar extends BodyComponent {
   }
 
   private String buildHamburgerCss() {
-    int breakpoint = globalContext.getBreakpointPx() - 1;
+    int breakpoint = globalContext.metadata().getBreakpointPx() - 1;
     return """
         noinput.mj-menu-checkbox {
           display: block !important;

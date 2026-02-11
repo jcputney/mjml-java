@@ -1,5 +1,6 @@
 package dev.jcputney.mjml.render;
 
+import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlEscaper;
 
 /**
@@ -36,7 +37,7 @@ public final class VmlHelper {
     StringBuilder sb = new StringBuilder();
     boolean isNoRepeat = "no-repeat".equals(bgRepeat);
 
-    String[] posParts = bgPosition.trim().split("\\s+");
+    String[] posParts = CssUnitParser.WHITESPACE.split(bgPosition.trim());
     String posXStr = posParts.length > 0 ? posParts[0] : "center";
     String posYStr = posParts.length > 1 ? posParts[1] : "top";
 
@@ -90,11 +91,13 @@ public final class VmlHelper {
     } else if ("contain".equals(bgSize)) {
       sb.append(" size=\"1,1\" aspect=\"atmost\"");
     } else if (!"auto".equals(bgSize)) {
-      String[] bgSplit = bgSize.trim().split("\\s+");
+      String[] bgSplit = CssUnitParser.WHITESPACE.split(bgSize.trim());
       if (bgSplit.length == 1) {
-        sb.append(" size=\"").append(bgSize).append("\" aspect=\"atmost\"");
+        sb.append(" size=\"").append(HtmlEscaper.escapeAttributeValue(bgSize))
+            .append("\" aspect=\"atmost\"");
       } else {
-        sb.append(" size=\"").append(String.join(",", bgSplit)).append("\"");
+        sb.append(" size=\"").append(
+            HtmlEscaper.escapeAttributeValue(String.join(",", bgSplit))).append("\"");
       }
     }
 
@@ -144,7 +147,8 @@ public final class VmlHelper {
     } else if ("contain".equals(bgSize)) {
       sb.append(" size=\"1,1\" aspect=\"atmost\"");
     } else if (!"auto".equals(bgSize)) {
-      sb.append(" size=\"").append(bgSize.trim().replace(" ", ",")).append("\"");
+      sb.append(" size=\"").append(
+          HtmlEscaper.escapeAttributeValue(bgSize.trim().replace(" ", ","))).append("\"");
     }
 
     sb.append(" />");
@@ -159,27 +163,21 @@ public final class VmlHelper {
    * Converts a CSS position keyword or percentage to a percentage value.
    */
   public static double cssPositionToPercent(String value, boolean isX) {
-    switch (value) {
-      case "left":
-        return 0;
-      case "right":
-        return 100;
-      case "top":
-        return 0;
-      case "bottom":
-        return 100;
-      case "center":
-        return 50;
-      default:
+    return switch (value) {
+      case "left", "top" -> 0;
+      case "right", "bottom" -> 100;
+      case "center" -> 50;
+      default -> {
         if (value.endsWith("%")) {
           try {
-            return Double.parseDouble(value.replace("%", ""));
+            yield Double.parseDouble(value.replace("%", ""));
           } catch (NumberFormatException e) {
-            return isX ? 50 : 0;
+            yield isX ? 50 : 0;
           }
         }
-        return isX ? 50 : 0;
-    }
+        yield isX ? 50 : 0;
+      }
+    };
   }
 
   /**
@@ -197,7 +195,7 @@ public final class VmlHelper {
    * Maps keyword pairs to "x, y" format using simple keyword lookup.
    */
   static String cssPositionToVmlOrigin(String cssPosition) {
-    String[] parts = cssPosition.trim().split("\\s+");
+    String[] parts = CssUnitParser.WHITESPACE.split(cssPosition.trim());
     String x = parts.length > 0 ? parts[0] : "center";
     String y = parts.length > 1 ? parts[1] : "top";
     return cssAxisToVml(x) + ", " + cssAxisToVml(y);
@@ -207,17 +205,11 @@ public final class VmlHelper {
    * Maps a CSS axis keyword to a VML coordinate value.
    */
   public static String cssAxisToVml(String value) {
-    switch (value) {
-      case "left":
-      case "top":
-        return "0";
-      case "center":
-        return "0.5";
-      case "right":
-      case "bottom":
-        return "1";
-      default:
-        return "0.5";
-    }
+    return switch (value) {
+      case "left", "top" -> "0";
+      case "center" -> "0.5";
+      case "right", "bottom" -> "1";
+      default -> "0.5";
+    };
   }
 }

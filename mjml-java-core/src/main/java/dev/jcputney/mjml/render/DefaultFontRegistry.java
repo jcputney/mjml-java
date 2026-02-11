@@ -1,8 +1,11 @@
 package dev.jcputney.mjml.render;
 
 import dev.jcputney.mjml.context.GlobalContext;
+import dev.jcputney.mjml.context.StyleContext;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Registry of well-known web fonts that MJML auto-imports when used in font-family.
@@ -38,29 +41,29 @@ public final class DefaultFontRegistry {
       return;
     }
 
+    // Pre-compute set of already-registered font names for O(1) lookup
+    Set<String> registeredNames = ctx.styles().getFonts().stream()
+        .map(StyleContext.FontDef::name)
+        .collect(Collectors.toSet());
+
     // Check built-in default fonts
     for (Map.Entry<String, String> entry : DEFAULT_FONTS.entrySet()) {
       String fontName = entry.getKey();
-      if (fontFamily.contains(fontName)) {
-        boolean alreadyRegistered = ctx.getFonts().stream()
-            .anyMatch(f -> f.name().equals(fontName));
-        if (!alreadyRegistered) {
-          String overrideUrl = ctx.getFontUrlOverride(fontName);
-          String href = overrideUrl != null ? overrideUrl : entry.getValue();
-          ctx.addFont(fontName, href);
-        }
+      if (fontFamily.contains(fontName) && !registeredNames.contains(fontName)) {
+        String overrideUrl = ctx.styles().getFontUrlOverride(fontName);
+        String href = overrideUrl != null ? overrideUrl : entry.getValue();
+        ctx.styles().addFont(fontName, href);
+        registeredNames.add(fontName);
       }
     }
 
     // Check mj-font declared fonts (not in default registry)
-    for (Map.Entry<String, String> override : ctx.getFontUrlOverrides().entrySet()) {
+    for (Map.Entry<String, String> override : ctx.styles().getFontUrlOverrides().entrySet()) {
       String fontName = override.getKey();
-      if (!DEFAULT_FONTS.containsKey(fontName) && fontFamily.contains(fontName)) {
-        boolean alreadyRegistered = ctx.getFonts().stream()
-            .anyMatch(f -> f.name().equals(fontName));
-        if (!alreadyRegistered) {
-          ctx.addFont(fontName, override.getValue());
-        }
+      if (!DEFAULT_FONTS.containsKey(fontName) && fontFamily.contains(fontName)
+          && !registeredNames.contains(fontName)) {
+        ctx.styles().addFont(fontName, override.getValue());
+        registeredNames.add(fontName);
       }
     }
   }

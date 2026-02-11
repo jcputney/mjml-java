@@ -42,7 +42,7 @@ public class MjHtmlAttributes extends HeadComponent {
       }
 
       if (!attrs.isEmpty()) {
-        globalContext.setHtmlAttributes(path, attrs);
+        globalContext.attributes().setHtmlAttributes(path, attrs);
       }
     }
   }

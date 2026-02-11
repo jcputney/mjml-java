@@ -178,12 +178,23 @@ Head components are processed during phase 4 of the rendering pipeline, after pa
 
 ## Container Components
 
-Container components render child MJML components (like `mj-section` renders `mj-column` children). They require a `ComponentRegistry` to instantiate child components. Since the registry is not available at configuration time, custom container components should use the `renderChildren()` method that takes a `ComponentRegistry`, and the factory lambda should capture the registry when it becomes available.
+Container components render child MJML components (like `mj-section` renders `mj-column` children). They require a `ComponentRegistry` to instantiate child components.
 
-**Note:** The current public `ComponentFactory` interface uses a 3-argument signature `(MjmlNode, GlobalContext, RenderContext)`. For container components that need the registry, you can store it as a field and populate it via a custom mechanism, or use the `node.getChildren()` to access raw child content directly:
+Use `registerContainerComponent()` with the `ContainerComponentFactory` interface, which provides the registry as a fourth constructor argument:
+
+```java
+@FunctionalInterface
+public interface ContainerComponentFactory {
+    BaseComponent create(MjmlNode node, GlobalContext globalContext,
+                         RenderContext renderContext, ComponentRegistry registry);
+}
+```
+
+Here is a complete container component example:
 
 ```java
 import dev.jcputney.mjml.component.BodyComponent;
+import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
@@ -191,9 +202,12 @@ import java.util.Map;
 
 public class MjCard extends BodyComponent {
 
+    private final ComponentRegistry registry;
+
     public MjCard(MjmlNode node, GlobalContext globalContext,
-                  RenderContext renderContext) {
+                  RenderContext renderContext, ComponentRegistry registry) {
         super(node, globalContext, renderContext);
+        this.registry = registry;
     }
 
     @Override
@@ -209,26 +223,53 @@ public class MjCard extends BodyComponent {
     @Override
     public String render() {
         String bg = getAttribute("background-color", "#ffffff");
-        // Access raw text content from child nodes
-        StringBuilder content = new StringBuilder();
-        for (MjmlNode child : node.getChildren()) {
-            if (child.getTextContent() != null) {
-                content.append(child.getTextContent());
-            }
-        }
+        String children = renderChildren(registry);
         return "<div style=\"background-color:" + bg + ";\">"
-            + content + "</div>";
+            + children + "</div>";
     }
 }
 ```
 
-Register it as a standard component:
+Register it with `registerContainerComponent()`:
 
 ```java
 MjmlConfiguration config = MjmlConfiguration.builder()
-    .registerComponent("mj-card", MjCard::new)
+    .registerContainerComponent("mj-card", MjCard::new)
     .build();
 ```
+
+The `renderChildren(registry)` method iterates over child nodes, creates component instances using the registry, and concatenates their rendered HTML. This means your container component can nest any built-in or custom component:
+
+```xml
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-card background-color="#f0f0f0">
+          <mj-text>Card title</mj-text>
+          <mj-image src="https://example.com/photo.jpg" />
+        </mj-card>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+```
+
+## Overriding Built-in Components
+
+Registering a custom component with a tag name that matches a built-in component replaces the built-in. This works with both `registerComponent()` and `registerContainerComponent()`:
+
+```java
+MjmlConfiguration config = MjmlConfiguration.builder()
+    .registerComponent("mj-text", MyCustomText::new)
+    .build();
+```
+
+Container component registrations are applied after standard component registrations, so `registerContainerComponent()` takes precedence if both register the same tag name.
+
+:::warning
+Overriding built-in components may break templates that rely on the default rendering behavior. Test thoroughly when replacing core components like `mj-section`, `mj-column`, or `mj-text`.
+:::
 
 ## Utility Methods
 
@@ -243,18 +284,21 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 | `buildStyle(map)` | Build a CSS style string from key-value pairs |
 | `buildAttributes(map)` | Build HTML attributes string (with XSS escaping) |
 | `escapeAttr(value)` | Escape a single attribute value for safe HTML output |
-| `renderChildren(registry)` | Render all child body components |
+| `renderChildren(registry)` | Render all child body components (container components only) |
 | `parseWidth(value)` | Parse a CSS unit value (px, %, etc.) to pixels |
+
+The `renderChildren(registry)` method requires a `ComponentRegistry`, which is only available in container components registered via `registerContainerComponent()`.
 
 ## Multiple Custom Components
 
-You can register any number of custom components:
+You can register any number of custom components, mixing leaf and container types:
 
 ```java
 MjmlConfiguration config = MjmlConfiguration.builder()
     .registerComponent("mj-greeting", MjGreeting::new)
-    .registerComponent("mj-card", MjCard::new)
     .registerComponent("mj-badge", MjBadge::new)
+    .registerContainerComponent("mj-card", MjCard::new)
+    .registerContainerComponent("mj-panel", MjPanel::new)
     .build();
 ```
 

@@ -77,7 +77,7 @@ public abstract class AbstractSectionComponent extends BodyComponent {
         buildBackgroundCss(), bgPosition,
         getAttribute("background-repeat", "repeat"),
         getAttribute("background-size", "auto"),
-        globalContext.getContainerWidth()));
+        globalContext.metadata().getContainerWidth()));
   }
 
   protected String buildBgImageTableStyle() {
@@ -163,7 +163,7 @@ public abstract class AbstractSectionComponent extends BodyComponent {
    */
   protected String renderNormalScaffold(String vmlRect, String innerContent, String outerDivClass) {
     StringBuilder sb = new StringBuilder();
-    int containerWidth = globalContext.getContainerWidth();
+    int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
     boolean hasBgUrl = hasBackgroundUrl();
@@ -233,7 +233,7 @@ public abstract class AbstractSectionComponent extends BodyComponent {
       styles.put("background-color", bgColor);
     }
     styles.put("margin", "0px auto");
-    styles.put("max-width", globalContext.getContainerWidth() + "px");
+    styles.put("max-width", globalContext.metadata().getContainerWidth() + "px");
     String borderRadius = getAttribute("border-radius", "");
     if (!borderRadius.isEmpty()) {
       styles.put("border-radius", borderRadius);

@@ -26,6 +26,7 @@ public final class ColumnWidthCalculator {
   public static double[] calculatePixelWidths(List<MjmlNode> columns, double containerWidth,
       boolean usePercentAuto) {
     double[] widths = new double[columns.size()];
+    boolean[] isAuto = new boolean[columns.size()];
     double totalUsed = 0;
     int autoCount = 0;
 
@@ -40,6 +41,7 @@ public final class ColumnWidthCalculator {
         }
         totalUsed += widths[i];
       } else {
+        isAuto[i] = true;
         autoCount++;
       }
     }
@@ -53,7 +55,7 @@ public final class ColumnWidthCalculator {
         autoWidth = (containerWidth - totalUsed) / autoCount;
       }
       for (int i = 0; i < widths.length; i++) {
-        if (widths[i] == 0) {
+        if (isAuto[i]) {
           widths[i] = autoWidth;
         }
       }

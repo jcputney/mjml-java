@@ -44,28 +44,27 @@ jobs:
         uses: test-summary/action@v2
         with:
           paths: |
-            target/surefire-reports/TEST-*.xml
-            target/surefire-reports/**/TEST-*.xml
+            **/target/surefire-reports/TEST-*.xml
         if: always()
 
       - uses: qltysh/qlty-action/coverage@main
         if: github.event_name != 'pull_request'
         with:
           coverage-token: ${{secrets.QLTY_COVERAGE_TOKEN}}
-          files: target/site/jacoco/jacoco.xml
+          files: **/target/site/jacoco/jacoco.xml
 
       # generates coverage-report.md and publishes as checkrun
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v5.1
         with:
-          coverage_results_path: target/site/jacoco/jacoco.xml
+          coverage_results_path: **/target/site/jacoco/jacoco.xml
           coverage_report_name: Coverage
           coverage_report_title: JaCoCo
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_check_run: false
-          minimum_coverage: 60
-          fail_below_threshold: false
+          minimum_coverage: 80
+          fail_below_threshold: true
           publish_only_summary: false
 
       # Publish Coverage Job Summary

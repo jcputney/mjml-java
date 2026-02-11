@@ -23,7 +23,7 @@ public class MjBreakpoint extends HeadComponent {
   public void process() {
     String width = node.getAttribute("width");
     if (width != null && !width.isEmpty()) {
-      globalContext.setBreakpoint(width);
+      globalContext.metadata().setBreakpoint(width);
     }
   }
 }

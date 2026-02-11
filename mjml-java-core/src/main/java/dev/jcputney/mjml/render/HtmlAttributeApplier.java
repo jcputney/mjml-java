@@ -27,7 +27,7 @@ final class HtmlAttributeApplier {
    * Applies mj-html-attributes from the global context to the rendered HTML.
    */
   static String apply(String html, GlobalContext ctx) {
-    Map<String, Map<String, String>> htmlAttrs = ctx.getHtmlAttributes();
+    Map<String, Map<String, String>> htmlAttrs = ctx.attributes().getHtmlAttributes();
     if (htmlAttrs.isEmpty()) {
       return html;
     }
@@ -46,7 +46,7 @@ final class HtmlAttributeApplier {
    * @return the HTML with attributes applied
    */
   static String applyToElements(String html, HtmlElement root, GlobalContext ctx) {
-    Map<String, Map<String, String>> htmlAttrs = ctx.getHtmlAttributes();
+    Map<String, Map<String, String>> htmlAttrs = ctx.attributes().getHtmlAttributes();
     if (htmlAttrs.isEmpty()) {
       return html;
     }

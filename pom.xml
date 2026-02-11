@@ -55,6 +55,7 @@
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
         <version.plugin.release>3.1.1</version.plugin.release>
         <version.plugin.source>3.3.1</version.plugin.source>
+        <version.plugin.spotbugs>4.8.6.6</version.plugin.spotbugs>
     </properties>
 
     <dependencyManagement>
@@ -94,6 +95,16 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.12</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${version.plugin.spotbugs}</version>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>High</threshold>
+                        <failOnError>true</failOnError>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

@@ -211,6 +211,34 @@ class RenderPipelineTest {
   }
 
   @Test
+  void mjRawContentWithSelfClosingAndStylePreservedWithoutInlineStyles() {
+    // Verifies that mj-raw content containing "/>", style="" is not mangled
+    // when no inline styles are configured (the post-processing rewrites in
+    // RenderPipeline only apply when inline CSS is present).
+    String mjml = """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-raw>
+                  <img src="https://example.com/pixel.gif" style="" />
+                  <input type="hidden" value="test" />
+                </mj-raw>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """;
+    String html = render(mjml);
+    // Without inline styles, the post-processing rewrites should NOT run,
+    // so self-closing tags and empty style attributes are preserved.
+    assertTrue(html.contains("/>"),
+        "Self-closing tags in mj-raw should be preserved when no inline styles");
+    assertTrue(html.contains("style=\"\""),
+        "Empty style attributes in mj-raw should be preserved when no inline styles");
+  }
+
+  @Test
   void cssInliningAppliesWhenInlineStylesPresent() {
     String mjml = """
         <mjml>

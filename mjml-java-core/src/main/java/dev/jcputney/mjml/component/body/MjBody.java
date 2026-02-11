@@ -44,11 +44,11 @@ public class MjBody extends BodyComponent {
 
     // Update container width in global context
     int containerWidth = (int) parseWidth(width);
-    globalContext.setContainerWidth(containerWidth);
+    globalContext.metadata().setContainerWidth(containerWidth);
 
     // Store body background color for the <body> tag in HtmlSkeleton
     if (!bgColor.isEmpty()) {
-      globalContext.setBodyBackgroundColor(bgColor);
+      globalContext.metadata().setBodyBackgroundColor(bgColor);
     }
 
     StringBuilder sb = new StringBuilder();
@@ -62,7 +62,7 @@ public class MjBody extends BodyComponent {
     sb.append("  <div");
 
     // aria-label from mj-title if set
-    String title = globalContext.getTitle();
+    String title = globalContext.metadata().getTitle();
     if (title != null && !title.isEmpty()) {
       sb.append(" aria-label=\"").append(escapeAttr(title)).append("\"");
     }

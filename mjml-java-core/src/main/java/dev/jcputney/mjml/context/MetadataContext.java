@@ -1,5 +1,6 @@
 package dev.jcputney.mjml.context;
 
+import dev.jcputney.mjml.MjmlConfiguration;
 import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class MetadataContext {
   private String title = "";
   private String previewText = "";
   private String breakpoint = "480px";
-  private int containerWidth = 600;
+  private int containerWidth = MjmlConfiguration.DEFAULT_CONTAINER_WIDTH;
   private String bodyBackgroundColor = "";
   private final List<String> headComments = new ArrayList<>();
   private final List<String> fileStartContent = new ArrayList<>();

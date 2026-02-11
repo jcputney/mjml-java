@@ -8,6 +8,7 @@ import dev.jcputney.mjml.MjmlValidationException;
 import dev.jcputney.mjml.css.CssInliner;
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
+import dev.jcputney.mjml.component.ContainerComponentFactory;
 import dev.jcputney.mjml.component.HeadComponent;
 import dev.jcputney.mjml.component.body.MjBody;
 import dev.jcputney.mjml.component.body.MjColumn;
@@ -51,6 +52,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * Orchestrates the 7-phase rendering pipeline:
@@ -96,8 +98,12 @@ public final class RenderPipeline {
   }
 
   private ComponentRegistry getOrCreateRegistry(MjmlConfiguration config) {
+    ComponentRegistry cached = REGISTRY_CACHE.get(config);
+    if (cached != null) {
+      return cached;
+    }
     synchronized (REGISTRY_CACHE) {
-      ComponentRegistry cached = REGISTRY_CACHE.get(config);
+      cached = REGISTRY_CACHE.get(config);
       if (cached != null) {
         return cached;
       }
@@ -138,7 +144,8 @@ public final class RenderPipeline {
       IncludeProcessor includeProcessor = new IncludeProcessor(
           configuration.getIncludeResolver(),
           configuration.getMaxInputSize(),
-          configuration.getMaxIncludeDepth());
+          configuration.getMaxIncludeDepth(),
+          configuration.getMaxNestingDepth());
       includeProcessor.process(document);
     }
 
@@ -159,7 +166,7 @@ public final class RenderPipeline {
       bodyHtml = mergeMsoSectionTransitions(bodyHtml);
 
       // Phase 6b: Apply mj-html-attributes to rendered body
-      if (!globalContext.getHtmlAttributes().isEmpty()) {
+      if (!globalContext.attributes().getHtmlAttributes().isEmpty()) {
         bodyHtml = HtmlAttributeApplier.apply(bodyHtml, globalContext);
       }
 
@@ -167,9 +174,9 @@ public final class RenderPipeline {
       String html = HtmlSkeleton.assemble(bodyHtml, globalContext);
 
       // Phase 7b: CSS inlining (inline styles from mj-style inline="inline")
-      if (!globalContext.getInlineStyles().isEmpty()) {
+      if (!globalContext.styles().getInlineStyles().isEmpty()) {
         StringBuilder inlineCss = new StringBuilder();
-        for (String css : globalContext.getInlineStyles()) {
+        for (String css : globalContext.styles().getInlineStyles()) {
           inlineCss.append(css).append("\n");
         }
         html = CssInliner.inlineAdditionalOnly(html, inlineCss.toString());
@@ -185,7 +192,7 @@ public final class RenderPipeline {
         html = html.replace(" />", ">");
       }
 
-      return new MjmlRenderResult(html, globalContext.getTitle(), globalContext.getPreviewText());
+      return new MjmlRenderResult(html, globalContext.metadata().getTitle(), globalContext.metadata().getPreviewText());
     } catch (MjmlException e) {
       throw e;
     } catch (Exception e) {
@@ -199,13 +206,13 @@ public final class RenderPipeline {
       return;
     }
 
-    RenderContext dummyContext = new RenderContext(600);
+    RenderContext dummyContext = new RenderContext(MjmlConfiguration.DEFAULT_CONTAINER_WIDTH);
 
     for (MjmlNode child : head.getChildren()) {
       if ("#comment".equals(child.getTagName())) {
         String comment = child.getTextContent();
         if (comment != null && !comment.isBlank()) {
-          globalContext.addHeadComment(comment.trim());
+          globalContext.metadata().addHeadComment(comment.trim());
         }
         continue;
       }
@@ -226,9 +233,9 @@ public final class RenderPipeline {
     }
 
     // Parse body width
-    String widthAttr = body.getAttribute("width", "600px");
-    int containerWidth = CssUnitParser.parsePixels(widthAttr, 600);
-    globalContext.setContainerWidth(containerWidth);
+    String widthAttr = body.getAttribute("width", MjmlConfiguration.DEFAULT_CONTAINER_WIDTH + "px");
+    int containerWidth = CssUnitParser.parsePixels(widthAttr, MjmlConfiguration.DEFAULT_CONTAINER_WIDTH);
+    globalContext.metadata().setContainerWidth(containerWidth);
 
     RenderContext renderContext = new RenderContext(containerWidth);
 
@@ -236,20 +243,25 @@ public final class RenderPipeline {
     return mjBody.render();
   }
 
+  // Pre-compiled patterns for MSO transition merging. Use \s+ between the closing
+  // conditional and the opening conditional so that indentation changes don't break the merge.
+  private static final Pattern MSO_SECTION_MERGE = Pattern.compile(
+      "<!--\\[if mso \\| IE]></td></tr></table><!\\[endif]-->\\s+"
+          + "<!--\\[if mso \\| IE]><table ");
+  private static final Pattern MSO_VML_MERGE = Pattern.compile(
+      "<!--\\[if mso \\| IE]></v:textbox></v:rect></td></tr></table><!\\[endif]-->\\s+"
+          + "<!--\\[if mso \\| IE]><table ");
+
   /**
    * Merges adjacent MSO conditional section transitions in the rendered body HTML.
    * When two sections are adjacent, this merges the close/open pattern into a single
-   * conditional block.
+   * conditional block. Uses regex with {@code \s+} to tolerate whitespace variations.
    */
   private static String mergeMsoSectionTransitions(String html) {
-    html = html.replace(
-        "<!--[if mso | IE]></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
-        "<!--[if mso | IE]></td></tr></table><table "
-    );
-    html = html.replace(
-        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table ",
-        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><table "
-    );
+    html = MSO_SECTION_MERGE.matcher(html).replaceAll(
+        "<!--[if mso | IE]></td></tr></table><table ");
+    html = MSO_VML_MERGE.matcher(html).replaceAll(
+        "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><table ");
     return html;
   }
 
@@ -327,6 +339,13 @@ public final class RenderPipeline {
     for (Map.Entry<String, dev.jcputney.mjml.component.ComponentFactory> entry :
         configuration.getCustomComponents().entrySet()) {
       reg.register(entry.getKey(), entry.getValue());
+    }
+
+    // Register custom container components (with registry access)
+    for (Map.Entry<String, ContainerComponentFactory> entry :
+        configuration.getCustomContainerComponents().entrySet()) {
+      reg.register(entry.getKey(),
+          (node, ctx, rctx) -> entry.getValue().create(node, ctx, rctx, reg));
     }
 
     return reg;

@@ -27,9 +27,9 @@ class AttributeResolverTest {
   @Test
   void inlineWinsOverAllLevels() {
     // Set up all cascade levels
-    globalContext.setClassAttributes("myclass", Map.of("color", "#111111"));
-    globalContext.setDefaultAttributes("mj-text", Map.of("color", "#222222"));
-    globalContext.setDefaultAttributes("mj-all", Map.of("color", "#333333"));
+    globalContext.attributes().setClassAttributes("myclass", Map.of("color", "#111111"));
+    globalContext.attributes().setDefaultAttributes("mj-text", Map.of("color", "#222222"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("color", "#333333"));
 
     MjmlNode node = new MjmlNode("mj-text");
     node.setAttribute("color", "#inline");
@@ -41,9 +41,9 @@ class AttributeResolverTest {
 
   @Test
   void mjClassOverridesTagDefaults() {
-    globalContext.setClassAttributes("myclass", Map.of("color", "#class-value"));
-    globalContext.setDefaultAttributes("mj-text", Map.of("color", "#tag-value"));
-    globalContext.setDefaultAttributes("mj-all", Map.of("color", "#all-value"));
+    globalContext.attributes().setClassAttributes("myclass", Map.of("color", "#class-value"));
+    globalContext.attributes().setDefaultAttributes("mj-text", Map.of("color", "#tag-value"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("color", "#all-value"));
 
     MjmlNode node = new MjmlNode("mj-text");
     node.setAttribute("mj-class", "myclass");
@@ -54,8 +54,8 @@ class AttributeResolverTest {
 
   @Test
   void tagDefaultsOverrideMjAll() {
-    globalContext.setDefaultAttributes("mj-text", Map.of("color", "#tag-value"));
-    globalContext.setDefaultAttributes("mj-all", Map.of("color", "#all-value"));
+    globalContext.attributes().setDefaultAttributes("mj-text", Map.of("color", "#tag-value"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("color", "#all-value"));
 
     MjmlNode node = new MjmlNode("mj-text");
 
@@ -65,7 +65,7 @@ class AttributeResolverTest {
 
   @Test
   void mjAllOverridesComponentDefaults() {
-    globalContext.setDefaultAttributes("mj-all", Map.of("color", "#all-value"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("color", "#all-value"));
 
     MjmlNode node = new MjmlNode("mj-text");
 
@@ -83,8 +83,8 @@ class AttributeResolverTest {
 
   @Test
   void multipleMjClassFirstMatchWins() {
-    globalContext.setClassAttributes("first", Map.of("color", "#first"));
-    globalContext.setClassAttributes("second", Map.of("color", "#second"));
+    globalContext.attributes().setClassAttributes("first", Map.of("color", "#first"));
+    globalContext.attributes().setClassAttributes("second", Map.of("color", "#second"));
 
     MjmlNode node = new MjmlNode("mj-text");
     node.setAttribute("mj-class", "first second");
@@ -103,9 +103,9 @@ class AttributeResolverTest {
 
   @Test
   void allFiveLevelsPopulatedInlineWins() {
-    globalContext.setClassAttributes("cls", Map.of("font-size", "#class"));
-    globalContext.setDefaultAttributes("mj-text", Map.of("font-size", "#tag"));
-    globalContext.setDefaultAttributes("mj-all", Map.of("font-size", "#all"));
+    globalContext.attributes().setClassAttributes("cls", Map.of("font-size", "#class"));
+    globalContext.attributes().setDefaultAttributes("mj-text", Map.of("font-size", "#tag"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("font-size", "#all"));
 
     MjmlNode node = new MjmlNode("mj-text");
     node.setAttribute("font-size", "#inline");
@@ -118,9 +118,9 @@ class AttributeResolverTest {
 
   @Test
   void withoutInlineClassWins() {
-    globalContext.setClassAttributes("cls", Map.of("font-size", "#class"));
-    globalContext.setDefaultAttributes("mj-text", Map.of("font-size", "#tag"));
-    globalContext.setDefaultAttributes("mj-all", Map.of("font-size", "#all"));
+    globalContext.attributes().setClassAttributes("cls", Map.of("font-size", "#class"));
+    globalContext.attributes().setDefaultAttributes("mj-text", Map.of("font-size", "#tag"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("font-size", "#all"));
 
     MjmlNode node = new MjmlNode("mj-text");
     node.setAttribute("mj-class", "cls");
@@ -131,8 +131,8 @@ class AttributeResolverTest {
 
   @Test
   void withoutInlineOrClassTagWins() {
-    globalContext.setDefaultAttributes("mj-text", Map.of("font-size", "#tag"));
-    globalContext.setDefaultAttributes("mj-all", Map.of("font-size", "#all"));
+    globalContext.attributes().setDefaultAttributes("mj-text", Map.of("font-size", "#tag"));
+    globalContext.attributes().setDefaultAttributes("mj-all", Map.of("font-size", "#all"));
 
     MjmlNode node = new MjmlNode("mj-text");
 

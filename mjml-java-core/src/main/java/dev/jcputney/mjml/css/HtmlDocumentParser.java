@@ -92,7 +92,7 @@ public final class HtmlDocumentParser {
     }
 
     // Skip DOCTYPE
-    if (pos + 8 < len && html.substring(pos, pos + 9).equalsIgnoreCase("<!doctype")) {
+    if (pos + 8 < len && html.regionMatches(true, pos, "<!doctype", 0, 9)) {
       int docEnd = html.indexOf('>', pos);
       return docEnd < 0 ? -1 : docEnd + 1;
     }

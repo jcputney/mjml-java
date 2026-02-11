@@ -307,7 +307,7 @@ class SecurityTest {
   }
 
   @Test
-  void nonSvgDataImageUriAllowedInHref() {
+  void allDataUrisBlockedInHref() {
     MjmlConfiguration config = MjmlConfiguration.builder()
         .sanitizeOutput(true)
         .build();
@@ -326,8 +326,8 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertTrue(html.contains("data:image/png"),
-        "data:image/png URI should NOT be blocked");
+    assertFalse(html.contains("data:image/png"),
+        "data: URIs should be blocked by allowlist in href");
   }
 
   @Test

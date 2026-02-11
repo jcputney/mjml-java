@@ -15,6 +15,13 @@ public final class CssUnitParser {
 
   private static final Pattern NON_NUMERIC = Pattern.compile("[^0-9-]");
 
+  /**
+   * Pattern matching valid CSS numeric values: optional sign, digits with optional decimal,
+   * optional unit suffix (px, %, em, rem). Rejects garbage like "abc123xyz" or "12px34".
+   */
+  private static final Pattern VALID_CSS_NUMBER = Pattern.compile(
+      "^\\s*-?\\d+(?:\\.\\d+)?(?:px|%|em|rem)?\\s*$");
+
   private CssUnitParser() {
   }
 
@@ -98,15 +105,20 @@ public final class CssUnitParser {
 
   /**
    * Parses an integer from a CSS pixel value like "10px", "10", or "10.5px".
-   * Strips non-numeric characters (except minus sign) and parses as integer.
-   * Returns 0 on failure.
+   * Validates the input against a CSS number pattern first, rejecting garbage
+   * like "abc123xyz" or "12px34". Returns 0 on failure.
    */
   public static int parseIntPx(String value) {
     if (value == null || value.isEmpty()) {
       return 0;
     }
+    if (!VALID_CSS_NUMBER.matcher(value).matches()) {
+      LOG.fine(() -> "Invalid CSS value for parseIntPx: " + value);
+      return 0;
+    }
+    String stripped = value.trim().replaceAll("(?:px|%|em|rem)$", "").trim();
     try {
-      return Integer.parseInt(NON_NUMERIC.matcher(value).replaceAll(""));
+      return (int) Double.parseDouble(stripped);
     } catch (NumberFormatException e) {
       return 0;
     }

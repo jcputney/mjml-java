@@ -26,13 +26,13 @@ public class MjFont extends HeadComponent {
   public void process() {
     String name = node.getAttribute("name");
     String href = node.getAttribute("href");
-    if (name != null && href != null) {
+    if (name != null && !name.isBlank() && href != null && !href.isBlank()) {
       String trimmed = href.trim().toLowerCase();
       if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
         LOG.warning("mj-font href must start with http:// or https://, skipping: " + name);
         return;
       }
-      globalContext.registerFontOverride(name, href);
+      globalContext.styles().registerFontOverride(name, href);
     }
   }
 }

@@ -1,0 +1,304 @@
+<mjml>
+  <mj-head>
+    <mj-title>Say hello to RealEstate</mj-title>
+    <mj-font
+      name="Alice"
+      href="https://fonts.googleapis.com/css?family=Alice"
+    ></mj-font>
+    <mj-font
+      name="Roboto"
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+    ></mj-font>
+    <mj-attributes>
+      <mj-all
+        font-family="Roboto, Helvetica, Arial, sans-serif"
+        padding="0px"
+      ></mj-all>
+      <mj-text
+        font-weight="400"
+        font-size="14px"
+        color="#000000"
+        line-height="21px"
+      ></mj-text>
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#EAE8E5">
+    <mj-section padding="20px 0 0 0">
+      <mj-column>
+        <mj-image
+          src="https://via.placeholder.com/600x30/EAE8E5/999?text=."
+          alt=""
+          align="center"
+          border="none"
+          padding="0px"
+        ></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-section padding-top="40px" background-color="#FFFFFF">
+      <mj-column width="570px">
+        <mj-text
+          align="left"
+          padding="0 20px"
+          color="#1D83A8"
+          font-size="36px"
+          line-height="40px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >Real Estate</mj-text
+        >
+        <mj-text align="left" padding="0 20px"
+          ><strong><span style="font-size: 40px">&#x2500;</span></strong
+          ><br /><br
+        /></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#FFFFFF">
+      <mj-column width="300px">
+        <mj-text align="left" padding="0 20px 30px 20px"
+          ><strong
+            >Aliquam lorem ante, dapibus in hasellus viverra nulla</strong
+          >
+          ut metus varius laoreet. Quisque rutrum lorem dellorus. Aenean
+          imperdiet.</mj-text
+        >
+      </mj-column>
+      <mj-column width="260px">
+        <mj-image
+          src="https://via.placeholder.com/260x180/EAE8E5/333?text=House+Icon"
+          alt=""
+          padding-bottom="30px"
+          width="260px"
+          align="center"
+          border="none"
+        ></mj-image>
+      </mj-column>
+    </mj-section>
+    <!-- Property Listing 1 - Background URL with overlay -->
+    <mj-section
+      background-url="https://via.placeholder.com/600x400/4a6fa5/fff?text=Villa+Semperin"
+      background-size="cover"
+      padding="30px"
+      background-repeat="no-repeat"
+    >
+      <mj-column vertical-align="middle" width="60%">
+        <mj-text
+          align="center"
+          padding="40px 30px"
+          color="#FFFFFF"
+          font-size="42px"
+          line-height="48px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >Villa Semperin</mj-text
+        >
+      </mj-column>
+      <mj-column vertical-align="middle" width="40%" background-color="#FFFFFF">
+        <mj-image
+          src="https://via.placeholder.com/220x30/FFFFFF/1D83A8?text=FEATURED"
+          width="220px"
+          alt=""
+          align="center"
+          border="none"
+        ></mj-image>
+        <mj-text
+          align="center"
+          padding="20px 20px 0 20px"
+          color="#1D83A8"
+          font-size="26px"
+          line-height="30px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >&#x2013; first offer &#x2013;</mj-text
+        >
+        <mj-text
+          align="center"
+          padding="10px 20px"
+          font-size="22px"
+          line-height="30px"
+          >340,000 $</mj-text
+        >
+        <mj-text align="center" padding="0 20px"
+          >Nascetur ridiculus mus. Donec quam felis, ultricies nec</mj-text
+        >
+        <mj-button
+          background-color="#F44E3C"
+          color="white"
+          padding="20px 20px 30px 20px"
+          border-radius="20px"
+          >view details</mj-button
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Middle content -->
+    <mj-section padding="30px" background-color="#FFFFFF">
+      <mj-column width="60%">
+        <mj-text
+          align="center"
+          padding-bottom="20px"
+          font-size="26px"
+          line-height="30px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >Lorem Ipsum</mj-text
+        >
+        <mj-text align="center" padding="0 40px"
+          >Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.
+          Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum.
+          Aenean imperdiet. Lorem Ipsum</mj-text
+        >
+        <mj-image
+          src="https://via.placeholder.com/50x50/FFFFFF/1D83A8?text=*"
+          alt=""
+          padding="30px 0 10px 0"
+          width="50px"
+          align="center"
+          border="none"
+        ></mj-image>
+      </mj-column>
+      <mj-column width="40%" background-color="#FFFFFF">
+        <mj-image
+          src="https://via.placeholder.com/216x300/EAE8E5/333?text=Interior"
+          width="216px"
+          alt=""
+          align="center"
+          border="none"
+        ></mj-image>
+      </mj-column>
+    </mj-section>
+    <!-- Call to Action -->
+    <mj-section padding="0 20px" background-color="#FFFFFF">
+      <mj-column>
+        <mj-text
+          align="center"
+          font-size="26px"
+          line-height="30px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >Lorem Ipsum</mj-text
+        >
+        <mj-divider
+          width="20px"
+          padding="20px 0"
+          border-width="2px"
+          border-color="#000000"
+        ></mj-divider>
+        <mj-text align="center" padding="0 40px"
+          >Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.
+          Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum.
+          Aenean imperdiet. Lorem Ipsum</mj-text
+        >
+        <mj-button
+          background-color="#F44E3C"
+          color="white"
+          padding="20px 20px 10px 20px"
+          border-radius="20px"
+          >Call to action</mj-button
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Three Column Text -->
+    <mj-section padding="20px" background-color="#FFFFFF">
+      <mj-column width="100%">
+        <mj-text
+          align="center"
+          font-size="26px"
+          line-height="30px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >Nullam dictum felis eu pede</mj-text
+        >
+        <mj-divider
+          width="20px"
+          padding="20px 0"
+          border-width="2px"
+          border-color="#000000"
+        ></mj-divider>
+      </mj-column>
+    </mj-section>
+    <mj-section padding="0 20px 30px" background-color="#FFFFFF">
+      <mj-column width="33%">
+        <mj-text align="left" padding="0 15px 15px"
+          ><strong>Aliquam lorem ante,</strong> dapibus in, viverra quis,
+          feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.
+          Quisque rutrum. Aenean imperdiet. Lorem Ipsum</mj-text
+        >
+      </mj-column>
+      <mj-column width="34%">
+        <mj-text align="left" padding="0 15px 15px"
+          ><strong>Phasellus viverra null aliquam lorem ante</strong>, dapibus
+          in, viverra quis, feugiat a, tellus ut metus varius laoreet. Quisque
+          rutrum. Aenean imperdiet. Lorem Ipsum</mj-text
+        >
+      </mj-column>
+      <mj-column width="33%">
+        <mj-text align="left" padding="0 15px 15px"
+          ><strong>Quisque rutrum.</strong> Aenean imperdiet viverra nulla ut
+          metus varius laoreet. Aliquam lorem ante, dapibus in, viverra quis,
+          feugiat a, tellus. Lorem Ipsum</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Property Listing 2 - Reversed layout -->
+    <mj-section
+      background-url="https://via.placeholder.com/600x400/8B4513/fff?text=Window+House"
+      background-size="cover"
+      padding="30px"
+      background-repeat="no-repeat"
+    >
+      <mj-column vertical-align="middle" width="40%" background-color="#FFFFFF">
+        <mj-image
+          src="https://via.placeholder.com/220x30/FFFFFF/1D83A8?text=NEW"
+          width="220px"
+          alt=""
+          align="center"
+          border="none"
+        ></mj-image>
+        <mj-text
+          align="center"
+          padding="20px 20px 0 20px"
+          color="#1D83A8"
+          font-size="26px"
+          line-height="30px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >&#x2013; 2. offer &#x2013;</mj-text
+        >
+        <mj-text
+          align="center"
+          padding="10px 20px"
+          font-size="22px"
+          line-height="30px"
+          >198,700 $</mj-text
+        >
+        <mj-text align="center" padding="0 20px"
+          >Donec quam felis, ultricies Nascetur ridiculus mus.</mj-text
+        >
+        <mj-button
+          background-color="#F44E3C"
+          color="white"
+          padding="20px 20px 30px 20px"
+          border-radius="20px"
+          >view details</mj-button
+        >
+      </mj-column>
+      <mj-column vertical-align="middle" width="60%">
+        <mj-text
+          align="center"
+          padding="40px 30px"
+          color="#FFFFFF"
+          font-size="42px"
+          line-height="48px"
+          font-family="Alice, Helvetica, Arial, sans-serif"
+          >Window House 23</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Footer -->
+    <mj-section padding="10px 0 20px 0">
+      <mj-column>
+        <mj-text align="center" color="#9B9B9B" font-size="11px"
+          ><a href="https://example.com/unsubscribe" style="color: #9b9b9b">Unsubscribe</a> from this
+          newsletter<br />
+          <a
+            href="https://example.com"
+            style="color: #9b9b9b; text-decoration: none"
+            >RealEstate Inc.</a
+          ></mj-text
+        >
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

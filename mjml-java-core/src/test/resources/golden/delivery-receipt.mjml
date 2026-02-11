@@ -1,0 +1,431 @@
+<mjml>
+  <mj-head>
+    <mj-title>Your Order Receipt</mj-title>
+    <mj-preview>Thank you for your order! Here is your receipt.</mj-preview>
+    <mj-font
+      name="Inter"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap"
+    ></mj-font>
+    <mj-attributes>
+      <mj-text font-family="'Inter',Helvetica,Arial,sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style>
+      p { margin: 0px 0px 0px 0px !important; }
+      .fd-text a { color: unset; text-decoration: underline; }
+      .fd-accountid p {
+        background: #f1f2de;
+        border-radius: 99px;
+        padding: 10px 15px;
+        text-align: center;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#173831">
+    <!-- Webview tag -->
+    <mj-section background-color="transparent" padding="20px 0px">
+      <mj-column width="100%">
+        <mj-text
+          padding="0px"
+          line-height="20px"
+          align="center"
+          color="#FEFFEA"
+          font-size="12px"
+          css-class="fd-text"
+          >Having trouble reading this email? Click here.</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Hero -->
+    <mj-section border-radius="8px" padding="0px" background-color="#155F50">
+      <mj-column width="55%" padding="40px">
+        <mj-image
+          padding="0px"
+          align="left"
+          width="120px"
+          src="https://via.placeholder.com/120x40/155F50/FEFFEA?text=LOGO"
+        ></mj-image>
+        <mj-spacer height="26px"></mj-spacer>
+        <mj-text
+          font-size="20px"
+          line-height="30px"
+          font-weight="700"
+          padding="0px"
+          align="left"
+          color="#FEFFEA"
+        >
+          <p>Hello John,</p>
+          <p>Thanks for your order!</p>
+        </mj-text>
+        <mj-spacer height="14px"></mj-spacer>
+        <mj-text
+          font-size="14px"
+          line-height="20px"
+          padding="0px"
+          align="left"
+          color="#cfdfcb"
+          >Here is the receipt for your order.</mj-text
+        >
+      </mj-column>
+      <mj-column vertical-align="bottom" width="45%">
+        <mj-image
+          align="center"
+          padding="0px"
+          src="https://via.placeholder.com/200x200/155F50/FEFFEA?text=Delivery"
+        ></mj-image>
+      </mj-column>
+    </mj-section>
+    <!-- Spacing -->
+    <mj-section padding="0px">
+      <mj-column padding="0px">
+        <mj-spacer height="14px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+    <!-- Cart Head -->
+    <mj-section
+      padding="30px 40px 26px 40px"
+      border-radius="8px 8px 0px 0px"
+      background-color="#FEFFEA"
+    >
+      <mj-column width="50%" vertical-align="middle">
+        <mj-text
+          font-size="16px"
+          color="#0A0908"
+          font-weight="700"
+          padding="0px"
+          >Products</mj-text
+        >
+      </mj-column>
+      <mj-column width="2%">
+        <mj-spacer height="14px"></mj-spacer>
+      </mj-column>
+      <mj-column width="48%" vertical-align="middle">
+        <mj-text
+          css-class="fd-accountid"
+          color="#0A0908"
+          font-size="10px"
+          padding="0px"
+        >
+          <p>Account ID: CE-PT203912983</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Product 1 -->
+    <mj-section padding="0px 40px 26px 40px" background-color="#FEFFEA">
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text
+          line-height="20px"
+          font-size="14px"
+          padding="0px"
+          font-weight="700"
+          >x1</mj-text
+        >
+      </mj-column>
+      <mj-column width="80%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >Pain au Chocolat</mj-text
+        >
+      </mj-column>
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >3.00&#x20AC;</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Product 2 -->
+    <mj-section padding="0px 40px 26px 40px" background-color="#FEFFEA">
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text
+          line-height="20px"
+          font-size="14px"
+          padding="0px"
+          font-weight="700"
+          >x1</mj-text
+        >
+      </mj-column>
+      <mj-column width="80%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >Nutella Croissant</mj-text
+        >
+      </mj-column>
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >3.50&#x20AC;</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Product 3 -->
+    <mj-section padding="0px 40px 26px 40px" background-color="#FEFFEA">
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text
+          line-height="20px"
+          font-size="14px"
+          padding="0px"
+          font-weight="700"
+          >x2</mj-text
+        >
+      </mj-column>
+      <mj-column width="80%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >Apple Juice</mj-text
+        >
+      </mj-column>
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >5.00&#x20AC;</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Total of Products -->
+    <mj-section padding="26px 40px" background-color="#f1f2de">
+      <mj-column width="90%" vertical-align="middle">
+        <mj-text
+          line-height="20px"
+          font-size="14px"
+          color="#0A0908"
+          font-weight="700"
+          padding="0px"
+          >Total of products</mj-text
+        >
+      </mj-column>
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >11.50&#x20AC;</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Delivery -->
+    <mj-section padding="0px 40px 26px 40px" background-color="#f1f2de">
+      <mj-column width="90%" vertical-align="middle">
+        <mj-text font-size="14px" color="#0A0908" padding="0px"
+          >Delivery</mj-text
+        >
+      </mj-column>
+      <mj-column width="10%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >2.99&#x20AC;</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Divider -->
+    <mj-section background-color="#f1f2de" padding="0px 0px">
+      <mj-column>
+        <mj-divider
+          border-style="dashed"
+          padding="0px 40px"
+          border-color="#dadbc9"
+          border-width="1.5px"
+        ></mj-divider>
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Total Final -->
+    <mj-section padding="26px 40px 26px 40px" background-color="#f1f2de">
+      <mj-column width="88%" vertical-align="middle">
+        <mj-text
+          line-height="26px"
+          font-size="16px"
+          color="#0A0908"
+          font-weight="700"
+          padding="0px"
+          >Total</mj-text
+        >
+      </mj-column>
+      <mj-column width="12%" vertical-align="middle">
+        <mj-text line-height="26px" font-size="16px" padding="0px"
+          >14.49&#x20AC;</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Payment Method -->
+    <mj-section padding="0px 40px 20px 40px" background-color="#f1f2de">
+      <mj-column vertical-align="middle" width="10%">
+        <mj-image
+          align="left"
+          width="44px"
+          src="https://via.placeholder.com/44x28/f1f2de/333?text=VISA"
+          padding="0px"
+        ></mj-image>
+      </mj-column>
+      <mj-column width="2%">
+        <mj-spacer height="14px"></mj-spacer>
+      </mj-column>
+      <mj-column vertical-align="middle" width="88%">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >Paid with a VISA card ending in 4242</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Cart > Legal -->
+    <mj-section
+      border-radius="0px 0px 8px 8px"
+      padding="0px 40px 26px 40px"
+      background-color="#f1f2de"
+    >
+      <mj-column>
+        <mj-text
+          color="#636363"
+          line-height="16px"
+          font-size="10px"
+          padding="0px"
+          >The receipt prices include the applicable tax, in compliance
+          with legal requirements.</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Spacing -->
+    <mj-section padding="0px">
+      <mj-column padding="0px">
+        <mj-spacer height="14px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+    <!-- Delivery Info Header -->
+    <mj-section
+      padding="30px 40px 26px 40px"
+      border-radius="8px 8px 0px 0px"
+      background-color="#FEFFEA"
+    >
+      <mj-column width="50%" vertical-align="middle">
+        <mj-text
+          font-size="16px"
+          color="#0A0908"
+          font-weight="700"
+          padding="0px"
+          >Delivery</mj-text
+        >
+      </mj-column>
+      <mj-column width="2%">
+        <mj-spacer height="14px"></mj-spacer>
+      </mj-column>
+      <mj-column width="48%" vertical-align="middle">
+        <mj-text
+          css-class="fd-accountid"
+          color="#0A0908"
+          font-size="10px"
+          padding="0px"
+        >
+          <p>Delivery ID: KW9AJ91B</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- Delivery > From -->
+    <mj-section padding="0px 40px 26px 40px" background-color="#FEFFEA">
+      <mj-column width="14%" vertical-align="middle">
+        <mj-text
+          line-height="20px"
+          font-size="14px"
+          padding="0px"
+          font-weight="700"
+          >From</mj-text
+        >
+      </mj-column>
+      <mj-column width="86%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >The Corner Bakery</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Delivery > To -->
+    <mj-section padding="0px 40px 26px 40px" background-color="#FEFFEA">
+      <mj-column width="14%" vertical-align="middle">
+        <mj-text
+          line-height="20px"
+          font-size="14px"
+          padding="0px"
+          font-weight="700"
+          >To</mj-text
+        >
+      </mj-column>
+      <mj-column width="86%" vertical-align="middle">
+        <mj-text line-height="20px" font-size="14px" padding="0px"
+          >123 Main Street, Apt 4B</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Delivery > Details -->
+    <mj-section
+      border-radius="0px 0px 8px 8px"
+      padding="0px 40px 26px 40px"
+      background-color="#FEFFEA"
+    >
+      <mj-column>
+        <mj-text
+          color="#636363"
+          line-height="16px"
+          font-size="10px"
+          padding="0px"
+          >The order was placed at <b>1:19 p.m.</b> and delivered at
+          <b>1:42 p.m.</b>, taking 23 minutes.</mj-text
+        >
+      </mj-column>
+    </mj-section>
+    <!-- Spacing -->
+    <mj-section padding="0px">
+      <mj-column padding="0px">
+        <mj-spacer height="14px"></mj-spacer>
+      </mj-column>
+    </mj-section>
+    <!-- Promo Banner -->
+    <mj-section border-radius="8px" padding="0px" background-color="#D1472C">
+      <mj-column width="55%" padding="40px">
+        <mj-text
+          font-size="20px"
+          line-height="30px"
+          font-weight="700"
+          padding="0px"
+          align="left"
+          color="#FEFFEA"
+        >
+          Unlock your next deal
+        </mj-text>
+        <mj-spacer height="14px"></mj-spacer>
+        <mj-text
+          font-size="14px"
+          line-height="20px"
+          padding="0px"
+          align="left"
+          color="#fff"
+          >Enjoy a special offer on your next purchase.</mj-text
+        >
+        <mj-spacer height="18px"></mj-spacer>
+        <mj-button
+          font-family="'Inter',Helvetica,Arial,sans-serif"
+          border-radius="8px"
+          inner-padding="12px 24px"
+          font-size="14px"
+          background-color="#f1c7bf"
+          color="#0A0908"
+          align="left"
+          padding="0px"
+          href="https://example.com/deals"
+          >Claim offer</mj-button
+        >
+      </mj-column>
+      <mj-column vertical-align="bottom" width="45%">
+        <mj-image
+          align="center"
+          padding="0px"
+          src="https://via.placeholder.com/200x200/D1472C/fff?text=DEAL"
+        ></mj-image>
+      </mj-column>
+    </mj-section>
+    <!-- Footer -->
+    <mj-section background-color="transparent" padding="30px 0px">
+      <mj-column width="100%">
+        <mj-text
+          padding="0px"
+          line-height="20px"
+          align="center"
+          color="#FEFFEA"
+          font-size="12px"
+          css-class="fd-text"
+        >
+          <p><b>Issues with your order?</b></p>
+          <p>
+            Contact us at
+            <a href="mailto:help@example.com">help@example.com</a> or call
+            <a href="tel:18005551234">1-800-555-1234</a>, Monday to Friday, 9:00&#x2013;18:00.
+          </p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

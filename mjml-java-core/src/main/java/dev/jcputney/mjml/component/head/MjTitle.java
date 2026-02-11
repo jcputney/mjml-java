@@ -21,7 +21,9 @@ public class MjTitle extends HeadComponent {
 
   @Override
   public void process() {
-    String content = node.getInnerHtml().trim();
-    globalContext.setTitle(content);
+    String content = node.getInnerHtml();
+    if (content != null && !content.isBlank()) {
+      globalContext.metadata().setTitle(content.trim());
+    }
   }
 }

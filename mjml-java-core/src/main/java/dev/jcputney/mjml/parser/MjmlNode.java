@@ -1,5 +1,6 @@
 package dev.jcputney.mjml.parser;
 
+import dev.jcputney.mjml.util.HtmlEscaper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -143,7 +144,8 @@ public class MjmlNode {
     } else {
       sb.append('<').append(tagName);
       for (Map.Entry<String, String> attr : attributes.entrySet()) {
-        sb.append(' ').append(attr.getKey()).append("=\"").append(attr.getValue()).append('"');
+        sb.append(' ').append(attr.getKey()).append("=\"")
+            .append(HtmlEscaper.escapeAttributeValue(attr.getValue())).append('"');
       }
       if (children.isEmpty() && textContent.isEmpty()) {
         sb.append(" />");

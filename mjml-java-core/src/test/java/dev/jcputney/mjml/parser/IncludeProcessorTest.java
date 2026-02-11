@@ -455,9 +455,9 @@ class IncludeProcessorTest {
   }
 
   @Test
-  void parseFailureFallsBackToRawNode() {
+  void parseFailureThrowsForInvalidFragment() {
     // Content that is not valid MJML and not a full <mjml> document
-    // should fall back to a raw node
+    // should throw instead of silently falling back to mj-raw
     MapIncludeResolver resolver = new MapIncludeResolver()
         .put("invalid.mjml", "<div>Not valid MJML <<< broken>");
 
@@ -473,9 +473,8 @@ class IncludeProcessorTest {
         </mjml>
         """;
 
-    // Should not throw - should fall back to mj-raw wrapping
-    String html = MjmlRenderer.render(mjml, config).html();
-    assertNotNull(html);
+    // Invalid MJML fragments now throw instead of silently converting to mj-raw
+    assertThrows(MjmlException.class, () -> MjmlRenderer.render(mjml, config));
   }
 
   @Test

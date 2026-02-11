@@ -5,7 +5,7 @@ title: IncludeResolver
 
 # IncludeResolver
 
-`dev.jcputney.mjml.IncludeResolver` is a functional interface for resolving `<mj-include>` paths to their content. mjml-java ships with one implementation (`FileSystemIncludeResolver`) and makes it straightforward to write your own.
+`dev.jcputney.mjml.IncludeResolver` is a functional interface for resolving `<mj-include>` paths to their content. mjml-java ships with two built-in implementations (`FileSystemIncludeResolver` and `ClasspathIncludeResolver`) and makes it straightforward to write your own.
 
 ## Interface
 

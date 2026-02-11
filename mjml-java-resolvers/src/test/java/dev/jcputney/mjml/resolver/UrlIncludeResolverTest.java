@@ -272,6 +272,30 @@ class UrlIncludeResolverTest {
   }
 
   @Test
+  void ssrfBlocksMulticastIPv4() {
+    var resolver = UrlIncludeResolver.builder()
+        .httpsOnly(false)
+        .build();
+    // 224.0.0.1 is a multicast address (224.0.0.0/4 range)
+    var ex = assertThrows(MjmlIncludeException.class,
+        () -> resolver.resolve("http://224.0.0.1/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("SSRF"),
+        "Multicast IPv4 address should be blocked by SSRF protection");
+  }
+
+  @Test
+  void ssrfBlocksMulticastIPv6() {
+    var resolver = UrlIncludeResolver.builder()
+        .httpsOnly(false)
+        .build();
+    // ff02::1 is a well-known IPv6 multicast address (all nodes)
+    var ex = assertThrows(MjmlIncludeException.class,
+        () -> resolver.resolve("http://[ff02::1]/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("SSRF"),
+        "Multicast IPv6 address should be blocked by SSRF protection");
+  }
+
+  @Test
   void enforcesMaxResponseSizeInBytes() {
     byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 3 chars, 6 bytes
     var resolver = UrlIncludeResolver.builder()

@@ -72,7 +72,10 @@ public final class MjmlParser {
 
   private static MjmlDocument parseXml(String xml, int maxNestingDepth) {
     try {
-      DocumentBuilder builder = FACTORY.newDocumentBuilder();
+      DocumentBuilder builder;
+      synchronized (FACTORY) {
+        builder = FACTORY.newDocumentBuilder();
+      }
       Document document = builder.parse(new InputSource(new StringReader(xml)));
 
       Element root = document.getDocumentElement();

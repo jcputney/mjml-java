@@ -1,8 +1,10 @@
 package dev.jcputney.mjml.render;
 
 import dev.jcputney.mjml.context.GlobalContext;
-import dev.jcputney.mjml.context.GlobalContext.FontDef;
-import dev.jcputney.mjml.context.GlobalContext.MediaQuery;
+import dev.jcputney.mjml.context.StyleContext.FontDef;
+import dev.jcputney.mjml.context.StyleContext.MediaQuery;
+import dev.jcputney.mjml.util.CssEscaper;
+import dev.jcputney.mjml.util.HtmlEscaper;
 import java.util.Set;
 
 /**
@@ -36,7 +38,7 @@ public final class HtmlSkeleton {
     }
 
     // File-start content (mj-raw position="file-start")
-    for (String content : ctx.getFileStartContent()) {
+    for (String content : ctx.metadata().getFileStartContent()) {
       sb.append(content).append("\n");
     }
 
@@ -52,7 +54,7 @@ public final class HtmlSkeleton {
 
     // Head
     sb.append("<head>\n");
-    sb.append("  <title>").append(escapeHtml(ctx.getTitle())).append("</title>\n");
+    sb.append("  <title>").append(escapeHtml(ctx.metadata().getTitle())).append("</title>\n");
 
     // Meta tags
     sb.append("  <!--[if !mso]><!-->\n");
@@ -93,8 +95,8 @@ public final class HtmlSkeleton {
 
     // Fluid-on-mobile responsive styles + component styles (e.g., hamburger CSS)
     // These share a single <style> block when both are present, matching official MJML output
-    boolean hasFluid = ctx.isFluidOnMobileUsed();
-    boolean hasComponentStyles = !ctx.getComponentStyles().isEmpty();
+    boolean hasFluid = ctx.styles().isFluidOnMobileUsed();
+    boolean hasComponentStyles = !ctx.styles().getComponentStyles().isEmpty();
     if (hasFluid || hasComponentStyles) {
       sb.append("  <style type=\"text/css\">\n");
       if (hasFluid) {
@@ -109,21 +111,21 @@ public final class HtmlSkeleton {
         sb.append("    }\n");
         sb.append("\n");
       }
-      for (String css : ctx.getComponentStyles()) {
+      for (String css : ctx.styles().getComponentStyles()) {
         sb.append(reformatCss(css));
       }
       sb.append("  </style>\n");
     }
 
     // Custom styles from mj-style (after media queries, matching official MJML order)
-    for (String css : ctx.getStyles()) {
+    for (String css : ctx.styles().getStyles()) {
       sb.append("  <style type=\"text/css\">\n");
       sb.append(reformatCss(css));
       sb.append("  </style>\n");
     }
 
     // Head comments (preserved from MJML source)
-    for (String comment : ctx.getHeadComments()) {
+    for (String comment : ctx.metadata().getHeadComments()) {
       // Strip -- sequences to prevent HTML comment injection
       String safeComment = comment.replace("--", "");
       sb.append("  <!-- ").append(safeComment).append(" -->\n");
@@ -134,16 +136,16 @@ public final class HtmlSkeleton {
 
     // Body
     sb.append("<body style=\"word-spacing:normal;");
-    String bodyBgColor = ctx.getBodyBackgroundColor();
+    String bodyBgColor = ctx.metadata().getBodyBackgroundColor();
     if (bodyBgColor != null && !bodyBgColor.isEmpty()) {
       sb.append("background-color:").append(bodyBgColor).append(";");
     }
     sb.append("\">\n");
 
     // Preview text
-    if (!ctx.getPreviewText().isEmpty()) {
+    if (!ctx.metadata().getPreviewText().isEmpty()) {
       sb.append("  <div style=\"display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;\">");
-      sb.append(escapeHtml(ctx.getPreviewText()));
+      sb.append(escapeHtml(ctx.metadata().getPreviewText()));
       sb.append("</div>\n");
     }
 
@@ -158,21 +160,21 @@ public final class HtmlSkeleton {
   }
 
   private static void appendFonts(StringBuilder sb, GlobalContext ctx) {
-    if (ctx.getFonts().isEmpty()) {
+    if (ctx.styles().getFonts().isEmpty()) {
       return;
     }
 
     // Wrap link tags + @import in non-MSO conditional
     sb.append("  <!--[if !mso]><!-->\n");
-    for (FontDef font : ctx.getFonts()) {
+    for (FontDef font : ctx.styles().getFonts()) {
       sb.append("  <link href=\"").append(escapeHtml(font.href()))
           .append("\" rel=\"stylesheet\" type=\"text/css\">\n");
     }
     sb.append("  <style type=\"text/css\">\n");
-    for (FontDef font : ctx.getFonts()) {
-      // Strip characters that could break out of @import url()
-      String safeUrl = font.href().replaceAll("[\"<>)]", "");
-      sb.append("    @import url(").append(safeUrl).append(");\n");
+    for (FontDef font : ctx.styles().getFonts()) {
+      // CSS-escape the URL to prevent injection via url() breakout
+      String safeUrl = CssEscaper.escapeCssUrl(font.href());
+      sb.append("    @import url(\"").append(safeUrl).append("\");\n");
     }
     sb.append("\n");
     sb.append("  </style>\n");
@@ -217,7 +219,7 @@ public final class HtmlSkeleton {
   }
 
   private static void appendMediaQueries(StringBuilder sb, GlobalContext ctx) {
-    Set<MediaQuery> queries = ctx.getMediaQueries();
+    Set<MediaQuery> queries = ctx.styles().getMediaQueries();
     if (queries.isEmpty()) {
       return;
     }
@@ -226,7 +228,7 @@ public final class HtmlSkeleton {
     MediaQuery[] queryArr = queries.toArray(new MediaQuery[0]);
     sb.append("  <style type=\"text/css\">\n");
     sb.append("    @media only screen and (min-width:")
-        .append(ctx.getBreakpoint()).append(") {\n");
+        .append(ctx.metadata().getBreakpoint()).append(") {\n");
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
@@ -243,7 +245,7 @@ public final class HtmlSkeleton {
     sb.append("  </style>\n");
 
     // Thunderbird-specific styles (flat selectors, not nested)
-    sb.append("  <style media=\"screen and (min-width:").append(ctx.getBreakpoint()).append(")\">\n");
+    sb.append("  <style media=\"screen and (min-width:").append(ctx.metadata().getBreakpoint()).append(")\">\n");
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
@@ -296,13 +298,9 @@ public final class HtmlSkeleton {
   }
 
   private static String escapeHtml(String text) {
-    if (text == null || text.isEmpty()) {
+    if (text == null) {
       return "";
     }
-    return text
-        .replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace("\"", "&quot;");
+    return HtmlEscaper.escapeAttributeValue(text);
   }
 }

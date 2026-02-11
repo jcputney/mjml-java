@@ -40,7 +40,7 @@ class StyleContextTest {
   void fontsUnmodifiable() {
     StyleContext ctx = new StyleContext();
     assertThrows(UnsupportedOperationException.class,
-        () -> ctx.getFonts().add(new GlobalContext.FontDef("x", "y")));
+        () -> ctx.getFonts().add(new StyleContext.FontDef("x", "y")));
   }
 
   @Test
@@ -134,7 +134,7 @@ class StyleContextTest {
   void mediaQueriesUnmodifiable() {
     StyleContext ctx = new StyleContext();
     assertThrows(UnsupportedOperationException.class,
-        () -> ctx.getMediaQueries().add(new GlobalContext.MediaQuery("x", "1", "%")));
+        () -> ctx.getMediaQueries().add(new StyleContext.MediaQuery("x", "1", "%")));
   }
 
   @Test

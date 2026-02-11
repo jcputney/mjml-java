@@ -7,9 +7,14 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.Map;
 
 /**
- * The raw component (&lt;mj-raw&gt;).
+ * The raw component ({@code <mj-raw>}).
  * Passes through raw HTML content without any wrapping or transformation.
- * This is a simple pass-through component.
+ *
+ * <p><strong>Security note:</strong> {@code mj-raw} passes arbitrary HTML directly into the
+ * rendered output, including when {@code position="file-start"} is used to inject content
+ * before the DOCTYPE. This makes it an XSS vector when processing untrusted MJML input.
+ * Configure a {@link dev.jcputney.mjml.ContentSanitizer} to sanitize the inner HTML before
+ * it reaches the final output when handling user-supplied MJML.</p>
  */
 public class MjRaw extends BodyComponent {
 
@@ -35,7 +40,7 @@ public class MjRaw extends BodyComponent {
   public String render() {
     String position = getAttribute("position", "");
     if ("file-start".equals(position)) {
-      globalContext.addFileStartContent(sanitizeContent(node.getInnerHtml()));
+      globalContext.metadata().addFileStartContent(sanitizeContent(node.getInnerHtml()));
       return "";
     }
     return sanitizeContent(node.getInnerHtml());

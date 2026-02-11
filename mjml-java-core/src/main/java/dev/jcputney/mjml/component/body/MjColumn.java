@@ -123,13 +123,16 @@ public class MjColumn extends BodyComponent {
     return sb.toString();
   }
 
+  private static final String[] PADDING_ATTRS = {
+      "padding", "padding-bottom", "padding-left", "padding-right", "padding-top"
+  };
+
   /**
    * Returns true if any padding attribute is set on this column.
    * When true, uses nested table structure (gutter pattern).
    */
   private boolean hasGutter() {
-    for (String attr : new String[]{"padding", "padding-bottom", "padding-left",
-        "padding-right", "padding-top"}) {
+    for (String attr : PADDING_ATTRS) {
       String val = getAttribute(attr, "");
       if (!val.isEmpty()) {
         return true;

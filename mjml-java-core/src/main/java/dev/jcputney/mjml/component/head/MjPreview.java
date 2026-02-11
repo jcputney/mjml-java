@@ -21,7 +21,9 @@ public class MjPreview extends HeadComponent {
 
   @Override
   public void process() {
-    String content = node.getInnerHtml().trim();
-    globalContext.setPreviewText(content);
+    String content = node.getInnerHtml();
+    if (content != null && !content.isBlank()) {
+      globalContext.metadata().setPreviewText(content.trim());
+    }
   }
 }

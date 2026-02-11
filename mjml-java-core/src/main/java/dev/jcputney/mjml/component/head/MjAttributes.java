@@ -39,16 +39,16 @@ public class MjAttributes extends HeadComponent {
       Map<String, String> attrs = extractAttributes(child);
 
       if ("mj-all".equals(tag)) {
-        globalContext.setDefaultAttributes("mj-all", attrs);
+        globalContext.attributes().setDefaultAttributes("mj-all", attrs);
       } else if ("mj-class".equals(tag)) {
         String name = child.getAttribute("name");
         if (name != null) {
           attrs.remove("name");
-          globalContext.setClassAttributes(name, attrs);
+          globalContext.attributes().setClassAttributes(name, attrs);
         }
       } else {
         // Tag-specific defaults (e.g., mj-text, mj-section)
-        globalContext.setDefaultAttributes(tag, attrs);
+        globalContext.attributes().setDefaultAttributes(tag, attrs);
       }
     }
   }

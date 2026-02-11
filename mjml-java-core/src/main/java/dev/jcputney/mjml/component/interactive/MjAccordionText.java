@@ -58,7 +58,7 @@ public class MjAccordionText extends BodyComponent {
     String border = resolveAncestorAttr("border", "2px solid black");
 
     // Collapse whitespace in text content
-    String content = node.getInnerHtml().trim().replaceAll("\\s+", " ");
+    String content = sanitizeContent(node.getInnerHtml().trim().replaceAll("\\s+", " "));
 
     sb.append("<table cellspacing=\"0\" cellpadding=\"0\" style=\"");
     sb.append(buildStyle(orderedMap(

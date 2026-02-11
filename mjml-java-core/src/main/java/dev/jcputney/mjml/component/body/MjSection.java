@@ -75,7 +75,7 @@ public class MjSection extends AbstractSectionComponent {
     String bgUrl = getAttribute("background-url", "");
     String bgColor = getAttribute("background-color");
     String vmlRect = hasBackgroundUrl()
-        ? buildVmlRect(globalContext.getContainerWidth() + "px", bgUrl, bgColor)
+        ? buildVmlRect(globalContext.metadata().getContainerWidth() + "px", bgUrl, bgColor)
         : "";
     return renderNormalScaffold(vmlRect, renderColumnChildren(), getAttribute("css-class", ""));
   }
@@ -119,7 +119,7 @@ public class MjSection extends AbstractSectionComponent {
    */
   private String renderFullWidth() {
     StringBuilder sb = new StringBuilder();
-    int containerWidth = globalContext.getContainerWidth();
+    int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
     boolean hasBgUrl = hasBackgroundUrl();

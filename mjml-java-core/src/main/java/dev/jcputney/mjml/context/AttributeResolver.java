@@ -40,7 +40,7 @@ public final class AttributeResolver {
     String mjClass = node.getAttribute("mj-class");
     if (mjClass != null) {
       for (String className : dev.jcputney.mjml.util.CssUnitParser.WHITESPACE.split(mjClass)) {
-        Map<String, String> classAttrs = globalContext.getClassAttributes(className);
+        Map<String, String> classAttrs = globalContext.attributes().getClassAttributes(className);
         value = classAttrs.get(attributeName);
         if (value != null) {
           return value;
@@ -49,14 +49,14 @@ public final class AttributeResolver {
     }
 
     // Level 3: Tag-specific defaults
-    Map<String, String> tagDefaults = globalContext.getDefaultAttributes(node.getTagName());
+    Map<String, String> tagDefaults = globalContext.attributes().getDefaultAttributes(node.getTagName());
     value = tagDefaults.get(attributeName);
     if (value != null) {
       return value;
     }
 
     // Level 4: mj-all defaults
-    Map<String, String> allDefaults = globalContext.getAllDefaults();
+    Map<String, String> allDefaults = globalContext.attributes().getAllDefaults();
     value = allDefaults.get(attributeName);
     if (value != null) {
       return value;

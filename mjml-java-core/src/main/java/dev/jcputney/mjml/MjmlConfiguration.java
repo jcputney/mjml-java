@@ -1,6 +1,7 @@
 package dev.jcputney.mjml;
 
 import dev.jcputney.mjml.component.ComponentFactory;
+import dev.jcputney.mjml.component.ContainerComponentFactory;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -22,10 +23,14 @@ public final class MjmlConfiguration {
   /** Default maximum include depth. */
   public static final int DEFAULT_MAX_INCLUDE_DEPTH = 50;
 
+  /** Default container width in pixels, matching the MJML v4 default of 600px. */
+  public static final int DEFAULT_CONTAINER_WIDTH = 600;
+
   private final String language;
   private final Direction direction;
   private final IncludeResolver includeResolver;
   private final Map<String, ComponentFactory> customComponents;
+  private final Map<String, ContainerComponentFactory> customContainerComponents;
   private final boolean sanitizeOutput;
   private final int maxInputSize;
   private final int maxNestingDepth;
@@ -37,6 +42,7 @@ public final class MjmlConfiguration {
     this.direction = builder.direction;
     this.includeResolver = builder.includeResolver;
     this.customComponents = Map.copyOf(builder.customComponents);
+    this.customContainerComponents = Map.copyOf(builder.customContainerComponents);
     this.sanitizeOutput = builder.sanitizeOutput;
     this.maxInputSize = builder.maxInputSize;
     this.maxNestingDepth = builder.maxNestingDepth;
@@ -61,6 +67,16 @@ public final class MjmlConfiguration {
 
   public Map<String, ComponentFactory> getCustomComponents() {
     return customComponents;
+  }
+
+  /**
+   * Returns the custom container component factories registered via
+   * {@link Builder#registerContainerComponent(String, ContainerComponentFactory)}.
+   * Container components receive the {@link dev.jcputney.mjml.component.ComponentRegistry}
+   * as a fourth argument, allowing them to instantiate and render child components.
+   */
+  public Map<String, ContainerComponentFactory> getCustomContainerComponents() {
+    return customContainerComponents;
   }
 
   /**
@@ -118,6 +134,7 @@ public final class MjmlConfiguration {
     b.direction = this.direction;
     b.includeResolver = this.includeResolver;
     b.customComponents.putAll(this.customComponents);
+    b.customContainerComponents.putAll(this.customContainerComponents);
     b.sanitizeOutput = this.sanitizeOutput;
     b.maxInputSize = this.maxInputSize;
     b.maxNestingDepth = this.maxNestingDepth;
@@ -134,6 +151,41 @@ public final class MjmlConfiguration {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof MjmlConfiguration that)) {
+      return false;
+    }
+    return sanitizeOutput == that.sanitizeOutput
+        && maxInputSize == that.maxInputSize
+        && maxNestingDepth == that.maxNestingDepth
+        && maxIncludeDepth == that.maxIncludeDepth
+        && Objects.equals(language, that.language)
+        && direction == that.direction
+        && includeResolver == that.includeResolver
+        && Objects.equals(customComponents, that.customComponents)
+        && Objects.equals(customContainerComponents, that.customContainerComponents)
+        && contentSanitizer == that.contentSanitizer;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hashCode(language);
+    result = 31 * result + Objects.hashCode(direction);
+    result = 31 * result + System.identityHashCode(includeResolver);
+    result = 31 * result + customComponents.hashCode();
+    result = 31 * result + customContainerComponents.hashCode();
+    result = 31 * result + Boolean.hashCode(sanitizeOutput);
+    result = 31 * result + maxInputSize;
+    result = 31 * result + maxNestingDepth;
+    result = 31 * result + maxIncludeDepth;
+    result = 31 * result + System.identityHashCode(contentSanitizer);
+    return result;
+  }
+
+  @Override
   public String toString() {
     return "MjmlConfiguration{"
         + "language='" + language + '\''
@@ -143,6 +195,7 @@ public final class MjmlConfiguration {
         + ", maxNestingDepth=" + maxNestingDepth
         + ", maxIncludeDepth=" + maxIncludeDepth
         + ", customComponents=" + customComponents.size()
+        + ", customContainerComponents=" + customContainerComponents.size()
         + ", includeResolver=" + (includeResolver != null ? includeResolver.getClass().getSimpleName() : "null")
         + ", contentSanitizer=" + (contentSanitizer != null ? "configured" : "null")
         + '}';
@@ -154,6 +207,8 @@ public final class MjmlConfiguration {
     private Direction direction = Direction.AUTO;
     private IncludeResolver includeResolver;
     private final Map<String, ComponentFactory> customComponents = new LinkedHashMap<>();
+    private final Map<String, ContainerComponentFactory> customContainerComponents =
+        new LinkedHashMap<>();
     private boolean sanitizeOutput = true;
     private int maxInputSize = DEFAULT_MAX_INPUT_SIZE;
     private int maxNestingDepth = DEFAULT_MAX_NESTING_DEPTH;
@@ -188,6 +243,25 @@ public final class MjmlConfiguration {
 
     public Builder registerComponent(String tagName, ComponentFactory factory) {
       customComponents.put(tagName, factory);
+      return this;
+    }
+
+    /**
+     * Registers a custom container component factory for the given tag name. Container
+     * components receive a {@link dev.jcputney.mjml.component.ComponentRegistry} as a fourth
+     * argument, allowing them to instantiate and render child MJML components via
+     * {@link dev.jcputney.mjml.component.BodyComponent#renderChildren(dev.jcputney.mjml.component.ComponentRegistry)}.
+     *
+     * <p>Container component registrations are applied after standard custom components,
+     * so they can override both built-in and previously registered tags.</p>
+     *
+     * @param tagName the MJML tag name (e.g., {@code "mj-card"})
+     * @param factory the factory that creates component instances
+     * @return this builder
+     */
+    public Builder registerContainerComponent(String tagName,
+        ContainerComponentFactory factory) {
+      customContainerComponents.put(tagName, factory);
       return this;
     }
 

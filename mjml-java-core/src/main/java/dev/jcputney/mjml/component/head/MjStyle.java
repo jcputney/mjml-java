@@ -7,8 +7,15 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.regex.Pattern;
 
 /**
- * Adds CSS styles from mj-style content.
- * Supports inline="inline" attribute for styles that should be inlined.
+ * Adds CSS styles from {@code <mj-style>} content to the rendered HTML.
+ * Supports {@code inline="inline"} attribute for styles that should be inlined.
+ *
+ * <p><strong>Security note:</strong> {@code mj-style} passes CSS content through to the
+ * rendered HTML with minimal filtering (only {@code </style>} tag injection is stripped).
+ * Untrusted CSS can enable data exfiltration via {@code url()} references or attribute
+ * selectors that leak content. When processing untrusted MJML input, configure a
+ * {@link dev.jcputney.mjml.ContentSanitizer} to validate or strip dangerous CSS constructs
+ * before rendering.</p>
  */
 public class MjStyle extends HeadComponent {
 
@@ -35,9 +42,9 @@ public class MjStyle extends HeadComponent {
 
     String inline = node.getAttribute("inline");
     if ("inline".equals(inline)) {
-      globalContext.addInlineStyle(content);
+      globalContext.styles().addInlineStyle(content);
     } else {
-      globalContext.addStyle(content);
+      globalContext.styles().addStyle(content);
     }
   }
 }

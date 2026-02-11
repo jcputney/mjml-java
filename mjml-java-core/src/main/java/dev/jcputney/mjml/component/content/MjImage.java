@@ -61,7 +61,7 @@ public class MjImage extends BodyComponent {
     int widthPx = (int) imageWidth;
 
     // MJML always adds fluid-on-mobile responsive styles when images are present
-    globalContext.setFluidOnMobileUsed(true);
+    globalContext.styles().setFluidOnMobileUsed(true);
 
     // Image style: border, border-radius (if set), display, outline, text-decoration,
     // height, width, font-size

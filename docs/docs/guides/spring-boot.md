@@ -30,6 +30,7 @@ When `mjml-java-spring` is on the classpath, the following beans are auto-config
 | `mjmlIncludeResolver` | `IncludeResolver` | A `SpringResourceIncludeResolver` that resolves includes from the configured template location |
 | `mjmlConfiguration` | `MjmlConfiguration` | Configuration built from `spring.mjml.*` properties |
 | `mjmlService` | `MjmlService` | Service for rendering MJML templates |
+| `thymeleafMjmlService` | `ThymeleafMjmlService` | Thymeleaf + MJML composition service (requires Thymeleaf on classpath and `spring.mjml.thymeleaf-enabled=true`, which is the default) |
 
 All beans use `@ConditionalOnMissingBean`, so you can override any of them by defining your own bean of the same type.
 

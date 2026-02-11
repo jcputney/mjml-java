@@ -112,6 +112,96 @@ public static MjmlRenderResult render(Path mjmlFile, MjmlConfiguration configura
 
 **Throws:** `MjmlException` if reading, parsing, or rendering fails
 
+## Instance API
+
+For repeated rendering with the same configuration, the instance API reuses the internal `RenderPipeline` and `ComponentRegistry`, avoiding the setup cost on each call. This is the preferred approach for applications that render many templates.
+
+### create()
+
+Creates a reusable renderer instance with default configuration.
+
+```java
+public static MjmlRenderer create()
+```
+
+**Returns:** a reusable `MjmlRenderer` instance
+
+### create(MjmlConfiguration config)
+
+Creates a reusable renderer instance with the given configuration.
+
+```java
+public static MjmlRenderer create(MjmlConfiguration configuration)
+```
+
+**Parameters:**
+- `configuration` -- the rendering configuration
+
+**Returns:** a reusable `MjmlRenderer` instance
+
+### renderTemplate(String mjml)
+
+Renders an MJML template to HTML using this instance's configuration.
+
+```java
+public MjmlRenderResult renderTemplate(String mjml)
+```
+
+**Parameters:**
+- `mjml` -- the MJML source string
+
+**Returns:** an `MjmlRenderResult` record
+
+**Throws:** `MjmlException` if parsing or rendering fails
+
+### renderTemplate(Path mjmlFile)
+
+Renders an MJML file to HTML using this instance's configuration. If no include resolver is configured, one is automatically created using the file's parent directory.
+
+```java
+public MjmlRenderResult renderTemplate(Path mjmlFile)
+```
+
+**Parameters:**
+- `mjmlFile` -- path to the MJML file
+
+**Returns:** an `MjmlRenderResult` record
+
+**Throws:** `MjmlException` if reading, parsing, or rendering fails
+
+### renderTemplate(String mjml, IncludeResolver resolver)
+
+Renders an MJML template with a specific include resolver, overriding the instance's configured resolver for this call only.
+
+```java
+public MjmlRenderResult renderTemplate(String mjml, IncludeResolver resolver)
+```
+
+**Parameters:**
+- `mjml` -- the MJML source string
+- `resolver` -- the include resolver to use for this render
+
+**Returns:** an `MjmlRenderResult` record
+
+**Throws:** `MjmlException` if parsing or rendering fails
+
+### Example
+
+```java
+// Create once, reuse for many renders
+MjmlConfiguration config = MjmlConfiguration.builder()
+    .language("en")
+    .direction("ltr")
+    .build();
+
+MjmlRenderer renderer = MjmlRenderer.create(config);
+
+// Each call reuses the cached ComponentRegistry and RenderPipeline
+MjmlRenderResult welcome = renderer.renderTemplate(welcomeMjml);
+MjmlRenderResult receipt = renderer.renderTemplate(receiptMjml);
+MjmlRenderResult newsletter = renderer.renderTemplate(newsletterMjml);
+```
+
 ## MjmlRenderResult
 
 A Java `record` returned by all `render()` overloads.

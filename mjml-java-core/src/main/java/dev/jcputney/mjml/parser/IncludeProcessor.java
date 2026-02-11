@@ -7,7 +7,6 @@ import dev.jcputney.mjml.MjmlValidationException;
 import dev.jcputney.mjml.ResolverContext;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -32,13 +31,15 @@ public final class IncludeProcessor {
 
   private static final Logger LOG = Logger.getLogger(IncludeProcessor.class.getName());
   private static final int DEFAULT_MAX_INCLUDE_DEPTH = 50;
+  private static final int DEFAULT_MAX_NESTING_DEPTH = 100;
 
   private final IncludeResolver resolver;
   private final int maxInputSize;
   private final int maxIncludeDepth;
+  private final int maxNestingDepth;
 
   public IncludeProcessor(IncludeResolver resolver) {
-    this(resolver, 0, DEFAULT_MAX_INCLUDE_DEPTH);
+    this(resolver, 0, DEFAULT_MAX_INCLUDE_DEPTH, DEFAULT_MAX_NESTING_DEPTH);
   }
 
   /**
@@ -48,7 +49,7 @@ public final class IncludeProcessor {
    * @param maxInputSize maximum allowed size in characters for resolved content (0 = no limit)
    */
   public IncludeProcessor(IncludeResolver resolver, int maxInputSize) {
-    this(resolver, maxInputSize, DEFAULT_MAX_INCLUDE_DEPTH);
+    this(resolver, maxInputSize, DEFAULT_MAX_INCLUDE_DEPTH, DEFAULT_MAX_NESTING_DEPTH);
   }
 
   /**
@@ -59,19 +60,33 @@ public final class IncludeProcessor {
    * @param maxIncludeDepth maximum nested include depth before rejecting
    */
   public IncludeProcessor(IncludeResolver resolver, int maxInputSize, int maxIncludeDepth) {
+    this(resolver, maxInputSize, maxIncludeDepth, DEFAULT_MAX_NESTING_DEPTH);
+  }
+
+  /**
+   * Creates a processor with all limits specified.
+   *
+   * @param resolver        the resolver to use for loading include content
+   * @param maxInputSize    maximum allowed size in characters for resolved content (0 = no limit)
+   * @param maxIncludeDepth maximum nested include depth before rejecting
+   * @param maxNestingDepth maximum element nesting depth for parsing included content
+   */
+  public IncludeProcessor(IncludeResolver resolver, int maxInputSize, int maxIncludeDepth,
+      int maxNestingDepth) {
     this.resolver = resolver;
     this.maxInputSize = maxInputSize;
     if (maxIncludeDepth <= 0) {
       throw new IllegalArgumentException("maxIncludeDepth must be positive, got: " + maxIncludeDepth);
     }
     this.maxIncludeDepth = maxIncludeDepth;
+    this.maxNestingDepth = maxNestingDepth;
   }
 
   /**
    * Processes all mj-include elements in the document tree.
    */
   public void process(MjmlDocument document) {
-    processNode(document.getRoot(), new LinkedList<>(), new HashSet<>(), 0);
+    processNode(document.getRoot(), new ArrayList<>(), new HashSet<>(), 0);
   }
 
   private void processNode(MjmlNode node, List<String> includeChain,
@@ -127,17 +142,19 @@ public final class IncludeProcessor {
               + content.length() + " > " + maxInputSize + " characters)");
     }
 
-    Set<String> newVisited = new HashSet<>(visitedPaths);
-    newVisited.add(path);
-    List<String> newChain = new ArrayList<>(includeChain);
-    newChain.add(path);
-
-    switch (type.toLowerCase()) {
-      case "mjml" -> resolveAsMjml(includeNode, content, newChain, newVisited, depth);
-      case "html" -> resolveAsHtml(includeNode, content);
-      case "css" -> resolveAsCss(includeNode, content);
-      case "css-inline" -> resolveAsCssInline(includeNode, content);
-      default -> throw new MjmlIncludeException("Unknown mj-include type: " + type);
+    visitedPaths.add(path);
+    includeChain.add(path);
+    try {
+      switch (type.toLowerCase()) {
+        case "mjml" -> resolveAsMjml(includeNode, content, includeChain, visitedPaths, depth);
+        case "html" -> resolveAsHtml(includeNode, content);
+        case "css" -> resolveAsCss(includeNode, content);
+        case "css-inline" -> resolveAsCssInline(includeNode, content);
+        default -> throw new MjmlIncludeException("Unknown mj-include type: " + type);
+      }
+    } finally {
+      visitedPaths.remove(path);
+      includeChain.remove(includeChain.size() - 1);
     }
   }
 
@@ -150,7 +167,7 @@ public final class IncludeProcessor {
 
     if (wrapped.startsWith("<mjml")) {
       // Full MJML document - use its body/head children
-      MjmlDocument includedDoc = MjmlParser.parse(wrapped);
+      MjmlDocument includedDoc = MjmlParser.parse(wrapped, maxNestingDepth);
       parsedRoot = includedDoc.getRoot();
 
       // Recursively process includes in the included document
@@ -172,21 +189,12 @@ public final class IncludeProcessor {
     } else {
       // Fragment - wrap in a temporary root for parsing
       String tempWrapped = "<mjml><mj-body>" + wrapped + "</mj-body></mjml>";
-      try {
-        MjmlDocument includedDoc = MjmlParser.parse(tempWrapped);
-        MjmlNode body = includedDoc.getBody();
+      MjmlDocument includedDoc = MjmlParser.parse(tempWrapped, maxNestingDepth);
+      MjmlNode body = includedDoc.getBody();
 
-        if (body != null) {
-          processNode(body, includeChain, visitedPaths, depth + 1);
-          includeNode.replaceWith(new ArrayList<>(body.getChildren()));
-        }
-      } catch (MjmlException e) {
-        // If parsing as body children fails, try as raw content
-        MjmlNode rawNode = new MjmlNode("mj-raw");
-        MjmlNode textNode = new MjmlNode("#cdata-section");
-        textNode.setTextContent(wrapped);
-        rawNode.addChild(textNode);
-        includeNode.replaceWith(List.of(rawNode));
+      if (body != null) {
+        processNode(body, includeChain, visitedPaths, depth + 1);
+        includeNode.replaceWith(new ArrayList<>(body.getChildren()));
       }
     }
   }

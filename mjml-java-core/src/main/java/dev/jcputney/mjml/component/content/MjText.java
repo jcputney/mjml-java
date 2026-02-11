@@ -7,6 +7,8 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * The text component (&lt;mj-text&gt;).
@@ -33,6 +35,16 @@ public class MjText extends BodyComponent {
       Map.entry("padding-top", ""),
       Map.entry("text-decoration", ""),
       Map.entry("text-transform", "")
+  );
+
+  private static final Set<String> BLOCK_ELEMENTS = Set.of(
+      "ul", "ol", "p", "div", "h1", "h2", "h3", "h4", "h5", "h6",
+      "blockquote", "table", "pre"
+  );
+
+  private static final Pattern BLOCK_ELEMENT_PATTERN = Pattern.compile(
+      "<(" + String.join("|", BLOCK_ELEMENTS) + ")[\\s>/]",
+      Pattern.CASE_INSENSITIVE
   );
 
   public MjText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
@@ -192,19 +204,10 @@ public class MjText extends BodyComponent {
   }
 
   private static boolean containsBlockElements(String html) {
-    String lower = html.toLowerCase();
-    return lower.contains("<ul") || lower.contains("<ol") || lower.contains("<p")
-        || lower.contains("<div") || lower.contains("<h1") || lower.contains("<h2")
-        || lower.contains("<h3") || lower.contains("<h4") || lower.contains("<h5")
-        || lower.contains("<h6") || lower.contains("<blockquote") || lower.contains("<table")
-        || lower.contains("<pre");
+    return BLOCK_ELEMENT_PATTERN.matcher(html).find();
   }
 
   private static boolean isBlockElement(String tag) {
-    return "ul".equals(tag) || "ol".equals(tag) || "p".equals(tag)
-        || "div".equals(tag) || "h1".equals(tag) || "h2".equals(tag)
-        || "h3".equals(tag) || "h4".equals(tag) || "h5".equals(tag)
-        || "h6".equals(tag) || "blockquote".equals(tag) || "table".equals(tag)
-        || "pre".equals(tag) || "li".equals(tag) || "br".equals(tag);
+    return BLOCK_ELEMENTS.contains(tag) || "li".equals(tag) || "br".equals(tag);
   }
 }

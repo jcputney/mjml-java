@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * An {@link IncludeResolver} that fetches content via HTTP/HTTPS using the JDK {@link HttpClient}.
@@ -32,6 +33,7 @@ import java.util.Set;
 public final class UrlIncludeResolver implements IncludeResolver {
 
   private static final int DEFAULT_MAX_RESPONSE_SIZE = 1024 * 1024; // 1 MB
+  private static final Pattern IPV4_PATTERN = Pattern.compile("^\\d+\\.\\d+\\.\\d+\\.\\d+$");
 
   private final HttpClient httpClient;
   private final Set<String> allowedHosts;
@@ -162,7 +164,8 @@ public final class UrlIncludeResolver implements IncludeResolver {
       InetAddress[] addresses = InetAddress.getAllByName(host);
       for (InetAddress addr : addresses) {
         if (addr.isLoopbackAddress() || addr.isSiteLocalAddress()
-            || addr.isLinkLocalAddress() || addr.isAnyLocalAddress()) {
+            || addr.isLinkLocalAddress() || addr.isAnyLocalAddress()
+            || addr.isMulticastAddress()) {
           throw new MjmlIncludeException(
               "SSRF protection: host resolves to private/local address: " + host);
         }
@@ -173,7 +176,7 @@ public final class UrlIncludeResolver implements IncludeResolver {
   }
 
   private static boolean isHostname(String host) {
-    return !host.contains(":") && !host.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$");
+    return !host.contains(":") && !IPV4_PATTERN.matcher(host).matches();
   }
 
   /**

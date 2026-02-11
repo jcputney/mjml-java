@@ -8,6 +8,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.render.VmlHelper;
 import dev.jcputney.mjml.util.CssBoxModel;
+import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class MjWrapper extends AbstractSectionComponent {
       Map.entry("border-right", ""),
       Map.entry("border-top", ""),
       Map.entry("full-width", ""),
+      Map.entry("gap", ""),
       Map.entry("padding", "20px 0"),
       Map.entry("text-align", "center")
   );
@@ -68,7 +70,7 @@ public class MjWrapper extends AbstractSectionComponent {
     String bgUrl = getAttribute("background-url", "");
     String bgColor = getAttribute("background-color");
     String vmlRect = hasBackgroundUrl()
-        ? buildVmlRect(globalContext.getContainerWidth() + "px", bgUrl, bgColor)
+        ? buildVmlRect(globalContext.metadata().getContainerWidth() + "px", bgUrl, bgColor)
         : "";
     StringBuilder innerContent = new StringBuilder();
     renderWrappedChildren(innerContent);
@@ -77,7 +79,7 @@ public class MjWrapper extends AbstractSectionComponent {
 
   private String renderFullWidth() {
     StringBuilder sb = new StringBuilder();
-    int containerWidth = globalContext.getContainerWidth();
+    int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
 
@@ -140,7 +142,7 @@ public class MjWrapper extends AbstractSectionComponent {
       return;
     }
 
-    int containerWidth = globalContext.getContainerWidth();
+    int containerWidth = globalContext.metadata().getContainerWidth();
     CssBoxModel wrapperBox = getBoxModel();
     int innerWidth = (int) (containerWidth - wrapperBox.paddingLeft() - wrapperBox.paddingRight()
         - wrapperBox.borderLeftWidth() - wrapperBox.borderRightWidth());
@@ -157,6 +159,16 @@ public class MjWrapper extends AbstractSectionComponent {
         sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
             .append(innerWidth).append("px;\" width=\"").append(innerWidth).append("\" >");
         sb.append("<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
+      }
+
+      // Insert gap spacer between adjacent children (not before the first)
+      String gap = getAttribute("gap", "");
+      if (!isFirst && !gap.isEmpty()) {
+        int gapPx = CssUnitParser.parsePixels(gap, 0);
+        if (gapPx > 0) {
+          sb.append("              <div style=\"font-size:0;line-height:").append(gapPx)
+              .append("px;height:").append(gapPx).append("px;\"> </div>\n");
+        }
       }
 
       // Render child section in "inside wrapper" mode

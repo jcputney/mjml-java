@@ -1,0 +1,248 @@
+<mjml>
+  <mj-head>
+    <mj-title>Monthly Newsletter - Dark Mode Support</mj-title>
+    <mj-preview>Check out our latest updates and features. View this email for the best experience.</mj-preview>
+    <mj-breakpoint width="400px" />
+    <mj-font
+      name="Nunito"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap"
+    ></mj-font>
+    <mj-attributes>
+      <mj-all font-family="Nunito, Helvetica, Arial, sans-serif" padding="0px" />
+      <mj-text font-size="15px" line-height="24px" color="#333333" />
+      <mj-section padding="20px 0" />
+      <mj-button
+        font-size="14px"
+        font-weight="600"
+        border-radius="6px"
+        inner-padding="12px 28px"
+      />
+      <mj-divider border-color="#e0e0e0" border-width="1px" padding="10px 25px" />
+      <mj-class name="dark-bg" background-color="#1a1a2e" />
+      <mj-class name="dark-text" color="#e0e0e0" />
+      <mj-class name="accent" color="#e94560" />
+      <mj-class name="muted" font-size="12px" color="#999999" />
+    </mj-attributes>
+    <mj-style>
+      :root {
+        color-scheme: light dark;
+        supported-color-schemes: light dark;
+      }
+      .dark-mode-logo { display: none !important; }
+      .light-mode-logo { display: block !important; }
+      @media (prefers-color-scheme: dark) {
+        .dark-mode-wrapper { background-color: #0f3460 !important; }
+        .dark-mode-section { background-color: #1a1a2e !important; }
+        .dark-mode-card { background-color: #16213e !important; }
+        .dark-mode-text { color: #e0e0e0 !important; }
+        .dark-mode-muted { color: #a0a0a0 !important; }
+        .dark-mode-logo { display: block !important; }
+        .light-mode-logo { display: none !important; }
+        .dark-mode-button td a {
+          background-color: #e94560 !important;
+          color: #ffffff !important;
+        }
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .card-border {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .tag-badge {
+        display: inline-block;
+        background: #f0f0f0;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        color: #666;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f5f5f5" css-class="dark-mode-wrapper" width="600px">
+    <!-- Pre-header bar -->
+    <mj-section padding="8px 0" css-class="dark-mode-section">
+      <mj-column>
+        <mj-text
+          align="center"
+          font-size="11px"
+          color="#888888"
+          css-class="dark-mode-muted"
+          padding="4px 20px"
+        >
+          Can't see this email? <a href="https://example.com/view" style="color: #e94560; text-decoration: underline;">View in browser</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- Header -->
+    <mj-section background-color="#ffffff" css-class="dark-mode-section" padding="20px 0">
+      <mj-column width="40%">
+        <mj-image
+          src="https://via.placeholder.com/140x45/ffffff/333?text=LOGO"
+          alt="Company Logo"
+          width="140px"
+          align="left"
+          padding="0 25px"
+          css-class="light-mode-logo"
+        ></mj-image>
+        <mj-image
+          src="https://via.placeholder.com/140x45/1a1a2e/e0e0e0?text=LOGO"
+          alt="Company Logo"
+          width="140px"
+          align="left"
+          padding="0 25px"
+          css-class="dark-mode-logo"
+        ></mj-image>
+      </mj-column>
+      <mj-column width="60%">
+        <mj-text
+          align="right"
+          font-size="12px"
+          color="#999"
+          padding="14px 25px 0 0"
+          css-class="dark-mode-muted"
+        >February 2025 Newsletter</mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- Hero -->
+    <mj-section background-color="#1a1a2e" padding="40px 0">
+      <mj-column>
+        <mj-text
+          align="center"
+          color="#ffffff"
+          font-size="28px"
+          font-weight="700"
+          line-height="36px"
+          padding="0 30px 10px"
+        >What's New This Month</mj-text>
+        <mj-text
+          align="center"
+          color="#a0a0c0"
+          font-size="16px"
+          padding="0 40px 20px"
+        >Product updates, tips, and community highlights to help you work smarter.</mj-text>
+        <mj-button
+          background-color="#e94560"
+          color="#ffffff"
+          href="https://example.com/whats-new"
+          padding="10px 25px"
+        >Explore Updates</mj-button>
+      </mj-column>
+    </mj-section>
+    <!-- Feature Cards Row -->
+    <mj-section background-color="#ffffff" css-class="dark-mode-section" padding="30px 0 10px">
+      <mj-column>
+        <mj-text
+          font-size="20px"
+          font-weight="700"
+          padding="0 25px 15px"
+          css-class="dark-mode-text"
+        >Feature Highlights</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" css-class="dark-mode-section" padding="0 0 20px">
+      <mj-column css-class="dark-mode-card" padding="0 12px">
+        <mj-image
+          src="https://via.placeholder.com/260x150/4CAF50/fff?text=Dashboard+v2"
+          alt="Dashboard v2"
+          width="260px"
+          padding="0"
+        ></mj-image>
+        <mj-text font-size="16px" font-weight="600" padding="12px 10px 4px" css-class="dark-mode-text"
+          >New Dashboard</mj-text>
+        <mj-text font-size="13px" color="#666" padding="0 10px 12px" css-class="dark-mode-muted"
+          >Completely redesigned with real-time analytics and customizable widgets.</mj-text>
+      </mj-column>
+      <mj-column css-class="dark-mode-card" padding="0 12px">
+        <mj-image
+          src="https://via.placeholder.com/260x150/2196F3/fff?text=API+v3"
+          alt="API v3"
+          width="260px"
+          padding="0"
+        ></mj-image>
+        <mj-text font-size="16px" font-weight="600" padding="12px 10px 4px" css-class="dark-mode-text"
+          >API v3 Released</mj-text>
+        <mj-text font-size="13px" color="#666" padding="0 10px 12px" css-class="dark-mode-muted"
+          >Faster response times, webhook support, and improved error handling.</mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- Tips Section -->
+    <mj-section background-color="#f9f9f9" css-class="dark-mode-card" padding="30px 0">
+      <mj-column>
+        <mj-text
+          font-size="20px"
+          font-weight="700"
+          padding="0 25px 15px"
+          css-class="dark-mode-text"
+        >Quick Tips</mj-text>
+        <mj-divider />
+        <mj-text padding="15px 25px" css-class="dark-mode-text">
+          <strong>Keyboard shortcut:</strong> Press <span class="tag-badge">Ctrl+K</span> anywhere to open the command palette. Access any feature in seconds.
+        </mj-text>
+        <mj-divider />
+        <mj-text padding="15px 25px" css-class="dark-mode-text">
+          <strong>Pro tip:</strong> Use <span class="tag-badge">@mentions</span> in comments to notify team members directly. They'll get an instant notification.
+        </mj-text>
+        <mj-divider />
+        <mj-text padding="15px 25px" css-class="dark-mode-text">
+          <strong>Did you know?</strong> You can export any report as PDF or CSV by clicking the download icon in the top-right corner.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <!-- CTA Banner -->
+    <mj-section mj-class="dark-bg" padding="30px 0">
+      <mj-column>
+        <mj-text
+          align="center"
+          color="#ffffff"
+          font-size="22px"
+          font-weight="700"
+          padding="0 30px 8px"
+        >Ready to upgrade?</mj-text>
+        <mj-text
+          align="center"
+          color="#a0a0c0"
+          font-size="14px"
+          padding="0 40px 20px"
+        >Get 20% off annual plans this month. Use code WINTER20 at checkout.</mj-text>
+        <mj-button
+          background-color="#e94560"
+          color="#ffffff"
+          href="https://example.com/upgrade"
+          css-class="dark-mode-button"
+          padding="0 25px 10px"
+        >Upgrade Now</mj-button>
+        <mj-button
+          background-color="transparent"
+          color="#e94560"
+          border="1px solid #e94560"
+          href="https://example.com/compare"
+          padding="0 25px"
+        >Compare Plans</mj-button>
+      </mj-column>
+    </mj-section>
+    <!-- Social + Footer -->
+    <mj-section background-color="#ffffff" css-class="dark-mode-section" padding="25px 0 10px">
+      <mj-column>
+        <mj-social font-size="12px" icon-size="24px" mode="horizontal">
+          <mj-social-element name="twitter" href="https://twitter.com/example">Twitter</mj-social-element>
+          <mj-social-element name="linkedin" href="https://linkedin.com/company/example">LinkedIn</mj-social-element>
+          <mj-social-element name="github" href="https://github.com/example">GitHub</mj-social-element>
+        </mj-social>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" css-class="dark-mode-section" padding="0 0 25px">
+      <mj-column>
+        <mj-text mj-class="muted" align="center" css-class="dark-mode-muted" padding="10px 25px">
+          You're receiving this because you signed up at example.com.<br />
+          <a href="https://example.com/preferences" style="color: #e94560;">Manage preferences</a> &#x2022;
+          <a href="https://example.com/unsubscribe" style="color: #e94560;">Unsubscribe</a>
+        </mj-text>
+        <mj-text mj-class="muted" align="center" css-class="dark-mode-muted" padding="0 25px">
+          &copy; 2025 Example Inc. &#x2022; 456 Innovation Drive, Suite 200, San Francisco, CA 94105
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

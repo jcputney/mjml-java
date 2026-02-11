@@ -1,7 +1,5 @@
 package dev.jcputney.mjml.context;
 
-import dev.jcputney.mjml.context.GlobalContext.FontDef;
-import dev.jcputney.mjml.context.GlobalContext.MediaQuery;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -108,5 +106,18 @@ public class StyleContext {
 
   public void setFluidOnMobileUsed(boolean fluidOnMobileUsed) {
     this.fluidOnMobileUsed = fluidOnMobileUsed;
+  }
+
+  /**
+   * Font definition record.
+   */
+  public record FontDef(String name, String href) {
+  }
+
+  /**
+   * Media query definition for responsive column widths.
+   * widthValue is the numeric value, widthUnit is "%" or "px".
+   */
+  public record MediaQuery(String className, String widthValue, String widthUnit) {
   }
 }

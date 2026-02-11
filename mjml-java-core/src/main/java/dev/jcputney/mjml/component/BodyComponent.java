@@ -104,8 +104,13 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
   }
 
   /**
-   * Sanitizes a URL by blocking dangerous URI schemes (javascript:, vbscript:, data:text/html)
-   * when sanitizeOutput is enabled. Returns "#" for blocked URIs.
+   * Sanitizes a URL using an allowlist of safe URI schemes when sanitizeOutput is enabled.
+   * Only permits {@code http:}, {@code https:}, {@code mailto:}, {@code tel:}, fragment
+   * references ({@code #}), and relative paths ({@code /}). All other schemes are blocked
+   * and replaced with {@code "#"}.
+   *
+   * <p>Control characters and leading/trailing whitespace are stripped before the check
+   * to prevent bypass via {@code \tjavascript:} or similar.</p>
    */
   protected String sanitizeHref(String href) {
     if (href == null || href.isEmpty()) {
@@ -114,12 +119,36 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
     if (!globalContext.getConfiguration().isSanitizeOutput()) {
       return href;
     }
-    String check = href.trim().toLowerCase();
-    if (check.startsWith("javascript:") || check.startsWith("vbscript:")
-        || check.startsWith("data:text/html") || check.startsWith("data:image/svg+xml")) {
+    // Strip control characters (U+0000-U+001F, U+007F) and trim whitespace
+    String cleaned = stripControlChars(href).trim();
+    if (cleaned.isEmpty()) {
       return "#";
     }
-    return href;
+    String check = cleaned.toLowerCase();
+    // Allow: http(s), mailto, tel schemes; fragment refs (#); relative paths (/)
+    if (check.startsWith("http:") || check.startsWith("https:")
+        || check.startsWith("mailto:") || check.startsWith("tel:")
+        || cleaned.startsWith("#") || cleaned.startsWith("/")) {
+      return href;
+    }
+    // Block everything else (javascript:, vbscript:, data:, blob:, etc.)
+    return "#";
+  }
+
+  private static String stripControlChars(String value) {
+    StringBuilder sb = null;
+    for (int i = 0; i < value.length(); i++) {
+      char c = value.charAt(i);
+      if (c <= 0x1F || c == 0x7F) {
+        if (sb == null) {
+          sb = new StringBuilder(value.length());
+          sb.append(value, 0, i);
+        }
+      } else if (sb != null) {
+        sb.append(c);
+      }
+    }
+    return sb != null ? sb.toString() : value;
   }
 
   /**
@@ -147,7 +176,8 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
    * Creates an ordered map for style building.
    */
   protected Map<String, String> orderedMap(String... pairs) {
-    Map<String, String> map = new LinkedHashMap<>();
+    int capacity = (pairs.length / 2) + 1;
+    Map<String, String> map = new LinkedHashMap<>(capacity);
     for (int i = 0; i < pairs.length - 1; i += 2) {
       if (pairs[i + 1] != null && !pairs[i + 1].isEmpty()) {
         map.put(pairs[i], pairs[i + 1]);
@@ -231,9 +261,9 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
    */
   protected void registerMediaQuery(String responsiveClass, String widthSpec) {
     if (widthSpec != null && widthSpec.endsWith("px")) {
-      globalContext.addMediaQuery(responsiveClass, widthSpec, "");
+      globalContext.styles().addMediaQuery(responsiveClass, widthSpec, "");
     } else {
-      globalContext.addMediaQuery(responsiveClass, widthSpec != null ? widthSpec : "100", "%");
+      globalContext.styles().addMediaQuery(responsiveClass, widthSpec != null ? widthSpec : "100", "%");
     }
   }
 

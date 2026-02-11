@@ -64,7 +64,7 @@ public class MjTable extends BodyComponent {
     sb.append(" border=\"0\"");
     sb.append(" style=\"").append(tableStyle).append("\"");
     sb.append(">\n");
-    sb.append(node.getInnerHtml());
+    sb.append(sanitizeContent(node.getInnerHtml()));
     sb.append("</table>\n");
 
     return sb.toString();

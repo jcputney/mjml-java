@@ -120,7 +120,7 @@ public class MjAccordion extends BodyComponent {
   @Override
   public String render() {
     // Inject accordion CSS into global styles (only once, even with multiple accordions)
-    globalContext.addStyleOnce("mj-accordion", ACCORDION_CSS);
+    globalContext.styles().addStyleOnce("mj-accordion", ACCORDION_CSS);
 
     StringBuilder sb = new StringBuilder();
 

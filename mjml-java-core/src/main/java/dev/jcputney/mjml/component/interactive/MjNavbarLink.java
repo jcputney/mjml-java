@@ -80,7 +80,7 @@ public class MjNavbarLink extends BodyComponent {
     sb.append(" target=\"").append(escapeAttr(target)).append("\"");
     sb.append(" style=\"").append(buildStyle(anchorStyles)).append("\">");
     // Space before and after text content, matching official MJML output
-    sb.append(" ").append(node.getInnerHtml().trim()).append(" ");
+    sb.append(" ").append(sanitizeContent(node.getInnerHtml().trim())).append(" ");
     sb.append("</a>");
 
     return sb.toString();

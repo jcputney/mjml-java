@@ -5,6 +5,7 @@ import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssEscaper;
 import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
@@ -37,7 +38,7 @@ public class MjHero extends BodyComponent {
       Map.entry("inner-padding-left", ""),
       Map.entry("inner-padding-right", ""),
       Map.entry("inner-padding-top", ""),
-      Map.entry("mode", "fixed-height"),
+      Map.entry("mode", "fluid-height"),
       Map.entry("padding", "0px"),
       Map.entry("padding-bottom", ""),
       Map.entry("padding-left", ""),
@@ -67,11 +68,11 @@ public class MjHero extends BodyComponent {
 
   @Override
   public String render() {
-    String mode = getAttribute("mode", "fixed-height");
-    if ("fluid-height".equals(mode)) {
-      return renderFluidHeight();
+    String mode = getAttribute("mode", "fluid-height");
+    if ("fixed-height".equals(mode)) {
+      return renderFixedHeight();
     }
-    return renderFixedHeight();
+    return renderFluidHeight();
   }
 
   /**
@@ -104,7 +105,7 @@ public class MjHero extends BodyComponent {
    */
   private String renderFluidHeight() {
     String bgHeight = getAttribute("background-height", "");
-    int containerWidth = globalContext.getContainerWidth();
+    int containerWidth = globalContext.metadata().getContainerWidth();
 
     // Compute padding-bottom percentage for fluid aspect ratio
     double paddingPct = 0;
@@ -140,7 +141,7 @@ public class MjHero extends BodyComponent {
     String backgroundPosition = getAttribute("background-position", "center center");
     String verticalAlign = getAttribute("vertical-align", "top");
     String padding = getAttribute("padding", "0px");
-    int containerWidth = globalContext.getContainerWidth();
+    int containerWidth = globalContext.metadata().getContainerWidth();
 
     // MSO wrapper with v:image
     sb.append("    <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:")
@@ -317,7 +318,7 @@ public class MjHero extends BodyComponent {
     if (url == null || url.isEmpty()) {
       return color;
     }
-    return color + " url('" + url + "') no-repeat " + position + " / cover";
+    return color + " url('" + CssEscaper.escapeCssUrl(url) + "') no-repeat " + position + " / cover";
   }
 
   private static int parseIntPx(String value) {

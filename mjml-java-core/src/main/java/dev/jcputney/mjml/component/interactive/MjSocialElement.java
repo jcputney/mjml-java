@@ -6,6 +6,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.SocialNetworkRegistry;
 import dev.jcputney.mjml.util.SocialNetworkRegistry.NetworkInfo;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -195,7 +196,7 @@ public class MjSocialElement extends BodyComponent {
     sb.append("</td>\n");
 
     // Text label (from inner HTML content)
-    String textContent = node.getInnerHtml().trim();
+    String textContent = sanitizeContent(node.getInnerHtml().trim());
     if (!textContent.isEmpty()) {
       String textPadding = getInheritedAttribute(parent, "text-padding", "4px 4px 4px 0");
       String color = getInheritedAttribute(parent, "color", "#000");
@@ -239,7 +240,7 @@ public class MjSocialElement extends BodyComponent {
     if (padding == null || padding.isEmpty()) {
       return padding;
     }
-    String[] parts = padding.trim().split("\\s+");
+    String[] parts = CssUnitParser.WHITESPACE.split(padding.trim());
     if (parts.length == 2 && parts[0].equals(parts[1])) {
       return parts[0];
     }
@@ -253,6 +254,14 @@ public class MjSocialElement extends BodyComponent {
   /**
    * Gets an attribute value only if explicitly set on the element or its parent.
    * Returns null if neither has it set.
+   *
+   * <p>This custom cascade is needed because mj-social-element uses a parent-child
+   * inheritance model that differs from the standard mj-attributes cascade. The standard
+   * cascade resolves attributes via mj-class/tag-defaults/mj-all, but social elements
+   * also need to inherit presentational attributes (icon-size, border-radius, colors, etc.)
+   * directly from their enclosing mj-social parent. This two-level lookup
+   * (element -> parent -> defaults) lets the parent act as a shared configuration
+   * for all its child elements without requiring mj-attributes.</p>
    */
   private String getExplicitAttribute(MjSocial parent, String attrName) {
     String value = node.getAttribute(attrName);
@@ -270,7 +279,8 @@ public class MjSocialElement extends BodyComponent {
 
   /**
    * Gets an attribute value, falling back to the parent MjSocial's value if the element
-   * doesn't have it set explicitly.
+   * doesn't have it set explicitly. See {@link #getExplicitAttribute} for why this
+   * custom cascade exists alongside the standard mj-attributes cascade.
    */
   private String getInheritedAttribute(MjSocial parent, String attrName, String defaultValue) {
     // Check if explicitly set on this element

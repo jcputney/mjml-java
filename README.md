@@ -40,14 +40,14 @@ Most users only need `mjml-java-core`. Add `mjml-java-resolvers` if you need URL
 <dependency>
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation 'dev.jcputney:mjml-java-core:1.0.0'
+implementation 'dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT'
 ```
 
 ### Usage

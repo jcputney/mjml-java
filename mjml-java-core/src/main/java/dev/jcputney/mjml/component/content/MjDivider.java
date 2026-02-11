@@ -64,18 +64,11 @@ public class MjDivider extends BodyComponent {
 
     // Compute margin based on alignment
     String align = getAttribute("align", "center");
-    String margin;
-    switch (align) {
-      case "left":
-        margin = "0px";
-        break;
-      case "right":
-        margin = "0px 0px 0px auto";
-        break;
-      default: // center
-        margin = "0px auto";
-        break;
-    }
+    String margin = switch (align) {
+      case "left" -> "0px";
+      case "right" -> "0px 0px 0px auto";
+      default -> "0px auto"; // center
+    };
 
     String dividerStyle = buildStyle(orderedMap(
         "border-top", borderTop,

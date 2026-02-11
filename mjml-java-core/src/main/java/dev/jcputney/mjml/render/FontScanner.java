@@ -20,13 +20,15 @@ final class FontScanner {
 
   private static final Logger LOG = Logger.getLogger(FontScanner.class.getName());
 
-  private final MjmlConfiguration configuration;
   private final ComponentRegistry registry;
+  private final RenderContext dummyContext;
+  private final GlobalContext dummyGlobalContext;
   private final Map<String, Map<String, String>> defaultsCache = new HashMap<>();
 
   FontScanner(MjmlConfiguration configuration, ComponentRegistry registry) {
-    this.configuration = configuration;
     this.registry = registry;
+    this.dummyContext = new RenderContext(MjmlConfiguration.DEFAULT_CONTAINER_WIDTH);
+    this.dummyGlobalContext = new GlobalContext(configuration);
   }
 
   /**
@@ -57,8 +59,6 @@ final class FontScanner {
 
   private Map<String, String> getComponentDefaults(String tagName) {
     return defaultsCache.computeIfAbsent(tagName, tag -> {
-      RenderContext dummyContext = new RenderContext(600);
-      GlobalContext dummyGlobalContext = new GlobalContext(configuration);
       try {
         BaseComponent component = registry.createComponent(
             new MjmlNode(tag), dummyGlobalContext, dummyContext);
