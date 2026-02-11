@@ -37,7 +37,7 @@ mvn clean package -DskipTests
 
 ## Running Tests
 
-The project has hundreds of tests across all modules. To check current counts in your checkout:
+The project has over 1,000 tests across all modules. To check current counts in your checkout:
 
 ```bash
 rg -n "@Test" mjml-java-core/src/test mjml-java-resolvers/src/test mjml-java-spring/src/test | wc -l

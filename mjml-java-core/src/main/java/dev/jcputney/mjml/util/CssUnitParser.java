@@ -10,7 +10,6 @@ public final class CssUnitParser {
   public static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
   private static final Logger LOG = Logger.getLogger(CssUnitParser.class.getName());
-  private static final Pattern NON_NUMERIC = Pattern.compile("[^0-9-]");
 
   /**
    * Pattern matching valid CSS numeric values: optional sign, digits with optional decimal,
@@ -18,6 +17,8 @@ public final class CssUnitParser {
    */
   private static final Pattern VALID_CSS_NUMBER =
       Pattern.compile("^\\s*-?\\d+(?:\\.\\d+)?(?:px|%|em|rem)?\\s*$");
+
+  private static final Pattern UNIT_SUFFIX = Pattern.compile("(?:px|%|em|rem)$");
 
   private CssUnitParser() {}
 
@@ -126,7 +127,7 @@ public final class CssUnitParser {
       LOG.fine(() -> "Invalid CSS value for parseIntPx: " + value);
       return 0;
     }
-    String stripped = value.trim().replaceAll("(?:px|%|em|rem)$", "").trim();
+    String stripped = UNIT_SUFFIX.matcher(value.trim()).replaceAll("").trim();
     try {
       return (int) Double.parseDouble(stripped);
     } catch (NumberFormatException e) {

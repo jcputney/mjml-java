@@ -17,6 +17,7 @@ public class MjmlNode {
   private final Map<String, String> attributes;
   private final List<MjmlNode> children;
   private List<MjmlNode> unmodifiableChildren;
+  private Map<String, String> unmodifiableAttributes;
   private String textContent;
   private MjmlNode parent;
 
@@ -70,6 +71,7 @@ public class MjmlNode {
    */
   public void setAttribute(String name, String value) {
     attributes.put(name, value);
+    unmodifiableAttributes = null; // invalidate cache
   }
 
   /**
@@ -78,7 +80,10 @@ public class MjmlNode {
    * @return an unmodifiable map of attribute names to values
    */
   public Map<String, String> getAttributes() {
-    return Collections.unmodifiableMap(attributes);
+    if (unmodifiableAttributes == null) {
+      unmodifiableAttributes = Collections.unmodifiableMap(attributes);
+    }
+    return unmodifiableAttributes;
   }
 
   /**

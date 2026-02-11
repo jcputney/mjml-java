@@ -30,6 +30,8 @@ const sidebars: SidebarsConfig = {
         'guides/custom-components',
         'guides/include-system',
         'guides/attribute-cascade',
+        'guides/resolvers',
+        'guides/spring-boot',
         'guides/security',
         'guides/thread-safety',
       ],

@@ -169,7 +169,7 @@ public class MjCarousel extends BodyComponent {
     String tbBorder = getAttribute("tb-border", "0");
     String tbBorderRadius = getAttribute("tb-border-radius", "0");
     String tbWidth = getAttribute("tb-width", "");
-    int tbWidthInt = tbWidth.isEmpty() ? 0 : parseIntFromPx(tbWidth);
+    int tbWidthInt = tbWidth.isEmpty() ? 0 : CssUnitParser.parseIntPx(tbWidth);
 
     for (int i = 1; i <= count; i++) {
       MjmlNode imgNode = images.get(i - 1);
@@ -552,9 +552,5 @@ public class MjCarousel extends BodyComponent {
    */
   private String siblingChain(int starCount) {
     return "+*".repeat(starCount);
-  }
-
-  private int parseIntFromPx(String value) {
-    return CssUnitParser.parseIntPx(value);
   }
 }

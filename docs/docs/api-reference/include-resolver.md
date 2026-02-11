@@ -154,10 +154,10 @@ IncludeResolver httpResolver = (path, context) -> {
 
 ### No Include Support
 
-If your templates do not use `<mj-include>`, you can omit the resolver entirely. Any `<mj-include>` in the input will throw an `MjmlIncludeException` at render time.
+If your templates do not use `<mj-include>`, you can omit the resolver entirely. Any `<mj-include>` elements in the input will be left unresolved and a warning will be logged during rendering.
 
 ```java
-// No includeResolver set -- mj-include will fail
+// No includeResolver set -- mj-include elements will be skipped with a warning
 MjmlConfiguration config = MjmlConfiguration.builder()
     .language("en")
     .build();

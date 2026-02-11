@@ -4,6 +4,7 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.Map;
 
 /**
@@ -61,7 +62,7 @@ public class MjDivider extends BodyComponent {
     double availableWidth = containerWidth - paddingLeft - paddingRight;
     int msoWidth;
     if (width.endsWith("%")) {
-      double pct = Double.parseDouble(width.replace("%", ""));
+      double pct = CssUnitParser.parsePx(width.replace("%", ""), 100.0);
       msoWidth = (int) (availableWidth * pct / 100.0);
     } else {
       msoWidth = (int) parseWidth(width);
@@ -85,20 +86,17 @@ public class MjDivider extends BodyComponent {
                 "width", width));
 
     // Standard divider <p> FIRST
+    StringBuilder sb = new StringBuilder();
+    sb.append("                        <p style=\"").append(dividerStyle).append("\">\n");
+    sb.append("                        </p>\n");
 
-    String sb =
-        "                        <p style=\""
-            + dividerStyle
-            + "\">\n"
-            + "                        </p>\n"
-            +
-
-            // MSO conditional AFTER
-            "                        <!--[if mso | IE]><table align=\""
-            + align
-            + "\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\""
-            + " style=\""
-            + buildStyle(
+    // MSO conditional AFTER
+    sb.append("                        <!--[if mso | IE]><table align=\"")
+        .append(align)
+        .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"")
+        .append(" style=\"")
+        .append(
+            buildStyle(
                 orderedMap(
                     "border-top",
                     borderTop,
@@ -107,14 +105,14 @@ public class MjDivider extends BodyComponent {
                     "margin",
                     margin,
                     "width",
-                    msoWidth + "px"))
-            + "\""
-            + " role=\"presentation\" width=\""
-            + msoWidth
-            + "px\""
-            + " ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n"
-            + "</td></tr></table><![endif]-->";
+                    msoWidth + "px")))
+        .append("\"")
+        .append(" role=\"presentation\" width=\"")
+        .append(msoWidth)
+        .append("px\"")
+        .append(" ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n")
+        .append("</td></tr></table><![endif]-->");
 
-    return sb;
+    return sb.toString();
   }
 }

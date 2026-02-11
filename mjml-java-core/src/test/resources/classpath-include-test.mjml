@@ -1,0 +1,5 @@
+<mj-section>
+  <mj-column>
+    <mj-text>Included from classpath</mj-text>
+  </mj-column>
+</mj-section>

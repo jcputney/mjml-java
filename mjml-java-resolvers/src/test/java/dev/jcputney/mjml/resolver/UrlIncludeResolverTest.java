@@ -309,6 +309,38 @@ class UrlIncludeResolverTest {
   }
 
   @Test
+  void non200StatusCode404ThrowsIncludeException() {
+    byte[] body = "Not Found".getBytes(StandardCharsets.UTF_8);
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpClient(new StubHttpClient(404, body))
+            .httpsOnly(false)
+            .build();
+
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://93.184.216.34/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("404"), "Error message should include HTTP status code");
+  }
+
+  @Test
+  void non200StatusCode500ThrowsIncludeException() {
+    byte[] body = "Internal Server Error".getBytes(StandardCharsets.UTF_8);
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpClient(new StubHttpClient(500, body))
+            .httpsOnly(false)
+            .build();
+
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://93.184.216.34/template.mjml", CTX));
+    assertTrue(ex.getMessage().contains("500"), "Error message should include HTTP status code");
+  }
+
+  @Test
   void returnsResponseWithinByteLimit() {
     byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 6 bytes
     var resolver =

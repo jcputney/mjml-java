@@ -1,6 +1,8 @@
 package dev.jcputney.mjml;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,14 +11,22 @@ class ClasspathIncludeResolverTest {
   private static final ResolverContext TEST_CONTEXT = ResolverContext.root("mjml");
 
   @Test
-  void resolvesClasspathResource() {
-    // module-info.java exists on the classpath from our own compiled classes
+  void throwsOnNonexistentResource() {
     ClasspathIncludeResolver resolver =
         new ClasspathIncludeResolver(ClasspathIncludeResolverTest.class.getClassLoader());
-    // Our golden test files are on the test classpath
-    // Use a known file from the test resources
     assertThrows(
         MjmlIncludeException.class, () -> resolver.resolve("nonexistent.mjml", TEST_CONTEXT));
+  }
+
+  @Test
+  void successfullyResolvesClasspathResource() {
+    ClasspathIncludeResolver resolver =
+        new ClasspathIncludeResolver(ClasspathIncludeResolverTest.class.getClassLoader());
+    String content = resolver.resolve("classpath-include-test.mjml", TEST_CONTEXT);
+    assertNotNull(content, "Resolved content should not be null");
+    assertTrue(
+        content.contains("Included from classpath"),
+        "Resolved content should match test resource file");
   }
 
   @Test

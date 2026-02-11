@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.util;
 
+import static dev.jcputney.mjml.util.CssEscaper.escapeCssUrl;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public final class BackgroundCssHelper {
     if (bgColor != null && !bgColor.isEmpty()) {
       bg.append(bgColor).append(" ");
     }
-    bg.append("url('").append(bgUrl).append("') ");
+    bg.append("url('").append(escapeCssUrl(bgUrl)).append("') ");
     bg.append(bgPosition).append(" / ").append(bgSize).append(" ").append(bgRepeat);
     return bg.toString();
   }

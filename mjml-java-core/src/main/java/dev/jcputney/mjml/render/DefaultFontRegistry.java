@@ -5,7 +5,6 @@ import dev.jcputney.mjml.context.StyleContext;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Registry of well-known web fonts that MJML auto-imports when used in font-family. When a
@@ -40,11 +39,26 @@ public final class DefaultFontRegistry {
       return;
     }
 
-    // Pre-compute set of already-registered font names for O(1) lookup
-    Set<String> registeredNames =
-        ctx.styles().getFonts().stream()
-            .map(StyleContext.FontDef::name)
-            .collect(Collectors.toSet());
+    Set<String> registeredNames = buildRegisteredNameSet(ctx);
+    registerUsedFonts(fontFamily, ctx, registeredNames);
+  }
+
+  /**
+   * Checks the given font-family string against known default fonts and registers any matches in
+   * the GlobalContext (unless already registered by an explicit mj-font). This overload accepts a
+   * pre-built set of registered font names, avoiding the overhead of rebuilding it on every call.
+   * The caller is responsible for keeping the set in sync (the set is mutated in place when fonts
+   * are added).
+   *
+   * @param fontFamily the CSS font-family string to check for known fonts
+   * @param ctx the global context to register discovered fonts in
+   * @param registeredNames mutable set of already-registered font names for O(1) lookup
+   */
+  public static void registerUsedFonts(
+      String fontFamily, GlobalContext ctx, Set<String> registeredNames) {
+    if (fontFamily == null || fontFamily.isEmpty()) {
+      return;
+    }
 
     // Check built-in default fonts
     for (Map.Entry<String, String> entry : DEFAULT_FONTS.entrySet()) {
@@ -67,5 +81,19 @@ public final class DefaultFontRegistry {
         registeredNames.add(fontName);
       }
     }
+  }
+
+  /**
+   * Builds a mutable set of currently registered font names from the given context.
+   *
+   * @param ctx the global context to read font registrations from
+   * @return a mutable set of registered font names
+   */
+  public static Set<String> buildRegisteredNameSet(GlobalContext ctx) {
+    Set<String> registeredNames = new java.util.HashSet<>();
+    for (StyleContext.FontDef font : ctx.styles().getFonts()) {
+      registeredNames.add(font.name());
+    }
+    return registeredNames;
   }
 }

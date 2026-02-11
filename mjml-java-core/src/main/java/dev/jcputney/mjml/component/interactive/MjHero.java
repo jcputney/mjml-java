@@ -69,10 +69,6 @@ public class MjHero extends BodyComponent {
     this.registry = registry;
   }
 
-  private static int parseIntPx(String value) {
-    return CssUnitParser.parseIntPx(value);
-  }
-
   private static int parsePaddingPart(String padding, int index) {
     return (int) CssUnitParser.parseShorthand(padding)[index];
   }
@@ -109,7 +105,7 @@ public class MjHero extends BodyComponent {
     if (!height.isEmpty()) {
       int paddingTop = parsePaddingPart(padding, 0);
       int paddingBottom = parsePaddingPart(padding, 2);
-      int h = parseIntPx(height);
+      int h = CssUnitParser.parseIntPx(height);
       innerHeight = Math.max(0, h - paddingTop - paddingBottom);
     }
 
@@ -131,9 +127,9 @@ public class MjHero extends BodyComponent {
     // Compute padding-bottom percentage for fluid aspect ratio
     double paddingPct = 0;
     if (!bgHeight.isEmpty()) {
-      int bgH = parseIntPx(bgHeight);
+      int bgH = CssUnitParser.parseIntPx(bgHeight);
       String bgWidth = getAttribute("background-width", "");
-      int bgW = !bgWidth.isEmpty() ? parseIntPx(bgWidth) : containerWidth;
+      int bgW = !bgWidth.isEmpty() ? CssUnitParser.parseIntPx(bgWidth) : containerWidth;
       paddingPct = ((double) bgH / bgW) * 100.0;
     }
 
@@ -330,9 +326,9 @@ public class MjHero extends BodyComponent {
       }
 
       sb.append("                            <td align=\"")
-          .append(align)
+          .append(escapeAttr(align))
           .append("\" style=\"font-size:0px;padding:")
-          .append(childPadding)
+          .append(escapeAttr(childPadding))
           .append(";word-break:break-word;\">\n");
 
       // Render the child component

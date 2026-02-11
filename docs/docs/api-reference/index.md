@@ -24,10 +24,15 @@ For most use cases, you only need the `dev.jcputney.mjml` package.
 ```mermaid
 classDiagram
     class MjmlRenderer {
+        +create()$ MjmlRenderer
+        +create(MjmlConfiguration config)$ MjmlRenderer
         +render(String mjml)$ MjmlRenderResult
         +render(String mjml, MjmlConfiguration config)$ MjmlRenderResult
         +render(Path mjmlFile)$ MjmlRenderResult
         +render(Path mjmlFile, MjmlConfiguration config)$ MjmlRenderResult
+        +renderTemplate(String mjml) MjmlRenderResult
+        +renderTemplate(Path mjmlFile) MjmlRenderResult
+        +renderTemplate(String mjml, IncludeResolver resolver) MjmlRenderResult
     }
 
     class MjmlConfiguration {

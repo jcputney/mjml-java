@@ -72,10 +72,11 @@ public final class RenderPipeline {
   private static final Logger LOG = Logger.getLogger(RenderPipeline.class.getName());
 
   /**
-   * Cache of frozen registries keyed by configuration identity. The registry is stateless once
-   * built and frozen, so it can be safely shared across threads and render calls. Uses a
-   * synchronized access-ordered LinkedHashMap to provide a bounded LRU-style cache. Keys are
-   * compared by reference identity because MjmlConfiguration does not override equals/hashCode.
+   * Cache of frozen registries keyed by configuration. The registry is stateless once built and
+   * frozen, so it can be safely shared across threads and render calls. Uses a synchronized
+   * access-ordered LinkedHashMap to provide a bounded LRU-style cache. Keys use MjmlConfiguration's
+   * equals/hashCode, which compares value fields by equality and functional fields
+   * (includeResolver, contentSanitizer) by reference identity.
    */
   private static final int REGISTRY_CACHE_MAX_SIZE = 256;
 

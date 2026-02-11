@@ -9,8 +9,8 @@ public final class HtmlEscaper {
   private HtmlEscaper() {}
 
   /**
-   * Escapes HTML special characters in an attribute value: {@code &}, {@code "}, {@code <}, {@code
-   * >}.
+   * Escapes HTML special characters in an attribute value: {@code &}, {@code "}, {@code '}, {@code
+   * <}, {@code >}.
    *
    * @param value the attribute value to escape (may be {@code null} or empty)
    * @return the escaped value, or the original value if no escaping is needed
@@ -23,7 +23,7 @@ public final class HtmlEscaper {
     boolean needsEscape = false;
     for (int i = 0; i < value.length(); i++) {
       char c = value.charAt(i);
-      if (c == '&' || c == '"' || c == '<' || c == '>') {
+      if (c == '&' || c == '"' || c == '\'' || c == '<' || c == '>') {
         needsEscape = true;
         break;
       }
@@ -37,6 +37,7 @@ public final class HtmlEscaper {
       switch (c) {
         case '&' -> sb.append("&amp;");
         case '"' -> sb.append("&quot;");
+        case '\'' -> sb.append("&#39;");
         case '<' -> sb.append("&lt;");
         case '>' -> sb.append("&gt;");
         default -> sb.append(c);

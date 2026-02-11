@@ -60,7 +60,7 @@ String mjml = """
   </mjml>
   """;
 
-String html = MjmlRenderer.render(mjml);`;
+String html = MjmlRenderer.render(mjml).html();`;
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();

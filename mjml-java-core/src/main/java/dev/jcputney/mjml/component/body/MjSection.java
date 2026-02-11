@@ -264,7 +264,7 @@ public class MjSection extends AbstractSectionComponent {
       sb.append("<td class=\"").append(escapeAttr(getCssClass())).append("\" style=\"");
       if (!isGroup) {
         String verticalAlign = col.getAttribute("vertical-align", "top");
-        sb.append("vertical-align:").append(verticalAlign).append(";");
+        sb.append("vertical-align:").append(escapeAttr(verticalAlign)).append(";");
       }
       sb.append("width:").append(CssUnitParser.formatPxWidth(widths[i])).append("px;\" >");
 

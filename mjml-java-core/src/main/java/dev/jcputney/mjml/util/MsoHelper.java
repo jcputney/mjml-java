@@ -18,6 +18,10 @@ public final class MsoHelper {
   public static final String MSO_TD_STYLE_HERO =
       "line-height:0;font-size:0;mso-line-height-rule:exactly;";
 
+  /** Pre-computed MSO conditional table closing string. */
+  private static final String MSO_CONDITIONAL_TABLE_CLOSING =
+      "<!--[if mso | IE]></td></tr></table><![endif]-->";
+
   private MsoHelper() {}
 
   /**
@@ -80,6 +84,6 @@ public final class MsoHelper {
    * @return {@code <!--[if mso | IE]></td></tr></table><![endif]-->}
    */
   public static String msoConditionalTableClosing() {
-    return conditionalStart() + msoTableClosing() + conditionalEnd();
+    return MSO_CONDITIONAL_TABLE_CLOSING;
   }
 }

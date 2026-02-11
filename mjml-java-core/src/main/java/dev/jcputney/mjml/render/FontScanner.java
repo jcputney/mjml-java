@@ -8,8 +8,9 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlDocument;
 import dev.jcputney.mjml.parser.MjmlNode;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -23,7 +24,7 @@ final class FontScanner {
   private final ComponentRegistry registry;
   private final RenderContext dummyContext;
   private final GlobalContext dummyGlobalContext;
-  private final Map<String, Map<String, String>> defaultsCache = new HashMap<>();
+  private final Map<String, Map<String, String>> defaultsCache = new ConcurrentHashMap<>();
 
   FontScanner(MjmlConfiguration configuration, ComponentRegistry registry) {
     this.registry = registry;
@@ -40,20 +41,22 @@ final class FontScanner {
     if (body == null) {
       return;
     }
-    scanFontsRecursive(body, globalContext);
+    Set<String> registeredNames = DefaultFontRegistry.buildRegisteredNameSet(globalContext);
+    scanFontsRecursive(body, globalContext, registeredNames);
   }
 
-  private void scanFontsRecursive(MjmlNode node, GlobalContext globalContext) {
+  private void scanFontsRecursive(
+      MjmlNode node, GlobalContext globalContext, Set<String> registeredNames) {
     String tagName = node.getTagName();
     if (tagName != null && !tagName.startsWith("#")) {
       Map<String, String> defaults = getComponentDefaults(tagName);
       String fontFamily = AttributeResolver.resolve(node, "font-family", globalContext, defaults);
       if (fontFamily != null && !fontFamily.isEmpty()) {
-        DefaultFontRegistry.registerUsedFonts(fontFamily, globalContext);
+        DefaultFontRegistry.registerUsedFonts(fontFamily, globalContext, registeredNames);
       }
     }
     for (MjmlNode child : node.getChildren()) {
-      scanFontsRecursive(child, globalContext);
+      scanFontsRecursive(child, globalContext, registeredNames);
     }
   }
 

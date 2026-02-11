@@ -47,12 +47,6 @@ public class RenderContext {
     this.idCounter = idCounter;
   }
 
-  /** Creates a copy of this context, sharing the same idCounter. */
-  private RenderContext copy() {
-    return new RenderContext(
-        containerWidth, columnWidthSpec, index, first, last, insideWrapper, insideGroup, idCounter);
-  }
-
   /**
    * Returns the current container width in pixels.
    *

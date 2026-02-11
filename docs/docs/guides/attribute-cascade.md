@@ -143,21 +143,21 @@ public static String resolve(MjmlNode node, String attributeName,
     // Level 2: mj-class attributes
     String mjClass = node.getAttribute("mj-class");
     if (mjClass != null) {
-        for (String className : mjClass.split("\\s+")) {
+        for (String className : CssUnitParser.WHITESPACE.split(mjClass)) {
             Map<String, String> classAttrs =
-                globalContext.getClassAttributes(className);
+                globalContext.attributes().getClassAttributes(className);
             value = classAttrs.get(attributeName);
             if (value != null) return value;
         }
     }
 
     // Level 3: Tag-specific defaults
-    value = globalContext.getDefaultAttributes(node.getTagName())
+    value = globalContext.attributes().getDefaultAttributes(node.getTagName())
                          .get(attributeName);
     if (value != null) return value;
 
     // Level 4: mj-all defaults
-    value = globalContext.getAllDefaults().get(attributeName);
+    value = globalContext.attributes().getAllDefaults().get(attributeName);
     if (value != null) return value;
 
     // Level 5: Component hardcoded defaults

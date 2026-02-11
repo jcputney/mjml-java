@@ -37,7 +37,7 @@ Yes. Add the Maven dependency to your `pom.xml` and use `MjmlRenderer` directly:
 public class EmailService {
 
     public String renderTemplate(String mjml) {
-        return MjmlRenderer.render(mjml);
+        return MjmlRenderer.render(mjml).html();
     }
 }
 ```

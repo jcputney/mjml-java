@@ -30,7 +30,7 @@ Use the `mj-include` tag with a `path` attribute to include external content:
 
 ## Include Types
 
-The `type` attribute controls how the included content is interpreted. There are three include types:
+The `type` attribute controls how the included content is interpreted. There are four include types (`mjml`, `html`, `css`, and `css-inline`):
 
 ### MJML Includes (default)
 
@@ -188,7 +188,7 @@ IncludeResolver httpResolver = (path, context) -> {
 
 ## Nested Includes
 
-Included files can themselves contain `mj-include` tags. The processor resolves includes recursively up to a maximum depth of 50 levels.
+Included files can themselves contain `mj-include` tags. The processor resolves includes recursively up to a maximum depth of 50 levels (configurable via `MjmlConfiguration.builder().maxIncludeDepth()`).
 
 ```xml
 <!-- layout.mjml -->

@@ -27,6 +27,13 @@ Every render call gets:
 
 No mutable state is shared between concurrent render calls.
 
+For production use, prefer the instance API which reuses the pipeline and shares a registry cache:
+
+```java
+MjmlRenderer renderer = MjmlRenderer.create(config);
+MjmlRenderResult result = renderer.renderTemplate(mjml);
+```
+
 ## Immutable Configuration
 
 `MjmlConfiguration` is immutable. The builder creates a defensive copy of all collections:
@@ -128,7 +135,7 @@ public class EmailController {
 
 ### Virtual Threads (Java 21+)
 
-mjml-java works with virtual threads since it has no thread-local state or synchronized blocks in the render path:
+mjml-java works with virtual threads. The render path uses brief synchronized blocks only for parser factory initialization and registry cache access, not for per-element processing, so contention is minimal:
 
 ```java
 try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {

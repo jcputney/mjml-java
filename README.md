@@ -82,6 +82,16 @@ String title = result.title();
 String preview = result.previewText();
 ```
 
+### Instance API (Recommended for Production)
+
+For repeated rendering, the instance API reuses the internal pipeline and component registry cache:
+
+```java
+MjmlRenderer renderer = MjmlRenderer.create(config);
+MjmlRenderResult result = renderer.renderTemplate(mjmlString);
+String html = result.html();
+```
+
 ### Rendering a File
 
 ```java

@@ -80,11 +80,6 @@ public class MjText extends BodyComponent {
                 : extractTagName(lower.substring(1));
         boolean isBlock = isBlockElement(tagName);
 
-        // Before a block-level tag (open or close), if we're after another block boundary
-        // and there's only whitespace between them, use newline
-        if (isBlock && afterBlockBoundary) {
-          // Already handled by whitespace-only text run check below
-        }
         sb.append(tag);
         afterBlockBoundary = isBlock;
         i = end + 1;

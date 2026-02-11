@@ -4,6 +4,7 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.Map;
 
 /**
@@ -63,7 +64,9 @@ public class MjAccordionText extends BodyComponent {
     String border = resolveAncestorAttr("border", "2px solid black");
 
     // Collapse whitespace in text content
-    String content = sanitizeContent(node.getInnerHtml().trim().replaceAll("\\s+", " "));
+    String content =
+        sanitizeContent(
+            CssUnitParser.WHITESPACE.matcher(node.getInnerHtml().trim()).replaceAll(" "));
 
     sb.append("<table cellspacing=\"0\" cellpadding=\"0\" style=\"");
     sb.append(buildStyle(orderedMap("width", "100%", "border-bottom", border)));

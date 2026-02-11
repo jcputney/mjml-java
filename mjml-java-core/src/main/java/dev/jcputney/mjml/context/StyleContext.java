@@ -30,6 +30,14 @@ public class StyleContext {
   private final Set<String> registeredStyleKeys = new HashSet<>();
   private boolean fluidOnMobileUsed = false;
 
+  // Cached unmodifiable views (lazily initialized, invalidated on mutation)
+  private Set<FontDef> unmodifiableFonts;
+  private Map<String, String> unmodifiableFontUrlOverrides;
+  private List<String> unmodifiableStyles;
+  private List<String> unmodifiableComponentStyles;
+  private List<String> unmodifiableInlineStyles;
+  private Set<MediaQuery> unmodifiableMediaQueries;
+
   /** Creates a new empty style context with no fonts, styles, or media queries registered. */
   public StyleContext() {}
 
@@ -41,6 +49,7 @@ public class StyleContext {
    */
   public void addFont(String name, String href) {
     fonts.add(new FontDef(name, href));
+    unmodifiableFonts = null;
   }
 
   /**
@@ -49,7 +58,10 @@ public class StyleContext {
    * @return the registered fonts
    */
   public Set<FontDef> getFonts() {
-    return Collections.unmodifiableSet(fonts);
+    if (unmodifiableFonts == null) {
+      unmodifiableFonts = Collections.unmodifiableSet(fonts);
+    }
+    return unmodifiableFonts;
   }
 
   /**
@@ -60,6 +72,7 @@ public class StyleContext {
    */
   public void registerFontOverride(String name, String href) {
     fontUrlOverrides.put(name, href);
+    unmodifiableFontUrlOverrides = null;
   }
 
   /**
@@ -78,7 +91,10 @@ public class StyleContext {
    * @return the font URL overrides map
    */
   public Map<String, String> getFontUrlOverrides() {
-    return Collections.unmodifiableMap(fontUrlOverrides);
+    if (unmodifiableFontUrlOverrides == null) {
+      unmodifiableFontUrlOverrides = Collections.unmodifiableMap(fontUrlOverrides);
+    }
+    return unmodifiableFontUrlOverrides;
   }
 
   /**
@@ -89,6 +105,7 @@ public class StyleContext {
   public void addStyle(String css) {
     if (css != null && !css.isBlank()) {
       styles.add(css);
+      unmodifiableStyles = null;
     }
   }
 
@@ -116,6 +133,7 @@ public class StyleContext {
   public void addComponentStyle(String css) {
     if (css != null && !css.isBlank()) {
       componentStyles.add(css);
+      unmodifiableComponentStyles = null;
     }
   }
 
@@ -125,7 +143,10 @@ public class StyleContext {
    * @return the component styles
    */
   public List<String> getComponentStyles() {
-    return Collections.unmodifiableList(componentStyles);
+    if (unmodifiableComponentStyles == null) {
+      unmodifiableComponentStyles = Collections.unmodifiableList(componentStyles);
+    }
+    return unmodifiableComponentStyles;
   }
 
   /**
@@ -136,6 +157,7 @@ public class StyleContext {
   public void addInlineStyle(String css) {
     if (css != null && !css.isBlank()) {
       inlineStyles.add(css);
+      unmodifiableInlineStyles = null;
     }
   }
 
@@ -145,7 +167,10 @@ public class StyleContext {
    * @return the styles
    */
   public List<String> getStyles() {
-    return Collections.unmodifiableList(styles);
+    if (unmodifiableStyles == null) {
+      unmodifiableStyles = Collections.unmodifiableList(styles);
+    }
+    return unmodifiableStyles;
   }
 
   /**
@@ -154,7 +179,10 @@ public class StyleContext {
    * @return the inline styles
    */
   public List<String> getInlineStyles() {
-    return Collections.unmodifiableList(inlineStyles);
+    if (unmodifiableInlineStyles == null) {
+      unmodifiableInlineStyles = Collections.unmodifiableList(inlineStyles);
+    }
+    return unmodifiableInlineStyles;
   }
 
   /**
@@ -166,6 +194,7 @@ public class StyleContext {
    */
   public void addMediaQuery(String className, String widthValue, String widthUnit) {
     mediaQueries.add(new MediaQuery(className, widthValue, widthUnit));
+    unmodifiableMediaQueries = null;
   }
 
   /**
@@ -174,7 +203,10 @@ public class StyleContext {
    * @return the media queries
    */
   public Set<MediaQuery> getMediaQueries() {
-    return Collections.unmodifiableSet(mediaQueries);
+    if (unmodifiableMediaQueries == null) {
+      unmodifiableMediaQueries = Collections.unmodifiableSet(mediaQueries);
+    }
+    return unmodifiableMediaQueries;
   }
 
   /**
