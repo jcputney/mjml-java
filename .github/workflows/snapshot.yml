@@ -35,7 +35,9 @@ jobs:
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Build with Maven
-        run: mvn -B -ntp -Dstyle.color=always verify -P sign
+        run: >-
+          mvn -B -ntp -Dstyle.color=always verify
+          ${{ github.event_name != 'pull_request' && '-P sign' || '' }}
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
@@ -58,7 +60,7 @@ jobs:
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v5.1
         with:
-          coverage_results_path: "**/target/site/jacoco/jacoco.xml"
+          coverage_results_path: "mjml-java-core/target/site/jacoco/jacoco.xml,mjml-java-resolvers/target/site/jacoco/jacoco.xml,mjml-java-spring/target/site/jacoco/jacoco.xml"
           coverage_report_name: Coverage
           coverage_report_title: JaCoCo
           github_token: ${{ secrets.GITHUB_TOKEN }}
