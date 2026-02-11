@@ -49,7 +49,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>5.10.2</junit.version>
+        <junit.version>6.0.2</junit.version>
         <version.plugin.central-publishing>0.9.0</version.plugin.central-publishing>
         <version.plugin.gpg>3.2.8</version.plugin.gpg>
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
