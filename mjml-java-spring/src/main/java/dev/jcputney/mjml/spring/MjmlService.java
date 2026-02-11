@@ -7,8 +7,8 @@ import dev.jcputney.mjml.MjmlRenderer;
 /**
  * Spring-managed service for rendering MJML templates to HTML.
  *
- * <p>This is a thin facade over a reusable {@link MjmlRenderer} instance created from
- * the injected {@link MjmlConfiguration}.</p>
+ * <p>This is a thin facade over a reusable {@link MjmlRenderer} instance created from the injected
+ * {@link MjmlConfiguration}.
  */
 public class MjmlService {
 

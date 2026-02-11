@@ -11,15 +11,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The carousel component ({@code <mj-carousel>}).
- * Uses CSS radio buttons to implement a pure-CSS image carousel with
- * previous/next navigation and thumbnail strips. Generates unique hex IDs
- * per instance and injects carousel CSS into the global context.
+ * The carousel component ({@code <mj-carousel>}). Uses CSS radio buttons to implement a pure-CSS
+ * image carousel with previous/next navigation and thumbnail strips. Generates unique hex IDs per
+ * instance and injects carousel CSS into the global context.
  *
- * <p>The output matches the official MJML v4.18.0 carousel structure:
- * radio inputs for state, sibling combinator CSS for toggling visibility,
- * thumbnail anchors with labels, and table-based main content with
- * previous/next icon columns.
+ * <p>The output matches the official MJML v4.18.0 carousel structure: radio inputs for state,
+ * sibling combinator CSS for toggling visibility, thumbnail anchors with labels, and table-based
+ * main content with previous/next icon columns.
  */
 public class MjCarousel extends BodyComponent {
 
@@ -29,27 +27,38 @@ public class MjCarousel extends BodyComponent {
   /** Default right navigation arrow icon (matches official MJML v4). */
   private static final String DEFAULT_RIGHT_ICON = "https://i.imgur.com/os7o9kz.png";
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("align", "center"),
-      Map.entry("background-color", ""),
-      Map.entry("border-radius", "6px"),
-      Map.entry("container-background-color", ""),
-      Map.entry("icon-width", "44px"),
-      Map.entry("left-icon", DEFAULT_LEFT_ICON),
-      Map.entry("right-icon", DEFAULT_RIGHT_ICON),
-      Map.entry("padding", ""),
-      Map.entry("tb-border", "2px solid transparent"),
-      Map.entry("tb-border-radius", "6px"),
-      Map.entry("tb-hover-border-color", "#fead0d"),
-      Map.entry("tb-selected-border-color", "#ccc"),
-      Map.entry("tb-width", ""),
-      Map.entry("thumbnails", "visible")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("align", "center"),
+          Map.entry("background-color", ""),
+          Map.entry("border-radius", "6px"),
+          Map.entry("container-background-color", ""),
+          Map.entry("icon-width", "44px"),
+          Map.entry("left-icon", DEFAULT_LEFT_ICON),
+          Map.entry("right-icon", DEFAULT_RIGHT_ICON),
+          Map.entry("padding", ""),
+          Map.entry("tb-border", "2px solid transparent"),
+          Map.entry("tb-border-radius", "6px"),
+          Map.entry("tb-hover-border-color", "#fead0d"),
+          Map.entry("tb-selected-border-color", "#ccc"),
+          Map.entry("tb-width", ""),
+          Map.entry("thumbnails", "visible"));
 
   private final ComponentRegistry registry;
   private final String hexId;
 
-  public MjCarousel(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjCarousel component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjCarousel(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
@@ -87,9 +96,11 @@ public class MjCarousel extends BodyComponent {
     int containerWidth = (int) renderContext.getContainerWidth();
 
     // Inject carousel CSS into global context
-    globalContext.styles().addComponentStyle(
-        buildCarouselCss(carouselId, count, iconWidthNum, tbHoverBorderColor,
-            tbSelectedBorderColor));
+    globalContext
+        .styles()
+        .addComponentStyle(
+            buildCarouselCss(
+                carouselId, count, iconWidthNum, tbHoverBorderColor, tbSelectedBorderColor));
 
     StringBuilder sb = new StringBuilder();
 
@@ -102,15 +113,25 @@ public class MjCarousel extends BodyComponent {
     sb.append("\n");
 
     // Content div
-    sb.append("  <div class=\"mj-carousel-content ").append(carouselId)
-        .append("-content\" style=\"display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;\">");
+    sb.append("  <div class=\"mj-carousel-content ")
+        .append(carouselId)
+        .append(
+            "-content\" style=\"display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;\">");
 
     if (showThumbnails) {
       renderThumbnails(sb, images, carouselId, count);
     }
 
-    renderMainTable(sb, images, carouselId, count, iconWidthNum,
-        leftIcon, rightIcon, borderRadius, containerWidth);
+    renderMainTable(
+        sb,
+        images,
+        carouselId,
+        count,
+        iconWidthNum,
+        leftIcon,
+        rightIcon,
+        borderRadius,
+        containerWidth);
 
     sb.append("  </div>\n");
     sb.append("</div>");
@@ -121,13 +142,16 @@ public class MjCarousel extends BodyComponent {
     return sb.toString();
   }
 
-  /**
-   * Renders the hidden radio inputs that track carousel state.
-   */
+  /** Renders the hidden radio inputs that track carousel state. */
   private void renderRadioInputs(StringBuilder sb, String carouselId, int count) {
     for (int i = 1; i <= count; i++) {
-      sb.append("<input class=\"mj-carousel-radio ").append(carouselId).append("-radio ")
-          .append(carouselId).append("-radio-").append(i).append("\"");
+      sb.append("<input class=\"mj-carousel-radio ")
+          .append(carouselId)
+          .append("-radio ")
+          .append(carouselId)
+          .append("-radio-")
+          .append(i)
+          .append("\"");
       if (i == 1) {
         sb.append(" checked=\"checked\"");
       }
@@ -139,11 +163,9 @@ public class MjCarousel extends BodyComponent {
     }
   }
 
-  /**
-   * Renders the thumbnail strip with labeled anchor elements.
-   */
-  private void renderThumbnails(StringBuilder sb, List<MjmlNode> images,
-      String carouselId, int count) {
+  /** Renders the thumbnail strip with labeled anchor elements. */
+  private void renderThumbnails(
+      StringBuilder sb, List<MjmlNode> images, String carouselId, int count) {
     String tbBorder = getAttribute("tb-border", "0");
     String tbBorderRadius = getAttribute("tb-border-radius", "0");
     String tbWidth = getAttribute("tb-width", "");
@@ -160,19 +182,28 @@ public class MjCarousel extends BodyComponent {
         alt = "";
       }
 
-      sb.append("<a style=\"border:").append(tbBorder)
-          .append(";border-radius:").append(tbBorderRadius)
+      sb.append("<a style=\"border:")
+          .append(tbBorder)
+          .append(";border-radius:")
+          .append(tbBorderRadius)
           .append(";display:inline-block;overflow:hidden;width:")
-          .append(tbWidthInt > 0 ? tbWidthInt + "px" : tbWidth).append(";\"");
+          .append(tbWidthInt > 0 ? tbWidthInt + "px" : tbWidth)
+          .append(";\"");
       sb.append(" href=\"#").append(i).append("\"");
       sb.append(" target=\"_blank\"");
-      sb.append(" class=\"mj-carousel-thumbnail ").append(carouselId).append("-thumbnail ")
-          .append(carouselId).append("-thumbnail-").append(i).append(" \">");
+      sb.append(" class=\"mj-carousel-thumbnail ")
+          .append(carouselId)
+          .append("-thumbnail ")
+          .append(carouselId)
+          .append("-thumbnail-")
+          .append(i)
+          .append(" \">");
       sb.append("<label for=\"").append(carouselId).append("-radio-").append(i).append("\">");
       sb.append("<img style=\"display:block;width:100%;height:auto;\"");
       sb.append(" src=\"").append(escapeAttr(thumbSrc)).append("\"");
       sb.append(" alt=\"").append(escapeAttr(alt)).append("\"");
-      sb.append(" width=\"").append(tbWidthInt > 0 ? tbWidthInt : tbWidth.replace("px", ""))
+      sb.append(" width=\"")
+          .append(tbWidthInt > 0 ? tbWidthInt : tbWidth.replace("px", ""))
           .append("\"");
       sb.append(" />");
       sb.append("</label>");
@@ -181,21 +212,27 @@ public class MjCarousel extends BodyComponent {
     sb.append("\n");
   }
 
-  /**
-   * Renders the main carousel table with previous/next icon columns and image cells.
-   */
-  private void renderMainTable(StringBuilder sb, List<MjmlNode> images,
-      String carouselId, int count, String iconWidthNum,
-      String leftIcon, String rightIcon, String borderRadius, int containerWidth) {
-    sb.append("    <table style=\"caption-side:top;display:table-caption;table-layout:fixed;width:100%;\"");
+  /** Renders the main carousel table with previous/next icon columns and image cells. */
+  private void renderMainTable(
+      StringBuilder sb,
+      List<MjmlNode> images,
+      String carouselId,
+      int count,
+      String iconWidthNum,
+      String leftIcon,
+      String rightIcon,
+      String borderRadius,
+      int containerWidth) {
+    sb.append(
+        "    <table style=\"caption-side:top;display:table-caption;table-layout:fixed;width:100%;\"");
     sb.append(" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"");
     sb.append(" role=\"presentation\" class=\"mj-carousel-main\">\n");
     sb.append("      <tbody>\n");
     sb.append("        <tr>\n");
 
     // Previous icons cell
-    renderIconCell(sb, carouselId, count, iconWidthNum, leftIcon,
-        "previous", "mj-carousel-previous-icons");
+    renderIconCell(
+        sb, carouselId, count, iconWidthNum, leftIcon, "previous", "mj-carousel-previous-icons");
 
     // Images cell
     sb.append("          <td style=\"padding:0px;\">\n");
@@ -207,7 +244,8 @@ public class MjCarousel extends BodyComponent {
 
       String imageHtml = renderCarouselImage(component, borderRadius, containerWidth);
 
-      sb.append("              <div class=\"mj-carousel-image mj-carousel-image-").append(i)
+      sb.append("              <div class=\"mj-carousel-image mj-carousel-image-")
+          .append(i)
           .append(" \"");
       if (i == 1) {
         sb.append(" style=\"\">");
@@ -221,27 +259,38 @@ public class MjCarousel extends BodyComponent {
     sb.append("          </td>\n");
 
     // Next icons cell
-    renderIconCell(sb, carouselId, count, iconWidthNum, rightIcon,
-        "next", "mj-carousel-next-icons");
+    renderIconCell(
+        sb, carouselId, count, iconWidthNum, rightIcon, "next", "mj-carousel-next-icons");
 
     sb.append("        </tr>\n");
     sb.append("      </tbody>\n");
     sb.append("    </table>\n");
   }
 
-  /**
-   * Renders a previous or next icon cell with labeled navigation images.
-   */
-  private void renderIconCell(StringBuilder sb, String carouselId, int count,
-      String iconWidthNum, String iconSrc, String direction, String wrapperClass) {
-    sb.append("          <td class=\"").append(carouselId)
+  /** Renders a previous or next icon cell with labeled navigation images. */
+  private void renderIconCell(
+      StringBuilder sb,
+      String carouselId,
+      int count,
+      String iconWidthNum,
+      String iconSrc,
+      String direction,
+      String wrapperClass) {
+    sb.append("          <td class=\"")
+        .append(carouselId)
         .append("-icons-cell\" style=\"font-size:0px;display:none;mso-hide:all;padding:0px;\">\n");
-    sb.append("            <div class=\"").append(wrapperClass)
+    sb.append("            <div class=\"")
+        .append(wrapperClass)
         .append("\" style=\"display:none;mso-hide:all;\">");
     for (int i = 1; i <= count; i++) {
       sb.append("<label for=\"").append(carouselId).append("-radio-").append(i).append("\"");
-      sb.append(" class=\"mj-carousel-").append(direction).append(" mj-carousel-")
-          .append(direction).append("-").append(i).append("\">");
+      sb.append(" class=\"mj-carousel-")
+          .append(direction)
+          .append(" mj-carousel-")
+          .append(direction)
+          .append("-")
+          .append(i)
+          .append("\">");
       sb.append("<img src=\"").append(escapeAttr(iconSrc)).append("\"");
       sb.append(" alt=\"").append(direction).append("\"");
       sb.append(" style=\"display:block;width:").append(iconWidthNum).append("px;height:auto;\"");
@@ -253,16 +302,14 @@ public class MjCarousel extends BodyComponent {
     sb.append("          </td>\n");
   }
 
-  /**
-   * Renders the MSO/Outlook fallback showing only the first image.
-   */
-  private void renderMsoFallback(StringBuilder sb, List<MjmlNode> images,
-      String borderRadius, int containerWidth) {
+  /** Renders the MSO/Outlook fallback showing only the first image. */
+  private void renderMsoFallback(
+      StringBuilder sb, List<MjmlNode> images, String borderRadius, int containerWidth) {
     int count = images.size();
     MjmlNode firstImgNode = images.get(0);
     RenderContext firstContext = renderContext.withPosition(0, true, count == 1);
-    BaseComponent firstComponent = registry.createComponent(firstImgNode, globalContext,
-        firstContext);
+    BaseComponent firstComponent =
+        registry.createComponent(firstImgNode, globalContext, firstContext);
 
     String firstImageHtml = renderCarouselImage(firstComponent, borderRadius, containerWidth);
 
@@ -271,11 +318,9 @@ public class MjCarousel extends BodyComponent {
     sb.append("</div><![endif]-->");
   }
 
-  /**
-   * Renders a single carousel image from its component.
-   */
-  private String renderCarouselImage(BaseComponent component,
-      String borderRadius, int containerWidth) {
+  /** Renders a single carousel image from its component. */
+  private String renderCarouselImage(
+      BaseComponent component, String borderRadius, int containerWidth) {
     if (component instanceof MjCarouselImage carouselImage) {
       return carouselImage.renderImage(borderRadius, containerWidth);
     } else if (component instanceof BodyComponent bodyComponent) {
@@ -284,11 +329,13 @@ public class MjCarousel extends BodyComponent {
     return "";
   }
 
-  /**
-   * Builds the complete carousel CSS for injection into the document head.
-   */
-  private String buildCarouselCss(String carouselId, int count, String iconWidthNum,
-      String tbHoverBorderColor, String tbSelectedBorderColor) {
+  /** Builds the complete carousel CSS for injection into the document head. */
+  private String buildCarouselCss(
+      String carouselId,
+      int count,
+      String iconWidthNum,
+      String tbHoverBorderColor,
+      String tbSelectedBorderColor) {
     StringBuilder css = new StringBuilder();
 
     appendBaseCss(css, carouselId, iconWidthNum);
@@ -300,9 +347,7 @@ public class MjCarousel extends BodyComponent {
     return css.toString();
   }
 
-  /**
-   * Appends base carousel styles: user-select, icon cell width, radio/nav defaults.
-   */
+  /** Appends base carousel styles: user-select, icon cell width, radio/nav defaults. */
   private void appendBaseCss(StringBuilder css, String carouselId, String iconWidthNum) {
     css.append(".mj-carousel {\n");
     css.append("  -webkit-user-select: none;\n");
@@ -328,9 +373,7 @@ public class MjCarousel extends BodyComponent {
     css.append("}\n\n");
   }
 
-  /**
-   * Appends CSS rules for hiding all images and showing the active image per radio state.
-   */
+  /** Appends CSS rules for hiding all images and showing the active image per radio state. */
   private void appendRadioVisibilityCss(StringBuilder css, String carouselId, int count) {
     // Hide all images when any radio is checked
     for (int level = 0; level < count; level++) {
@@ -361,9 +404,7 @@ public class MjCarousel extends BodyComponent {
     }
   }
 
-  /**
-   * Appends CSS rules for previous/next navigation icon visibility.
-   */
+  /** Appends CSS rules for previous/next navigation icon visibility. */
   private void appendNavigationCss(StringBuilder css, String carouselId, int count) {
     css.append(".mj-carousel-previous-icons,\n");
     css.append(".mj-carousel-next-icons,\n");
@@ -393,11 +434,13 @@ public class MjCarousel extends BodyComponent {
     }
   }
 
-  /**
-   * Appends CSS rules for thumbnail selected border, hover behavior, and visibility.
-   */
-  private void appendThumbnailCss(StringBuilder css, String carouselId, int count,
-      String tbHoverBorderColor, String tbSelectedBorderColor) {
+  /** Appends CSS rules for thumbnail selected border, hover behavior, and visibility. */
+  private void appendThumbnailCss(
+      StringBuilder css,
+      String carouselId,
+      int count,
+      String tbHoverBorderColor,
+      String tbSelectedBorderColor) {
     // Active thumbnail selected border color
     if (!tbSelectedBorderColor.isEmpty()) {
       for (int i = 1; i <= count; i++) {
@@ -470,9 +513,7 @@ public class MjCarousel extends BodyComponent {
     }
   }
 
-  /**
-   * Appends fallback CSS rules: noinput, OWA, and Yahoo media query.
-   */
+  /** Appends fallback CSS rules: noinput, OWA, and Yahoo media query. */
   private void appendFallbackCss(StringBuilder css, String carouselId, int count) {
     css.append(".mj-carousel noinput {\n");
     css.append("  display: block !important;\n");
@@ -506,8 +547,8 @@ public class MjCarousel extends BodyComponent {
   }
 
   /**
-   * Builds a sibling combinator chain of the form "+*+*+..." with the given number
-   * of "+*" segments.
+   * Builds a sibling combinator chain of the form "+*+*+..." with the given number of "+*"
+   * segments.
    */
   private String siblingChain(int starCount) {
     return "+*".repeat(starCount);

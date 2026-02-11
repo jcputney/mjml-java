@@ -9,6 +9,7 @@ import java.nio.file.Path;
  * Resolves mj-include paths from the file system relative to a base directory.
  *
  * <h2>Usage</h2>
+ *
  * <pre>{@code
  * MjmlConfiguration config = MjmlConfiguration.builder()
  *     .includeResolver(new FileSystemIncludeResolver(Path.of("/templates")))
@@ -30,8 +31,8 @@ public final class FileSystemIncludeResolver implements IncludeResolver {
     try {
       this.baseRealDir = this.baseDir.toRealPath();
     } catch (IOException e) {
-      throw new IllegalArgumentException("Base directory does not exist or is not accessible: "
-          + this.baseDir, e);
+      throw new IllegalArgumentException(
+          "Base directory does not exist or is not accessible: " + this.baseDir, e);
     }
   }
 

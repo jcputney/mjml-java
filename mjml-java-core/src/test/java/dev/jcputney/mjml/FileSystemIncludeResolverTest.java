@@ -11,19 +11,18 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/**
- * Tests for FileSystemIncludeResolver including path traversal prevention.
- */
+/** Tests for FileSystemIncludeResolver including path traversal prevention. */
 class FileSystemIncludeResolverTest {
 
   private static final ResolverContext TEST_CONTEXT = ResolverContext.root("mjml");
 
-  @TempDir
-  Path tempDir;
+  @TempDir Path tempDir;
 
   @Test
   void resolvesFileInBaseDirectory() throws IOException {
-    Files.writeString(tempDir.resolve("header.mjml"), """
+    Files.writeString(
+        tempDir.resolve("header.mjml"),
+        """
         <mj-section>
           <mj-column>
             <mj-text>Included header</mj-text>
@@ -54,7 +53,8 @@ class FileSystemIncludeResolverTest {
   void preventsPathTraversalOutsideBaseDir() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("../../../etc/passwd", TEST_CONTEXT),
         "Should reject path traversal outside base directory");
   }
@@ -63,7 +63,8 @@ class FileSystemIncludeResolverTest {
   void preventsPathTraversalWithDotDot() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("subdir/../../outside.mjml", TEST_CONTEXT),
         "Should reject path traversal even when starting within base dir");
   }
@@ -72,7 +73,8 @@ class FileSystemIncludeResolverTest {
   void throwsOnNonExistentFile() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("nonexistent.mjml", TEST_CONTEXT),
         "Should throw on non-existent file");
   }
@@ -81,7 +83,8 @@ class FileSystemIncludeResolverTest {
   void throwsOnEmptyPath() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("", TEST_CONTEXT),
         "Should throw on empty path");
   }
@@ -90,7 +93,8 @@ class FileSystemIncludeResolverTest {
   void throwsOnNullPath() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve(null, TEST_CONTEXT),
         "Should throw on null path");
   }
@@ -112,7 +116,8 @@ class FileSystemIncludeResolverTest {
       }
 
       FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
-      assertThrows(MjmlException.class,
+      assertThrows(
+          MjmlException.class,
           () -> resolver.resolve("linked-outside.mjml", TEST_CONTEXT),
           "Should reject symlink targets that escape base directory");
     } finally {
@@ -123,7 +128,9 @@ class FileSystemIncludeResolverTest {
 
   @Test
   void integrationWithRenderer() throws IOException {
-    Files.writeString(tempDir.resolve("component.mjml"), """
+    Files.writeString(
+        tempDir.resolve("component.mjml"),
+        """
         <mj-section>
           <mj-column>
             <mj-text>From file system</mj-text>
@@ -131,11 +138,12 @@ class FileSystemIncludeResolverTest {
         </mj-section>
         """);
 
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .includeResolver(new FileSystemIncludeResolver(tempDir))
-        .build();
+    MjmlConfiguration config =
+        MjmlConfiguration.builder().includeResolver(new FileSystemIncludeResolver(tempDir)).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-include path="component.mjml" />

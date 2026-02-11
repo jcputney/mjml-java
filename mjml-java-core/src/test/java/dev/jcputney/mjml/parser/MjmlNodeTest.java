@@ -1,7 +1,6 @@
 package dev.jcputney.mjml.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,9 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for MjmlNode tree manipulation and serialization.
- */
+/** Tests for MjmlNode tree manipulation and serialization. */
 class MjmlNodeTest {
 
   @Test
@@ -22,8 +19,7 @@ class MjmlNodeTest {
 
     parent.addChild(child);
 
-    assertSame(parent, child.getParent(),
-        "addChild should set the child's parent");
+    assertSame(parent, child.getParent(), "addChild should set the child's parent");
     assertEquals(1, parent.getChildren().size());
   }
 
@@ -42,8 +38,8 @@ class MjmlNodeTest {
     parent.addChild(child2);
 
     List<MjmlNode> secondSnapshot = parent.getChildren();
-    assertEquals(2, secondSnapshot.size(),
-        "Adding a child should invalidate the unmodifiable cache");
+    assertEquals(
+        2, secondSnapshot.size(), "Adding a child should invalidate the unmodifiable cache");
   }
 
   @Test
@@ -56,12 +52,10 @@ class MjmlNodeTest {
 
     original.replaceWith(List.of(replacement1, replacement2));
 
-    assertEquals(2, parent.getChildren().size(),
-        "Parent should have 2 children after replacement");
+    assertEquals(2, parent.getChildren().size(), "Parent should have 2 children after replacement");
     assertSame(replacement1, parent.getChildren().get(0));
     assertSame(replacement2, parent.getChildren().get(1));
-    assertSame(parent, replacement1.getParent(),
-        "Replacements should have their parent set");
+    assertSame(parent, replacement1.getParent(), "Replacements should have their parent set");
     assertSame(parent, replacement2.getParent());
   }
 
@@ -74,8 +68,8 @@ class MjmlNodeTest {
     orphan.replaceWith(List.of(replacement));
 
     assertNull(orphan.getParent());
-    assertNull(replacement.getParent(),
-        "Replacement should not have parent when original had no parent");
+    assertNull(
+        replacement.getParent(), "Replacement should not have parent when original had no parent");
   }
 
   @Test
@@ -88,8 +82,8 @@ class MjmlNodeTest {
 
     child1.replaceWith(Collections.emptyList());
 
-    assertEquals(1, parent.getChildren().size(),
-        "Node should be removed when replaced with empty list");
+    assertEquals(
+        1, parent.getChildren().size(), "Node should be removed when replaced with empty list");
     assertSame(child2, parent.getChildren().get(0));
   }
 
@@ -121,7 +115,9 @@ class MjmlNodeTest {
     text.setTextContent("<p>Hello <b>world</b></p>");
 
     String inner = text.getInnerHtml();
-    assertEquals("<p>Hello <b>world</b></p>", inner,
+    assertEquals(
+        "<p>Hello <b>world</b></p>",
+        inner,
         "getInnerHtml should return textContent when there are no children");
   }
 
@@ -133,8 +129,8 @@ class MjmlNodeTest {
 
     String outer = img.getOuterHtml();
     assertTrue(outer.contains("<mj-image"), "Should start with the tag");
-    assertTrue(outer.contains("src=\"https://example.com/photo.jpg\""),
-        "Should contain src attribute");
+    assertTrue(
+        outer.contains("src=\"https://example.com/photo.jpg\""), "Should contain src attribute");
     assertTrue(outer.contains("alt=\"Photo\""), "Should contain alt attribute");
     assertTrue(outer.endsWith("/>"), "Self-closing tag should end with />");
   }

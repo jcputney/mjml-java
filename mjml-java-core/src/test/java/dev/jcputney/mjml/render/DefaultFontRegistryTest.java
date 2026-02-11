@@ -1,7 +1,6 @@
 package dev.jcputney.mjml.render;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dev.jcputney.mjml.MjmlConfiguration;
 import dev.jcputney.mjml.context.GlobalContext;
@@ -33,11 +32,12 @@ class DefaultFontRegistryTest {
     ctx.styles().registerFontOverride("Ubuntu", "https://custom.fonts/ubuntu.css");
     DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
 
-    FontDef ubuntu = ctx.styles().getFonts().stream()
-        .filter(f -> "Ubuntu".equals(f.name()))
-        .findFirst()
-        .orElse(null);
-    assertTrue(ubuntu != null);
+    FontDef ubuntu =
+        ctx.styles().getFonts().stream()
+            .filter(f -> "Ubuntu".equals(f.name()))
+            .findFirst()
+            .orElse(null);
+    assertNotNull(ubuntu);
     assertEquals("https://custom.fonts/ubuntu.css", ubuntu.href());
   }
 
@@ -69,9 +69,7 @@ class DefaultFontRegistryTest {
     DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
     DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
 
-    long count = ctx.styles().getFonts().stream()
-        .filter(f -> "Ubuntu".equals(f.name()))
-        .count();
+    long count = ctx.styles().getFonts().stream().filter(f -> "Ubuntu".equals(f.name())).count();
     assertEquals(1, count, "Should not register duplicate fonts");
   }
 

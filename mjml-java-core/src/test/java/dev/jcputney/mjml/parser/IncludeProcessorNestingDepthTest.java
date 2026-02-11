@@ -4,12 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import dev.jcputney.mjml.IncludeResolver;
 import dev.jcputney.mjml.MjmlValidationException;
-import dev.jcputney.mjml.ResolverContext;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests that IncludeProcessor forwards maxNestingDepth to MjmlParser
- * when parsing included MJML fragments.
+ * Tests that IncludeProcessor forwards maxNestingDepth to MjmlParser when parsing included MJML
+ * fragments.
  */
 class IncludeProcessorNestingDepthTest {
 
@@ -24,8 +23,8 @@ class IncludeProcessorNestingDepthTest {
     IncludeProcessor processor = new IncludeProcessor(resolver, 0, 50, 3);
 
     // Create a document with an mj-include
-    MjmlDocument doc = MjmlParser.parse(
-        "<mjml><mj-body><mj-include path=\"fragment.mjml\" /></mj-body></mjml>");
+    MjmlDocument doc =
+        MjmlParser.parse("<mjml><mj-body><mj-include path=\"fragment.mjml\" /></mj-body></mjml>");
 
     assertThrows(MjmlValidationException.class, () -> processor.process(doc));
   }
@@ -38,8 +37,8 @@ class IncludeProcessorNestingDepthTest {
     // Set maxNestingDepth high enough
     IncludeProcessor processor = new IncludeProcessor(resolver, 0, 50, 100);
 
-    MjmlDocument doc = MjmlParser.parse(
-        "<mjml><mj-body><mj-include path=\"fragment.mjml\" /></mj-body></mjml>");
+    MjmlDocument doc =
+        MjmlParser.parse("<mjml><mj-body><mj-include path=\"fragment.mjml\" /></mj-body></mjml>");
 
     // Should not throw
     assertDoesNotThrow(() -> processor.process(doc));
@@ -47,14 +46,15 @@ class IncludeProcessorNestingDepthTest {
 
   @Test
   void fullMjmlIncludeRespectsMaxNestingDepth() {
-    String fullDoc = "<mjml><mj-body><mj-section><mj-column><mj-text>deep</mj-text></mj-column></mj-section></mj-body></mjml>";
+    String fullDoc =
+        "<mjml><mj-body><mj-section><mj-column><mj-text>deep</mj-text></mj-column></mj-section></mj-body></mjml>";
     IncludeResolver resolver = (path, ctx) -> fullDoc;
 
     // depth 3 should not be enough for mjml > mj-body > mj-section > mj-column > mj-text
     IncludeProcessor processor = new IncludeProcessor(resolver, 0, 50, 3);
 
-    MjmlDocument doc = MjmlParser.parse(
-        "<mjml><mj-body><mj-include path=\"full.mjml\" /></mj-body></mjml>");
+    MjmlDocument doc =
+        MjmlParser.parse("<mjml><mj-body><mj-include path=\"full.mjml\" /></mj-body></mjml>");
 
     assertThrows(MjmlValidationException.class, () -> processor.process(doc));
   }

@@ -12,15 +12,15 @@ import java.util.Map;
  *
  * <p>Example: with route "classpath:" → classpathResolver, the path
  * "classpath:templates/header.mjml" is resolved by calling
- * classpathResolver.resolve("templates/header.mjml", context).</p>
+ * classpathResolver.resolve("templates/header.mjml", context).
  */
 public final class PrefixRoutingIncludeResolver implements IncludeResolver {
 
   private final LinkedHashMap<String, IncludeResolver> routes;
   private final IncludeResolver defaultResolver;
 
-  private PrefixRoutingIncludeResolver(LinkedHashMap<String, IncludeResolver> routes,
-      IncludeResolver defaultResolver) {
+  private PrefixRoutingIncludeResolver(
+      LinkedHashMap<String, IncludeResolver> routes, IncludeResolver defaultResolver) {
     this.routes = routes;
     this.defaultResolver = defaultResolver;
   }
@@ -35,8 +35,8 @@ public final class PrefixRoutingIncludeResolver implements IncludeResolver {
   }
 
   /**
-   * Resolves by matching the first configured prefix in insertion order.
-   * The matched prefix is stripped before delegating.
+   * Resolves by matching the first configured prefix in insertion order. The matched prefix is
+   * stripped before delegating.
    *
    * @throws MjmlIncludeException if no prefix matches and no default resolver is configured
    */
@@ -56,9 +56,7 @@ public final class PrefixRoutingIncludeResolver implements IncludeResolver {
     throw new MjmlIncludeException("No resolver matched prefix for path: " + path);
   }
 
-  /**
-   * Builder for {@link PrefixRoutingIncludeResolver}.
-   */
+  /** Builder for {@link PrefixRoutingIncludeResolver}. */
   public static final class Builder {
 
     private final LinkedHashMap<String, IncludeResolver> routes = new LinkedHashMap<>();
@@ -69,7 +67,7 @@ public final class PrefixRoutingIncludeResolver implements IncludeResolver {
     /**
      * Adds a prefix-to-resolver route. Prefixes are matched in insertion order.
      *
-     * @param prefix   the prefix to match (e.g. "classpath:", "https://")
+     * @param prefix the prefix to match (e.g. "classpath:", "https://")
      * @param resolver the resolver to delegate to
      * @return this builder
      */

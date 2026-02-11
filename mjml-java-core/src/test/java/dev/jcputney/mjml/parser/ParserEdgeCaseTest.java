@@ -9,9 +9,7 @@ import dev.jcputney.mjml.MjmlException;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Parser edge case tests: BOM handling, encodings, XML declaration, empty/whitespace documents.
- */
+/** Parser edge case tests: BOM handling, encodings, XML declaration, empty/whitespace documents. */
 class ParserEdgeCaseTest {
 
   // -- BOM (byte order mark) handling --
@@ -19,7 +17,8 @@ class ParserEdgeCaseTest {
   @Test
   void handlesBomAtStartOfDocument() {
     // UTF-8 BOM is \uFEFF
-    String mjmlWithBom = "\uFEFF<mjml><mj-body><mj-section><mj-column><mj-text>BOM test</mj-text></mj-column></mj-section></mj-body></mjml>";
+    String mjmlWithBom =
+        "\uFEFF<mjml><mj-body><mj-section><mj-column><mj-text>BOM test</mj-text></mj-column></mj-section></mj-body></mjml>";
 
     // BOM before XML content may cause parse issues; verify graceful handling
     // The JDK XML parser may or may not tolerate the BOM. We just need to verify
@@ -38,7 +37,9 @@ class ParserEdgeCaseTest {
 
   @Test
   void handlesXmlDeclaration() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <?xml version="1.0" encoding="UTF-8"?>
         <mjml>
           <mj-body>
@@ -53,13 +54,16 @@ class ParserEdgeCaseTest {
 
     String html = assertDoesNotThrow(() -> MjmlRenderer.render(mjml).html());
     assertNotNull(html);
-    assertTrue(html.contains("XML declaration test"),
+    assertTrue(
+        html.contains("XML declaration test"),
         "Content should render correctly with XML declaration");
   }
 
   @Test
   void handlesXmlDeclarationWithStandalone() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
         <mjml>
           <mj-body>
@@ -81,27 +85,33 @@ class ParserEdgeCaseTest {
 
   @Test
   void throwsOnWhitespaceOnlyInput() {
-    assertThrows(MjmlException.class, () -> MjmlParser.parse("   \n\t\r  "),
+    assertThrows(
+        MjmlException.class,
+        () -> MjmlParser.parse("   \n\t\r  "),
         "Whitespace-only input should be rejected");
   }
 
   @Test
   void throwsOnBlankLinesOnly() {
-    assertThrows(MjmlException.class, () -> MjmlParser.parse("\n\n\n"),
+    assertThrows(
+        MjmlException.class,
+        () -> MjmlParser.parse("\n\n\n"),
         "Blank lines only should be rejected");
   }
 
   @Test
   void throwsOnSingleSpaceInput() {
-    assertThrows(MjmlException.class, () -> MjmlParser.parse(" "),
-        "Single space should be rejected");
+    assertThrows(
+        MjmlException.class, () -> MjmlParser.parse(" "), "Single space should be rejected");
   }
 
   // -- Encoding edge cases --
 
   @Test
   void handlesUnicodeContent() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -115,17 +125,18 @@ class ParserEdgeCaseTest {
 
     String html = assertDoesNotThrow(() -> MjmlRenderer.render(mjml).html());
     assertNotNull(html);
-    assertTrue(html.contains("\u00E9\u00E8\u00EA"),
-        "French characters should be preserved");
-    assertTrue(html.contains("\u4F60\u597D"),
-        "Chinese characters should be preserved");
-    assertTrue(html.contains("\u043F\u0440\u0438\u0432\u0435\u0442"),
+    assertTrue(html.contains("\u00E9\u00E8\u00EA"), "French characters should be preserved");
+    assertTrue(html.contains("\u4F60\u597D"), "Chinese characters should be preserved");
+    assertTrue(
+        html.contains("\u043F\u0440\u0438\u0432\u0435\u0442"),
         "Russian characters should be preserved");
   }
 
   @Test
   void handlesEmoji() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -140,29 +151,31 @@ class ParserEdgeCaseTest {
     String html = assertDoesNotThrow(() -> MjmlRenderer.render(mjml).html());
     assertNotNull(html);
     // Emoji should survive the parse/render pipeline
-    assertTrue(html.contains("\uD83D\uDE00"),
-        "Emoji should be preserved through rendering");
+    assertTrue(html.contains("\uD83D\uDE00"), "Emoji should be preserved through rendering");
   }
 
   // -- Malformed XML --
 
   @Test
   void throwsOnUnclosedTag() {
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> MjmlParser.parse("<mjml><mj-body>"),
         "Unclosed tags should cause a parse error");
   }
 
   @Test
   void throwsOnMismatchedTags() {
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> MjmlParser.parse("<mjml><mj-body></mj-head></mjml>"),
         "Mismatched tags should cause a parse error");
   }
 
   @Test
   void throwsOnInvalidXml() {
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> MjmlParser.parse("<<<not valid xml>>>"),
         "Invalid XML should cause a parse error");
   }
@@ -182,7 +195,9 @@ class ParserEdgeCaseTest {
 
   @Test
   void handlesCommentsInBody() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <!-- Comment before section -->
@@ -198,7 +213,8 @@ class ParserEdgeCaseTest {
 
     String html = assertDoesNotThrow(() -> MjmlRenderer.render(mjml).html());
     assertNotNull(html);
-    assertTrue(html.contains("After comments"),
+    assertTrue(
+        html.contains("After comments"),
         "Content should render correctly when comments are present");
   }
 }

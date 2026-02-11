@@ -14,22 +14,32 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The group component (&lt;mj-group&gt;).
- * Groups columns together so they don't stack on mobile.
+ * The group component (&lt;mj-group&gt;). Groups columns together so they don't stack on mobile.
  * Renders as a single MSO table containing multiple columns.
  */
 public class MjGroup extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.of(
-      "background-color", "",
-      "direction", "ltr",
-      "vertical-align", "top",
-      "width", ""
-  );
-
+  private static final Map<String, String> DEFAULTS =
+      Map.of(
+          "background-color", "",
+          "direction", "ltr",
+          "vertical-align", "top",
+          "width", "");
+  private static final Set<String> COLUMN_TAGS = Set.of("mj-column");
   private final ComponentRegistry registry;
 
-  public MjGroup(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjGroup component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjGroup(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
@@ -56,12 +66,15 @@ public class MjGroup extends BodyComponent {
     String responsiveClass = buildResponsiveClass(widthSpec);
 
     // Outer div with responsive class
-    sb.append("              <div class=\"").append(responsiveClass).append(" mj-outlook-group-fix\"");
+    sb.append("              <div class=\"")
+        .append(responsiveClass)
+        .append(" mj-outlook-group-fix\"");
     sb.append(" style=\"").append(buildOuterStyle(direction)).append("\"");
     sb.append(">\n");
 
     // MSO table open
-    sb.append("                <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
+    sb.append(
+        "                <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
 
     // Render column children
     List<MjmlNode> columns = getColumnChildren();
@@ -79,10 +92,11 @@ public class MjGroup extends BodyComponent {
       sb.append("<![endif]-->\n");
 
       // Column context with proper width spec for responsive class
-      RenderContext colContext = renderContext
-          .withColumnWidth(widths[i], widthSpecs[i])
-          .withPosition(i, i == 0, i == columns.size() - 1)
-          .withInsideGroup(true);
+      RenderContext colContext =
+          renderContext
+              .withColumnWidth(widths[i], widthSpecs[i])
+              .withPosition(i, i == 0, i == columns.size() - 1)
+              .withInsideGroup(true);
 
       BaseComponent component = registry.createComponent(col, globalContext, colContext);
       if (component instanceof BodyComponent bodyComponent) {
@@ -116,10 +130,7 @@ public class MjGroup extends BodyComponent {
     return buildStyle(styles);
   }
 
-  private static final Set<String> COLUMN_TAGS = Set.of("mj-column");
-
   private List<MjmlNode> getColumnChildren() {
     return getChildrenByTags(COLUMN_TAGS);
   }
-
 }

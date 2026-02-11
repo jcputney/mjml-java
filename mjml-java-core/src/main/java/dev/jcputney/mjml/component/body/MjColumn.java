@@ -11,40 +11,52 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The column component (&lt;mj-column&gt;).
- * Renders as a table-based column with vertical-align, padding, and borders.
- * Content components (text, image, button, etc.) are rendered as table rows.
+ * The column component (&lt;mj-column&gt;). Renders as a table-based column with vertical-align,
+ * padding, and borders. Content components (text, image, button, etc.) are rendered as table rows.
  */
 public class MjColumn extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("background-color", ""),
-      Map.entry("border", "none"),
-      Map.entry("border-bottom", ""),
-      Map.entry("border-left", ""),
-      Map.entry("border-radius", ""),
-      Map.entry("border-right", ""),
-      Map.entry("border-top", ""),
-      Map.entry("direction", "ltr"),
-      Map.entry("inner-background-color", ""),
-      Map.entry("inner-border", ""),
-      Map.entry("inner-border-bottom", ""),
-      Map.entry("inner-border-left", ""),
-      Map.entry("inner-border-radius", ""),
-      Map.entry("inner-border-right", ""),
-      Map.entry("inner-border-top", ""),
-      Map.entry("padding", ""),
-      Map.entry("padding-bottom", ""),
-      Map.entry("padding-left", ""),
-      Map.entry("padding-right", ""),
-      Map.entry("padding-top", ""),
-      Map.entry("vertical-align", "top"),
-      Map.entry("width", "")
-  );
-
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("background-color", ""),
+          Map.entry("border", "none"),
+          Map.entry("border-bottom", ""),
+          Map.entry("border-left", ""),
+          Map.entry("border-radius", ""),
+          Map.entry("border-right", ""),
+          Map.entry("border-top", ""),
+          Map.entry("direction", "ltr"),
+          Map.entry("inner-background-color", ""),
+          Map.entry("inner-border", ""),
+          Map.entry("inner-border-bottom", ""),
+          Map.entry("inner-border-left", ""),
+          Map.entry("inner-border-radius", ""),
+          Map.entry("inner-border-right", ""),
+          Map.entry("inner-border-top", ""),
+          Map.entry("padding", ""),
+          Map.entry("padding-bottom", ""),
+          Map.entry("padding-left", ""),
+          Map.entry("padding-right", ""),
+          Map.entry("padding-top", ""),
+          Map.entry("vertical-align", "top"),
+          Map.entry("width", ""));
+  private static final String[] PADDING_ATTRS = {
+    "padding", "padding-bottom", "padding-left", "padding-right", "padding-top"
+  };
   private final ComponentRegistry registry;
 
-  public MjColumn(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjColumn component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjColumn(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
@@ -73,7 +85,9 @@ public class MjColumn extends BodyComponent {
     boolean hasGutter = hasGutter();
 
     // Outer div with responsive class + mj-outlook-group-fix
-    sb.append("              <div class=\"").append(responsiveClass).append(" mj-outlook-group-fix\"");
+    sb.append("              <div class=\"")
+        .append(responsiveClass)
+        .append(" mj-outlook-group-fix\"");
     sb.append(" style=\"").append(buildOuterStyle()).append("\"");
     sb.append(">\n");
 
@@ -81,7 +95,8 @@ public class MjColumn extends BodyComponent {
 
     if (hasGutter) {
       // Nested structure: outer table -> td (with padding/background) -> inner table -> content
-      sb.append("                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" width=\"100%\"");
+      sb.append(
+          "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" width=\"100%\"");
       if (hasBorder) {
         sb.append(" style=\"border-collapse:separate;\"");
       }
@@ -89,7 +104,8 @@ public class MjColumn extends BodyComponent {
       sb.append("                  <tbody>\n");
       sb.append("                    <tr>\n");
       sb.append("                      <td style=\"").append(buildGutterTdStyle()).append("\">\n");
-      sb.append("                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
+      sb.append(
+          "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
       sb.append(" style=\"").append(buildInnerTableStyle()).append("\"");
       sb.append(" width=\"100%\">\n");
       sb.append("                          <tbody>\n");
@@ -104,7 +120,8 @@ public class MjColumn extends BodyComponent {
       sb.append("                </table>\n");
     } else {
       // Simple structure: single table -> content
-      sb.append("                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
+      sb.append(
+          "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
       sb.append(" style=\"").append(buildNoGutterTableStyle()).append("\"");
       sb.append(" width=\"100%\">\n");
       sb.append("                  <tbody>\n");
@@ -123,13 +140,9 @@ public class MjColumn extends BodyComponent {
     return sb.toString();
   }
 
-  private static final String[] PADDING_ATTRS = {
-      "padding", "padding-bottom", "padding-left", "padding-right", "padding-top"
-  };
-
   /**
-   * Returns true if any padding attribute is set on this column.
-   * When true, uses nested table structure (gutter pattern).
+   * Returns true if any padding attribute is set on this column. When true, uses nested table
+   * structure (gutter pattern).
    */
   private boolean hasGutter() {
     for (String attr : PADDING_ATTRS) {
@@ -214,8 +227,8 @@ public class MjColumn extends BodyComponent {
   }
 
   /**
-   * Style for the outer gutter td (when hasGutter=true).
-   * Contains: background-color, padding, vertical-align.
+   * Style for the outer gutter td (when hasGutter=true). Contains: background-color, padding,
+   * vertical-align.
    */
   private String buildGutterTdStyle() {
     Map<String, String> styles = new LinkedHashMap<>();
@@ -238,15 +251,20 @@ public class MjColumn extends BodyComponent {
   }
 
   /**
-   * Style for the inner table (when hasGutter=true).
-   * Contains: inner-background-color, inner-border-*, border-radius.
+   * Style for the inner table (when hasGutter=true). Contains: inner-background-color,
+   * inner-border-*, border-radius.
    */
   private String buildInnerTableStyle() {
     Map<String, String> styles = new LinkedHashMap<>();
     addIfPresent(styles, "background-color", "inner-background-color");
     // Inner border properties
-    addBorderStyles(styles, "inner-border", "inner-border-bottom", "inner-border-left",
-        "inner-border-right", "inner-border-top");
+    addBorderStyles(
+        styles,
+        "inner-border",
+        "inner-border-bottom",
+        "inner-border-left",
+        "inner-border-right",
+        "inner-border-top");
     String innerRadius = getAttribute("inner-border-radius", "");
     if (!innerRadius.isEmpty()) {
       styles.put("border-radius", innerRadius);
@@ -256,8 +274,8 @@ public class MjColumn extends BodyComponent {
   }
 
   /**
-   * Style for the single table (when hasGutter=false).
-   * Contains: background-color, border-*, border-radius, vertical-align.
+   * Style for the single table (when hasGutter=false). Contains: background-color, border-*,
+   * border-radius, vertical-align.
    */
   private String buildNoGutterTableStyle() {
     Map<String, String> styles = new LinkedHashMap<>();
@@ -312,5 +330,4 @@ public class MjColumn extends BodyComponent {
 
     return buildStyle(styles);
   }
-
 }

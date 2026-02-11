@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import dev.jcputney.mjml.css.CssSelector.AttributeSelector;
 import dev.jcputney.mjml.css.CssSelector.ClassSelector;
 import dev.jcputney.mjml.css.CssSelector.Combinator;
-import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.ComplexSelector;
+import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.IdSelector;
 import dev.jcputney.mjml.css.CssSelector.PseudoClassSelector;
 import dev.jcputney.mjml.css.CssSelector.PseudoElementSelector;
@@ -155,27 +155,23 @@ class CssSelectorParserTest {
   @Test
   void specificityCounts() {
     // Type: (0,0,1)
-    assertEquals(new CssSpecificity(0, 0, 1),
-        CssSelectorParser.parse("div").specificity());
+    assertEquals(new CssSpecificity(0, 0, 1), CssSelectorParser.parse("div").specificity());
 
     // Class: (0,1,0)
-    assertEquals(new CssSpecificity(0, 1, 0),
-        CssSelectorParser.parse(".red").specificity());
+    assertEquals(new CssSpecificity(0, 1, 0), CssSelectorParser.parse(".red").specificity());
 
     // ID: (1,0,0)
-    assertEquals(new CssSpecificity(1, 0, 0),
-        CssSelectorParser.parse("#main").specificity());
+    assertEquals(new CssSpecificity(1, 0, 0), CssSelectorParser.parse("#main").specificity());
 
     // Compound: div.red#main = (1,1,1)
-    assertEquals(new CssSpecificity(1, 1, 1),
-        CssSelectorParser.parse("div.red#main").specificity());
+    assertEquals(
+        new CssSpecificity(1, 1, 1), CssSelectorParser.parse("div.red#main").specificity());
 
     // Complex: div p = (0,0,2)
-    assertEquals(new CssSpecificity(0, 0, 2),
-        CssSelectorParser.parse("div p").specificity());
+    assertEquals(new CssSpecificity(0, 0, 2), CssSelectorParser.parse("div p").specificity());
 
     // Complex: #nav .item a = (1,1,1)
-    assertEquals(new CssSpecificity(1, 1, 1),
-        CssSelectorParser.parse("#nav .item a").specificity());
+    assertEquals(
+        new CssSpecificity(1, 1, 1), CssSelectorParser.parse("#nav .item a").specificity());
   }
 }

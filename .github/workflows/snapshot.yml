@@ -28,7 +28,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: "17"
+          java-version: "25"
           distribution: "temurin"
           cache: "maven"
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}

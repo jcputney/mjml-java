@@ -1,7 +1,6 @@
 package dev.jcputney.mjml.css;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -28,8 +27,8 @@ class StyleAttributeTest {
 
   @Test
   void handlesUrl() {
-    List<CssDeclaration> decls = StyleAttribute.parse(
-        "background:url('http://example.com/a;b.jpg');color:red");
+    List<CssDeclaration> decls =
+        StyleAttribute.parse("background:url('http://example.com/a;b.jpg');color:red");
     assertEquals(2, decls.size());
     assertEquals("background", decls.get(0).property());
     assertTrue(decls.get(0).value().contains("example.com"));
@@ -38,10 +37,10 @@ class StyleAttributeTest {
 
   @Test
   void serializesDeclarations() {
-    List<CssDeclaration> decls = List.of(
-        new CssDeclaration("color", "red", false),
-        new CssDeclaration("font-size", "14px", true)
-    );
+    List<CssDeclaration> decls =
+        List.of(
+            new CssDeclaration("color", "red", false),
+            new CssDeclaration("font-size", "14px", true));
     String result = StyleAttribute.serialize(decls);
     assertEquals("color:red;font-size:14px !important", result);
   }

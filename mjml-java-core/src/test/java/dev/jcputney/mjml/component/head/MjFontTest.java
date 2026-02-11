@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-font component rendering.
- */
+/** Tests for the mj-font component rendering. */
 class MjFontTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjFontTest {
 
   @Test
   void fontLinkInOutput() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto" />
@@ -36,13 +37,17 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("fonts.googleapis.com"),
+    assertTrue(
+        html.contains("fonts.googleapis.com"),
         "Should include Google Fonts link in the HTML output");
   }
 
   @Test
   void fontRegistrationAppearsInStyleTag() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-font name="Open Sans" href="https://fonts.googleapis.com/css?family=Open+Sans" />
@@ -57,13 +62,17 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("@import url(") || html.contains("<link"),
+    assertTrue(
+        html.contains("@import url(") || html.contains("<link"),
         "Should include font import or link tag in the output");
   }
 
   @Test
   void multipleFontsRegistered() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-font name="Lato" href="https://fonts.googleapis.com/css?family=Lato" />
@@ -80,9 +89,7 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("family=Lato"),
-        "Should include first font reference");
-    assertTrue(html.contains("family=Merriweather"),
-        "Should include second font reference");
+    assertTrue(html.contains("family=Lato"), "Should include first font reference");
+    assertTrue(html.contains("family=Merriweather"), "Should include second font reference");
   }
 }

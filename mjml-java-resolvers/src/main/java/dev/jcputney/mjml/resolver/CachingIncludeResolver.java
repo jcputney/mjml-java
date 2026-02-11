@@ -11,12 +11,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A caching decorator for {@link IncludeResolver} with TTL-based expiration
- * and configurable maximum entries. Thread-safe.
+ * A caching decorator for {@link IncludeResolver} with TTL-based expiration and configurable
+ * maximum entries. Thread-safe.
  *
- * <p>Cache entries are keyed by include path and context dimensions
- * ({@code includingPath} and {@code includeType}) to avoid incorrect reuse
- * for context-sensitive delegates.</p>
+ * <p>Cache entries are keyed by include path and context dimensions ({@code includingPath} and
+ * {@code includeType}) to avoid incorrect reuse for context-sensitive delegates.
  */
 public final class CachingIncludeResolver implements IncludeResolver {
 
@@ -55,9 +54,7 @@ public final class CachingIncludeResolver implements IncludeResolver {
     return content;
   }
 
-  /**
-   * Removes all entries from the cache.
-   */
+  /** Removes all entries from the cache. */
   public void invalidateAll() {
     cache.clear();
   }
@@ -110,23 +107,14 @@ public final class CachingIncludeResolver implements IncludeResolver {
     }
   }
 
-  private static final class CacheEntry {
-    final String content;
-    final Instant expiresAt;
-
-    CacheEntry(String content, Instant expiresAt) {
-      this.content = content;
-      this.expiresAt = expiresAt;
-    }
+  private record CacheEntry(String content, Instant expiresAt) {
 
     boolean isExpired() {
       return Instant.now().isAfter(expiresAt);
     }
   }
 
-  /**
-   * Builder for {@link CachingIncludeResolver}.
-   */
+  /** Builder for {@link CachingIncludeResolver}. */
   public static final class Builder {
 
     private IncludeResolver delegate;
@@ -147,8 +135,7 @@ public final class CachingIncludeResolver implements IncludeResolver {
     }
 
     /**
-     * Sets the time-to-live for cached entries.
-     * Must be a positive duration.
+     * Sets the time-to-live for cached entries. Must be a positive duration.
      *
      * @param ttl the TTL duration
      * @return this builder
@@ -159,8 +146,7 @@ public final class CachingIncludeResolver implements IncludeResolver {
     }
 
     /**
-     * Sets the maximum number of cached entries.
-     * Must be greater than zero.
+     * Sets the maximum number of cached entries. Must be greater than zero.
      *
      * @param maxEntries the max entry count
      * @return this builder

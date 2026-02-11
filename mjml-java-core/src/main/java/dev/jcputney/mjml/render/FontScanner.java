@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Scans the MJML document tree for font-family attributes and auto-registers
- * default fonts used by components (e.g., Google Fonts).
+ * Scans the MJML document tree for font-family attributes and auto-registers default fonts used by
+ * components (e.g., Google Fonts).
  */
 final class FontScanner {
 
@@ -32,8 +32,8 @@ final class FontScanner {
   }
 
   /**
-   * Scans the body of the document for font-family attributes and registers
-   * any default fonts found.
+   * Scans the body of the document for font-family attributes and registers any default fonts
+   * found.
    */
   void registerDefaultFonts(MjmlDocument document, GlobalContext globalContext) {
     MjmlNode body = document.getBody();
@@ -58,15 +58,17 @@ final class FontScanner {
   }
 
   private Map<String, String> getComponentDefaults(String tagName) {
-    return defaultsCache.computeIfAbsent(tagName, tag -> {
-      try {
-        BaseComponent component = registry.createComponent(
-            new MjmlNode(tag), dummyGlobalContext, dummyContext);
-        return component != null ? component.getDefaultAttributes() : Map.of();
-      } catch (Exception e) {
-        LOG.warning(() -> "Could not get defaults for tag <" + tag + ">: " + e.getMessage());
-        return Map.of();
-      }
-    });
+    return defaultsCache.computeIfAbsent(
+        tagName,
+        tag -> {
+          try {
+            BaseComponent component =
+                registry.createComponent(new MjmlNode(tag), dummyGlobalContext, dummyContext);
+            return component != null ? component.getDefaultAttributes() : Map.of();
+          } catch (Exception e) {
+            LOG.warning(() -> "Could not get defaults for tag <" + tag + ">: " + e.getMessage());
+            return Map.of();
+          }
+        });
   }
 }

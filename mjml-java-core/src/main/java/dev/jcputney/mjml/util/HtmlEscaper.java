@@ -1,17 +1,19 @@
 package dev.jcputney.mjml.util;
 
 /**
- * Utility to escape HTML special characters in attribute values.
- * Used when {@code sanitizeOutput} is enabled in configuration.
+ * Utility to escape HTML special characters in attribute values. Used when {@code sanitizeOutput}
+ * is enabled in configuration.
  */
 public final class HtmlEscaper {
 
-  private HtmlEscaper() {
-  }
+  private HtmlEscaper() {}
 
   /**
-   * Escapes HTML special characters in an attribute value:
-   * {@code &}, {@code "}, {@code <}, {@code >}.
+   * Escapes HTML special characters in an attribute value: {@code &}, {@code "}, {@code <}, {@code
+   * >}.
+   *
+   * @param value the attribute value to escape (may be {@code null} or empty)
+   * @return the escaped value, or the original value if no escaping is needed
    */
   public static String escapeAttributeValue(String value) {
     if (value == null || value.isEmpty()) {

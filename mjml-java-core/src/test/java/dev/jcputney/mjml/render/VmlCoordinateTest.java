@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for VML coordinate calculations in VmlHelper.
- * Covers the formulas for section (complex) and wrapper (simple) VML output.
+ * Tests for VML coordinate calculations in VmlHelper. Covers the formulas for section (complex) and
+ * wrapper (simple) VML output.
  */
 class VmlCoordinateTest {
 

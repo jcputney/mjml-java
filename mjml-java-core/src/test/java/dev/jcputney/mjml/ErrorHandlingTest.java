@@ -7,21 +7,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Negative and error handling tests for boundary conditions and invalid inputs.
- */
+/** Negative and error handling tests for boundary conditions and invalid inputs. */
 class ErrorHandlingTest {
 
   @Test
   void malformedMjmlThrowsParseException() {
-    assertThrows(MjmlParseException.class, () ->
-        MjmlRenderer.render("<mjml><mj-body><mj-section><mj-column>"));
+    assertThrows(
+        MjmlParseException.class,
+        () -> MjmlRenderer.render("<mjml><mj-body><mj-section><mj-column>"));
   }
 
   @Test
   void nonMjmlRootThrowsParseException() {
-    assertThrows(MjmlParseException.class, () ->
-        MjmlRenderer.render("<html><body>Hello</body></html>"));
+    assertThrows(
+        MjmlParseException.class, () -> MjmlRenderer.render("<html><body>Hello</body></html>"));
   }
 
   @Test
@@ -40,7 +39,10 @@ class ErrorHandlingTest {
 
   @Test
   void bodyOnlyNoHead() {
-    String html = MjmlRenderer.render("""
+    String html =
+        MjmlRenderer.render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -50,13 +52,19 @@ class ErrorHandlingTest {
             </mj-section>
           </mj-body>
         </mjml>
-        """).html();
+        """)
+            .html();
     assertTrue(html.contains("No head"));
   }
 
   @Test
   void unknownTagSkippedGracefully() {
-    String html = assertDoesNotThrow(() -> MjmlRenderer.render("""
+    String html =
+        assertDoesNotThrow(
+            () ->
+                MjmlRenderer.render(
+                        // language=MJML
+                        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -68,19 +76,17 @@ class ErrorHandlingTest {
             </mj-section>
           </mj-body>
         </mjml>
-        """).html());
+        """)
+                    .html());
     assertTrue(html.contains("Before"));
     assertTrue(html.contains("After"));
   }
 
   @Test
   void inputSizeExceededThrowsValidation() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxInputSize(10)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().maxInputSize(10).build();
     String mjml = "<mjml><mj-body></mj-body></mjml>";
-    assertThrows(MjmlValidationException.class, () ->
-        MjmlRenderer.render(mjml, config));
+    assertThrows(MjmlValidationException.class, () -> MjmlRenderer.render(mjml, config));
   }
 
   @Test
@@ -96,21 +102,32 @@ class ErrorHandlingTest {
   @Test
   void sectionWithoutColumns() {
     // Section with no columns should still render without error
-    String html = assertDoesNotThrow(() -> MjmlRenderer.render("""
+    String html =
+        assertDoesNotThrow(
+            () ->
+                MjmlRenderer.render(
+                        // language=MJML
+                        """
         <mjml>
           <mj-body>
             <mj-section>
             </mj-section>
           </mj-body>
         </mjml>
-        """).html());
+        """)
+                    .html());
     assertNotNull(html);
   }
 
   @Test
   void columnWithoutContent() {
     // Column with no content components should still render
-    String html = assertDoesNotThrow(() -> MjmlRenderer.render("""
+    String html =
+        assertDoesNotThrow(
+            () ->
+                MjmlRenderer.render(
+                        // language=MJML
+                        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -119,14 +136,20 @@ class ErrorHandlingTest {
             </mj-section>
           </mj-body>
         </mjml>
-        """).html());
+        """)
+                    .html());
     assertNotNull(html);
   }
 
   @Test
   void invalidAttributeValuesHandled() {
     // Invalid CSS values should not crash the renderer
-    String html = assertDoesNotThrow(() -> MjmlRenderer.render("""
+    String html =
+        assertDoesNotThrow(
+            () ->
+                MjmlRenderer.render(
+                        // language=MJML
+                        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -136,7 +159,8 @@ class ErrorHandlingTest {
             </mj-section>
           </mj-body>
         </mjml>
-        """).html());
+        """)
+                    .html());
     assertTrue(html.contains("Content"));
   }
 }

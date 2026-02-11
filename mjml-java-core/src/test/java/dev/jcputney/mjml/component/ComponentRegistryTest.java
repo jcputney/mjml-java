@@ -22,8 +22,7 @@ class ComponentRegistryTest {
   void registerBeforeFreezeSucceeds() {
     ComponentRegistry registry = new ComponentRegistry();
 
-    assertDoesNotThrow(() ->
-        registry.register("mj-custom", (node, ctx, rctx) -> null));
+    assertDoesNotThrow(() -> registry.register("mj-custom", (node, ctx, rctx) -> null));
   }
 
   @Test
@@ -32,8 +31,9 @@ class ComponentRegistryTest {
     registry.register("mj-first", (node, ctx, rctx) -> null);
     registry.freeze();
 
-    assertThrows(IllegalStateException.class, () ->
-            registry.register("mj-second", (node, ctx, rctx) -> null),
+    assertThrows(
+        IllegalStateException.class,
+        () -> registry.register("mj-second", (node, ctx, rctx) -> null),
         "Registering after freeze should throw IllegalStateException");
   }
 
@@ -45,17 +45,20 @@ class ComponentRegistryTest {
     // Calling freeze again should not throw
     assertDoesNotThrow(registry::freeze);
     // Registration should still be rejected
-    assertThrows(IllegalStateException.class, () ->
-        registry.register("mj-another", (node, ctx, rctx) -> null));
+    assertThrows(
+        IllegalStateException.class,
+        () -> registry.register("mj-another", (node, ctx, rctx) -> null));
   }
 
   @Test
   void frozenRegistryCanStillCreateComponents() {
     ComponentRegistry registry = new ComponentRegistry();
-    registry.register("mj-test", (node, ctx, rctx) -> {
-      // Return a simple mock component - we only need to verify factory is invoked
-      return null;
-    });
+    registry.register(
+        "mj-test",
+        (node, ctx, rctx) -> {
+          // Return a simple mock component - we only need to verify factory is invoked
+          return null;
+        });
     registry.freeze();
 
     MjmlNode node = new MjmlNode("mj-test");
@@ -106,10 +109,12 @@ class ComponentRegistryTest {
 
     // Register second factory for same tag — should overwrite
     final boolean[] secondFactoryCalled = {false};
-    registry.register("mj-dup", (node, ctx, rctx) -> {
-      secondFactoryCalled[0] = true;
-      return null;
-    });
+    registry.register(
+        "mj-dup",
+        (node, ctx, rctx) -> {
+          secondFactoryCalled[0] = true;
+          return null;
+        });
     registry.freeze();
 
     MjmlNode node = new MjmlNode("mj-dup");
@@ -126,10 +131,12 @@ class ComponentRegistryTest {
   void registeredComponentCanBeCreated() {
     ComponentRegistry registry = new ComponentRegistry();
     final boolean[] factoryCalled = {false};
-    registry.register("mj-custom", (node, ctx, rctx) -> {
-      factoryCalled[0] = true;
-      return null;
-    });
+    registry.register(
+        "mj-custom",
+        (node, ctx, rctx) -> {
+          factoryCalled[0] = true;
+          return null;
+        });
     registry.freeze();
 
     MjmlNode node = new MjmlNode("mj-custom");

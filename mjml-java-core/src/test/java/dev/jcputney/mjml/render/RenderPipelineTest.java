@@ -8,16 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.MjmlConfiguration;
 import dev.jcputney.mjml.MjmlRenderer;
-import dev.jcputney.mjml.MjmlRenderResult;
 import dev.jcputney.mjml.MjmlValidationException;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the RenderPipeline orchestration logic.
- */
+/** Tests for the RenderPipeline orchestration logic. */
 class RenderPipelineTest {
 
-  private static final String MINIMAL_MJML = """
+  private static final String MINIMAL_MJML =
+      // language=MJML
+      """
       <mjml>
         <mj-body>
           <mj-section>
@@ -54,19 +53,14 @@ class RenderPipelineTest {
 
   @Test
   void throwsValidationExceptionWhenInputExceedsMaxSize() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxInputSize(10)
-        .build();
-    assertThrows(MjmlValidationException.class, () ->
-        MjmlRenderer.render(MINIMAL_MJML, config));
+    MjmlConfiguration config = MjmlConfiguration.builder().maxInputSize(10).build();
+    assertThrows(MjmlValidationException.class, () -> MjmlRenderer.render(MINIMAL_MJML, config));
   }
 
   @Test
   void acceptsInputAtExactMaxSizeBoundary() {
     int exactSize = MINIMAL_MJML.length();
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxInputSize(exactSize)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().maxInputSize(exactSize).build();
     assertDoesNotThrow(() -> MjmlRenderer.render(MINIMAL_MJML, config));
   }
 
@@ -79,7 +73,9 @@ class RenderPipelineTest {
 
   @Test
   void mergesAdjacentMsoSectionTransitions() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -98,13 +94,16 @@ class RenderPipelineTest {
     String html = render(mjml);
     // Adjacent sections should have merged MSO transitions (no close-then-open pattern)
     assertFalse(
-        html.contains("<!--[if mso | IE]></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table "),
+        html.contains(
+            "<!--[if mso | IE]></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table "),
         "Adjacent MSO section close/open should be merged");
   }
 
   @Test
   void mergesHeroVmlTransitions() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-hero>
@@ -121,14 +120,17 @@ class RenderPipelineTest {
     String html = render(mjml);
     // Hero + section should have merged VML transitions
     assertFalse(
-        html.contains("<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table "),
+        html.contains(
+            "<!--[if mso | IE]></v:textbox></v:rect></td></tr></table><![endif]-->\n    <!--[if mso | IE]><table "),
         "Hero-to-section VML close/open should be merged");
   }
 
   @Test
   void preservesNonAdjacentMsoSections() {
     // With a wrapper between two sections, the MSO transitions should NOT be merged
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -148,14 +150,15 @@ class RenderPipelineTest {
         """;
     String html = render(mjml);
     // There should be multiple independent MSO blocks
-    assertTrue(html.contains("<!--[if mso | IE]>"),
-        "Should contain MSO conditionals");
+    assertTrue(html.contains("<!--[if mso | IE]>"), "Should contain MSO conditionals");
   }
 
   @Test
   void registryRegistersAllExpectedComponentTags() {
     // Smoke test: render a doc with many component types to verify registration
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-title>Test</mj-title>
@@ -189,7 +192,9 @@ class RenderPipelineTest {
 
   @Test
   void headComponentsProcessBeforeBody() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -206,7 +211,8 @@ class RenderPipelineTest {
         </mjml>
         """;
     String html = render(mjml);
-    assertTrue(html.contains("#ff0000") || html.contains("ff0000"),
+    assertTrue(
+        html.contains("#ff0000") || html.contains("ff0000"),
         "mj-attributes color should be applied to mj-text");
   }
 
@@ -215,7 +221,9 @@ class RenderPipelineTest {
     // Verifies that mj-raw content containing "/>", style="" is not mangled
     // when no inline styles are configured (the post-processing rewrites in
     // RenderPipeline only apply when inline CSS is present).
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -232,15 +240,19 @@ class RenderPipelineTest {
     String html = render(mjml);
     // Without inline styles, the post-processing rewrites should NOT run,
     // so self-closing tags and empty style attributes are preserved.
-    assertTrue(html.contains("/>"),
+    assertTrue(
+        html.contains("/>"),
         "Self-closing tags in mj-raw should be preserved when no inline styles");
-    assertTrue(html.contains("style=\"\""),
+    assertTrue(
+        html.contains("style=\"\""),
         "Empty style attributes in mj-raw should be preserved when no inline styles");
   }
 
   @Test
   void cssInliningAppliesWhenInlineStylesPresent() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-style inline="inline">
@@ -258,7 +270,6 @@ class RenderPipelineTest {
         """;
     String html = render(mjml);
     // When inline CSS is applied, self-closing tags lose the slash (juice behavior emulation)
-    assertFalse(html.contains(" />"),
-        "CSS inlining should remove self-closing tag slashes");
+    assertFalse(html.contains(" />"), "CSS inlining should remove self-closing tag slashes");
   }
 }

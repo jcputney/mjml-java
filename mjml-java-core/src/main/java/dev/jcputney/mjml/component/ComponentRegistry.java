@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Registry mapping MJML tag names to component factories.
- * Supports registration of custom components.
+ * Registry mapping MJML tag names to component factories. Supports registration of custom
+ * components.
  */
 public class ComponentRegistry {
 
@@ -18,9 +18,14 @@ public class ComponentRegistry {
   private final Map<String, ComponentFactory> factories = new LinkedHashMap<>();
   private boolean frozen = false;
 
+  /** Creates a new, empty component registry. */
+  public ComponentRegistry() {}
+
   /**
    * Registers a component factory for the given tag name.
    *
+   * @param tagName the MJML tag name to register (e.g. "mj-section")
+   * @param factory the factory used to create component instances for the tag
    * @throws IllegalStateException if the registry has been frozen
    */
   public void register(String tagName, ComponentFactory factory) {
@@ -31,19 +36,22 @@ public class ComponentRegistry {
     factories.put(tagName, factory);
   }
 
-  /**
-   * Freezes this registry, preventing further registrations.
-   */
+  /** Freezes this registry, preventing further registrations. */
   public void freeze() {
     this.frozen = true;
   }
 
   /**
-   * Creates a component instance for the given node.
-   * Returns null if no factory is registered for the tag.
+   * Creates a component instance for the given node. Returns null if no factory is registered for
+   * the tag.
+   *
+   * @param node the parsed MJML node to create a component for
+   * @param globalContext the document-wide context gathered during head processing
+   * @param renderContext the current rendering context (container width, position, etc.)
+   * @return the created component instance, or {@code null} if no factory is registered
    */
-  public BaseComponent createComponent(MjmlNode node, GlobalContext globalContext,
-      RenderContext renderContext) {
+  public BaseComponent createComponent(
+      MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     ComponentFactory factory = factories.get(node.getTagName());
     if (factory == null) {
       LOG.warning(() -> "Unknown MJML tag: " + node.getTagName());
@@ -51,5 +59,4 @@ public class ComponentRegistry {
     }
     return factory.create(node, globalContext, renderContext);
   }
-
 }

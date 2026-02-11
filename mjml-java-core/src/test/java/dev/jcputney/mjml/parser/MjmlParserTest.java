@@ -11,12 +11,13 @@ class MjmlParserTest {
 
   @Test
   void parsesSimpleDocument() {
-    String mjml = "<mjml><mj-body><mj-section><mj-column><mj-text>Hello</mj-text></mj-column></mj-section></mj-body></mjml>";
+    String mjml =
+        "<mjml><mj-body><mj-section><mj-column><mj-text>Hello</mj-text></mj-column></mj-section></mj-body></mjml>";
     MjmlDocument doc = MjmlParser.parse(mjml);
 
     assertNotNull(doc);
-    assertNotNull(doc.getRoot());
-    assertEquals("mjml", doc.getRoot().getTagName());
+    assertNotNull(doc.root());
+    assertEquals("mjml", doc.root().getTagName());
     assertNotNull(doc.getBody());
     assertEquals("mj-body", doc.getBody().getTagName());
   }
@@ -43,7 +44,8 @@ class MjmlParserTest {
 
   @Test
   void parsesHtmlContentInText() {
-    String mjml = "<mjml><mj-body><mj-section><mj-column><mj-text>Hello <b>World</b></mj-text></mj-column></mj-section></mj-body></mjml>";
+    String mjml =
+        "<mjml><mj-body><mj-section><mj-column><mj-text>Hello <b>World</b></mj-text></mj-column></mj-section></mj-body></mjml>";
     MjmlDocument doc = MjmlParser.parse(mjml);
 
     MjmlNode section = doc.getBody().getFirstChildByTag("mj-section");
@@ -73,7 +75,8 @@ class MjmlParserTest {
 
   @Test
   void parsesMultipleChildren() {
-    String mjml = "<mjml><mj-body><mj-section><mj-column><mj-text>A</mj-text></mj-column><mj-column><mj-text>B</mj-text></mj-column></mj-section></mj-body></mjml>";
+    String mjml =
+        "<mjml><mj-body><mj-section><mj-column><mj-text>A</mj-text></mj-column><mj-column><mj-text>B</mj-text></mj-column></mj-section></mj-body></mjml>";
     MjmlDocument doc = MjmlParser.parse(mjml);
 
     MjmlNode section = doc.getBody().getFirstChildByTag("mj-section");

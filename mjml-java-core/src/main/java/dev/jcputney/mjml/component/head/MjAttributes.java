@@ -9,15 +9,25 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Processes mj-attributes to set default attribute values.
- * Children can be mj-all (applies to all tags), mj-class (named classes),
- * or specific tag elements (e.g., mj-text, mj-section).
+ * Processes mj-attributes to set default attribute values. Children can be mj-all (applies to all
+ * tags), mj-class (named classes), or specific tag elements (e.g., mj-text, mj-section).
  */
 public class MjAttributes extends HeadComponent {
 
   private final ComponentRegistry registry;
 
-  public MjAttributes(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjAttributes component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjAttributes(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;

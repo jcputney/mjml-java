@@ -7,29 +7,34 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.Map;
 
 /**
- * The accordion text component ({@code <mj-accordion-text>}).
- * Renders the collapsible content body of an accordion element as a table
- * with configurable text styling.
+ * The accordion text component ({@code <mj-accordion-text>}). Renders the collapsible content body
+ * of an accordion element as a table with configurable text styling.
  */
 public class MjAccordionText extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("background-color", ""),
-      Map.entry("color", "#000000"),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("font-size", "13px"),
-      Map.entry("font-weight", ""),
-      Map.entry("letter-spacing", ""),
-      Map.entry("line-height", "1"),
-      Map.entry("padding", "16px"),
-      Map.entry("padding-bottom", ""),
-      Map.entry("padding-left", ""),
-      Map.entry("padding-right", ""),
-      Map.entry("padding-top", "")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("background-color", ""),
+          Map.entry("color", "#000000"),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("font-size", "13px"),
+          Map.entry("font-weight", ""),
+          Map.entry("letter-spacing", ""),
+          Map.entry("line-height", "1"),
+          Map.entry("padding", "16px"),
+          Map.entry("padding-bottom", ""),
+          Map.entry("padding-left", ""),
+          Map.entry("padding-right", ""),
+          Map.entry("padding-top", ""));
 
-  public MjAccordionText(MjmlNode node, GlobalContext globalContext,
-      RenderContext renderContext) {
+  /**
+   * Creates a new MjAccordionText component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
+  public MjAccordionText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
 
@@ -61,24 +66,22 @@ public class MjAccordionText extends BodyComponent {
     String content = sanitizeContent(node.getInnerHtml().trim().replaceAll("\\s+", " "));
 
     sb.append("<table cellspacing=\"0\" cellpadding=\"0\" style=\"");
-    sb.append(buildStyle(orderedMap(
-        "width", "100%",
-        "border-bottom", border
-    )));
+    sb.append(buildStyle(orderedMap("width", "100%", "border-bottom", border)));
     sb.append("\">\n");
     sb.append("<tbody>\n");
     sb.append("<tr>\n");
 
     // TD style uses "background:" (short form), not "background-color:"
     sb.append("<td style=\"");
-    sb.append(buildStyle(orderedMap(
-        "background", backgroundColor,
-        "font-size", fontSize,
-        "font-family", fontFamily,
-        "line-height", lineHeight,
-        "color", color,
-        "padding", padding
-    )));
+    sb.append(
+        buildStyle(
+            orderedMap(
+                "background", backgroundColor,
+                "font-size", fontSize,
+                "font-family", fontFamily,
+                "line-height", lineHeight,
+                "color", color,
+                "padding", padding)));
     sb.append("\">");
     sb.append(" ").append(content).append(" ");
     sb.append("</td>\n");

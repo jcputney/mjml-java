@@ -14,16 +14,8 @@ import org.springframework.context.annotation.Configuration;
 @SpringBootTest(classes = MjmlServiceIntegrationTest.TestConfig.class)
 class MjmlServiceIntegrationTest {
 
-  @Configuration(proxyBeanMethods = false)
-  @ImportAutoConfiguration(MjmlAutoConfiguration.class)
-  static class TestConfig {
-  }
-
-  @Autowired
-  private MjmlService mjmlService;
-
-  @Autowired
-  private MjmlConfiguration mjmlConfiguration;
+  @Autowired private MjmlService mjmlService;
+  @Autowired private MjmlConfiguration mjmlConfiguration;
 
   @Test
   void serviceIsWired() {
@@ -33,7 +25,9 @@ class MjmlServiceIntegrationTest {
 
   @Test
   void rendersSimpleMjml() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -52,7 +46,9 @@ class MjmlServiceIntegrationTest {
 
   @Test
   void rendersWithMetadata() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-title>Integration Title</mj-title>
@@ -73,4 +69,8 @@ class MjmlServiceIntegrationTest {
     assertThat(result.previewText()).isEqualTo("Integration Preview");
     assertThat(result.html()).contains("Content");
   }
+
+  @Configuration(proxyBeanMethods = false)
+  @ImportAutoConfiguration(MjmlAutoConfiguration.class)
+  static class TestConfig {}
 }

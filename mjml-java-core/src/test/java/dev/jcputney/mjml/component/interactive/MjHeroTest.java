@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-hero component rendering.
- */
+/** Tests for the mj-hero component rendering. */
 class MjHeroTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjHeroTest {
 
   @Test
   void fixedHeightModeRendersWithExplicitHeight() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-hero mode="fixed-height" height="400px" background-color="#2f2f2f">
@@ -31,17 +32,17 @@ class MjHeroTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Hero Content"),
-        "Should render hero text content");
-    assertTrue(html.contains("mj-hero-content"),
-        "Should contain mj-hero-content class");
-    assertTrue(html.contains("#2f2f2f"),
-        "Should include background color");
+    assertTrue(html.contains("Hero Content"), "Should render hero text content");
+    assertTrue(html.contains("mj-hero-content"), "Should contain mj-hero-content class");
+    assertTrue(html.contains("#2f2f2f"), "Should include background color");
   }
 
   @Test
   void fluidHeightModeRendersWithPaddingSpacers() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-hero mode="fluid-height" background-color="#333333">
@@ -51,15 +52,16 @@ class MjHeroTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Fluid Hero"),
-        "Should render hero text content");
-    assertTrue(html.contains("mj-hero-content"),
-        "Should contain mj-hero-content class");
+    assertTrue(html.contains("Fluid Hero"), "Should render hero text content");
+    assertTrue(html.contains("mj-hero-content"), "Should contain mj-hero-content class");
   }
 
   @Test
   void backgroundImageRendersVmlElement() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-hero mode="fixed-height" height="400px"
@@ -71,15 +73,18 @@ class MjHeroTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("v:image") || html.contains("v:rect"),
+    assertTrue(
+        html.contains("v:image") || html.contains("v:rect"),
         "Should contain VML elements for background image in MSO conditional");
-    assertTrue(html.contains("hero-bg.jpg"),
-        "Should reference the background image URL");
+    assertTrue(html.contains("hero-bg.jpg"), "Should reference the background image URL");
   }
 
   @Test
   void heroWithPaddingAndVerticalAlign() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-hero mode="fixed-height" height="300px" padding="40px 20px"
@@ -90,9 +95,7 @@ class MjHeroTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Bottom aligned"),
-        "Should render hero content");
-    assertTrue(html.contains("vertical-align"),
-        "Should include vertical-align in the output");
+    assertTrue(html.contains("Bottom aligned"), "Should render hero content");
+    assertTrue(html.contains("vertical-align"), "Should include vertical-align in the output");
   }
 }

@@ -11,44 +11,50 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The button component (&lt;mj-button&gt;).
- * Renders an anchor styled as a button with configurable background color,
- * border radius, font styles, and padding.
+ * The button component (&lt;mj-button&gt;). Renders an anchor styled as a button with configurable
+ * background color, border radius, font styles, and padding.
  */
 public class MjButton extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("align", "center"),
-      Map.entry("background-color", "#414141"),
-      Map.entry("border", "none"),
-      Map.entry("border-bottom", ""),
-      Map.entry("border-left", ""),
-      Map.entry("border-radius", "3px"),
-      Map.entry("border-right", ""),
-      Map.entry("border-top", ""),
-      Map.entry("color", "#ffffff"),
-      Map.entry("container-background-color", ""),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("font-size", "13px"),
-      Map.entry("font-style", ""),
-      Map.entry("font-weight", "normal"),
-      Map.entry("height", ""),
-      Map.entry("href", "#"),
-      Map.entry("inner-padding", "10px 25px"),
-      Map.entry("line-height", "120%"),
-      Map.entry("letter-spacing", ""),
-      Map.entry("name", ""),
-      Map.entry("padding", "10px 25px"),
-      Map.entry("rel", ""),
-      Map.entry("title", ""),
-      Map.entry("text-align", "center"),
-      Map.entry("text-decoration", "none"),
-      Map.entry("text-transform", "none"),
-      Map.entry("target", "_blank"),
-      Map.entry("vertical-align", "middle"),
-      Map.entry("width", "")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("align", "center"),
+          Map.entry("background-color", "#414141"),
+          Map.entry("border", "none"),
+          Map.entry("border-bottom", ""),
+          Map.entry("border-left", ""),
+          Map.entry("border-radius", "3px"),
+          Map.entry("border-right", ""),
+          Map.entry("border-top", ""),
+          Map.entry("color", "#ffffff"),
+          Map.entry("container-background-color", ""),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("font-size", "13px"),
+          Map.entry("font-style", ""),
+          Map.entry("font-weight", "normal"),
+          Map.entry("height", ""),
+          Map.entry("href", "#"),
+          Map.entry("inner-padding", "10px 25px"),
+          Map.entry("line-height", "120%"),
+          Map.entry("letter-spacing", ""),
+          Map.entry("name", ""),
+          Map.entry("padding", "10px 25px"),
+          Map.entry("rel", ""),
+          Map.entry("title", ""),
+          Map.entry("text-align", "center"),
+          Map.entry("text-decoration", "none"),
+          Map.entry("text-transform", "none"),
+          Map.entry("target", "_blank"),
+          Map.entry("vertical-align", "middle"),
+          Map.entry("width", ""));
 
+  /**
+   * Creates a new MjButton component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
   public MjButton(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
@@ -124,7 +130,8 @@ public class MjButton extends BodyComponent {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
+    sb.append(
+        "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
     sb.append(" style=\"").append(buildStyle(outerTableStyles)).append("\">\n");
     sb.append("                          <tbody>\n");
     sb.append("                            <tr>\n");

@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-carousel component rendering.
- */
+/** Tests for the mj-carousel component rendering. */
 class MjCarouselTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjCarouselTest {
 
   @Test
   void radioButtonInputsPresent() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -36,15 +37,18 @@ class MjCarouselTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("type=\"radio\""),
+    assertTrue(
+        html.contains("type=\"radio\""),
         "Should contain radio button inputs for carousel navigation");
-    assertTrue(html.contains("mj-carousel-radio"),
-        "Should contain carousel radio CSS class");
+    assertTrue(html.contains("mj-carousel-radio"), "Should contain carousel radio CSS class");
   }
 
   @Test
   void carouselCssGenerated() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -59,15 +63,16 @@ class MjCarouselTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("mj-carousel"),
-        "Should include carousel CSS classes");
-    assertTrue(html.contains("<style"),
-        "Should include style tag for carousel CSS");
+    assertTrue(html.contains("mj-carousel"), "Should include carousel CSS classes");
+    assertTrue(html.contains("<style"), "Should include style tag for carousel CSS");
   }
 
   @Test
   void multipleImagesRender() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -83,17 +88,17 @@ class MjCarouselTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("slide1.jpg"),
-        "Should contain first slide image");
-    assertTrue(html.contains("slide2.jpg"),
-        "Should contain second slide image");
-    assertTrue(html.contains("slide3.jpg"),
-        "Should contain third slide image");
+    assertTrue(html.contains("slide1.jpg"), "Should contain first slide image");
+    assertTrue(html.contains("slide2.jpg"), "Should contain second slide image");
+    assertTrue(html.contains("slide3.jpg"), "Should contain third slide image");
   }
 
   @Test
   void firstImageCheckedByDefault() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -108,7 +113,7 @@ class MjCarouselTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("checked=\"checked\""),
-        "First radio input should be checked by default");
+    assertTrue(
+        html.contains("checked=\"checked\""), "First radio input should be checked by default");
   }
 }

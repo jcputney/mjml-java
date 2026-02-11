@@ -2,20 +2,21 @@ package dev.jcputney.mjml.component;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import dev.jcputney.mjml.MjmlConfiguration;
-import dev.jcputney.mjml.MjmlRenderer;
 import dev.jcputney.mjml.MjmlRenderResult;
+import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests that unknown MJML tags are handled gracefully (logged and skipped)
- * rather than causing a NullPointerException or render failure.
+ * Tests that unknown MJML tags are handled gracefully (logged and skipped) rather than causing a
+ * NullPointerException or render failure.
  */
 class ComponentRegistryUnknownTagTest {
 
   @Test
   void unknownTagIsSkippedGracefully() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -31,13 +32,16 @@ class ComponentRegistryUnknownTagTest {
     // Should not throw — unknown tags are skipped with a warning
     MjmlRenderResult result = MjmlRenderer.render(mjml);
     assertNotNull(result);
-    assertTrue(result.html().contains("This should still render"),
+    assertTrue(
+        result.html().contains("This should still render"),
         "Known tags should still render even when unknown tags are present");
   }
 
   @Test
   void unknownTagInHeadIsSkippedGracefully() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-unknown-head>something</mj-unknown-head>

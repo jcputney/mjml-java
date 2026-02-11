@@ -2,8 +2,8 @@ package dev.jcputney.mjml.css;
 
 import dev.jcputney.mjml.css.CssSelector.AttributeSelector;
 import dev.jcputney.mjml.css.CssSelector.ClassSelector;
-import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.ComplexSelector;
+import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.IdSelector;
 import dev.jcputney.mjml.css.CssSelector.PseudoClassSelector;
 import dev.jcputney.mjml.css.CssSelector.PseudoElementSelector;
@@ -16,20 +16,22 @@ import java.util.regex.Pattern;
 
 /**
  * Matches CSS selectors against {@link HtmlElement} nodes.
- * <p>
- * Supports all CSS2.1 selector types plus CSS3 attribute selectors.
- * Pseudo-classes and pseudo-elements never match (they're preserved in style blocks,
- * not inlined).
+ *
+ * <p>Supports all CSS2.1 selector types plus CSS3 attribute selectors. Pseudo-classes and
+ * pseudo-elements never match (they're preserved in style blocks, not inlined).
  */
 public final class CssSelectorMatcher {
 
   private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
-  private CssSelectorMatcher() {
-  }
+  private CssSelectorMatcher() {}
 
   /**
    * Tests whether the given selector matches the given element.
+   *
+   * @param selector the CSS selector to test
+   * @param element the HTML element to test against
+   * @return {@code true} if the selector matches the element
    */
   public static boolean matches(CssSelector selector, HtmlElement element) {
     if (selector == null || element == null) {
@@ -49,8 +51,11 @@ public final class CssSelectorMatcher {
   }
 
   /**
-   * Returns true if the selector contains pseudo-classes or pseudo-elements
-   * that cannot be inlined (e.g. :hover, ::before).
+   * Returns true if the selector contains pseudo-classes or pseudo-elements that cannot be inlined
+   * (e.g. :hover, ::before).
+   *
+   * @param selector the CSS selector to check
+   * @return {@code true} if the selector contains any pseudo-class or pseudo-element
    */
   public static boolean hasPseudo(CssSelector selector) {
     if (selector instanceof SelectorList list) {
@@ -71,10 +76,7 @@ public final class CssSelectorMatcher {
       return false;
     } else if (selector instanceof PseudoClassSelector) {
       return true;
-    } else if (selector instanceof PseudoElementSelector) {
-      return true;
-    }
-    return false;
+    } else return selector instanceof PseudoElementSelector;
   }
 
   // --- Matching logic ---

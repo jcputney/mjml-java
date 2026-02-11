@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.MjmlConfiguration;
-import dev.jcputney.mjml.MjmlRenderer;
 import dev.jcputney.mjml.MjmlRenderResult;
+import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * Additional attribute-level tests for under-tested components:
- * mj-table, mj-raw, mj-wrapper, mj-group, mj-body.
+ * Additional attribute-level tests for under-tested components: mj-table, mj-raw, mj-wrapper,
+ * mj-group, mj-body.
  */
 class UnderTestedComponentTest {
 
@@ -30,7 +30,10 @@ class UnderTestedComponentTest {
 
     @Test
     void colorAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -44,14 +47,16 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("color:#ff0000"),
-          "mj-table should apply color attribute");
+      assertTrue(html.contains("color:#ff0000"), "mj-table should apply color attribute");
       assertTrue(html.contains("Red text"));
     }
 
     @Test
     void fontSizeAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -65,13 +70,15 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("font-size:18px"),
-          "mj-table should apply font-size attribute");
+      assertTrue(html.contains("font-size:18px"), "mj-table should apply font-size attribute");
     }
 
     @Test
     void fontFamilyAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -85,13 +92,15 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("Georgia"),
-          "mj-table should apply font-family attribute");
+      assertTrue(html.contains("Georgia"), "mj-table should apply font-family attribute");
     }
 
     @Test
     void lineHeightAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -105,13 +114,15 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("line-height:24px"),
-          "mj-table should apply line-height attribute");
+      assertTrue(html.contains("line-height:24px"), "mj-table should apply line-height attribute");
     }
 
     @Test
     void paddingAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -130,7 +141,10 @@ class UnderTestedComponentTest {
 
     @Test
     void containerBackgroundColor() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -144,13 +158,15 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("#eeeeee"),
-          "mj-table should apply container-background-color");
+      assertTrue(html.contains("#eeeeee"), "mj-table should apply container-background-color");
     }
 
     @Test
     void multiRowTable() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -179,7 +195,10 @@ class UnderTestedComponentTest {
 
     @Test
     void cssClassAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -193,14 +212,16 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("id=\"custom-raw\""),
-          "mj-raw should pass through HTML attributes");
+      assertTrue(html.contains("id=\"custom-raw\""), "mj-raw should pass through HTML attributes");
       assertTrue(html.contains("Custom raw HTML"));
     }
 
     @Test
     void complexHtmlContent() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -220,15 +241,17 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("https://example.com"),
-          "mj-raw should pass through href in nested HTML");
-      assertTrue(html.contains("color: blue;"),
-          "mj-raw should pass through inline styles");
+      assertTrue(
+          html.contains("https://example.com"), "mj-raw should pass through href in nested HTML");
+      assertTrue(html.contains("color: blue;"), "mj-raw should pass through inline styles");
     }
 
     @Test
     void emptyRawContent() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -241,8 +264,7 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("After empty raw"),
-          "Empty mj-raw should not break rendering");
+      assertTrue(html.contains("After empty raw"), "Empty mj-raw should not break rendering");
     }
   }
 
@@ -253,7 +275,10 @@ class UnderTestedComponentTest {
 
     @Test
     void borderAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-wrapper border="1px solid #ddd">
@@ -268,13 +293,15 @@ class UnderTestedComponentTest {
           """);
 
       assertTrue(html.contains("Bordered wrapper"));
-      assertTrue(html.contains("border"),
-          "Wrapper should apply border attribute");
+      assertTrue(html.contains("border"), "Wrapper should apply border attribute");
     }
 
     @Test
     void borderRadiusAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-wrapper border-radius="8px" background-color="#fff">
@@ -293,7 +320,10 @@ class UnderTestedComponentTest {
 
     @Test
     void textAlignAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-wrapper text-align="center">
@@ -308,13 +338,15 @@ class UnderTestedComponentTest {
           """);
 
       assertTrue(html.contains("Centered wrapper"));
-      assertTrue(html.contains("text-align:center"),
-          "Wrapper should apply text-align");
+      assertTrue(html.contains("text-align:center"), "Wrapper should apply text-align");
     }
 
     @Test
     void cssClassAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-wrapper css-class="my-wrapper">
@@ -328,13 +360,15 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("my-wrapper"),
-          "Wrapper should apply css-class");
+      assertTrue(html.contains("my-wrapper"), "Wrapper should apply css-class");
     }
 
     @Test
     void multipleSectionsInsideWrapper() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-wrapper background-color="#eee">
@@ -354,8 +388,7 @@ class UnderTestedComponentTest {
           """);
 
       assertTrue(html.contains("Section 1"));
-      assertTrue(html.contains("Section 2"),
-          "Wrapper should render multiple child sections");
+      assertTrue(html.contains("Section 2"), "Wrapper should render multiple child sections");
     }
   }
 
@@ -366,7 +399,10 @@ class UnderTestedComponentTest {
 
     @Test
     void backgroundColorAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -384,13 +420,15 @@ class UnderTestedComponentTest {
           """);
 
       assertTrue(html.contains("Bg group"));
-      assertTrue(html.contains("#f0f0f0"),
-          "Group should apply background-color");
+      assertTrue(html.contains("#f0f0f0"), "Group should apply background-color");
     }
 
     @Test
     void threeColumnsInGroup() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -412,16 +450,17 @@ class UnderTestedComponentTest {
 
       assertTrue(html.contains("A"));
       assertTrue(html.contains("B"));
-      assertTrue(html.contains("C"),
-          "Group should render all three columns");
+      assertTrue(html.contains("C"), "Group should render all three columns");
       // Three columns should get approximately 33.33% width
-      assertTrue(html.contains("33."),
-          "Three columns should each get ~33.33% width");
+      assertTrue(html.contains("33."), "Three columns should each get ~33.33% width");
     }
 
     @Test
     void verticalAlignAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -435,13 +474,16 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("Bottom aligned"),
-          "Group with vertical-align should render content");
+      assertTrue(
+          html.contains("Bottom aligned"), "Group with vertical-align should render content");
     }
 
     @Test
     void widthAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -470,7 +512,10 @@ class UnderTestedComponentTest {
 
     @Test
     void cssClassAttribute() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body css-class="email-body">
               <mj-section>
@@ -482,13 +527,15 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("email-body"),
-          "Body should apply css-class");
+      assertTrue(html.contains("email-body"), "Body should apply css-class");
     }
 
     @Test
     void customContainerWidth() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body width="480px">
               <mj-section>
@@ -500,27 +547,32 @@ class UnderTestedComponentTest {
           </mjml>
           """);
 
-      assertTrue(html.contains("480px"),
-          "Body should apply custom width");
+      assertTrue(html.contains("480px"), "Body should apply custom width");
     }
 
     @Test
     void emptyBodyRendersValidHtml() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
             </mj-body>
           </mjml>
           """);
 
-      assertTrue(html.contains("<!doctype html>"),
-          "Empty body should still produce valid HTML structure");
+      assertTrue(
+          html.contains("<!doctype html>"), "Empty body should still produce valid HTML structure");
       assertTrue(html.contains("</html>"));
     }
 
     @Test
     void bodyWithOnlySections() {
-      String html = render("""
+      String html =
+          render(
+              // language=MJML
+              """
           <mjml>
             <mj-body>
               <mj-section>
@@ -544,17 +596,17 @@ class UnderTestedComponentTest {
 
       assertTrue(html.contains("First"));
       assertTrue(html.contains("Second"));
-      assertTrue(html.contains("Third"),
-          "Body should render all child sections");
+      assertTrue(html.contains("Third"), "Body should render all child sections");
     }
 
     @Test
     void bodyWithDirectionConfig() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .direction(dev.jcputney.mjml.Direction.RTL)
-          .build();
+      MjmlConfiguration config =
+          MjmlConfiguration.builder().direction(dev.jcputney.mjml.Direction.RTL).build();
 
-      String mjml = """
+      String mjml =
+          // language=MJML
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -568,8 +620,8 @@ class UnderTestedComponentTest {
 
       MjmlRenderResult result = MjmlRenderer.render(mjml, config);
       assertNotNull(result);
-      assertTrue(result.html().contains("dir=\"rtl\""),
-          "Body should apply RTL direction from config");
+      assertTrue(
+          result.html().contains("dir=\"rtl\""), "Body should apply RTL direction from config");
     }
   }
 }

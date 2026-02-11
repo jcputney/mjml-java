@@ -39,7 +39,8 @@ class StyleContextTest {
   @Test
   void fontsUnmodifiable() {
     StyleContext ctx = new StyleContext();
-    assertThrows(UnsupportedOperationException.class,
+    assertThrows(
+        UnsupportedOperationException.class,
         () -> ctx.getFonts().add(new StyleContext.FontDef("x", "y")));
   }
 
@@ -55,8 +56,8 @@ class StyleContextTest {
   @Test
   void fontUrlOverridesUnmodifiable() {
     StyleContext ctx = new StyleContext();
-    assertThrows(UnsupportedOperationException.class,
-        () -> ctx.getFontUrlOverrides().put("x", "y"));
+    assertThrows(
+        UnsupportedOperationException.class, () -> ctx.getFontUrlOverrides().put("x", "y"));
   }
 
   @Test
@@ -133,7 +134,8 @@ class StyleContextTest {
   @Test
   void mediaQueriesUnmodifiable() {
     StyleContext ctx = new StyleContext();
-    assertThrows(UnsupportedOperationException.class,
+    assertThrows(
+        UnsupportedOperationException.class,
         () -> ctx.getMediaQueries().add(new StyleContext.MediaQuery("x", "1", "%")));
   }
 

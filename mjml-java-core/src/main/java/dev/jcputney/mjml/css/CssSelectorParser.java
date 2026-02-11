@@ -3,8 +3,8 @@ package dev.jcputney.mjml.css;
 import dev.jcputney.mjml.css.CssSelector.AttributeSelector;
 import dev.jcputney.mjml.css.CssSelector.ClassSelector;
 import dev.jcputney.mjml.css.CssSelector.Combinator;
-import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.ComplexSelector;
+import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.IdSelector;
 import dev.jcputney.mjml.css.CssSelector.PseudoClassSelector;
 import dev.jcputney.mjml.css.CssSelector.PseudoElementSelector;
@@ -17,8 +17,9 @@ import java.util.List;
 
 /**
  * Recursive-descent parser for CSS selectors.
- * <p>
- * Grammar (simplified):
+ *
+ * <p>Grammar (simplified):
+ *
  * <pre>
  *   selector-list  = complex-selector (',' complex-selector)*
  *   complex-selector = compound-selector (combinator compound-selector)*
@@ -56,6 +57,14 @@ public final class CssSelectorParser {
   }
 
   // --- Parser methods ---
+
+  private static boolean isIdentStart(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '-';
+  }
+
+  private static boolean isIdentChar(char c) {
+    return isIdentStart(c) || (c >= '0' && c <= '9');
+  }
 
   private CssSelector parseSelectorList() {
     List<CssSelector> selectors = new ArrayList<>();
@@ -230,7 +239,7 @@ public final class CssSelectorParser {
     }
 
     if (pos + 1 < input.length() && input.charAt(pos + 1) == '=') {
-      String op = "" + c + "=";
+      String op = c + "=";
       pos += 2;
       return op;
     }
@@ -259,7 +268,8 @@ public final class CssSelectorParser {
 
     // Unquoted value
     int start = pos;
-    while (pos < input.length() && input.charAt(pos) != ']'
+    while (pos < input.length()
+        && input.charAt(pos) != ']'
         && !Character.isWhitespace(input.charAt(pos))) {
       pos++;
     }
@@ -319,8 +329,7 @@ public final class CssSelectorParser {
     }
 
     if (pos == start) {
-      throw new IllegalStateException(
-          "Expected identifier at position " + pos + " in: " + input);
+      throw new IllegalStateException("Expected identifier at position " + pos + " in: " + input);
     }
 
     return input.substring(start, pos);
@@ -332,13 +341,5 @@ public final class CssSelectorParser {
       pos++;
     }
     return pos > start;
-  }
-
-  private static boolean isIdentStart(char c) {
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '-';
-  }
-
-  private static boolean isIdentChar(char c) {
-    return isIdentStart(c) || (c >= '0' && c <= '9');
   }
 }

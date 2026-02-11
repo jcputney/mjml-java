@@ -33,8 +33,8 @@ class SpringResourceIncludeResolverTest {
         new SpringResourceIncludeResolver(resourceLoader, "classpath:other/");
 
     // Absolute classpath path should bypass base location
-    String content = resolver.resolve(
-        "classpath:mjml/test-template.mjml", ResolverContext.root("mjml"));
+    String content =
+        resolver.resolve("classpath:mjml/test-template.mjml", ResolverContext.root("mjml"));
 
     assertThat(content).contains("<mj-text>Hello, World!</mj-text>");
   }
@@ -44,8 +44,7 @@ class SpringResourceIncludeResolverTest {
     SpringResourceIncludeResolver resolver =
         new SpringResourceIncludeResolver(resourceLoader, "classpath:mjml/");
 
-    assertThatThrownBy(() ->
-        resolver.resolve("nonexistent.mjml", ResolverContext.root("mjml")))
+    assertThatThrownBy(() -> resolver.resolve("nonexistent.mjml", ResolverContext.root("mjml")))
         .isInstanceOf(MjmlIncludeException.class)
         .hasMessageContaining("Cannot resolve include path");
   }
@@ -62,8 +61,7 @@ class SpringResourceIncludeResolverTest {
 
   @Test
   void defaultConstructorUsesClasspathMjml() {
-    SpringResourceIncludeResolver resolver =
-        new SpringResourceIncludeResolver(resourceLoader);
+    SpringResourceIncludeResolver resolver = new SpringResourceIncludeResolver(resourceLoader);
 
     String content = resolver.resolve("test-template.mjml", ResolverContext.root("mjml"));
     assertThat(content).contains("<mj-text>Hello, World!</mj-text>");
@@ -74,8 +72,9 @@ class SpringResourceIncludeResolverTest {
     SpringResourceIncludeResolver resolver =
         new SpringResourceIncludeResolver(resourceLoader, "classpath:mjml/");
 
-    assertThatThrownBy(() ->
-        resolver.resolve("http://example.com/template.mjml", ResolverContext.root("mjml")))
+    assertThatThrownBy(
+            () ->
+                resolver.resolve("http://example.com/template.mjml", ResolverContext.root("mjml")))
         .isInstanceOf(MjmlIncludeException.class)
         .hasMessageContaining("scheme not allowed");
   }
@@ -85,28 +84,31 @@ class SpringResourceIncludeResolverTest {
     SpringResourceIncludeResolver resolver =
         new SpringResourceIncludeResolver(resourceLoader, "http://example.com/templates/");
 
-    assertThatThrownBy(() ->
-        resolver.resolve("header.mjml", ResolverContext.root("mjml")))
+    assertThatThrownBy(() -> resolver.resolve("header.mjml", ResolverContext.root("mjml")))
         .isInstanceOf(MjmlIncludeException.class)
         .hasMessageContaining("scheme not allowed");
   }
 
   @Test
   void allowsHttpWhenExplicitlyConfigured() {
-    ResourceLoader stubLoader = new ResourceLoader() {
-      @Override
-      public Resource getResource(String location) {
-        return new ByteArrayResource("<mj-text>Remote</mj-text>".getBytes(StandardCharsets.UTF_8));
-      }
+    ResourceLoader stubLoader =
+        new ResourceLoader() {
+          @Override
+          public Resource getResource(String location) {
+            return new ByteArrayResource(
+                "<mj-text>Remote</mj-text>".getBytes(StandardCharsets.UTF_8));
+          }
 
-      @Override
-      public ClassLoader getClassLoader() {
-        return getClass().getClassLoader();
-      }
-    };
+          @Override
+          public ClassLoader getClassLoader() {
+            return getClass().getClassLoader();
+          }
+        };
 
     SpringResourceIncludeResolver resolver =
-        new SpringResourceIncludeResolver(stubLoader, "http://example.com/templates/",
+        new SpringResourceIncludeResolver(
+            stubLoader,
+            "http://example.com/templates/",
             Set.of("http", "https", "classpath", "file"));
 
     String content = resolver.resolve("header.mjml", ResolverContext.root("mjml"));

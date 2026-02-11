@@ -3,31 +3,31 @@ package dev.jcputney.mjml.util;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-/**
- * Parses CSS unit values (px, %, em) and converts them to pixel values.
- */
+/** Parses CSS unit values (px, %, em) and converts them to pixel values. */
 public final class CssUnitParser {
-
-  private static final Logger LOG = Logger.getLogger(CssUnitParser.class.getName());
 
   /** Pre-compiled whitespace pattern for splitting CSS shorthand values. */
   public static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
+  private static final Logger LOG = Logger.getLogger(CssUnitParser.class.getName());
   private static final Pattern NON_NUMERIC = Pattern.compile("[^0-9-]");
 
   /**
    * Pattern matching valid CSS numeric values: optional sign, digits with optional decimal,
    * optional unit suffix (px, %, em, rem). Rejects garbage like "abc123xyz" or "12px34".
    */
-  private static final Pattern VALID_CSS_NUMBER = Pattern.compile(
-      "^\\s*-?\\d+(?:\\.\\d+)?(?:px|%|em|rem)?\\s*$");
+  private static final Pattern VALID_CSS_NUMBER =
+      Pattern.compile("^\\s*-?\\d+(?:\\.\\d+)?(?:px|%|em|rem)?\\s*$");
 
-  private CssUnitParser() {
-  }
+  private CssUnitParser() {}
 
   /**
-   * Parses a CSS value and converts it to pixels.
-   * Supports px (direct), % (relative to containerWidth), and unitless (treated as px).
+   * Parses a CSS value and converts it to pixels. Supports px (direct), % (relative to
+   * containerWidth), and unitless (treated as px).
+   *
+   * @param value the CSS value string to parse (e.g., "100px", "50%", "200")
+   * @param containerWidth the container width in pixels, used for percentage calculations
+   * @return the computed pixel value, or 0 if the value is null or empty
    */
   public static double toPixels(String value, double containerWidth) {
     if (value == null || value.isEmpty()) {
@@ -47,8 +47,12 @@ public final class CssUnitParser {
   }
 
   /**
-   * Parses a pixel value from a string like "10px" or "10".
-   * Returns the provided default if parsing fails.
+   * Parses a pixel value from a string like "10px" or "10". Returns the provided default if parsing
+   * fails.
+   *
+   * @param value the CSS pixel value string to parse
+   * @param defaultValue the default value to return if parsing fails
+   * @return the parsed pixel value, or the default value if parsing fails
    */
   public static double parsePx(String value, double defaultValue) {
     if (value == null || value.isEmpty()) {
@@ -69,10 +73,13 @@ public final class CssUnitParser {
 
   /**
    * Parses a 1-4 value CSS shorthand into [top, right, bottom, left] pixel values.
+   *
+   * @param value the CSS shorthand string (e.g., "10px", "10px 20px", "10px 20px 30px 40px")
+   * @return a four-element array of pixel values in [top, right, bottom, left] order
    */
   public static double[] parseShorthand(String value) {
     if (value == null || value.isEmpty()) {
-      return new double[]{0, 0, 0, 0};
+      return new double[] {0, 0, 0, 0};
     }
     String[] parts = WHITESPACE.split(value.trim());
     double[] result = new double[4];
@@ -104,9 +111,12 @@ public final class CssUnitParser {
   }
 
   /**
-   * Parses an integer from a CSS pixel value like "10px", "10", or "10.5px".
-   * Validates the input against a CSS number pattern first, rejecting garbage
-   * like "abc123xyz" or "12px34". Returns 0 on failure.
+   * Parses an integer from a CSS pixel value like "10px", "10", or "10.5px". Validates the input
+   * against a CSS number pattern first, rejecting garbage like "abc123xyz" or "12px34". Returns 0
+   * on failure.
+   *
+   * @param value the CSS value string to parse
+   * @return the parsed integer pixel value, or 0 if the value is null, empty, or invalid
    */
   public static int parseIntPx(String value) {
     if (value == null || value.isEmpty()) {
@@ -126,6 +136,9 @@ public final class CssUnitParser {
 
   /**
    * Formats a pixel value as an integer string with "px" suffix.
+   *
+   * @param value the pixel value to format
+   * @return the formatted string with "px" suffix (e.g., "10px")
    */
   public static String formatPx(double value) {
     return ((int) value) + "px";
@@ -133,6 +146,9 @@ public final class CssUnitParser {
 
   /**
    * Formats a pixel value as an integer string without any suffix.
+   *
+   * @param value the pixel value to format
+   * @return the formatted integer string (e.g., "10")
    */
   public static String formatInt(double value) {
     return String.valueOf((int) value);
@@ -140,6 +156,9 @@ public final class CssUnitParser {
 
   /**
    * Formats a pixel width: integers without decimals, decimals as-is.
+   *
+   * @param width the pixel width to format
+   * @return the formatted width string, without decimals for whole numbers
    */
   public static String formatPxWidth(double width) {
     if (width == Math.floor(width) && !Double.isInfinite(width)) {
@@ -149,8 +168,12 @@ public final class CssUnitParser {
   }
 
   /**
-   * Parses an integer pixel value from a string like "600px" or "600".
-   * Returns the default value if parsing fails.
+   * Parses an integer pixel value from a string like "600px" or "600". Returns the default value if
+   * parsing fails.
+   *
+   * @param value the CSS pixel value string to parse
+   * @param defaultValue the default value to return if parsing fails
+   * @return the parsed integer pixel value, or the default value if parsing fails
    */
   public static int parsePixels(String value, int defaultValue) {
     if (value == null || value.isEmpty()) {

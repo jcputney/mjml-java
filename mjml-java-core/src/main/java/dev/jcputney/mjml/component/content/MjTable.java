@@ -4,32 +4,38 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The table component (&lt;mj-table&gt;).
- * Renders an HTML table with the component's styles applied, containing
- * the inner HTML content directly (table rows and cells come from the MJML source).
+ * The table component (&lt;mj-table&gt;). Renders an HTML table with the component's styles
+ * applied, containing the inner HTML content directly (table rows and cells come from the MJML
+ * source).
  */
 public class MjTable extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("align", "left"),
-      Map.entry("border", "none"),
-      Map.entry("cellpadding", "0"),
-      Map.entry("cellspacing", "0"),
-      Map.entry("color", "#000000"),
-      Map.entry("container-background-color", ""),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("font-size", "13px"),
-      Map.entry("line-height", "22px"),
-      Map.entry("padding", "10px 25px"),
-      Map.entry("role", ""),
-      Map.entry("table-layout", "auto"),
-      Map.entry("width", "100%")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("align", "left"),
+          Map.entry("border", "none"),
+          Map.entry("cellpadding", "0"),
+          Map.entry("cellspacing", "0"),
+          Map.entry("color", "#000000"),
+          Map.entry("container-background-color", ""),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("font-size", "13px"),
+          Map.entry("line-height", "22px"),
+          Map.entry("padding", "10px 25px"),
+          Map.entry("role", ""),
+          Map.entry("table-layout", "auto"),
+          Map.entry("width", "100%"));
 
+  /**
+   * Creates a new MjTable component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
   public MjTable(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
@@ -46,27 +52,36 @@ public class MjTable extends BodyComponent {
 
   @Override
   public String render() {
-    String tableStyle = buildStyle(orderedMap(
-        "color", getAttribute("color", "#000000"),
-        "font-family", getAttribute("font-family"),
-        "font-size", getAttribute("font-size", "13px"),
-        "line-height", getAttribute("line-height", "22px"),
-        "table-layout", getAttribute("table-layout", "auto"),
-        "width", getAttribute("width", "100%"),
-        "border", getAttribute("border", "none")
-    ));
+    String tableStyle =
+        buildStyle(
+            orderedMap(
+                "color", getAttribute("color", "#000000"),
+                "font-family", getAttribute("font-family"),
+                "font-size", getAttribute("font-size", "13px"),
+                "line-height", getAttribute("line-height", "22px"),
+                "table-layout", getAttribute("table-layout", "auto"),
+                "width", getAttribute("width", "100%"),
+                "border", getAttribute("border", "none")));
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("<table");
-    sb.append(" cellpadding=\"").append(escapeAttr(getAttribute("cellpadding", "0"))).append("\"");
-    sb.append(" cellspacing=\"").append(escapeAttr(getAttribute("cellspacing", "0"))).append("\"");
-    sb.append(" width=\"").append(escapeAttr(getAttribute("width", "100%"))).append("\"");
-    sb.append(" border=\"0\"");
-    sb.append(" style=\"").append(tableStyle).append("\"");
-    sb.append(">\n");
-    sb.append(sanitizeContent(node.getInnerHtml()));
-    sb.append("</table>\n");
+    String sb =
+        "<table"
+            + " cellpadding=\""
+            + escapeAttr(getAttribute("cellpadding", "0"))
+            + "\""
+            + " cellspacing=\""
+            + escapeAttr(getAttribute("cellspacing", "0"))
+            + "\""
+            + " width=\""
+            + escapeAttr(getAttribute("width", "100%"))
+            + "\""
+            + " border=\"0\""
+            + " style=\""
+            + tableStyle
+            + "\""
+            + ">\n"
+            + sanitizeContent(node.getInnerHtml())
+            + "</table>\n";
 
-    return sb.toString();
+    return sb;
   }
 }

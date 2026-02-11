@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the EntityTable HTML entity replacement logic.
- */
+/** Tests for the EntityTable HTML entity replacement logic. */
 class EntityTableTest {
 
   @Test

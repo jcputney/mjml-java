@@ -4,13 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Maps HTML5 named entities to their numeric character references.
- * This allows MJML content with HTML entities to be parsed by the
- * strict JDK XML parser which only supports XML entities (&amp;amp;, &amp;lt;, etc).
+ * Maps HTML5 named entities to their numeric character references. This allows MJML content with
+ * HTML entities to be parsed by the strict JDK XML parser which only supports XML entities
+ * (&amp;amp;, &amp;lt;, etc).
  */
 public final class EntityTable {
 
   private static final Map<String, String> ENTITIES = new HashMap<>();
+  // Build a lookup map keyed by entity name (without & and ;) for single-pass scanning
+  private static final Map<String, String> ENTITY_BY_NAME = new HashMap<>();
 
   static {
     // Most common HTML entities
@@ -149,12 +151,6 @@ public final class EntityTable {
     ENTITIES.put("&rlm;", "&#8207;");
   }
 
-  private EntityTable() {
-  }
-
-  // Build a lookup map keyed by entity name (without & and ;) for single-pass scanning
-  private static final Map<String, String> ENTITY_BY_NAME = new HashMap<>();
-
   static {
     for (Map.Entry<String, String> entry : ENTITIES.entrySet()) {
       // Strip leading & and trailing ; from key: "&nbsp;" -> "nbsp"
@@ -164,13 +160,18 @@ public final class EntityTable {
     }
   }
 
+  private EntityTable() {}
+
   /**
-   * Replaces all known HTML named entities in the input string with
-   * their numeric character references. XML entities (&amp;amp;, &amp;lt;, &amp;gt;,
-   * &amp;apos;, &amp;quot;) are left as-is since the XML parser handles them natively.
-   * <p>
-   * This is a single-pass O(n) implementation that scans for {@code &} characters
-   * and looks up the entity name in a hash map.
+   * Replaces all known HTML named entities in the input string with their numeric character
+   * references. XML entities (&amp;amp;, &amp;lt;, &amp;gt;, &amp;apos;, &amp;quot;) are left as-is
+   * since the XML parser handles them natively.
+   *
+   * <p>This is a single-pass O(n) implementation that scans for {@code &} characters and looks up
+   * the entity name in a hash map.
+   *
+   * @param input the input string potentially containing HTML named entities
+   * @return the string with HTML named entities replaced by numeric character references
    */
   public static String replaceEntities(String input) {
     if (input == null || !input.contains("&")) {

@@ -8,9 +8,8 @@ import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for MjWrapper's render variants:
- * normal, normal+bg-image, full-width.
- * These verify structural patterns that must be preserved during refactoring.
+ * Integration tests for MjWrapper's render variants: normal, normal+bg-image, full-width. These
+ * verify structural patterns that must be preserved during refactoring.
  */
 class MjWrapperRenderTest {
 
@@ -23,7 +22,10 @@ class MjWrapperRenderTest {
 
   @Test
   void renderNormalSimple() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-wrapper background-color="#f0f0f0" padding="20px 0">
@@ -46,7 +48,10 @@ class MjWrapperRenderTest {
 
   @Test
   void renderNormalWithBgImage() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-wrapper background-url="https://example.com/wrap-bg.jpg" background-color="#222">
@@ -62,14 +67,18 @@ class MjWrapperRenderTest {
     assertTrue(html.contains("v:fill"), "Should have VML fill");
     assertTrue(html.contains("wrap-bg.jpg"), "Should reference bg image");
     // Background CSS
-    assertTrue(html.contains("url('https://example.com/wrap-bg.jpg')"), "Should have CSS background");
+    assertTrue(
+        html.contains("url('https://example.com/wrap-bg.jpg')"), "Should have CSS background");
     // Child content
     assertTrue(html.contains("With wrapper bg"), "Should render child content");
   }
 
   @Test
   void renderFullWidth() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-wrapper full-width="full-width" background-color="#0000ff">

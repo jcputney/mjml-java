@@ -23,12 +23,12 @@ import java.util.regex.Pattern;
 
 /**
  * An {@link IncludeResolver} that fetches content via HTTP/HTTPS using the JDK {@link HttpClient}.
- * Includes SSRF protection by blocking requests to private/loopback addresses and supporting
- * host allowlists and denylists.
+ * Includes SSRF protection by blocking requests to private/loopback addresses and supporting host
+ * allowlists and denylists.
  *
- * <p>For hostname-based URLs (for example {@code https://cdn.example.com/template.mjml}),
- * configure {@code allowedHosts(...)}. Hostname requests without an explicit allowlist
- * are rejected to reduce SSRF and DNS-rebinding risk.</p>
+ * <p>For hostname-based URLs (for example {@code https://cdn.example.com/template.mjml}), configure
+ * {@code allowedHosts(...)}. Hostname requests without an explicit allowlist are rejected to reduce
+ * SSRF and DNS-rebinding risk.
  */
 public final class UrlIncludeResolver implements IncludeResolver {
 
@@ -43,9 +43,14 @@ public final class UrlIncludeResolver implements IncludeResolver {
   private final int maxResponseSize;
   private final boolean httpsOnly;
 
-  private UrlIncludeResolver(HttpClient httpClient, Set<String> allowedHosts,
-      Set<String> deniedHosts, Duration connectTimeout, Duration readTimeout,
-      int maxResponseSize, boolean httpsOnly) {
+  private UrlIncludeResolver(
+      HttpClient httpClient,
+      Set<String> allowedHosts,
+      Set<String> deniedHosts,
+      Duration connectTimeout,
+      Duration readTimeout,
+      int maxResponseSize,
+      boolean httpsOnly) {
     this.httpClient = httpClient;
     this.allowedHosts = allowedHosts;
     this.deniedHosts = deniedHosts;
@@ -62,6 +67,10 @@ public final class UrlIncludeResolver implements IncludeResolver {
    */
   public static Builder builder() {
     return new Builder();
+  }
+
+  private static boolean isHostname(String host) {
+    return !host.contains(":") && !IPV4_PATTERN.matcher(host).matches();
   }
 
   @Override
@@ -99,7 +108,9 @@ public final class UrlIncludeResolver implements IncludeResolver {
 
     // To reduce DNS-rebinding risk, hostname-based URLs require explicit allowlisting.
     // Keep localhost on the SSRF path so it is rejected as a local address.
-    if (isHostname(normalizedHost) && !"localhost".equals(normalizedHost) && allowedHosts.isEmpty()) {
+    if (isHostname(normalizedHost)
+        && !"localhost".equals(normalizedHost)
+        && allowedHosts.isEmpty()) {
       throw new MjmlIncludeException(
           "Hostname URLs require explicit allowlist configuration: " + host);
     }
@@ -113,18 +124,13 @@ public final class UrlIncludeResolver implements IncludeResolver {
     checkSsrf(host);
 
     try {
-      HttpRequest request = HttpRequest.newBuilder()
-          .uri(uri)
-          .timeout(readTimeout)
-          .GET()
-          .build();
+      HttpRequest request = HttpRequest.newBuilder().uri(uri).timeout(readTimeout).GET().build();
 
-      HttpResponse<InputStream> response = httpClient.send(request,
-          HttpResponse.BodyHandlers.ofInputStream());
+      HttpResponse<InputStream> response =
+          httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
       if (response.statusCode() != 200) {
-        throw new MjmlIncludeException(
-            "HTTP " + response.statusCode() + " for URL: " + path);
+        throw new MjmlIncludeException("HTTP " + response.statusCode() + " for URL: " + path);
       }
 
       return readBodyWithLimit(response.body(), path);
@@ -163,8 +169,10 @@ public final class UrlIncludeResolver implements IncludeResolver {
     try {
       InetAddress[] addresses = InetAddress.getAllByName(host);
       for (InetAddress addr : addresses) {
-        if (addr.isLoopbackAddress() || addr.isSiteLocalAddress()
-            || addr.isLinkLocalAddress() || addr.isAnyLocalAddress()
+        if (addr.isLoopbackAddress()
+            || addr.isSiteLocalAddress()
+            || addr.isLinkLocalAddress()
+            || addr.isAnyLocalAddress()
             || addr.isMulticastAddress()) {
           throw new MjmlIncludeException(
               "SSRF protection: host resolves to private/local address: " + host);
@@ -175,13 +183,7 @@ public final class UrlIncludeResolver implements IncludeResolver {
     }
   }
 
-  private static boolean isHostname(String host) {
-    return !host.contains(":") && !IPV4_PATTERN.matcher(host).matches();
-  }
-
-  /**
-   * Builder for {@link UrlIncludeResolver}.
-   */
+  /** Builder for {@link UrlIncludeResolver}. */
   public static final class Builder {
 
     private HttpClient httpClient;
@@ -193,6 +195,27 @@ public final class UrlIncludeResolver implements IncludeResolver {
     private boolean httpsOnly = true;
 
     private Builder() {}
+
+    private static Set<String> normalizeHosts(String... hosts) {
+      if (hosts == null) {
+        throw new IllegalArgumentException("hosts cannot be null");
+      }
+
+      LinkedHashSet<String> normalized = new LinkedHashSet<>();
+      Arrays.stream(hosts)
+          .forEach(
+              host -> {
+                if (host == null) {
+                  throw new IllegalArgumentException("host cannot be null");
+                }
+                String value = host.trim().toLowerCase(Locale.ROOT);
+                if (value.isEmpty()) {
+                  throw new IllegalArgumentException("host cannot be blank");
+                }
+                normalized.add(value);
+              });
+      return Set.copyOf(normalized);
+    }
 
     /**
      * Sets a custom HttpClient (useful for testing).
@@ -206,10 +229,8 @@ public final class UrlIncludeResolver implements IncludeResolver {
     }
 
     /**
-     * Sets the allowed hosts.
-     * Hostname-based URLs require an explicit allowlist; when configured, only listed hosts
-     * are permitted.
-     * Host values are normalized by trimming and lowercasing.
+     * Sets the allowed hosts. Hostname-based URLs require an explicit allowlist; when configured,
+     * only listed hosts are permitted. Host values are normalized by trimming and lowercasing.
      *
      * @param hosts allowed host names
      * @return this builder
@@ -220,8 +241,8 @@ public final class UrlIncludeResolver implements IncludeResolver {
     }
 
     /**
-     * Sets the denied hosts. These hosts are always blocked.
-     * Host values are normalized by trimming and lowercasing.
+     * Sets the denied hosts. These hosts are always blocked. Host values are normalized by trimming
+     * and lowercasing.
      *
      * @param hosts denied host names
      * @return this builder
@@ -283,32 +304,20 @@ public final class UrlIncludeResolver implements IncludeResolver {
     public UrlIncludeResolver build() {
       HttpClient client = this.httpClient;
       if (client == null) {
-        client = HttpClient.newBuilder()
-            .connectTimeout(connectTimeout)
-            .followRedirects(HttpClient.Redirect.NEVER)
-            .build();
+        client =
+            HttpClient.newBuilder()
+                .connectTimeout(connectTimeout)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
       }
-      return new UrlIncludeResolver(client, allowedHosts, deniedHosts,
-          connectTimeout, readTimeout, maxResponseSize, httpsOnly);
-    }
-
-    private static Set<String> normalizeHosts(String... hosts) {
-      if (hosts == null) {
-        throw new IllegalArgumentException("hosts cannot be null");
-      }
-
-      LinkedHashSet<String> normalized = new LinkedHashSet<>();
-      Arrays.stream(hosts).forEach(host -> {
-        if (host == null) {
-          throw new IllegalArgumentException("host cannot be null");
-        }
-        String value = host.trim().toLowerCase(Locale.ROOT);
-        if (value.isEmpty()) {
-          throw new IllegalArgumentException("host cannot be blank");
-        }
-        normalized.add(value);
-      });
-      return Set.copyOf(normalized);
+      return new UrlIncludeResolver(
+          client,
+          allowedHosts,
+          deniedHosts,
+          connectTimeout,
+          readTimeout,
+          maxResponseSize,
+          httpsOnly);
     }
   }
 }

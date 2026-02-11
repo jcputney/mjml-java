@@ -10,38 +10,50 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The social component ({@code <mj-social>}).
- * Renders a row of social media icon elements. Supports two layout modes:
+ * The social component ({@code <mj-social>}). Renders a row of social media icon elements. Supports
+ * two layout modes:
+ *
  * <ul>
- *   <li>{@code horizontal} &mdash; all icons inline, each in its own table</li>
- *   <li>{@code vertical} &mdash; all icons stacked in a single table</li>
+ *   <li>{@code horizontal} &mdash; all icons inline, each in its own table
+ *   <li>{@code vertical} &mdash; all icons stacked in a single table
  * </ul>
  */
 public class MjSocial extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("align", "center"),
-      Map.entry("border-radius", "3px"),
-      Map.entry("color", "#333333"),
-      Map.entry("container-background-color", ""),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("font-size", "13px"),
-      Map.entry("font-style", ""),
-      Map.entry("font-weight", ""),
-      Map.entry("icon-height", ""),
-      Map.entry("icon-padding", ""),
-      Map.entry("icon-size", "20px"),
-      Map.entry("inner-padding", ""),
-      Map.entry("line-height", "22px"),
-      Map.entry("mode", "horizontal"),
-      Map.entry("padding", "10px 25px"),
-      Map.entry("text-decoration", "none"),
-      Map.entry("text-padding", "4px 4px 4px 0")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("align", "center"),
+          Map.entry("border-radius", "3px"),
+          Map.entry("color", "#333333"),
+          Map.entry("container-background-color", ""),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("font-size", "13px"),
+          Map.entry("font-style", ""),
+          Map.entry("font-weight", ""),
+          Map.entry("icon-height", ""),
+          Map.entry("icon-padding", ""),
+          Map.entry("icon-size", "20px"),
+          Map.entry("inner-padding", ""),
+          Map.entry("line-height", "22px"),
+          Map.entry("mode", "horizontal"),
+          Map.entry("padding", "10px 25px"),
+          Map.entry("text-decoration", "none"),
+          Map.entry("text-padding", "4px 4px 4px 0"));
 
   private final ComponentRegistry registry;
 
-  public MjSocial(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjSocial component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for resolving child components
+   */
+  public MjSocial(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
@@ -80,13 +92,14 @@ public class MjSocial extends BodyComponent {
 
   private void renderHorizontal(StringBuilder sb, List<MjmlNode> elements, String align) {
     // MSO opening
-    sb.append("<!--[if mso | IE]><table align=\"").append(align)
-        .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr><td><![endif]-->\n");
+    sb.append("<!--[if mso | IE]><table align=\"")
+        .append(align)
+        .append(
+            "\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr><td><![endif]-->\n");
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);
-      RenderContext childContext = renderContext.withPosition(i, i == 0,
-          i == elements.size() - 1);
+      RenderContext childContext = renderContext.withPosition(i, i == 0, i == elements.size() - 1);
       BaseComponent component = registry.createComponent(elem, globalContext, childContext);
       if (component instanceof MjSocialElement socialElement) {
         sb.append(socialElement.renderHorizontal(this));
@@ -109,8 +122,7 @@ public class MjSocial extends BodyComponent {
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);
-      RenderContext childContext = renderContext.withPosition(i, i == 0,
-          i == elements.size() - 1);
+      RenderContext childContext = renderContext.withPosition(i, i == 0, i == elements.size() - 1);
       BaseComponent component = registry.createComponent(elem, globalContext, childContext);
       if (component instanceof MjSocialElement socialElement) {
         sb.append(socialElement.renderVertical(this));

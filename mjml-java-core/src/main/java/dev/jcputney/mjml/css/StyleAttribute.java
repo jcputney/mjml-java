@@ -6,18 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Parses, merges, and serializes CSS inline style attributes.
- * Handles specificity-aware merging where higher specificity or later source order wins,
- * and {@code !important} declarations take precedence.
+ * Parses, merges, and serializes CSS inline style attributes. Handles specificity-aware merging
+ * where higher specificity or later source order wins, and {@code !important} declarations take
+ * precedence.
  */
 public final class StyleAttribute {
 
-  private StyleAttribute() {
-  }
+  private StyleAttribute() {}
 
   /**
-   * Parses an inline style string into a list of declarations.
-   * Example: "color: red; font-size: 14px" -> [CssDeclaration("color","red",false), ...]
+   * Parses an inline style string into a list of declarations. Example: "color: red; font-size:
+   * 14px" -> [CssDeclaration("color","red",false), ...]
+   *
+   * @param style the inline CSS style string to parse, or {@code null}
+   * @return a list of parsed {@link CssDeclaration} instances (empty if input is null or blank)
    */
   public static List<CssDeclaration> parse(String style) {
     List<CssDeclaration> result = new ArrayList<>();
@@ -36,6 +38,9 @@ public final class StyleAttribute {
 
   /**
    * Serializes a list of declarations back to an inline style string.
+   *
+   * @param declarations the list of CSS declarations to serialize
+   * @return the serialized inline style string, or an empty string if declarations is null or empty
    */
   public static String serialize(List<CssDeclaration> declarations) {
     if (declarations == null || declarations.isEmpty()) {
@@ -57,21 +62,21 @@ public final class StyleAttribute {
   }
 
   /**
-   * Merges new declarations into existing inline style declarations.
-   * Rules:
+   * Merges new declarations into existing inline style declarations. Rules:
+   *
    * <ol>
-   *   <li>If existing has !important and new doesn't, existing wins</li>
-   *   <li>If new has !important, new wins</li>
-   *   <li>If neither or both have !important, new wins (later source order)</li>
+   *   <li>If existing has !important and new doesn't, existing wins
+   *   <li>If new has !important, new wins
+   *   <li>If neither or both have !important, new wins (later source order)
    * </ol>
    *
-   * @param existing   the current inline style declarations
-   * @param incoming   the new declarations to merge
+   * @param existing the current inline style declarations
+   * @param incoming the new declarations to merge
    * @param incomingSpec specificity of the incoming rule (unused if inline=true)
    * @return merged declarations list
    */
-  public static List<CssDeclaration> merge(List<CssDeclaration> existing,
-      List<CssDeclaration> incoming, CssSpecificity incomingSpec) {
+  public static List<CssDeclaration> merge(
+      List<CssDeclaration> existing, List<CssDeclaration> incoming, CssSpecificity incomingSpec) {
 
     // Use a map to track declarations by property, preserving insertion order
     Map<String, CssDeclaration> merged = new LinkedHashMap<>();
@@ -99,12 +104,11 @@ public final class StyleAttribute {
   }
 
   /**
-   * Splits a style string on semicolons, being careful not to split
-   * within url() or quoted strings.
+   * Splits a style string on semicolons, being careful not to split within url() or quoted strings.
    */
   private static List<String> splitDeclarations(String style) {
     List<String> parts = new ArrayList<>();
-    int depth = 0;       // parentheses depth
+    int depth = 0; // parentheses depth
     boolean inSingle = false;
     boolean inDouble = false;
     int start = 0;

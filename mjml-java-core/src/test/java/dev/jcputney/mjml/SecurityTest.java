@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Security-focused tests for XSS prevention, CDATA injection, input limits,
- * nesting depth, and comment sanitization.
+ * Security-focused tests for XSS prevention, CDATA injection, input limits, nesting depth, and
+ * comment sanitization.
  */
 class SecurityTest {
 
@@ -19,7 +19,9 @@ class SecurityTest {
 
   @Test
   void cdataInjectionInTextContent() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -39,7 +41,9 @@ class SecurityTest {
 
   @Test
   void cdataInjectionInButtonContent() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -63,7 +67,9 @@ class SecurityTest {
     // The XML parser rejects -- inside comments, so we test the HtmlSkeleton
     // sanitization directly. Use a comment without -- that would pass XML parsing,
     // and verify the skeleton output mechanism works.
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <!-- Safe comment here -->
@@ -81,7 +87,8 @@ class SecurityTest {
     String html = MjmlRenderer.render(mjml).html();
     assertNotNull(html);
     // The comment should be preserved in output (without double dashes)
-    assertTrue(html.contains("<!-- Safe comment here -->"),
+    assertTrue(
+        html.contains("<!-- Safe comment here -->"),
         "Valid comments should be preserved in output");
   }
 
@@ -89,9 +96,7 @@ class SecurityTest {
 
   @Test
   void rejectsInputExceedingMaxSize() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxInputSize(100)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().maxInputSize(100).build();
 
     // Create MJML larger than 100 bytes
     StringBuilder large = new StringBuilder("<mjml><mj-body><mj-section><mj-column>");
@@ -101,18 +106,19 @@ class SecurityTest {
     large.append("</mj-column></mj-section></mj-body></mjml>");
 
     assertTrue(large.toString().length() > 100, "Input should exceed max size");
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> MjmlRenderer.render(large.toString(), config),
         "Should reject input exceeding max size");
   }
 
   @Test
   void acceptsInputWithinMaxSize() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxInputSize(10_000)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().maxInputSize(10_000).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -147,7 +153,8 @@ class SecurityTest {
     }
     sb.append("</mj-body></mjml>");
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> MjmlRenderer.render(sb.toString()),
         "Should reject input exceeding default nesting depth of 100");
   }
@@ -157,16 +164,16 @@ class SecurityTest {
   @Test
   void sanitizeOutputConfigurationAvailable() {
     // Verify the sanitizeOutput configuration option exists and can be set
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
     assertTrue(config.isSanitizeOutput(), "sanitizeOutput should be true when set");
 
     MjmlConfiguration defaults = MjmlConfiguration.defaults();
     assertTrue(defaults.isSanitizeOutput(), "sanitizeOutput should default to true");
 
     // Verify rendering still works with sanitizeOutput enabled
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -187,11 +194,11 @@ class SecurityTest {
 
   @Test
   void xssInImageSrcEscapedWhenSanitized() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -206,17 +213,16 @@ class SecurityTest {
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
     // Verify XSS payload is escaped
-    assertFalse(html.contains("onload=\"alert(1)\""),
-        "XSS payload in src should be escaped");
+    assertFalse(html.contains("onload=\"alert(1)\""), "XSS payload in src should be escaped");
   }
 
   @Test
   void xssInImageHrefEscapedWhenSanitized() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -230,17 +236,16 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("onclick=\"alert(2)\""),
-        "XSS payload in href should be escaped");
+    assertFalse(html.contains("onclick=\"alert(2)\""), "XSS payload in href should be escaped");
   }
 
   @Test
   void xssInButtonHrefEscapedWhenSanitized() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -254,17 +259,17 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("onclick=\"alert(1)\""),
-        "XSS payload in button href should be escaped");
+    assertFalse(
+        html.contains("onclick=\"alert(1)\""), "XSS payload in button href should be escaped");
   }
 
   @Test
   void svgDataUriBlockedInImageHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -278,17 +283,17 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("data:image/svg+xml"),
-        "data:image/svg+xml URI should be blocked in href");
+    assertFalse(
+        html.contains("data:image/svg+xml"), "data:image/svg+xml URI should be blocked in href");
   }
 
   @Test
   void svgDataUriBlockedInButtonHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -302,17 +307,18 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("data:image/svg+xml"),
+    assertFalse(
+        html.contains("data:image/svg+xml"),
         "data:image/svg+xml URI should be blocked in button href");
   }
 
   @Test
   void allDataUrisBlockedInHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -326,17 +332,17 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("data:image/png"),
-        "data: URIs should be blocked by allowlist in href");
+    assertFalse(
+        html.contains("data:image/png"), "data: URIs should be blocked by allowlist in href");
   }
 
   @Test
   void xssInSectionCssClassEscapedWhenSanitized() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section css-class="foo&quot; onclick=&quot;alert(1)">
@@ -350,13 +356,15 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("onclick=\"alert(1)\""),
-        "XSS payload in css-class should be escaped");
+    assertFalse(
+        html.contains("onclick=\"alert(1)\""), "XSS payload in css-class should be escaped");
   }
 
   @Test
   void xssInHtmlAttributesEscaped() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -384,28 +392,32 @@ class SecurityTest {
 
   @Test
   void rejectsNegativeMaxInputSize() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> MjmlConfiguration.builder().maxInputSize(-1).build(),
         "Should reject negative maxInputSize");
   }
 
   @Test
   void rejectsZeroMaxInputSize() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> MjmlConfiguration.builder().maxInputSize(0).build(),
         "Should reject zero maxInputSize");
   }
 
   @Test
   void rejectsNegativeMaxNestingDepth() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> MjmlConfiguration.builder().maxNestingDepth(-1).build(),
         "Should reject negative maxNestingDepth");
   }
 
   @Test
   void rejectsZeroMaxNestingDepth() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> MjmlConfiguration.builder().maxNestingDepth(0).build(),
         "Should reject zero maxNestingDepth");
   }
@@ -414,7 +426,9 @@ class SecurityTest {
 
   @Test
   void handlesInvalidWidthAttribute() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body width="not-a-number">
             <mj-section>
@@ -434,7 +448,9 @@ class SecurityTest {
 
   @Test
   void handlesInvalidPaddingValues() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section padding="invalid">
@@ -454,7 +470,9 @@ class SecurityTest {
 
   @Test
   void handlesEmptyAttributeValues() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section background-color="" padding="">
@@ -476,17 +494,19 @@ class SecurityTest {
   @Test
   void contentSanitizerDefaultIsNull() {
     MjmlConfiguration config = MjmlConfiguration.defaults();
-    assertNull(config.getContentSanitizer(),
-        "ContentSanitizer should default to null");
+    assertNull(config.getContentSanitizer(), "ContentSanitizer should default to null");
   }
 
   @Test
   void contentSanitizerAppliedToMjText() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .contentSanitizer(html -> html.replace("<script>", "&lt;script&gt;"))
-        .build();
+    MjmlConfiguration config =
+        MjmlConfiguration.builder()
+            .contentSanitizer(html -> html.replace("<script>", "&lt;script&gt;"))
+            .build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -500,19 +520,20 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("<script>"),
+    assertFalse(
+        html.contains("<script>"),
         "ContentSanitizer should have stripped <script> tags from mj-text");
-    assertTrue(html.contains("&lt;script&gt;"),
-        "ContentSanitizer replacement should be present");
+    assertTrue(html.contains("&lt;script&gt;"), "ContentSanitizer replacement should be present");
   }
 
   @Test
   void contentSanitizerAppliedToMjButton() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .contentSanitizer(html -> html.replace("evil", "safe"))
-        .build();
+    MjmlConfiguration config =
+        MjmlConfiguration.builder().contentSanitizer(html -> html.replace("evil", "safe")).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -526,19 +547,21 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("evil"),
-        "ContentSanitizer should have replaced 'evil' in mj-button");
-    assertTrue(html.contains("safe"),
-        "ContentSanitizer replacement should be present in mj-button");
+    assertFalse(html.contains("evil"), "ContentSanitizer should have replaced 'evil' in mj-button");
+    assertTrue(
+        html.contains("safe"), "ContentSanitizer replacement should be present in mj-button");
   }
 
   @Test
   void contentSanitizerAppliedToMjRaw() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .contentSanitizer(html -> html.replace("<script>bad</script>", ""))
-        .build();
+    MjmlConfiguration config =
+        MjmlConfiguration.builder()
+            .contentSanitizer(html -> html.replace("<script>bad</script>", ""))
+            .build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -552,16 +575,18 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertTrue(html.contains("<div>Clean</div>"),
-        "Non-script content should remain");
-    assertFalse(html.contains("<script>bad</script>"),
+    assertTrue(html.contains("<div>Clean</div>"), "Non-script content should remain");
+    assertFalse(
+        html.contains("<script>bad</script>"),
         "ContentSanitizer should have removed script from mj-raw");
   }
 
   @Test
   void contentPassesThroughWhenNoSanitizerConfigured() {
     // Default config - no sanitizer
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -575,34 +600,34 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml).html();
     assertNotNull(html);
-    assertTrue(html.contains("<b>Bold</b>"),
+    assertTrue(
+        html.contains("<b>Bold</b>"),
         "Content should pass through unchanged when no sanitizer is configured");
-    assertTrue(html.contains("<i>italic</i>"),
+    assertTrue(
+        html.contains("<i>italic</i>"),
         "Content should pass through unchanged when no sanitizer is configured");
   }
 
   @Test
   void contentSanitizerAvailableViaToBuilder() {
     ContentSanitizer sanitizer = html -> html.toUpperCase();
-    MjmlConfiguration original = MjmlConfiguration.builder()
-        .contentSanitizer(sanitizer)
-        .build();
+    MjmlConfiguration original = MjmlConfiguration.builder().contentSanitizer(sanitizer).build();
 
     MjmlConfiguration copy = original.toBuilder().build();
-    assertEquals(sanitizer, copy.getContentSanitizer(),
-        "toBuilder should preserve contentSanitizer");
+    assertEquals(
+        sanitizer, copy.getContentSanitizer(), "toBuilder should preserve contentSanitizer");
   }
 
   // -- data:image/svg+xml URI blocking (Phase 4 addition) --
 
   @Test
   void dataImageSvgXmlBlockedInImageHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
     // Use base64-encoded SVG to avoid XML parse issues with < in attributes
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -616,17 +641,17 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("data:image/svg+xml"),
-        "data:image/svg+xml should be blocked in image href");
+    assertFalse(
+        html.contains("data:image/svg+xml"), "data:image/svg+xml should be blocked in image href");
   }
 
   @Test
   void dataImageSvgXmlBase64BlockedInButtonHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -640,18 +665,19 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("data:image/svg+xml"),
+    assertFalse(
+        html.contains("data:image/svg+xml"),
         "data:image/svg+xml;base64 should be blocked in button href");
   }
 
   @Test
   void dataImageSvgXmlCaseInsensitiveBlocked() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
     // Use uppercase scheme to test case-insensitivity, with base64 to avoid XML issues
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -666,7 +692,8 @@ class SecurityTest {
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
     // Case-insensitive check
-    assertFalse(html.toLowerCase().contains("data:image/svg+xml"),
+    assertFalse(
+        html.toLowerCase().contains("data:image/svg+xml"),
         "data:image/svg+xml should be blocked regardless of case");
   }
 
@@ -674,9 +701,7 @@ class SecurityTest {
 
   @Test
   void customNestingDepthLimitRespected() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxNestingDepth(5)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().maxNestingDepth(5).build();
 
     // Build deeply nested MJML that exceeds depth 5
     // mjml(1) > mj-body(2) > mj-section(3) > mj-column(4) > mj-text(5) is exactly 5
@@ -691,18 +716,19 @@ class SecurityTest {
     }
     sb.append("</mj-body></mjml>");
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> MjmlRenderer.render(sb.toString(), config),
         "Should reject input exceeding custom maxNestingDepth of 5");
   }
 
   @Test
   void normalNestingSucceedsWithCustomDepth() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .maxNestingDepth(50)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().maxNestingDepth(50).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -716,19 +742,19 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertTrue(html.contains("Normal depth"),
-        "Normal nesting should succeed with reasonable depth limit");
+    assertTrue(
+        html.contains("Normal depth"), "Normal nesting should succeed with reasonable depth limit");
   }
 
   // -- JavaScript/VBScript URI blocking (additional Phase 4 tests) --
 
   @Test
   void javascriptUriBlockedInImageHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -742,17 +768,16 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("javascript:"),
-        "javascript: URI should be blocked in image href");
+    assertFalse(html.contains("javascript:"), "javascript: URI should be blocked in image href");
   }
 
   @Test
   void vbscriptUriBlockedInButtonHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -766,18 +791,17 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("vbscript:"),
-        "vbscript: URI should be blocked in button href");
+    assertFalse(html.contains("vbscript:"), "vbscript: URI should be blocked in button href");
   }
 
   @Test
   void dataTextHtmlUriBlockedInHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
     // Use base64 encoding to avoid XML parse issues with < in attributes
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -791,18 +815,17 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertFalse(html.contains("data:text/html"),
-        "data:text/html URI should be blocked in href");
+    assertFalse(html.contains("data:text/html"), "data:text/html URI should be blocked in href");
   }
 
   @Test
   void safeUrisAllowedInHref() {
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
     // Use &amp; instead of bare & for valid XML attribute
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -816,7 +839,7 @@ class SecurityTest {
 
     String html = MjmlRenderer.render(mjml, config).html();
     assertNotNull(html);
-    assertTrue(html.contains("https://example.com/page"),
-        "Safe HTTPS URI should be allowed in href");
+    assertTrue(
+        html.contains("https://example.com/page"), "Safe HTTPS URI should be allowed in href");
   }
 }

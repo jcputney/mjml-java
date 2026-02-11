@@ -5,11 +5,16 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 
-/**
- * Sets the preview text (preheader) from mj-preview content.
- */
+/** Sets the preview text (preheader) from mj-preview content. */
 public class MjPreview extends HeadComponent {
 
+  /**
+   * Creates a new MjPreview component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
   public MjPreview(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

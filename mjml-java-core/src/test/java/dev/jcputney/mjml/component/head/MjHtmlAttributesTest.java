@@ -1,20 +1,18 @@
 package dev.jcputney.mjml.component.head;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import dev.jcputney.mjml.MjmlConfiguration;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for mj-html-attributes processing and application.
- */
+/** Tests for mj-html-attributes processing and application. */
 class MjHtmlAttributesTest {
 
   @Test
   void appliesDataAttributeToMatchingElement() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -35,13 +33,16 @@ class MjHtmlAttributesTest {
 
     String html = MjmlRenderer.render(mjml).html();
     assertNotNull(html);
-    assertTrue(html.contains("data-id=\"123\""),
+    assertTrue(
+        html.contains("data-id=\"123\""),
         "Should apply data-id attribute to element matching .custom-class");
   }
 
   @Test
   void appliesMultipleAttributesToSameSelector() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -69,7 +70,9 @@ class MjHtmlAttributesTest {
 
   @Test
   void doesNotApplyToNonMatchingElements() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -90,13 +93,15 @@ class MjHtmlAttributesTest {
 
     String html = MjmlRenderer.render(mjml).html();
     assertNotNull(html);
-    assertTrue(!html.contains("data-test"),
-        "Should not apply attribute when no element matches selector");
+    assertFalse(
+        html.contains("data-test"), "Should not apply attribute when no element matches selector");
   }
 
   @Test
   void handlesEmptyHtmlAttributes() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -119,7 +124,9 @@ class MjHtmlAttributesTest {
 
   @Test
   void handlesMultipleSelectorsInSameBlock() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-html-attributes>

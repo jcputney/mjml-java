@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 
 class MjmlServiceTest {
 
-  private static final String SIMPLE_MJML = """
+  private static final String SIMPLE_MJML =
+      // language=MJML
+      """
       <mjml>
         <mj-head>
           <mj-title>Test</mj-title>

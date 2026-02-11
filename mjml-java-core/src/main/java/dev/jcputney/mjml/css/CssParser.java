@@ -5,27 +5,21 @@ import java.util.List;
 
 /**
  * Parses CSS text into a list of {@link CssRule} objects.
- * <p>
- * Handles:
+ *
+ * <p>Handles:
+ *
  * <ul>
- *   <li>Regular rules (selector { declarations })</li>
- *   <li>Comments (/* ... *{@literal /})</li>
- *   <li>@-rules (@media, @font-face, @keyframes) which are preserved but not parsed as rules</li>
+ *   <li>Regular rules (selector { declarations })
+ *   <li>Comments (/* ... *{@literal /})
+ *   <li>@-rules (@media, @font-face, @keyframes) which are preserved but not parsed as rules
  * </ul>
- * <p>
- * At-rules that should not be inlined are collected separately so they can be
- * placed back into {@code <style>} blocks in the output.
+ *
+ * <p>At-rules that should not be inlined are collected separately so they can be placed back into
+ * {@code <style>} blocks in the output.
  */
 public final class CssParser {
 
-  private CssParser() {
-  }
-
-  /**
-   * Result of parsing CSS: regular rules to inline and preserved at-rules.
-   */
-  public record ParseResult(List<CssRule> rules, List<String> preservedAtRules) {
-  }
+  private CssParser() {}
 
   /**
    * Parses CSS text into rules and preserved at-rules.
@@ -68,14 +62,15 @@ public final class CssParser {
 
   /**
    * Parses CSS text and returns only the inlineable rules (convenience method).
+   *
+   * @param css the CSS text to parse
+   * @return the list of parsed CSS rules suitable for inlining
    */
   public static List<CssRule> parseRules(String css) {
     return parse(css).rules();
   }
 
-  /**
-   * Strips CSS comments (/* ... *{@literal /}).
-   */
+  /** Strips CSS comments (/* ... *{@literal /}). */
   private static String stripComments(String css) {
     StringBuilder sb = new StringBuilder(css.length());
     int i = 0;
@@ -96,24 +91,28 @@ public final class CssParser {
   }
 
   /**
-   * Parses an @-rule starting at pos. Handles both block (@media {}) and
-   * statement (@import ..;) at-rules.
+   * Parses an @-rule starting at pos. Handles both block (@media {}) and statement (@import ..;)
+   * at-rules.
    */
-  private static int parseAtRule(String css, int pos, List<CssRule> rules,
-      List<String> preserved) {
+  private static int parseAtRule(String css, int pos, List<CssRule> rules, List<String> preserved) {
     int len = css.length();
 
     // Find the at-rule name
     int nameStart = pos + 1;
     int nameEnd = nameStart;
-    while (nameEnd < len && !Character.isWhitespace(css.charAt(nameEnd))
-        && css.charAt(nameEnd) != '{' && css.charAt(nameEnd) != ';') {
+    while (nameEnd < len
+        && !Character.isWhitespace(css.charAt(nameEnd))
+        && css.charAt(nameEnd) != '{'
+        && css.charAt(nameEnd) != ';') {
       nameEnd++;
     }
     String name = css.substring(nameStart, nameEnd).toLowerCase();
 
-    if ("media".equals(name) || "keyframes".equals(name) || "font-face".equals(name)
-        || name.startsWith("-webkit-keyframes") || name.startsWith("-moz-keyframes")) {
+    if ("media".equals(name)
+        || "keyframes".equals(name)
+        || "font-face".equals(name)
+        || name.startsWith("-webkit-keyframes")
+        || name.startsWith("-moz-keyframes")) {
       // Block at-rule - find matching closing brace
       int braceStart = css.indexOf('{', nameEnd);
       if (braceStart < 0) {
@@ -139,9 +138,7 @@ public final class CssParser {
     }
   }
 
-  /**
-   * Parses a regular CSS rule starting at pos.
-   */
+  /** Parses a regular CSS rule starting at pos. */
   private static int parseRule(String css, int pos, List<CssRule> rules) {
     int len = css.length();
 
@@ -172,9 +169,7 @@ public final class CssParser {
     return braceEnd + 1;
   }
 
-  /**
-   * Parses a semicolon-separated list of declarations.
-   */
+  /** Parses a semicolon-separated list of declarations. */
   static List<CssDeclaration> parseDeclarations(String body) {
     List<CssDeclaration> declarations = new ArrayList<>();
     if (body == null || body.isBlank()) {
@@ -217,10 +212,7 @@ public final class CssParser {
     return declarations;
   }
 
-  /**
-   * Finds the matching closing brace for an opening brace at pos.
-   * Handles nested braces.
-   */
+  /** Finds the matching closing brace for an opening brace at pos. Handles nested braces. */
   private static int findMatchingBrace(String css, int openPos) {
     int depth = 1;
     boolean inSingle = false;
@@ -252,4 +244,12 @@ public final class CssParser {
     }
     return pos;
   }
+
+  /**
+   * Result of parsing CSS: regular rules to inline and preserved at-rules.
+   *
+   * @param rules the list of parsed CSS rules suitable for inlining
+   * @param preservedAtRules the list of at-rules preserved as raw strings
+   */
+  public record ParseResult(List<CssRule> rules, List<String> preservedAtRules) {}
 }

@@ -22,7 +22,7 @@ jobs:
           ssh-private-key: ${{ secrets.MAVEN_RELEASE_SSH_KEY }}
       - uses: actions/setup-java@v4
         with:
-          java-version: "17"
+          java-version: "25"
           distribution: "temurin"
           cache: "maven"
           server-id: central

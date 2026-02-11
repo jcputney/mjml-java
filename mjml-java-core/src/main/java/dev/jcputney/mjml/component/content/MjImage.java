@@ -8,38 +8,44 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The image component (&lt;mj-image&gt;).
- * Renders a responsive image that goes full-width on mobile.
- * Optionally wraps the image in an anchor tag when href is provided.
+ * The image component (&lt;mj-image&gt;). Renders a responsive image that goes full-width on
+ * mobile. Optionally wraps the image in an anchor tag when href is provided.
  */
 public class MjImage extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("align", "center"),
-      Map.entry("border", "0"),
-      Map.entry("border-bottom", ""),
-      Map.entry("border-left", ""),
-      Map.entry("border-radius", ""),
-      Map.entry("border-right", ""),
-      Map.entry("border-top", ""),
-      Map.entry("container-background-color", ""),
-      Map.entry("height", "auto"),
-      Map.entry("max-height", ""),
-      Map.entry("name", ""),
-      Map.entry("padding", "10px 25px"),
-      Map.entry("src", ""),
-      Map.entry("target", "_blank"),
-      Map.entry("title", ""),
-      Map.entry("width", ""),
-      Map.entry("alt", ""),
-      Map.entry("fluid-on-mobile", ""),
-      Map.entry("href", ""),
-      Map.entry("rel", ""),
-      Map.entry("srcset", ""),
-      Map.entry("sizes", ""),
-      Map.entry("usemap", "")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("align", "center"),
+          Map.entry("border", "0"),
+          Map.entry("border-bottom", ""),
+          Map.entry("border-left", ""),
+          Map.entry("border-radius", ""),
+          Map.entry("border-right", ""),
+          Map.entry("border-top", ""),
+          Map.entry("container-background-color", ""),
+          Map.entry("height", "auto"),
+          Map.entry("max-height", ""),
+          Map.entry("name", ""),
+          Map.entry("padding", "10px 25px"),
+          Map.entry("src", ""),
+          Map.entry("target", "_blank"),
+          Map.entry("title", ""),
+          Map.entry("width", ""),
+          Map.entry("alt", ""),
+          Map.entry("fluid-on-mobile", ""),
+          Map.entry("href", ""),
+          Map.entry("rel", ""),
+          Map.entry("srcset", ""),
+          Map.entry("sizes", ""),
+          Map.entry("usemap", ""));
 
+  /**
+   * Creates a new MjImage component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
   public MjImage(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
@@ -115,11 +121,15 @@ public class MjImage extends BodyComponent {
     boolean fluidOnMobile = "true".equals(getAttribute("fluid-on-mobile", ""));
 
     StringBuilder sb = new StringBuilder();
-    sb.append("                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-    sb.append(" style=\"").append(buildStyle(orderedMap(
-        "border-collapse", "collapse",
-        "border-spacing", "0px"
-    ))).append("\"");
+    sb.append(
+        "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
+    sb.append(" style=\"")
+        .append(
+            buildStyle(
+                orderedMap(
+                    "border-collapse", "collapse",
+                    "border-spacing", "0px")))
+        .append("\"");
     if (fluidOnMobile) {
       sb.append(" class=\"mj-full-width-mobile\"");
     }
@@ -158,9 +168,8 @@ public class MjImage extends BodyComponent {
   }
 
   /**
-   * Computes the actual image width in pixels: the minimum of the declared
-   * width attribute (parsed as px) and the available width (container minus
-   * the image component's own horizontal padding).
+   * Computes the actual image width in pixels: the minimum of the declared width attribute (parsed
+   * as px) and the available width (container minus the image component's own horizontal padding).
    */
   private double computeImageWidth(double containerWidth) {
     // Subtract the image's own horizontal padding from container width

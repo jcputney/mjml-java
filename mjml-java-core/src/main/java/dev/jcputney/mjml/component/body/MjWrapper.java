@@ -15,34 +15,44 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The wrapper component (&lt;mj-wrapper&gt;).
- * Similar to mj-section but wraps multiple sections together,
- * allowing a shared background color/image across sections.
- * Each child section stacks vertically within the wrapper.
+ * The wrapper component (&lt;mj-wrapper&gt;). Similar to mj-section but wraps multiple sections
+ * together, allowing a shared background color/image across sections. Each child section stacks
+ * vertically within the wrapper.
  */
 public class MjWrapper extends AbstractSectionComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("background-color", ""),
-      Map.entry("background-position", "top center"),
-      Map.entry("background-position-x", ""),
-      Map.entry("background-position-y", ""),
-      Map.entry("background-repeat", "repeat"),
-      Map.entry("background-size", "auto"),
-      Map.entry("background-url", ""),
-      Map.entry("border", "none"),
-      Map.entry("border-bottom", ""),
-      Map.entry("border-left", ""),
-      Map.entry("border-radius", ""),
-      Map.entry("border-right", ""),
-      Map.entry("border-top", ""),
-      Map.entry("full-width", ""),
-      Map.entry("gap", ""),
-      Map.entry("padding", "20px 0"),
-      Map.entry("text-align", "center")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("background-color", ""),
+          Map.entry("background-position", "top center"),
+          Map.entry("background-position-x", ""),
+          Map.entry("background-position-y", ""),
+          Map.entry("background-repeat", "repeat"),
+          Map.entry("background-size", "auto"),
+          Map.entry("background-url", ""),
+          Map.entry("border", "none"),
+          Map.entry("border-bottom", ""),
+          Map.entry("border-left", ""),
+          Map.entry("border-radius", ""),
+          Map.entry("border-right", ""),
+          Map.entry("border-top", ""),
+          Map.entry("full-width", ""),
+          Map.entry("gap", ""),
+          Map.entry("padding", "20px 0"),
+          Map.entry("text-align", "center"));
 
-  public MjWrapper(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjWrapper component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for resolving child components
+   */
+  public MjWrapper(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext, registry);
   }
@@ -69,9 +79,10 @@ public class MjWrapper extends AbstractSectionComponent {
   private String renderNormal() {
     String bgUrl = getAttribute("background-url", "");
     String bgColor = getAttribute("background-color");
-    String vmlRect = hasBackgroundUrl()
-        ? buildVmlRect(globalContext.metadata().getContainerWidth() + "px", bgUrl, bgColor)
-        : "";
+    String vmlRect =
+        hasBackgroundUrl()
+            ? buildVmlRect(globalContext.metadata().getContainerWidth() + "px", bgUrl, bgColor)
+            : "";
     StringBuilder innerContent = new StringBuilder();
     renderWrappedChildren(innerContent);
     return renderNormalScaffold(vmlRect, innerContent.toString(), "");
@@ -84,9 +95,14 @@ public class MjWrapper extends AbstractSectionComponent {
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
 
     // Full-width outer HTML table (real table, not MSO conditional)
-    sb.append("    <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"");
+    sb.append(
+        "    <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"");
     if (hasBg) {
-      sb.append("background:").append(bgColor).append(";background-color:").append(bgColor).append(";");
+      sb.append("background:")
+          .append(bgColor)
+          .append(";background-color:")
+          .append(bgColor)
+          .append(";");
     }
     sb.append("width:100%;\">\n");
     sb.append("      <tbody>\n");
@@ -94,16 +110,25 @@ public class MjWrapper extends AbstractSectionComponent {
     sb.append("          <td>\n");
 
     // MSO inner table for width constraint
-    sb.append("            ").append(MsoHelper.conditionalStart())
-        .append(MsoHelper.msoTableOpening(containerWidth, escapeAttr(getCssClass()),
-            hasBg ? escapeAttr(bgColor) : null, MsoHelper.MSO_TD_STYLE))
-        .append(MsoHelper.conditionalEnd()).append("\n");
+    sb.append("            ")
+        .append(MsoHelper.conditionalStart())
+        .append(
+            MsoHelper.msoTableOpening(
+                containerWidth,
+                escapeAttr(getCssClass()),
+                hasBg ? escapeAttr(bgColor) : null,
+                MsoHelper.MSO_TD_STYLE))
+        .append(MsoHelper.conditionalEnd())
+        .append("\n");
 
     // Inner wrapper div with max-width
-    sb.append("            <div style=\"margin:0px auto;max-width:").append(containerWidth).append("px;\">\n");
+    sb.append("            <div style=\"margin:0px auto;max-width:")
+        .append(containerWidth)
+        .append("px;\">\n");
 
     // Inner table (NO background — background is on the outer table)
-    sb.append("              <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
+    sb.append(
+        "              <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
     sb.append("                <tbody>\n");
     sb.append("                  <tr>\n");
 
@@ -130,22 +155,28 @@ public class MjWrapper extends AbstractSectionComponent {
   }
 
   /**
-   * Renders child sections inside the wrapper. Each child gets its own MSO table
-   * wrapper pair, with tr/td transitions between them.
+   * Renders child sections inside the wrapper. Each child gets its own MSO table wrapper pair, with
+   * tr/td transitions between them.
    */
   private void renderWrappedChildren(StringBuilder sb) {
     List<MjmlNode> sectionChildren = getSectionChildren();
 
     if (sectionChildren.isEmpty()) {
       // Empty wrapper emits an empty MSO table
-      sb.append("              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table><![endif]-->\n");
+      sb.append(
+          "              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table><![endif]-->\n");
       return;
     }
 
     int containerWidth = globalContext.metadata().getContainerWidth();
     CssBoxModel wrapperBox = getBoxModel();
-    int innerWidth = (int) (containerWidth - wrapperBox.paddingLeft() - wrapperBox.paddingRight()
-        - wrapperBox.borderLeftWidth() - wrapperBox.borderRightWidth());
+    int innerWidth =
+        (int)
+            (containerWidth
+                - wrapperBox.paddingLeft()
+                - wrapperBox.paddingRight()
+                - wrapperBox.borderLeftWidth()
+                - wrapperBox.borderRightWidth());
 
     for (int i = 0; i < sectionChildren.size(); i++) {
       MjmlNode child = sectionChildren.get(i);
@@ -153,12 +184,20 @@ public class MjWrapper extends AbstractSectionComponent {
       boolean isLast = (i == sectionChildren.size() - 1);
 
       if (isFirst) {
-        // Open first MSO wrapper: table > tr > td (container width) > inner table (inner width) > tr > td
-        sb.append("              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td class=\"\" width=\"")
-            .append(containerWidth).append("px\" >");
-        sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
-            .append(innerWidth).append("px;\" width=\"").append(innerWidth).append("\" >");
-        sb.append("<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
+        // Open first MSO wrapper: table > tr > td (container width) > inner table (inner width) >
+        // tr > td
+        sb.append(
+                "              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td class=\"\" width=\"")
+            .append(containerWidth)
+            .append("px\" >");
+        sb.append(
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
+            .append(innerWidth)
+            .append("px;\" width=\"")
+            .append(innerWidth)
+            .append("\" >");
+        sb.append(
+            "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
       }
 
       // Insert gap spacer between adjacent children (not before the first)
@@ -166,16 +205,20 @@ public class MjWrapper extends AbstractSectionComponent {
       if (!isFirst && !gap.isEmpty()) {
         int gapPx = CssUnitParser.parsePixels(gap, 0);
         if (gapPx > 0) {
-          sb.append("              <div style=\"font-size:0;line-height:").append(gapPx)
-              .append("px;height:").append(gapPx).append("px;\"> </div>\n");
+          sb.append("              <div style=\"font-size:0;line-height:")
+              .append(gapPx)
+              .append("px;height:")
+              .append(gapPx)
+              .append("px;\"> </div>\n");
         }
       }
 
       // Render child section in "inside wrapper" mode
-      RenderContext childContext = renderContext
-          .withWidth(innerWidth)
-          .withPosition(i, isFirst, isLast)
-          .withInsideWrapper(true);
+      RenderContext childContext =
+          renderContext
+              .withWidth(innerWidth)
+              .withPosition(i, isFirst, isLast)
+              .withInsideWrapper(true);
 
       BaseComponent component = registry.createComponent(child, globalContext, childContext);
       if (component instanceof BodyComponent bodyComponent) {
@@ -183,15 +226,24 @@ public class MjWrapper extends AbstractSectionComponent {
       }
 
       if (!isLast) {
-        // MSO transition between children: close inner table, close td, new tr > td (container width), new inner table (inner width)
-        sb.append("              <!--[if mso | IE]></td></tr></table></td></tr><tr><td class=\"\" width=\"")
-            .append(containerWidth).append("px\" >");
-        sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
-            .append(innerWidth).append("px;\" width=\"").append(innerWidth).append("\" >");
-        sb.append("<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
+        // MSO transition between children: close inner table, close td, new tr > td (container
+        // width), new inner table (inner width)
+        sb.append(
+                "              <!--[if mso | IE]></td></tr></table></td></tr><tr><td class=\"\" width=\"")
+            .append(containerWidth)
+            .append("px\" >");
+        sb.append(
+                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
+            .append(innerWidth)
+            .append("px;\" width=\"")
+            .append(innerWidth)
+            .append("\" >");
+        sb.append(
+            "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
       } else {
         // Close last MSO wrapper: close inner table, close td, close tr, close outer table
-        sb.append("              <!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->\n");
+        sb.append(
+            "              <!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->\n");
       }
     }
   }
@@ -208,9 +260,11 @@ public class MjWrapper extends AbstractSectionComponent {
   }
 
   private String buildVmlRect(String widthStyle, String bgUrl, String bgColor) {
-    return VmlHelper.buildWrapperVmlRect(widthStyle, bgUrl, bgColor,
+    return VmlHelper.buildWrapperVmlRect(
+        widthStyle,
+        bgUrl,
+        bgColor,
         resolveBackgroundPosition(),
         getAttribute("background-size", "auto"));
   }
-
 }

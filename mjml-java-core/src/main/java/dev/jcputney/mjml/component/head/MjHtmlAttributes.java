@@ -8,14 +8,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Processes mj-html-attributes to add custom HTML attributes to output elements.
- * Children are mj-selector elements, each with a path attribute (CSS selector)
- * and mj-html-attribute children defining the attributes to add.
+ * Processes mj-html-attributes to add custom HTML attributes to output elements. Children are
+ * mj-selector elements, each with a path attribute (CSS selector) and mj-html-attribute children
+ * defining the attributes to add.
  */
 public class MjHtmlAttributes extends HeadComponent {
 
-  public MjHtmlAttributes(MjmlNode node, GlobalContext globalContext,
-      RenderContext renderContext) {
+  /**
+   * Creates a new MjHtmlAttributes component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
+  public MjHtmlAttributes(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
 

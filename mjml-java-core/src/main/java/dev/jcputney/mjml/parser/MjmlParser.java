@@ -19,13 +19,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 /**
- * Parses preprocessed MJML source into an MjmlDocument.
- * Uses the JDK DOM parser to build a DOM tree, then converts
- * it to our lightweight MjmlNode tree.
+ * Parses preprocessed MJML source into an MjmlDocument. Uses the JDK DOM parser to build a DOM
+ * tree, then converts it to our lightweight MjmlNode tree.
  */
 public final class MjmlParser {
 
   private static final DocumentBuilderFactory FACTORY;
+  private static final int DEFAULT_MAX_DEPTH = 100;
 
   static {
     try {
@@ -41,25 +41,26 @@ public final class MjmlParser {
     }
   }
 
-  private MjmlParser() {
-  }
-
-  private static final int DEFAULT_MAX_DEPTH = 100;
+  private MjmlParser() {}
 
   /**
-   * Parses raw MJML source into an MjmlDocument using the default maximum nesting depth.
-   * The source is preprocessed (CDATA wrapping, entity replacement) before XML parsing.
+   * Parses raw MJML source into an MjmlDocument using the default maximum nesting depth. The source
+   * is preprocessed (CDATA wrapping, entity replacement) before XML parsing.
+   *
+   * @param mjmlSource the raw MJML markup to parse
+   * @return the parsed {@link MjmlDocument}
    */
   public static MjmlDocument parse(String mjmlSource) {
     return parse(mjmlSource, DEFAULT_MAX_DEPTH);
   }
 
   /**
-   * Parses raw MJML source into an MjmlDocument with a configurable maximum nesting depth.
-   * The source is preprocessed (CDATA wrapping, entity replacement) before XML parsing.
+   * Parses raw MJML source into an MjmlDocument with a configurable maximum nesting depth. The
+   * source is preprocessed (CDATA wrapping, entity replacement) before XML parsing.
    *
-   * @param mjmlSource    the raw MJML markup
+   * @param mjmlSource the raw MJML markup
    * @param maxNestingDepth maximum allowed element nesting depth
+   * @return the parsed {@link MjmlDocument}
    */
   public static MjmlDocument parse(String mjmlSource, int maxNestingDepth) {
     if (mjmlSource == null || mjmlSource.isBlank()) {
@@ -102,8 +103,7 @@ public final class MjmlParser {
   private static MjmlParseException buildParseException(SAXParseException spe, Exception cause) {
     int line = spe.getLineNumber();
     int col = spe.getColumnNumber();
-    String location = (line >= 0 ? " at line " + line : "")
-        + (col >= 0 ? ", column " + col : "");
+    String location = (line >= 0 ? " at line " + line : "") + (col >= 0 ? ", column " + col : "");
     return new MjmlParseException(
         "Failed to parse MJML" + location + ": " + spe.getMessage(), cause);
   }
@@ -127,7 +127,8 @@ public final class MjmlParser {
       Node child = childNodes.item(i);
 
       switch (child.getNodeType()) {
-        case Node.ELEMENT_NODE -> node.addChild(convertElement((Element) child, depth + 1, maxDepth));
+        case Node.ELEMENT_NODE ->
+            node.addChild(convertElement((Element) child, depth + 1, maxDepth));
         case Node.TEXT_NODE -> {
           String text = ((Text) child).getWholeText();
           if (!text.isBlank()) {

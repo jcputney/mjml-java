@@ -14,35 +14,43 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * Auto-configuration for mjml-java.
- * Provides default beans for {@link IncludeResolver}, {@link MjmlConfiguration},
- * and {@link MjmlService}.
+ * Auto-configuration for mjml-java. Provides default beans for {@link IncludeResolver}, {@link
+ * MjmlConfiguration}, and {@link MjmlService}.
  */
 @AutoConfiguration
 @EnableConfigurationProperties(MjmlProperties.class)
 @ConditionalOnClass(MjmlRenderer.class)
 public class MjmlAutoConfiguration {
 
+  /** Creates a new {@code MjmlAutoConfiguration} instance. */
+  public MjmlAutoConfiguration() {}
+
   /**
    * Auto-configures an include resolver backed by Spring {@link ResourceLoader}.
+   *
+   * @param resourceLoader the Spring resource loader used to resolve include paths
+   * @param properties the MJML configuration properties
+   * @return the configured include resolver
    */
   @Bean
   @ConditionalOnMissingBean
-  public IncludeResolver mjmlIncludeResolver(ResourceLoader resourceLoader,
-      MjmlProperties properties) {
+  public IncludeResolver mjmlIncludeResolver(
+      ResourceLoader resourceLoader, MjmlProperties properties) {
     return new SpringResourceIncludeResolver(
-        resourceLoader,
-        properties.getTemplateLocation(),
-        properties.getIncludeAllowedSchemes());
+        resourceLoader, properties.getTemplateLocation(), properties.getIncludeAllowedSchemes());
   }
 
   /**
    * Auto-configures {@link MjmlConfiguration} from {@code spring.mjml.*} properties.
+   *
+   * @param properties the MJML configuration properties
+   * @param includeResolver the include resolver to use
+   * @return the configured MJML configuration
    */
   @Bean
   @ConditionalOnMissingBean
-  public MjmlConfiguration mjmlConfiguration(MjmlProperties properties,
-      IncludeResolver includeResolver) {
+  public MjmlConfiguration mjmlConfiguration(
+      MjmlProperties properties, IncludeResolver includeResolver) {
     return MjmlConfiguration.builder()
         .language(properties.getLanguage())
         .direction(properties.getDirection())
@@ -56,6 +64,9 @@ public class MjmlAutoConfiguration {
 
   /**
    * Auto-configures the primary Spring rendering service.
+   *
+   * @param configuration the MJML configuration to use
+   * @return the configured MJML rendering service
    */
   @Bean
   @ConditionalOnMissingBean

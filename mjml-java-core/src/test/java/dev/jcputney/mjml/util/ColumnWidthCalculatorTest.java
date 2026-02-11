@@ -6,9 +6,7 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for ColumnWidthCalculator, including the zero-width sentinel fix.
- */
+/** Tests for ColumnWidthCalculator, including the zero-width sentinel fix. */
 class ColumnWidthCalculatorTest {
 
   @Test
@@ -20,8 +18,7 @@ class ColumnWidthCalculatorTest {
     MjmlNode col2 = new MjmlNode("mj-column");
     col2.setAttribute("width", "300px");
 
-    double[] widths = ColumnWidthCalculator.calculatePixelWidths(
-        List.of(col1, col2), 600, false);
+    double[] widths = ColumnWidthCalculator.calculatePixelWidths(List.of(col1, col2), 600, false);
 
     assertEquals(0.0, widths[0], "width='0px' column should be 0, not auto");
     assertEquals(300.0, widths[1]);
@@ -35,8 +32,7 @@ class ColumnWidthCalculatorTest {
     MjmlNode col2 = new MjmlNode("mj-column");
     // No width -> auto
 
-    double[] widths = ColumnWidthCalculator.calculatePixelWidths(
-        List.of(col1, col2), 600, false);
+    double[] widths = ColumnWidthCalculator.calculatePixelWidths(List.of(col1, col2), 600, false);
 
     assertEquals(200.0, widths[0]);
     assertEquals(400.0, widths[1]);
@@ -48,8 +44,8 @@ class ColumnWidthCalculatorTest {
     MjmlNode col2 = new MjmlNode("mj-column");
     MjmlNode col3 = new MjmlNode("mj-column");
 
-    double[] widths = ColumnWidthCalculator.calculatePixelWidths(
-        List.of(col1, col2, col3), 600, true);
+    double[] widths =
+        ColumnWidthCalculator.calculatePixelWidths(List.of(col1, col2, col3), 600, true);
 
     // With usePercentAuto: autoPct = 100/3, autoWidth = autoPct * 600 / 100
     double expected = (100.0 / 3.0) * 600 / 100.0;
@@ -63,8 +59,7 @@ class ColumnWidthCalculatorTest {
     MjmlNode col = new MjmlNode("mj-column");
     col.setAttribute("width", "50%");
 
-    double[] widths = ColumnWidthCalculator.calculatePixelWidths(
-        List.of(col), 600, false);
+    double[] widths = ColumnWidthCalculator.calculatePixelWidths(List.of(col), 600, false);
 
     assertEquals(300.0, widths[0]);
   }

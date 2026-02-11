@@ -1,12 +1,12 @@
 package dev.jcputney.mjml.util;
 
 /**
- * Shared helpers for generating MSO/IE conditional comments used by
- * {@code <mj-section>}, {@code <mj-wrapper>}, and {@code <mj-hero>}.
+ * Shared helpers for generating MSO/IE conditional comments used by {@code <mj-section>}, {@code
+ * <mj-wrapper>}, and {@code <mj-hero>}.
  *
- * <p>Outlook and IE do not support modern CSS layout, so MJML emits
- * conditional-comment-wrapped tables to constrain widths. These helpers
- * eliminate duplication of the boilerplate strings across components.</p>
+ * <p>Outlook and IE do not support modern CSS layout, so MJML emits conditional-comment-wrapped
+ * tables to constrain widths. These helpers eliminate duplication of the boilerplate strings across
+ * components.
  */
 public final class MsoHelper {
 
@@ -18,8 +18,7 @@ public final class MsoHelper {
   public static final String MSO_TD_STYLE_HERO =
       "line-height:0;font-size:0;mso-line-height-rule:exactly;";
 
-  private MsoHelper() {
-  }
+  private MsoHelper() {}
 
   /**
    * Opens an MSO conditional comment block.
@@ -40,23 +39,25 @@ public final class MsoHelper {
   }
 
   /**
-   * Builds an MSO table opening with width constraint.
-   * Emits: {@code <table align="center" border="0" cellpadding="0" cellspacing="0"
-   * class="{cssClass}" role="presentation" style="width:{width}px;" width="{width}"
-   * [bgcolor="{bgColor}"]><tr><td style="{tdStyle}">}
+   * Builds an MSO table opening with width constraint. Emits: {@code <table align="center"
+   * border="0" cellpadding="0" cellspacing="0" class="{cssClass}" role="presentation"
+   * style="width:{width}px;" width="{width}" [bgcolor="{bgColor}"]><tr><td style="{tdStyle}">}
    *
-   * @param width    container width in pixels
+   * @param width container width in pixels
    * @param cssClass CSS class for the table (already escaped)
-   * @param bgColor  background color, or null/empty to omit bgcolor attribute
-   * @param tdStyle  style string for the inner td
+   * @param bgColor background color, or null/empty to omit bgcolor attribute
+   * @param tdStyle style string for the inner td
    * @return the MSO table opening markup (without conditional comments)
    */
   public static String msoTableOpening(int width, String cssClass, String bgColor, String tdStyle) {
     StringBuilder sb = new StringBuilder();
     sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
         .append(cssClass)
-        .append("\" role=\"presentation\" style=\"width:").append(width)
-        .append("px;\" width=\"").append(width).append("\" ");
+        .append("\" role=\"presentation\" style=\"width:")
+        .append(width)
+        .append("px;\" width=\"")
+        .append(width)
+        .append("\" ");
     if (bgColor != null && !bgColor.isEmpty()) {
       sb.append("bgcolor=\"").append(bgColor).append("\" ");
     }

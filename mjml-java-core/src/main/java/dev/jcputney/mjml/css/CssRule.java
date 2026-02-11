@@ -3,8 +3,8 @@ package dev.jcputney.mjml.css;
 import java.util.List;
 
 /**
- * A CSS rule consisting of a selector string and a list of declarations.
- * For example: {@code .red { color: red; font-weight: bold; }}
+ * A CSS rule consisting of a selector string and a list of declarations. For example: {@code .red {
+ * color: red; font-weight: bold; }}
  *
  * @param selectorText the raw selector text (may contain commas for selector lists)
  * @param declarations the list of property declarations in this rule

@@ -1,20 +1,14 @@
 package dev.jcputney.mjml;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dev.jcputney.mjml.parser.MjmlNode;
-import dev.jcputney.mjml.render.HtmlSkeleton;
 import dev.jcputney.mjml.render.VmlHelper;
 import dev.jcputney.mjml.util.CssEscaper;
-import dev.jcputney.mjml.util.HtmlEscaper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for all security fixes in Workstream 1 (items 1a through 1i).
- */
+/** Tests for all security fixes in Workstream 1 (items 1a through 1i). */
 class SecurityFixesTest {
 
   // ─── 1a. sanitizeHref allowlist ────────────────────────────────────────────
@@ -24,11 +18,11 @@ class SecurityFixesTest {
 
     @Test
     void dataTextXmlBypassedOldDenylistNowBlocked() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -42,17 +36,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("data:text/xml"),
-          "data:text/xml should be blocked by allowlist");
+      assertFalse(html.contains("data:text/xml"), "data:text/xml should be blocked by allowlist");
     }
 
     @Test
     void dataApplicationXhtmlXmlBypassedOldDenylistNowBlocked() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -66,18 +59,19 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("data:application/xhtml"),
+      assertFalse(
+          html.contains("data:application/xhtml"),
           "data:application/xhtml+xml should be blocked by allowlist");
     }
 
     @Test
     void controlCharBypassPrevented() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
       // Attempt bypass with tab before javascript:
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -91,17 +85,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("javascript:"),
-          "Control char + javascript: should be blocked");
+      assertFalse(html.contains("javascript:"), "Control char + javascript: should be blocked");
     }
 
     @Test
     void blobUriBlocked() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -115,17 +108,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("blob:"),
-          "blob: URI should be blocked by allowlist");
+      assertFalse(html.contains("blob:"), "blob: URI should be blocked by allowlist");
     }
 
     @Test
     void httpAllowed() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -139,17 +131,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("http://example.com"),
-          "http: should be allowed");
+      assertTrue(html.contains("http://example.com"), "http: should be allowed");
     }
 
     @Test
     void httpsAllowed() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -163,17 +154,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("https://example.com"),
-          "https: should be allowed");
+      assertTrue(html.contains("https://example.com"), "https: should be allowed");
     }
 
     @Test
     void mailtoAllowed() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -187,17 +177,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("mailto:user@example.com"),
-          "mailto: should be allowed");
+      assertTrue(html.contains("mailto:user@example.com"), "mailto: should be allowed");
     }
 
     @Test
     void telAllowed() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -211,17 +200,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("tel:+15551234567"),
-          "tel: should be allowed");
+      assertTrue(html.contains("tel:+15551234567"), "tel: should be allowed");
     }
 
     @Test
     void fragmentAllowed() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -235,17 +223,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("#section1"),
-          "Fragment refs should be allowed");
+      assertTrue(html.contains("#section1"), "Fragment refs should be allowed");
     }
 
     @Test
     void relativePathAllowed() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(true)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(true).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -259,17 +246,16 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("/page/about"),
-          "Relative paths should be allowed");
+      assertTrue(html.contains("/page/about"), "Relative paths should be allowed");
     }
 
     @Test
     void noSanitizationWhenDisabled() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .sanitizeOutput(false)
-          .build();
+      MjmlConfiguration config = MjmlConfiguration.builder().sanitizeOutput(false).build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -283,7 +269,8 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertTrue(html.contains("javascript:"),
+      assertTrue(
+          html.contains("javascript:"),
           "When sanitizeOutput is false, no URL sanitization should occur");
     }
   }
@@ -295,11 +282,14 @@ class SecurityFixesTest {
 
     @Test
     void navbarLinkSanitizesContent() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .contentSanitizer(html -> html.replace("<img", "&lt;img"))
-          .build();
+      MjmlConfiguration config =
+          MjmlConfiguration.builder()
+              .contentSanitizer(html -> html.replace("<img", "&lt;img"))
+              .build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -315,19 +305,20 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("<img onerror"),
-          "mj-navbar-link content should be sanitized");
-      assertTrue(html.contains("&lt;img"),
-          "Sanitizer replacement should be present");
+      assertFalse(html.contains("<img onerror"), "mj-navbar-link content should be sanitized");
+      assertTrue(html.contains("&lt;img"), "Sanitizer replacement should be present");
     }
 
     @Test
     void accordionTitleSanitizesContent() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .contentSanitizer(html -> html.replace("<img", "&lt;img"))
-          .build();
+      MjmlConfiguration config =
+          MjmlConfiguration.builder()
+              .contentSanitizer(html -> html.replace("<img", "&lt;img"))
+              .build();
 
-      String mjml = """
+      // language=MJML
+      String mjml =
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -346,17 +337,19 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("<img onerror"),
-          "mj-accordion-title content should be sanitized");
+      assertFalse(html.contains("<img onerror"), "mj-accordion-title content should be sanitized");
     }
 
     @Test
     void accordionTextSanitizesContent() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .contentSanitizer(html -> html.replace("<img", "&lt;img"))
-          .build();
+      MjmlConfiguration config =
+          MjmlConfiguration.builder()
+              .contentSanitizer(html -> html.replace("<img", "&lt;img"))
+              .build();
 
-      String mjml = """
+      String mjml =
+          // language=MJML
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -375,17 +368,19 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("<img onerror"),
-          "mj-accordion-text content should be sanitized");
+      assertFalse(html.contains("<img onerror"), "mj-accordion-text content should be sanitized");
     }
 
     @Test
     void socialElementSanitizesContent() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .contentSanitizer(html -> html.replace("evil", "safe"))
-          .build();
+      MjmlConfiguration config =
+          MjmlConfiguration.builder()
+              .contentSanitizer(html -> html.replace("evil", "safe"))
+              .build();
 
-      String mjml = """
+      String mjml =
+          // language=MJML
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -401,19 +396,21 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("evil"),
-          "mj-social-element content should be sanitized");
-      assertTrue(html.contains("safe"),
-          "Sanitizer replacement should be present in social element");
+      assertFalse(html.contains("evil"), "mj-social-element content should be sanitized");
+      assertTrue(
+          html.contains("safe"), "Sanitizer replacement should be present in social element");
     }
 
     @Test
     void tableSanitizesContent() {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .contentSanitizer(html -> html.replace("<img", "&lt;img"))
-          .build();
+      MjmlConfiguration config =
+          MjmlConfiguration.builder()
+              .contentSanitizer(html -> html.replace("<img", "&lt;img"))
+              .build();
 
-      String mjml = """
+      String mjml =
+          // language=MJML
+          """
           <mjml>
             <mj-body>
               <mj-section>
@@ -427,10 +424,8 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml, config).html();
       assertNotNull(html);
-      assertFalse(html.contains("<img onerror"),
-          "mj-table content should be sanitized");
-      assertTrue(html.contains("&lt;img"),
-          "Sanitizer replacement should be present in table");
+      assertFalse(html.contains("<img onerror"), "mj-table content should be sanitized");
+      assertTrue(html.contains("&lt;img"), "Sanitizer replacement should be present in table");
     }
   }
 
@@ -443,18 +438,17 @@ class SecurityFixesTest {
     void cssEscaperEscapesParensAndQuotes() {
       String malicious = "https://fonts.com/font');} body{background:url(//leak.com/";
       String escaped = CssEscaper.escapeCssUrl(malicious);
-      assertFalse(escaped.contains("')"),
-          "Unescaped closing paren+quote should not appear");
-      assertTrue(escaped.contains("\\)"),
-          "Parentheses should be escaped");
-      assertTrue(escaped.contains("\\'"),
-          "Single quotes should be escaped");
+      assertFalse(escaped.contains("')"), "Unescaped closing paren+quote should not appear");
+      assertTrue(escaped.contains("\\)"), "Parentheses should be escaped");
+      assertTrue(escaped.contains("\\'"), "Single quotes should be escaped");
     }
 
     @Test
     void fontImportUsesQuotedUrl() {
       // Register a font and verify the output uses @import url("...")
-      String mjml = """
+      String mjml =
+          // language=MJML
+          """
           <mjml>
             <mj-head>
               <mj-font name="TestFont" href="https://fonts.googleapis.com/css?family=TestFont" />
@@ -472,8 +466,7 @@ class SecurityFixesTest {
       String html = MjmlRenderer.render(mjml).html();
       assertNotNull(html);
       // Should use quoted form: @import url("...")
-      assertTrue(html.contains("@import url(\""),
-          "Font @import should use properly quoted url()");
+      assertTrue(html.contains("@import url(\""), "Font @import should use properly quoted url()");
     }
 
     @Test
@@ -487,8 +480,7 @@ class SecurityFixesTest {
       String clean = "https://fonts.googleapis.com/css?family=Roboto";
       String escaped = CssEscaper.escapeCssUrl(clean);
       // Clean URL should pass through unchanged
-      assertTrue(escaped.equals(clean),
-          "Clean URL should not be modified");
+      assertEquals(escaped, clean, "Clean URL should not be modified");
     }
   }
 
@@ -499,24 +491,25 @@ class SecurityFixesTest {
 
     @Test
     void bgSizeWithQuoteIsEscaped() {
-      String vml = VmlHelper.buildSectionVmlRect("600px",
-          "https://example.com/bg.png", "#fff",
-          "center center", "100px\" onload=\"alert(1)", "no-repeat");
-      assertFalse(vml.contains("onload=\"alert"),
-          "Quote in bgSize should be escaped");
-      assertTrue(vml.contains("&quot;"),
-          "Quote should be HTML-escaped");
+      String vml =
+          VmlHelper.buildSectionVmlRect(
+              "600px",
+              "https://example.com/bg.png",
+              "#fff",
+              "center center",
+              "100px\" onload=\"alert(1)",
+              "no-repeat");
+      assertFalse(vml.contains("onload=\"alert"), "Quote in bgSize should be escaped");
+      assertTrue(vml.contains("&quot;"), "Quote should be HTML-escaped");
     }
 
     @Test
     void bgSizeWithAngleBracketsEscaped() {
-      String vml = VmlHelper.buildWrapperVmlRect("600px",
-          "https://example.com/bg.png", "#fff",
-          "center center", "100px<script>");
-      assertFalse(vml.contains("<script>"),
-          "Angle brackets in bgSize should be escaped");
-      assertTrue(vml.contains("&lt;script&gt;"),
-          "Angle brackets should be HTML-escaped");
+      String vml =
+          VmlHelper.buildWrapperVmlRect(
+              "600px", "https://example.com/bg.png", "#fff", "center center", "100px<script>");
+      assertFalse(vml.contains("<script>"), "Angle brackets in bgSize should be escaped");
+      assertTrue(vml.contains("&lt;script&gt;"), "Angle brackets should be HTML-escaped");
     }
   }
 
@@ -527,7 +520,9 @@ class SecurityFixesTest {
 
     @Test
     void heroBackgroundUrlWithParensEscaped() {
-      String mjml = """
+      String mjml =
+          // language=MJML
+          """
           <mjml>
             <mj-body>
               <mj-hero background-url="https://example.com/bg') inject" background-color="#ffffff">
@@ -540,7 +535,8 @@ class SecurityFixesTest {
       String html = MjmlRenderer.render(mjml).html();
       assertNotNull(html);
       // The CSS url() should use escaped form
-      assertFalse(html.contains("url('https://example.com/bg') inject"),
+      assertFalse(
+          html.contains("url('https://example.com/bg') inject"),
           "Unescaped parens in background-url should not break out of url()");
     }
   }
@@ -555,14 +551,11 @@ class SecurityFixesTest {
       MjmlNode node = new MjmlNode("div");
       node.setAttribute("data-value", "test\"<>value");
       String html = node.getOuterHtml();
-      assertFalse(html.contains("test\"<>value"),
-          "Unescaped special chars should not appear in attribute");
-      assertTrue(html.contains("&quot;"),
-          "Quote should be escaped");
-      assertTrue(html.contains("&lt;"),
-          "< should be escaped");
-      assertTrue(html.contains("&gt;"),
-          "> should be escaped");
+      assertFalse(
+          html.contains("test\"<>value"), "Unescaped special chars should not appear in attribute");
+      assertTrue(html.contains("&quot;"), "Quote should be escaped");
+      assertTrue(html.contains("&lt;"), "< should be escaped");
+      assertTrue(html.contains("&gt;"), "> should be escaped");
     }
 
     @Test
@@ -570,8 +563,8 @@ class SecurityFixesTest {
       MjmlNode node = new MjmlNode("div");
       node.setAttribute("class", "my-class");
       String html = node.getOuterHtml();
-      assertTrue(html.contains("class=\"my-class\""),
-          "Normal attributes should pass through unchanged");
+      assertTrue(
+          html.contains("class=\"my-class\""), "Normal attributes should pass through unchanged");
     }
 
     @Test
@@ -579,7 +572,8 @@ class SecurityFixesTest {
       MjmlNode node = new MjmlNode("img");
       node.setAttribute("alt", "photo \"test\"");
       String html = node.getOuterHtml();
-      assertTrue(html.contains("alt=\"photo &quot;test&quot;\""),
+      assertTrue(
+          html.contains("alt=\"photo &quot;test&quot;\""),
           "Self-closing tags should also escape attributes");
     }
   }

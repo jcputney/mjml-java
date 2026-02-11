@@ -1,16 +1,13 @@
 package dev.jcputney.mjml.render;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the FontScanner class that auto-registers default fonts.
- * FontScanner is package-private, so we test it indirectly through the render pipeline.
+ * Tests for the FontScanner class that auto-registers default fonts. FontScanner is
+ * package-private, so we test it indirectly through the render pipeline.
  */
 class FontScannerTest {
 
@@ -25,7 +22,10 @@ class FontScannerTest {
   void registersDefaultFontForMjText() {
     // mj-text has default font-family "Ubuntu, Helvetica, Arial, sans-serif"
     // which includes "Ubuntu" - a known default font
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -39,14 +39,18 @@ class FontScannerTest {
 
     // The default font "Ubuntu" from mj-text defaults should be auto-registered
     // and appear as a Google Fonts link/import in the output
-    assertTrue(html.contains("fonts.googleapis.com") && html.contains("Ubuntu"),
+    assertTrue(
+        html.contains("fonts.googleapis.com") && html.contains("Ubuntu"),
         "Should auto-register the Ubuntu font from mj-text defaults");
   }
 
   @Test
   void handlesNullBodyGracefully() {
     // A document with only a head and no body should not crash the font scanner
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-title>No body</mj-title>
@@ -60,7 +64,10 @@ class FontScannerTest {
   @Test
   void resolvesExplicitFontFamilyAttribute() {
     // An explicit font-family attribute containing a known font should trigger registration
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -72,7 +79,8 @@ class FontScannerTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("fonts.googleapis.com") && html.contains("Open+Sans"),
+    assertTrue(
+        html.contains("fonts.googleapis.com") && html.contains("Open+Sans"),
         "Should register Open Sans when used in font-family attribute");
   }
 
@@ -80,7 +88,11 @@ class FontScannerTest {
   void handlesUnknownTagWithoutCrashing() {
     // If there's an unknown tag in the tree, the FontScanner should handle it gracefully
     // (the registry.createComponent returns null for unknown tags)
-    assertDoesNotThrow(() -> render("""
+    assertDoesNotThrow(
+        () ->
+            render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -98,7 +110,10 @@ class FontScannerTest {
     // #text and #comment nodes should be skipped by the scanner
     // This is tested indirectly - if they weren't skipped, we'd get errors
     // trying to create components for "#text" tags
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <!-- a comment -->
@@ -118,7 +133,9 @@ class FontScannerTest {
   void cachingDoesNotAffectResults() {
     // Rendering the same template twice should produce the same font registration
     // (tests that the defaultsCache works correctly)
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -135,7 +152,7 @@ class FontScannerTest {
 
     boolean hasLato1 = html1.contains("Lato");
     boolean hasLato2 = html2.contains("Lato");
-    assertTrue(hasLato1 == hasLato2,
-        "Both renders should produce the same font registration result");
+    assertEquals(
+        hasLato1, hasLato2, "Both renders should produce the same font registration result");
   }
 }

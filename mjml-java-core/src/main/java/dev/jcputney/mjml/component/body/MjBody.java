@@ -9,19 +9,27 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.Map;
 
 /**
- * The root body component (&lt;mj-body&gt;).
- * Sets the overall container width and background color,
+ * The root body component (&lt;mj-body&gt;). Sets the overall container width and background color,
  * then renders all child sections.
  */
 public class MjBody extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.of(
-      "width", "600px"
-  );
+  private static final Map<String, String> DEFAULTS = Map.of("width", "600px");
 
   private final ComponentRegistry registry;
 
-  public MjBody(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjBody component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjBody(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;

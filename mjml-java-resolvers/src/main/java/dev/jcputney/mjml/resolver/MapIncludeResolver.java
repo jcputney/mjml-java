@@ -7,8 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * An {@link IncludeResolver} backed by an in-memory {@link Map}.
- * Useful for testing or embedding templates directly in code.
+ * An {@link IncludeResolver} backed by an in-memory {@link Map}. Useful for testing or embedding
+ * templates directly in code.
  */
 public final class MapIncludeResolver implements IncludeResolver {
 
@@ -64,9 +64,7 @@ public final class MapIncludeResolver implements IncludeResolver {
     return content;
   }
 
-  /**
-   * Builder for {@link MapIncludeResolver}.
-   */
+  /** Builder for {@link MapIncludeResolver}. */
   public static final class Builder {
 
     private final Map<String, String> map = new LinkedHashMap<>();
@@ -76,7 +74,7 @@ public final class MapIncludeResolver implements IncludeResolver {
     /**
      * Adds a path/content mapping.
      *
-     * @param path    the include path
+     * @param path the include path
      * @param content the template content
      * @return this builder
      */

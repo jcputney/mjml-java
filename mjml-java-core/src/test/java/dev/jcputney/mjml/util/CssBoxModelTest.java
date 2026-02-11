@@ -20,8 +20,7 @@ class CssBoxModelTest {
 
   @Test
   void handlesIndividualBorders() {
-    CssBoxModel box = CssBoxModel.fromAttributes("0", "none", "3px solid #000",
-        "5px solid #000");
+    CssBoxModel box = CssBoxModel.fromAttributes("0", "none", "3px solid #000", "5px solid #000");
     assertEquals(8.0, box.horizontalSpacing()); // 3 left + 5 right
   }
 

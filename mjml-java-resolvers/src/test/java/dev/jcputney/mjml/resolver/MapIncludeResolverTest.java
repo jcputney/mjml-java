@@ -33,18 +33,17 @@ class MapIncludeResolverTest {
 
   @Test
   void ofFactoryWithPairs() {
-    var resolver = MapIncludeResolver.of(
-        "a.mjml", "content-a",
-        "b.mjml", "content-b"
-    );
+    var resolver =
+        MapIncludeResolver.of(
+            "a.mjml", "content-a",
+            "b.mjml", "content-b");
     assertEquals("content-a", resolver.resolve("a.mjml", CTX));
     assertEquals("content-b", resolver.resolve("b.mjml", CTX));
   }
 
   @Test
   void ofFactoryOddArgumentsThrows() {
-    assertThrows(IllegalArgumentException.class,
-        () -> MapIncludeResolver.of("a.mjml"));
+    assertThrows(IllegalArgumentException.class, () -> MapIncludeResolver.of("a.mjml"));
   }
 
   @Test
@@ -55,10 +54,8 @@ class MapIncludeResolverTest {
 
   @Test
   void builderPutAndBuild() {
-    var resolver = MapIncludeResolver.builder()
-        .put("one.mjml", "ONE")
-        .put("two.mjml", "TWO")
-        .build();
+    var resolver =
+        MapIncludeResolver.builder().put("one.mjml", "ONE").put("two.mjml", "TWO").build();
     assertEquals("ONE", resolver.resolve("one.mjml", CTX));
     assertEquals("TWO", resolver.resolve("two.mjml", CTX));
   }

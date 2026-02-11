@@ -8,8 +8,8 @@ import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests that every MJML component renders without errors and produces
- * expected structural output. Each test exercises a specific component.
+ * Tests that every MJML component renders without errors and produces expected structural output.
+ * Each test exercises a specific component.
  */
 class AllComponentsRenderTest {
 
@@ -24,7 +24,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersImage() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -41,7 +44,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersImageWithHref() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -58,7 +64,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersButton() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -76,7 +85,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersButtonWithCustomStyle() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -94,7 +106,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersDivider() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -111,7 +126,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersSpacer() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -127,7 +145,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersTable() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -147,7 +168,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersRaw() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -166,7 +190,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersMultipleColumns() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -184,7 +211,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersGroup() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -203,7 +233,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersWrapper() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-wrapper background-color="#f0f0f0">
@@ -220,7 +253,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersFullWidthSection() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section full-width="full-width" background-color="#ff0000">
@@ -237,7 +273,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersHero() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-hero mode="fixed-height" background-height="469px" background-url="https://example.com/hero.jpg" background-color="#2f2f2f" padding="100px 0px">
@@ -253,7 +292,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersAccordion() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -281,7 +323,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersNavbar() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -303,7 +348,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersSocial() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -324,7 +372,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersCarousel() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -347,7 +398,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersWithAttributeDefaults() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -370,7 +424,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersWithMjClass() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -393,7 +450,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersWithCustomBreakpoint() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-breakpoint width="320px" />
@@ -410,7 +470,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersBodyWithCustomWidth() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body width="500px">
             <mj-section>
@@ -426,7 +489,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersEmptyBody() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
           </mj-body>
@@ -438,7 +504,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersBodyWithNoHead() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -452,7 +521,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersMultipleSections() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section background-color="#ff0000">
@@ -477,7 +549,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersTextWithHtmlContent() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -499,7 +574,10 @@ class AllComponentsRenderTest {
 
   @Test
   void rendersWithInlineStyle() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-style inline="inline">

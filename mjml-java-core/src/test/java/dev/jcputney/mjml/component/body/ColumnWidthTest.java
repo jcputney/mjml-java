@@ -8,8 +8,8 @@ import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for column width calculation logic in MjSection and MjGroup.
- * Verifies auto-distribution, explicit widths, and percentage widths.
+ * Tests for column width calculation logic in MjSection and MjGroup. Verifies auto-distribution,
+ * explicit widths, and percentage widths.
  */
 class ColumnWidthTest {
 
@@ -22,7 +22,10 @@ class ColumnWidthTest {
 
   @Test
   void threeAutoColumnsGetEqualWidth() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -41,7 +44,10 @@ class ColumnWidthTest {
 
   @Test
   void explicitPixelWidth() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -58,7 +64,10 @@ class ColumnWidthTest {
 
   @Test
   void percentageWidth() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>

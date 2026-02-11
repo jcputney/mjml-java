@@ -10,22 +10,31 @@ import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
 
 /**
- * Auto-configuration for Thymeleaf + MJML integration.
- * Only activates when Thymeleaf is on the classpath.
+ * Auto-configuration for Thymeleaf + MJML integration. Only activates when Thymeleaf is on the
+ * classpath.
  */
 @Configuration
 @ConditionalOnClass({TemplateEngine.class, MjmlService.class})
-@ConditionalOnProperty(name = "spring.mjml.thymeleaf-enabled", havingValue = "true",
+@ConditionalOnProperty(
+    name = "spring.mjml.thymeleaf-enabled",
+    havingValue = "true",
     matchIfMissing = true)
 public class MjmlThymeleafAutoConfiguration {
 
+  /** Creates a new {@code MjmlThymeleafAutoConfiguration} instance. */
+  public MjmlThymeleafAutoConfiguration() {}
+
   /**
    * Auto-configures {@link ThymeleafMjmlService} when Thymeleaf is available.
+   *
+   * @param templateEngine the Thymeleaf template engine
+   * @param mjmlService the MJML rendering service
+   * @return the configured Thymeleaf MJML service
    */
   @Bean
   @ConditionalOnMissingBean
-  public ThymeleafMjmlService thymeleafMjmlService(TemplateEngine templateEngine,
-      MjmlService mjmlService) {
+  public ThymeleafMjmlService thymeleafMjmlService(
+      TemplateEngine templateEngine, MjmlService mjmlService) {
     return new ThymeleafMjmlService(templateEngine, mjmlService);
   }
 }

@@ -1,8 +1,6 @@
 package dev.jcputney.mjml.css;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -22,8 +20,7 @@ class CssParserTest {
 
   @Test
   void parsesMultipleDeclarations() {
-    List<CssRule> rules = CssParser.parseRules(
-        "p { color: red; font-size: 14px; margin: 0; }");
+    List<CssRule> rules = CssParser.parseRules("p { color: red; font-size: 14px; margin: 0; }");
     assertEquals(1, rules.size());
     assertEquals(3, rules.get(0).declarations().size());
     assertEquals("color", rules.get(0).declarations().get(0).property());
@@ -33,8 +30,8 @@ class CssParserTest {
 
   @Test
   void parsesMultipleRules() {
-    List<CssRule> rules = CssParser.parseRules(
-        ".a { color: red; } .b { color: blue; } .c { color: green; }");
+    List<CssRule> rules =
+        CssParser.parseRules(".a { color: red; } .b { color: blue; } .c { color: green; }");
     assertEquals(3, rules.size());
     assertEquals(".a", rules.get(0).selectorText());
     assertEquals(".b", rules.get(1).selectorText());
@@ -49,8 +46,9 @@ class CssParserTest {
 
   @Test
   void stripsComments() {
-    List<CssRule> rules = CssParser.parseRules(
-        "/* header styles */ .header { color: red; } /* footer */ .footer { color: blue; }");
+    List<CssRule> rules =
+        CssParser.parseRules(
+            "/* header styles */ .header { color: red; } /* footer */ .footer { color: blue; }");
     assertEquals(2, rules.size());
     assertEquals(".header", rules.get(0).selectorText());
     assertEquals(".footer", rules.get(1).selectorText());
@@ -58,8 +56,9 @@ class CssParserTest {
 
   @Test
   void preservesMediaQueries() {
-    CssParser.ParseResult result = CssParser.parse(
-        ".a { color: red; } @media (max-width: 600px) { .b { color: blue; } } .c { color: green; }");
+    CssParser.ParseResult result =
+        CssParser.parse(
+            ".a { color: red; } @media (max-width: 600px) { .b { color: blue; } } .c { color: green; }");
     assertEquals(2, result.rules().size());
     assertEquals(1, result.preservedAtRules().size());
     assertTrue(result.preservedAtRules().get(0).contains("@media"));
@@ -68,8 +67,9 @@ class CssParserTest {
 
   @Test
   void preservesKeyframes() {
-    CssParser.ParseResult result = CssParser.parse(
-        "@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } } .spinner { animation: spin 1s; }");
+    CssParser.ParseResult result =
+        CssParser.parse(
+            "@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } } .spinner { animation: spin 1s; }");
     assertEquals(1, result.rules().size());
     assertEquals(1, result.preservedAtRules().size());
     assertTrue(result.preservedAtRules().get(0).contains("@keyframes"));
@@ -90,19 +90,20 @@ class CssParserTest {
 
   @Test
   void parsesComplexSelectors() {
-    List<CssRule> rules = CssParser.parseRules(
-        "div.container > p.text { color: #333; font-family: Arial, sans-serif; }");
+    List<CssRule> rules =
+        CssParser.parseRules(
+            "div.container > p.text { color: #333; font-family: Arial, sans-serif; }");
     assertEquals(1, rules.size());
     assertEquals("div.container > p.text", rules.get(0).selectorText());
   }
 
   @Test
   void handlesUrlInDeclarations() {
-    List<CssRule> rules = CssParser.parseRules(
-        ".bg { background: url('https://example.com/img.jpg') no-repeat; }");
+    List<CssRule> rules =
+        CssParser.parseRules(".bg { background: url('https://example.com/img.jpg') no-repeat; }");
     assertEquals(1, rules.size());
-    assertEquals("url('https://example.com/img.jpg') no-repeat",
-        rules.get(0).declarations().get(0).value());
+    assertEquals(
+        "url('https://example.com/img.jpg') no-repeat", rules.get(0).declarations().get(0).value());
   }
 
   @Test

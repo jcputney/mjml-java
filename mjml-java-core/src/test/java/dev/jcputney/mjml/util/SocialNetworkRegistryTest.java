@@ -13,12 +13,32 @@ import org.junit.jupiter.params.provider.ValueSource;
 class SocialNetworkRegistryTest {
 
   @ParameterizedTest
-  @ValueSource(strings = {
-      "facebook", "twitter", "x", "google", "pinterest", "linkedin",
-      "tumblr", "xing", "github", "instagram", "web", "snapchat",
-      "youtube", "vimeo", "medium", "soundcloud", "dribbble", "tiktok", "whatsapp",
-      "mail", "telegram", "reddit", "line"
-  })
+  @ValueSource(
+      strings = {
+        "facebook",
+        "twitter",
+        "x",
+        "google",
+        "pinterest",
+        "linkedin",
+        "tumblr",
+        "xing",
+        "github",
+        "instagram",
+        "web",
+        "snapchat",
+        "youtube",
+        "vimeo",
+        "medium",
+        "soundcloud",
+        "dribbble",
+        "tiktok",
+        "whatsapp",
+        "mail",
+        "telegram",
+        "reddit",
+        "line"
+      })
   void allRegisteredNetworksReturnCorrectInfo(String name) {
     NetworkInfo info = SocialNetworkRegistry.getNetwork(name);
     assertNotNull(info, "Network '" + name + "' should be registered");

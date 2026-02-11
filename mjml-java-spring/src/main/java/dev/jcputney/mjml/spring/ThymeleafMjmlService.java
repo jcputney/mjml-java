@@ -6,8 +6,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 /**
- * Service that combines Thymeleaf template processing with MJML rendering.
- * First processes Thymeleaf expressions, then renders the resulting MJML to HTML.
+ * Service that combines Thymeleaf template processing with MJML rendering. First processes
+ * Thymeleaf expressions, then renders the resulting MJML to HTML.
  */
 public class ThymeleafMjmlService {
 
@@ -29,7 +29,7 @@ public class ThymeleafMjmlService {
    * Processes an inline MJML template string through Thymeleaf, then renders to HTML.
    *
    * @param mjmlTemplate the MJML template string with Thymeleaf expressions
-   * @param variables    the template variables
+   * @param variables the template variables
    * @return the rendered HTML string
    */
   public String render(String mjmlTemplate, Map<String, Object> variables) {
@@ -42,7 +42,7 @@ public class ThymeleafMjmlService {
    * Loads a template by name via Thymeleaf, processes it, then renders as MJML to HTML.
    *
    * @param templateName the Thymeleaf template name
-   * @param variables    the template variables
+   * @param variables the template variables
    * @return the rendered HTML string
    */
   public String renderTemplate(String templateName, Map<String, Object> variables) {

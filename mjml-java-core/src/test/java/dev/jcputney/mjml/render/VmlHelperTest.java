@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for VmlHelper static utility methods.
- */
+/** Tests for VmlHelper static utility methods. */
 class VmlHelperTest {
 
   // --- cssPositionToPercent tests ---
@@ -74,17 +72,16 @@ class VmlHelperTest {
     assertEquals("0.5", VmlHelper.cssAxisToVml("center"));
     assertEquals("1", VmlHelper.cssAxisToVml("right"));
     assertEquals("1", VmlHelper.cssAxisToVml("bottom"));
-    assertEquals("0.5", VmlHelper.cssAxisToVml("unknown"),
-        "Unknown values should default to 0.5");
+    assertEquals("0.5", VmlHelper.cssAxisToVml("unknown"), "Unknown values should default to 0.5");
   }
 
   // --- buildSectionVmlRect integration ---
 
   @Test
   void buildSectionVmlRectContainsExpectedMarkup() {
-    String vml = VmlHelper.buildSectionVmlRect(
-        "600px", "https://example.com/bg.jpg", "#ffffff",
-        "center top", "cover", "no-repeat");
+    String vml =
+        VmlHelper.buildSectionVmlRect(
+            "600px", "https://example.com/bg.jpg", "#ffffff", "center top", "cover", "no-repeat");
     assertTrue(vml.contains("<v:rect"), "Should contain v:rect");
     assertTrue(vml.contains("src=\"https://example.com/bg.jpg\""), "Should contain image URL");
     assertTrue(vml.contains("type=\"frame\""), "no-repeat cover should be frame");

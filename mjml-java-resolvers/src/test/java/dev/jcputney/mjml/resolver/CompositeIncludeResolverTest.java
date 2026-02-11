@@ -36,8 +36,7 @@ class CompositeIncludeResolverTest {
     var r2 = MapIncludeResolver.of("b.mjml", "y");
 
     var composite = CompositeIncludeResolver.of(r1, r2);
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> composite.resolve("missing.mjml", CTX));
+    var ex = assertThrows(MjmlIncludeException.class, () -> composite.resolve("missing.mjml", CTX));
     // Last exception should mention "missing.mjml"
     assertEquals("Template not found in map: missing.mjml", ex.getMessage());
   }
@@ -51,8 +50,7 @@ class CompositeIncludeResolverTest {
 
   @Test
   void emptyListThrows() {
-    assertThrows(IllegalArgumentException.class,
-        () -> new CompositeIncludeResolver(List.of()));
+    assertThrows(IllegalArgumentException.class, () -> new CompositeIncludeResolver(List.of()));
   }
 
   @Test

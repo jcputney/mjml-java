@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-raw component rendering.
- */
+/** Tests for the mj-raw component rendering. */
 class MjRawTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjRawTest {
 
   @Test
   void rawHtmlPassthrough() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -35,15 +36,16 @@ class MjRawTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("custom-div"),
-        "Should pass through custom div class");
-    assertTrue(html.contains("Custom content here"),
-        "Should pass through raw HTML content");
+    assertTrue(html.contains("custom-div"), "Should pass through custom div class");
+    assertTrue(html.contains("Custom content here"), "Should pass through raw HTML content");
   }
 
   @Test
   void positionFileStartRendersBeforeDoctype() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-raw position="file-start">
@@ -60,15 +62,16 @@ class MjRawTest {
 
     int commentPos = html.indexOf("file start comment");
     int doctypePos = html.indexOf("<!doctype");
-    assertTrue(commentPos >= 0,
-        "Should contain the file-start raw content");
-    assertTrue(commentPos < doctypePos,
-        "File-start content should appear before doctype");
+    assertTrue(commentPos >= 0, "Should contain the file-start raw content");
+    assertTrue(commentPos < doctypePos, "File-start content should appear before doctype");
   }
 
   @Test
   void rawMsoConditionalPassthrough() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-raw>
@@ -85,7 +88,6 @@ class MjRawTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("MSO only"),
-        "Should pass through MSO conditional content");
+    assertTrue(html.contains("MSO only"), "Should pass through MSO conditional content");
   }
 }

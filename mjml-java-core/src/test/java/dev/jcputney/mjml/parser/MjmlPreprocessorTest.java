@@ -18,7 +18,8 @@ class MjmlPreprocessorTest {
 
   @Test
   void wrapsButtonContentInCdata() {
-    String input = "<mjml><mj-body><mj-button href=\"#\">Click <em>me</em></mj-button></mj-body></mjml>";
+    String input =
+        "<mjml><mj-body><mj-button href=\"#\">Click <em>me</em></mj-button></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
     assertTrue(result.contains("<![CDATA[Click <em>me</em>]]>"));
   }
@@ -27,7 +28,8 @@ class MjmlPreprocessorTest {
   void wrapsContentBetweenOpenAndCloseTags() {
     // A self-closing tag followed by an open/close pair - verify the
     // open/close pair content gets wrapped correctly
-    String input = "<mjml><mj-body><mj-section><mj-column><mj-text>Hi</mj-text></mj-column></mj-section></mj-body></mjml>";
+    String input =
+        "<mjml><mj-body><mj-section><mj-column><mj-text>Hi</mj-text></mj-column></mj-section></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
     assertTrue(result.contains("<![CDATA[Hi]]>"));
   }
@@ -82,10 +84,10 @@ class MjmlPreprocessorTest {
     String result = MjmlPreprocessor.preprocess(input);
     // The ]]> inside should be split: ]]]]><![CDATA[>
     assertTrue(result.contains("<![CDATA["), "Should contain CDATA wrapper");
-    assertFalse(result.contains("<![CDATA[Injected ]]> content]]>"),
+    assertFalse(
+        result.contains("<![CDATA[Injected ]]> content]]>"),
         "Should not contain unescaped ]]> inside CDATA");
-    assertTrue(result.contains("]]]]><![CDATA[>"),
-        "Should escape ]]> as ]]]]><![CDATA[>");
+    assertTrue(result.contains("]]]]><![CDATA[>"), "Should escape ]]> as ]]]]><![CDATA[>");
   }
 
   @Test
@@ -94,10 +96,9 @@ class MjmlPreprocessorTest {
     String input = "<mjml><mj-body><mj-text><![CDATA[Already wrapped]]></mj-text></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
     // Should not contain nested CDATA (i.e. <![CDATA[<![CDATA[)
-    assertFalse(result.contains("<![CDATA[<![CDATA["),
-        "Should not double-wrap CDATA content");
-    assertTrue(result.contains("<![CDATA[Already wrapped]]>"),
-        "Original CDATA should be preserved");
+    assertFalse(result.contains("<![CDATA[<![CDATA["), "Should not double-wrap CDATA content");
+    assertTrue(
+        result.contains("<![CDATA[Already wrapped]]>"), "Original CDATA should be preserved");
   }
 
   @Test
@@ -121,27 +122,33 @@ class MjmlPreprocessorTest {
   @Test
   void wrapsNavbarLinkContent() {
     // mj-navbar-link is an ending tag and should have its content CDATA-wrapped
-    String input = "<mjml><mj-body><mj-navbar-link href=\"#\">Link <b>Text</b></mj-navbar-link></mj-body></mjml>";
+    String input =
+        "<mjml><mj-body><mj-navbar-link href=\"#\">Link <b>Text</b></mj-navbar-link></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
-    assertTrue(result.contains("<![CDATA[Link <b>Text</b>]]>"),
+    assertTrue(
+        result.contains("<![CDATA[Link <b>Text</b>]]>"),
         "mj-navbar-link content should be CDATA-wrapped");
   }
 
   @Test
   void wrapsAccordionTitleContent() {
     // mj-accordion-title is an ending tag
-    String input = "<mjml><mj-body><mj-accordion-title>Title <em>content</em></mj-accordion-title></mj-body></mjml>";
+    String input =
+        "<mjml><mj-body><mj-accordion-title>Title <em>content</em></mj-accordion-title></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
-    assertTrue(result.contains("<![CDATA[Title <em>content</em>]]>"),
+    assertTrue(
+        result.contains("<![CDATA[Title <em>content</em>]]>"),
         "mj-accordion-title content should be CDATA-wrapped");
   }
 
   @Test
   void wrapsAccordionTextContent() {
     // mj-accordion-text is an ending tag
-    String input = "<mjml><mj-body><mj-accordion-text>Body <strong>text</strong></mj-accordion-text></mj-body></mjml>";
+    String input =
+        "<mjml><mj-body><mj-accordion-text>Body <strong>text</strong></mj-accordion-text></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
-    assertTrue(result.contains("<![CDATA[Body <strong>text</strong>]]>"),
+    assertTrue(
+        result.contains("<![CDATA[Body <strong>text</strong>]]>"),
         "mj-accordion-text content should be CDATA-wrapped");
   }
 
@@ -150,7 +157,8 @@ class MjmlPreprocessorTest {
     // mj-section is NOT an ending tag - its content should not be CDATA-wrapped
     String input = "<mjml><mj-body><mj-section><mj-column /></mj-section></mj-body></mjml>";
     String result = MjmlPreprocessor.preprocess(input);
-    assertFalse(result.contains("CDATA"),
+    assertFalse(
+        result.contains("CDATA"),
         "Non-ending tag mj-section should not have CDATA-wrapped content");
   }
 }

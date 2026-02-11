@@ -5,30 +5,33 @@ import java.util.Map;
 
 /**
  * Resolves attributes for a component using the 5-level cascade:
+ *
  * <ol>
- *   <li>Inline attributes (on the element itself)</li>
- *   <li>mj-class attributes</li>
- *   <li>Tag-specific default attributes (mj-attributes > mj-section, etc.)</li>
- *   <li>mj-all default attributes</li>
- *   <li>Component hardcoded defaults</li>
+ *   <li>Inline attributes (on the element itself)
+ *   <li>mj-class attributes
+ *   <li>Tag-specific default attributes (mj-attributes > mj-section, etc.)
+ *   <li>mj-all default attributes
+ *   <li>Component hardcoded defaults
  * </ol>
  */
 public final class AttributeResolver {
 
-  private AttributeResolver() {
-  }
+  private AttributeResolver() {}
 
   /**
    * Resolves an attribute value using the 5-level cascade.
    *
-   * @param node             the element node
-   * @param attributeName    the attribute to resolve
-   * @param globalContext    the document-wide context
+   * @param node the element node
+   * @param attributeName the attribute to resolve
+   * @param globalContext the document-wide context
    * @param componentDefaults the component's hardcoded default values
    * @return the resolved attribute value, or null if not found at any level
    */
-  public static String resolve(MjmlNode node, String attributeName,
-      GlobalContext globalContext, Map<String, String> componentDefaults) {
+  public static String resolve(
+      MjmlNode node,
+      String attributeName,
+      GlobalContext globalContext,
+      Map<String, String> componentDefaults) {
 
     // Level 1: Inline attribute
     String value = node.getAttribute(attributeName);
@@ -49,7 +52,8 @@ public final class AttributeResolver {
     }
 
     // Level 3: Tag-specific defaults
-    Map<String, String> tagDefaults = globalContext.attributes().getDefaultAttributes(node.getTagName());
+    Map<String, String> tagDefaults =
+        globalContext.attributes().getDefaultAttributes(node.getTagName());
     value = tagDefaults.get(attributeName);
     if (value != null) {
       return value;

@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-title component rendering.
- */
+/** Tests for the mj-title component rendering. */
 class MjTitleTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjTitleTest {
 
   @Test
   void titleExtractedToHtmlHead() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-title>My Email Title</mj-title>
@@ -36,13 +37,17 @@ class MjTitleTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("<title>My Email Title</title>"),
+    assertTrue(
+        html.contains("<title>My Email Title</title>"),
         "Should include the title in the HTML head");
   }
 
   @Test
   void emptyTitleStillRendersTag() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-title></mj-title>
@@ -57,13 +62,15 @@ class MjTitleTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("<title>"),
-        "Should still include a title tag even when empty");
+    assertTrue(html.contains("<title>"), "Should still include a title tag even when empty");
   }
 
   @Test
   void titleWithSpecialCharacters() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-title>Sale: 50% Off &amp; More!</mj-title>
@@ -78,9 +85,7 @@ class MjTitleTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("<title>"),
-        "Should render title tag with special characters");
-    assertTrue(html.contains("50%"),
-        "Should preserve percentage in title");
+    assertTrue(html.contains("<title>"), "Should render title tag with special characters");
+    assertTrue(html.contains("50%"), "Should preserve percentage in title");
   }
 }

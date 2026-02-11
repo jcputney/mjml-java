@@ -110,7 +110,7 @@ class AttributeContextTest {
   void htmlAttributesUnmodifiable() {
     AttributeContext ctx = new AttributeContext();
     ctx.setHtmlAttributes("#x", Map.of("a", "b"));
-    assertThrows(UnsupportedOperationException.class,
-        () -> ctx.getHtmlAttributes().put("new", Map.of()));
+    assertThrows(
+        UnsupportedOperationException.class, () -> ctx.getHtmlAttributes().put("new", Map.of()));
   }
 }

@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-social and mj-social-element component rendering.
- */
+/** Tests for the mj-social and mj-social-element component rendering. */
 class MjSocialTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjSocialTest {
 
   @Test
   void knownNetworkFacebook() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -35,17 +36,17 @@ class MjSocialTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Facebook"),
-        "Should render Facebook link text");
-    assertTrue(html.contains("<img"),
-        "Should render a social icon image");
-    assertTrue(html.contains("facebook"),
-        "Should reference facebook in the output");
+    assertTrue(html.contains("Facebook"), "Should render Facebook link text");
+    assertTrue(html.contains("<img"), "Should render a social icon image");
+    assertTrue(html.contains("facebook"), "Should reference facebook in the output");
   }
 
   @Test
   void knownNetworkTwitter() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -59,15 +60,16 @@ class MjSocialTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Twitter"),
-        "Should render Twitter link text");
-    assertTrue(html.contains("<img"),
-        "Should render a social icon image");
+    assertTrue(html.contains("Twitter"), "Should render Twitter link text");
+    assertTrue(html.contains("<img"), "Should render a social icon image");
   }
 
   @Test
   void customIconSrc() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -81,15 +83,16 @@ class MjSocialTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("custom-icon.png"),
-        "Should use the custom icon src");
-    assertTrue(html.contains("Custom"),
-        "Should render custom link text");
+    assertTrue(html.contains("custom-icon.png"), "Should use the custom icon src");
+    assertTrue(html.contains("Custom"), "Should render custom link text");
   }
 
   @Test
   void verticalModeLayout() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -104,15 +107,16 @@ class MjSocialTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("FB"),
-        "Should render first social element text");
-    assertTrue(html.contains("TW"),
-        "Should render second social element text");
+    assertTrue(html.contains("FB"), "Should render first social element text");
+    assertTrue(html.contains("TW"), "Should render second social element text");
   }
 
   @Test
   void multipleNetworks() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -128,11 +132,8 @@ class MjSocialTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("FB"),
-        "Should render Facebook element");
-    assertTrue(html.contains("TW"),
-        "Should render Twitter element");
-    assertTrue(html.contains("G+"),
-        "Should render Google element");
+    assertTrue(html.contains("FB"), "Should render Facebook element");
+    assertTrue(html.contains("TW"), "Should render Twitter element");
+    assertTrue(html.contains("G+"), "Should render Google element");
   }
 }

@@ -9,6 +9,7 @@ import java.nio.file.Path;
  * Resolves mj-include paths from the classpath.
  *
  * <h2>Usage</h2>
+ *
  * <pre>{@code
  * MjmlConfiguration config = MjmlConfiguration.builder()
  *     .includeResolver(new ClasspathIncludeResolver())
@@ -19,9 +20,7 @@ public final class ClasspathIncludeResolver implements IncludeResolver {
 
   private final ClassLoader classLoader;
 
-  /**
-   * Creates a resolver that uses the thread's context class loader.
-   */
+  /** Creates a resolver that uses the thread's context class loader. */
   public ClasspathIncludeResolver() {
     this(Thread.currentThread().getContextClassLoader());
   }

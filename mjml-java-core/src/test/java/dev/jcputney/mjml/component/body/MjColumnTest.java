@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-column component rendering.
- */
+/** Tests for the mj-column component rendering. */
 class MjColumnTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjColumnTest {
 
   @Test
   void innerBorderRadiusWithBorderCollapse() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -33,15 +34,19 @@ class MjColumnTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("border-radius:10px"),
-        "Should apply inner-border-radius to inner table");
-    assertTrue(html.contains("border-collapse:separate"),
+    assertTrue(
+        html.contains("border-radius:10px"), "Should apply inner-border-radius to inner table");
+    assertTrue(
+        html.contains("border-collapse:separate"),
         "Should use border-collapse:separate when inner-border-radius is set");
   }
 
   @Test
   void verticalAlignApplied() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -53,13 +58,17 @@ class MjColumnTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("vertical-align:middle"),
+    assertTrue(
+        html.contains("vertical-align:middle"),
         "Should apply vertical-align:middle to the column div");
   }
 
   @Test
   void backgroundColorApplied() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -71,13 +80,15 @@ class MjColumnTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("#f0f0f0"),
-        "Should contain the column background color");
+    assertTrue(html.contains("#f0f0f0"), "Should contain the column background color");
   }
 
   @Test
   void paddingTriggersGutterNesting() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -89,13 +100,15 @@ class MjColumnTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("padding:20px"),
-        "Should apply padding via gutter structure");
+    assertTrue(html.contains("padding:20px"), "Should apply padding via gutter structure");
   }
 
   @Test
   void responsiveClassPresent() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -107,7 +120,6 @@ class MjColumnTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("mj-outlook-group-fix"),
-        "Should contain mj-outlook-group-fix class");
+    assertTrue(html.contains("mj-outlook-group-fix"), "Should contain mj-outlook-group-fix class");
   }
 }

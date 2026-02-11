@@ -17,11 +17,11 @@ class AttributeResolverTest {
   @BeforeEach
   void setUp() {
     globalContext = new GlobalContext(MjmlConfiguration.defaults());
-    componentDefaults = Map.of(
-        "color", "#000000",
-        "font-size", "13px",
-        "padding", "10px 25px"
-    );
+    componentDefaults =
+        Map.of(
+            "color", "#000000",
+            "font-size", "13px",
+            "padding", "10px 25px");
   }
 
   @Test
@@ -97,7 +97,8 @@ class AttributeResolverTest {
   void missingAttributeReturnsNull() {
     MjmlNode node = new MjmlNode("mj-text");
 
-    String result = AttributeResolver.resolve(node, "nonexistent", globalContext, componentDefaults);
+    String result =
+        AttributeResolver.resolve(node, "nonexistent", globalContext, componentDefaults);
     assertNull(result);
   }
 
@@ -112,8 +113,8 @@ class AttributeResolverTest {
     node.setAttribute("mj-class", "cls");
 
     // All levels set: inline should win
-    assertEquals("#inline",
-        AttributeResolver.resolve(node, "font-size", globalContext, componentDefaults));
+    assertEquals(
+        "#inline", AttributeResolver.resolve(node, "font-size", globalContext, componentDefaults));
   }
 
   @Test
@@ -125,8 +126,8 @@ class AttributeResolverTest {
     MjmlNode node = new MjmlNode("mj-text");
     node.setAttribute("mj-class", "cls");
 
-    assertEquals("#class",
-        AttributeResolver.resolve(node, "font-size", globalContext, componentDefaults));
+    assertEquals(
+        "#class", AttributeResolver.resolve(node, "font-size", globalContext, componentDefaults));
   }
 
   @Test
@@ -136,7 +137,7 @@ class AttributeResolverTest {
 
     MjmlNode node = new MjmlNode("mj-text");
 
-    assertEquals("#tag",
-        AttributeResolver.resolve(node, "font-size", globalContext, componentDefaults));
+    assertEquals(
+        "#tag", AttributeResolver.resolve(node, "font-size", globalContext, componentDefaults));
   }
 }

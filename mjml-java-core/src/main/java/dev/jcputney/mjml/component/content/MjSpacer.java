@@ -4,22 +4,27 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The spacer component (&lt;mj-spacer&gt;).
- * Renders vertical whitespace of a configurable height.
+ * The spacer component (&lt;mj-spacer&gt;). Renders vertical whitespace of a configurable height.
  */
 public class MjSpacer extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("height", "0px"),
-      Map.entry("container-background-color", ""),
-      Map.entry("padding", ""),
-      Map.entry("vertical-align", "")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("height", "0px"),
+          Map.entry("container-background-color", ""),
+          Map.entry("padding", ""),
+          Map.entry("vertical-align", ""));
 
+  /**
+   * Creates a new MjSpacer component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
   public MjSpacer(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
@@ -38,10 +43,11 @@ public class MjSpacer extends BodyComponent {
   public String render() {
     String height = getAttribute("height", "0px");
 
-    String style = buildStyle(orderedMap(
-        "height", height,
-        "line-height", height
-    ));
+    String style =
+        buildStyle(
+            orderedMap(
+                "height", height,
+                "line-height", height));
 
     return "                        <div style=\"" + style + "\">&#8202;</div>";
   }

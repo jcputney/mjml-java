@@ -44,8 +44,7 @@ class HtmlEscaperTest {
 
   @Test
   void escapesCombinedChars() {
-    assertEquals("&amp;&quot;&lt;&gt;",
-        HtmlEscaper.escapeAttributeValue("&\"<>"));
+    assertEquals("&amp;&quot;&lt;&gt;", HtmlEscaper.escapeAttributeValue("&\"<>"));
   }
 
   @Test
@@ -56,7 +55,8 @@ class HtmlEscaperTest {
 
   @Test
   void xssPayloadEscaped() {
-    assertEquals("&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;",
+    assertEquals(
+        "&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;",
         HtmlEscaper.escapeAttributeValue("\"><script>alert(1)</script>"));
   }
 }

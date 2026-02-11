@@ -12,48 +12,69 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The hero component ({@code <mj-hero>}).
- * Renders a full-width hero section with a background image. Supports two modes:
+ * The hero component ({@code <mj-hero>}). Renders a full-width hero section with a background
+ * image. Supports two modes:
+ *
  * <ul>
- *   <li>{@code fixed-height} &mdash; the hero has a fixed pixel height</li>
- *   <li>{@code fluid-height} &mdash; the hero height adapts to its content</li>
+ *   <li>{@code fixed-height} &mdash; the hero has a fixed pixel height
+ *   <li>{@code fluid-height} &mdash; the hero height adapts to its content
  * </ul>
- * Inner content is wrapped in a table for vertical alignment. VML background
- * is emitted for Outlook compatibility.
+ *
+ * Inner content is wrapped in a table for vertical alignment. VML background is emitted for Outlook
+ * compatibility.
  */
 public class MjHero extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("background-color", "#ffffff"),
-      Map.entry("background-height", ""),
-      Map.entry("background-position", "center center"),
-      Map.entry("background-url", ""),
-      Map.entry("background-width", ""),
-      Map.entry("border-radius", ""),
-      Map.entry("container-background-color", ""),
-      Map.entry("height", "0px"),
-      Map.entry("inner-background-color", ""),
-      Map.entry("inner-padding", ""),
-      Map.entry("inner-padding-bottom", ""),
-      Map.entry("inner-padding-left", ""),
-      Map.entry("inner-padding-right", ""),
-      Map.entry("inner-padding-top", ""),
-      Map.entry("mode", "fluid-height"),
-      Map.entry("padding", "0px"),
-      Map.entry("padding-bottom", ""),
-      Map.entry("padding-left", ""),
-      Map.entry("padding-right", ""),
-      Map.entry("padding-top", ""),
-      Map.entry("vertical-align", "top"),
-      Map.entry("width", "100%")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("background-color", "#ffffff"),
+          Map.entry("background-height", ""),
+          Map.entry("background-position", "center center"),
+          Map.entry("background-url", ""),
+          Map.entry("background-width", ""),
+          Map.entry("border-radius", ""),
+          Map.entry("container-background-color", ""),
+          Map.entry("height", "0px"),
+          Map.entry("inner-background-color", ""),
+          Map.entry("inner-padding", ""),
+          Map.entry("inner-padding-bottom", ""),
+          Map.entry("inner-padding-left", ""),
+          Map.entry("inner-padding-right", ""),
+          Map.entry("inner-padding-top", ""),
+          Map.entry("mode", "fluid-height"),
+          Map.entry("padding", "0px"),
+          Map.entry("padding-bottom", ""),
+          Map.entry("padding-left", ""),
+          Map.entry("padding-right", ""),
+          Map.entry("padding-top", ""),
+          Map.entry("vertical-align", "top"),
+          Map.entry("width", "100%"));
 
   private final ComponentRegistry registry;
 
-  public MjHero(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjHero component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjHero(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
+  }
+
+  private static int parseIntPx(String value) {
+    return CssUnitParser.parseIntPx(value);
+  }
+
+  private static int parsePaddingPart(String padding, int index) {
+    return (int) CssUnitParser.parseShorthand(padding)[index];
   }
 
   @Override
@@ -76,8 +97,8 @@ public class MjHero extends BodyComponent {
   }
 
   /**
-   * Renders a fixed-height hero. The content td has an explicit height derived
-   * from the declared height minus vertical padding.
+   * Renders a fixed-height hero. The content td has an explicit height derived from the declared
+   * height minus vertical padding.
    */
   private String renderFixedHeight() {
     String height = getAttribute("height", "");
@@ -100,8 +121,8 @@ public class MjHero extends BodyComponent {
   }
 
   /**
-   * Renders a fluid-height hero. Height adapts to content; spacer tds with
-   * padding-bottom percentage maintain the background aspect ratio.
+   * Renders a fluid-height hero. Height adapts to content; spacer tds with padding-bottom
+   * percentage maintain the background aspect ratio.
    */
   private String renderFluidHeight() {
     String bgHeight = getAttribute("background-height", "");
@@ -119,9 +140,7 @@ public class MjHero extends BodyComponent {
     // v:image uses background-height
     String vImageHeight = bgHeight;
     int innerHeight = 0;
-    String spacerPaddingPct = paddingPct > 0
-        ? String.valueOf(Math.round(paddingPct))
-        : null;
+    String spacerPaddingPct = paddingPct > 0 ? String.valueOf(Math.round(paddingPct)) : null;
 
     return renderHero(vImageHeight, innerHeight, spacerPaddingPct);
   }
@@ -129,8 +148,8 @@ public class MjHero extends BodyComponent {
   /**
    * Shared hero rendering logic for both fixed and fluid modes.
    *
-   * @param vImageHeight    height for the v:image element (empty string = omit)
-   * @param innerHeight     explicit height in px for the content td (0 = omit)
+   * @param vImageHeight height for the v:image element (empty string = omit)
+   * @param innerHeight explicit height in px for the content td (0 = omit)
    * @param spacerPaddingPct if non-null, adds spacer tds with this padding-bottom %
    */
   private String renderHero(String vImageHeight, int innerHeight, String spacerPaddingPct) {
@@ -144,17 +163,23 @@ public class MjHero extends BodyComponent {
     int containerWidth = globalContext.metadata().getContainerWidth();
 
     // MSO wrapper with v:image
-    sb.append("    <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:")
-        .append(containerWidth).append("px;\" width=\"").append(containerWidth)
+    sb.append(
+            "    <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:")
+        .append(containerWidth)
+        .append("px;\" width=\"")
+        .append(containerWidth)
         .append("\" ><tr><td style=\"line-height:0;font-size:0;mso-line-height-rule:exactly;\">");
     appendVmlImage(sb, backgroundUrl, vImageHeight, containerWidth);
     sb.append("<![endif]-->\n");
 
     // Outer div
-    sb.append("    <div style=\"margin:0 auto;max-width:").append(containerWidth).append("px;\">\n");
+    sb.append("    <div style=\"margin:0 auto;max-width:")
+        .append(containerWidth)
+        .append("px;\">\n");
 
     // Table with vertical-align row
-    sb.append("      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
+    sb.append(
+        "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
     sb.append("        <tbody>\n");
     sb.append("          <tr style=\"vertical-align:top;\">\n");
 
@@ -164,12 +189,21 @@ public class MjHero extends BodyComponent {
     }
 
     // Main content td with background
-    appendContentTd(sb, backgroundUrl, backgroundColor, backgroundPosition,
-        padding, verticalAlign, innerHeight);
+    appendContentTd(
+        sb,
+        backgroundUrl,
+        backgroundColor,
+        backgroundPosition,
+        padding,
+        verticalAlign,
+        innerHeight);
 
     // MSO inner table for content
-    sb.append("              <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:")
-        .append(containerWidth).append("px;\" width=\"").append(containerWidth)
+    sb.append(
+            "              <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:")
+        .append(containerWidth)
+        .append("px;\" width=\"")
+        .append(containerWidth)
         .append("\" ><tr><td style=\"\"><![endif]-->\n");
 
     // Hero content wrapper + children
@@ -196,42 +230,46 @@ public class MjHero extends BodyComponent {
     return sb.toString();
   }
 
-  /**
-   * Appends the VML v:image element for Outlook, if a background URL is set.
-   */
-  private void appendVmlImage(StringBuilder sb, String backgroundUrl,
-      String vImageHeight, int containerWidth) {
+  /** Appends the VML v:image element for Outlook, if a background URL is set. */
+  private void appendVmlImage(
+      StringBuilder sb, String backgroundUrl, String vImageHeight, int containerWidth) {
     if (!backgroundUrl.isEmpty()) {
       sb.append("<v:image style=\"border:0;");
       if (!vImageHeight.isEmpty()) {
         sb.append("height:").append(escapeAttr(vImageHeight)).append(";");
       }
       sb.append("mso-position-horizontal:center;position:absolute;top:0;width:")
-          .append(containerWidth).append("px;z-index:-3;\" src=\"")
-          .append(escapeAttr(backgroundUrl)).append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
+          .append(containerWidth)
+          .append("px;z-index:-3;\" src=\"")
+          .append(escapeAttr(backgroundUrl))
+          .append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
     }
   }
 
-  /**
-   * Appends a spacer td used in fluid mode for aspect-ratio padding.
-   */
+  /** Appends a spacer td used in fluid mode for aspect-ratio padding. */
   private void appendSpacerTd(StringBuilder sb, String paddingPct) {
-    sb.append("            <td style=\"width:0.01%;padding-bottom:").append(paddingPct)
+    sb.append("            <td style=\"width:0.01%;padding-bottom:")
+        .append(paddingPct)
         .append("%;mso-padding-bottom-alt:0;\" />\n");
   }
 
-  /**
-   * Appends the main content td with background styles and optional height.
-   */
-  private void appendContentTd(StringBuilder sb, String backgroundUrl, String backgroundColor,
-      String backgroundPosition, String padding, String verticalAlign, int innerHeight) {
+  /** Appends the main content td with background styles and optional height. */
+  private void appendContentTd(
+      StringBuilder sb,
+      String backgroundUrl,
+      String backgroundColor,
+      String backgroundPosition,
+      String padding,
+      String verticalAlign,
+      int innerHeight) {
     sb.append("            <td");
     if (!backgroundUrl.isEmpty()) {
       sb.append(" background=\"").append(escapeAttr(backgroundUrl)).append("\"");
     }
     sb.append(" style=\"");
     Map<String, String> tdStyles = new LinkedHashMap<>();
-    tdStyles.put("background", buildBackgroundValue(backgroundUrl, backgroundColor, backgroundPosition));
+    tdStyles.put(
+        "background", buildBackgroundValue(backgroundUrl, backgroundColor, backgroundPosition));
     if (!backgroundUrl.isEmpty()) {
       tdStyles.put("background-position", backgroundPosition);
       tdStyles.put("background-repeat", "no-repeat");
@@ -248,16 +286,16 @@ public class MjHero extends BodyComponent {
     sb.append(">\n");
   }
 
-  /**
-   * Appends the hero content wrapper div and child component rows.
-   */
+  /** Appends the hero content wrapper div and child component rows. */
   private void appendHeroContent(StringBuilder sb) {
     sb.append("              <div class=\"mj-hero-content\" style=\"margin:0px auto;\">\n");
-    sb.append("                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;margin:0px;\">\n");
+    sb.append(
+        "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;margin:0px;\">\n");
     sb.append("                  <tbody>\n");
     sb.append("                    <tr>\n");
     sb.append("                      <td style=\"\">\n");
-    sb.append("                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;margin:0px;\">\n");
+    sb.append(
+        "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;margin:0px;\">\n");
     sb.append("                          <tbody>\n");
     sb.append(renderChildrenAsRows());
     sb.append("                          </tbody>\n");
@@ -269,9 +307,7 @@ public class MjHero extends BodyComponent {
     sb.append("              </div>\n");
   }
 
-  /**
-   * Renders each child component inside its own table row with padding.
-   */
+  /** Renders each child component inside its own table row with padding. */
   private String renderChildrenAsRows() {
     StringBuilder sb = new StringBuilder();
 
@@ -293,8 +329,10 @@ public class MjHero extends BodyComponent {
         align = "center";
       }
 
-      sb.append("                            <td align=\"").append(align)
-          .append("\" style=\"font-size:0px;padding:").append(childPadding)
+      sb.append("                            <td align=\"")
+          .append(align)
+          .append("\" style=\"font-size:0px;padding:")
+          .append(childPadding)
           .append(";word-break:break-word;\">\n");
 
       // Render the child component
@@ -318,14 +356,11 @@ public class MjHero extends BodyComponent {
     if (url == null || url.isEmpty()) {
       return color;
     }
-    return color + " url('" + CssEscaper.escapeCssUrl(url) + "') no-repeat " + position + " / cover";
-  }
-
-  private static int parseIntPx(String value) {
-    return CssUnitParser.parseIntPx(value);
-  }
-
-  private static int parsePaddingPart(String padding, int index) {
-    return (int) CssUnitParser.parseShorthand(padding)[index];
+    return color
+        + " url('"
+        + CssEscaper.escapeCssUrl(url)
+        + "') no-repeat "
+        + position
+        + " / cover";
   }
 }

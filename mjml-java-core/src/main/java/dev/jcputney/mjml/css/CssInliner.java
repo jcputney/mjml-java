@@ -1,8 +1,8 @@
 package dev.jcputney.mjml.css;
 
 import dev.jcputney.mjml.css.CssSelector.ClassSelector;
-import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.ComplexSelector;
+import dev.jcputney.mjml.css.CssSelector.CompoundSelector;
 import dev.jcputney.mjml.css.CssSelector.IdSelector;
 import dev.jcputney.mjml.css.CssSelector.SelectorList;
 import dev.jcputney.mjml.css.CssSelector.SimpleSelector;
@@ -19,16 +19,17 @@ import java.util.logging.Logger;
 
 /**
  * Inlines CSS styles into HTML elements' style attributes.
- * <p>
- * This is a standalone utility that can be used independently of the MJML renderer.
- * It operates on the final HTML output, matching CSS rules to elements and merging
- * styles into inline {@code style=""} attributes.
- * <p>
- * Rules with pseudo-classes ({@code :hover}), pseudo-elements ({@code ::before}),
- * {@code @media} queries, {@code @font-face}, and {@code @keyframes} are preserved
- * in {@code <style>} blocks rather than being inlined.
+ *
+ * <p>This is a standalone utility that can be used independently of the MJML renderer. It operates
+ * on the final HTML output, matching CSS rules to elements and merging styles into inline {@code
+ * style=""} attributes.
+ *
+ * <p>Rules with pseudo-classes ({@code :hover}), pseudo-elements ({@code ::before}), {@code @media}
+ * queries, {@code @font-face}, and {@code @keyframes} are preserved in {@code <style>} blocks
+ * rather than being inlined.
  *
  * <h2>Usage</h2>
+ *
  * <pre>{@code
  * // Inline styles from <style> blocks in the HTML
  * String inlined = CssInliner.inline(html);
@@ -41,20 +42,12 @@ public final class CssInliner {
 
   private static final Logger LOG = Logger.getLogger(CssInliner.class.getName());
 
-  private CssInliner() {
-  }
-
-  private record ParsedRule(CssSelector selector, CssRule rule) {
-  }
-
-  private record AppliedStyle(CssSpecificity specificity, int order,
-                              List<CssDeclaration> declarations) {
-  }
+  private CssInliner() {}
 
   /**
    * Inlines CSS from {@code <style>} blocks in the HTML into element style attributes.
-   * Non-inlineable rules (pseudo-classes, @media, etc.) are preserved in a single
-   * {@code <style>} block in the output.
+   * Non-inlineable rules (pseudo-classes, @media, etc.) are preserved in a single {@code <style>}
+   * block in the output.
    *
    * @param html the HTML string
    * @return the HTML with CSS inlined
@@ -66,7 +59,7 @@ public final class CssInliner {
   /**
    * Inlines CSS from {@code <style>} blocks and additional CSS into element style attributes.
    *
-   * @param html          the HTML string
+   * @param html the HTML string
    * @param additionalCss optional additional CSS to inline (may be null)
    * @return the HTML with CSS inlined
    */
@@ -76,8 +69,7 @@ public final class CssInliner {
     }
 
     // 1. Extract <style> blocks from HTML
-    HtmlDocumentParser.StyleExtractionResult extracted =
-        HtmlDocumentParser.extractStyles(html);
+    HtmlDocumentParser.StyleExtractionResult extracted = HtmlDocumentParser.extractStyles(html);
     String cleanHtml = extracted.html();
     String extractedCss = extracted.css();
 
@@ -109,15 +101,20 @@ public final class CssInliner {
 
     for (CssRule rule : rules) {
       CssSelector selector = CssSelectorParser.parse(rule.selectorText());
-      if (selector != null && CssSelectorMatcher.hasPseudo(selector)) {
+      if (CssSelectorMatcher.hasPseudo(selector)) {
         pseudoRules.add(rule);
       } else if (selector != null) {
         inlineableRules.add(new ParsedRule(selector, rule));
       }
     }
 
-    LOG.fine(() -> "CSS inliner: " + inlineableRules.size() + " inlineable, "
-        + pseudoRules.size() + " pseudo rules");
+    LOG.fine(
+        () ->
+            "CSS inliner: "
+                + inlineableRules.size()
+                + " inlineable, "
+                + pseudoRules.size()
+                + " pseudo rules");
 
     // 5. Match and apply styles to all elements
     List<HtmlElement> allElements = root.allDescendants();
@@ -143,13 +140,13 @@ public final class CssInliner {
   }
 
   /**
-   * Inlines only the provided CSS into HTML elements' style attributes, without extracting
-   * or removing any existing {@code <style>} blocks from the HTML. This is used by the
-   * MJML renderer for {@code <mj-style inline="inline">} content, where base CSS resets
-   * in the head must be preserved.
+   * Inlines only the provided CSS into HTML elements' style attributes, without extracting or
+   * removing any existing {@code <style>} blocks from the HTML. This is used by the MJML renderer
+   * for {@code <mj-style inline="inline">} content, where base CSS resets in the head must be
+   * preserved.
    *
    * @param html the HTML string
-   * @param css  the CSS to inline
+   * @param css the CSS to inline
    * @return the HTML with the provided CSS inlined into matching elements
    */
   public static String inlineAdditionalOnly(String html, String css) {
@@ -168,12 +165,12 @@ public final class CssInliner {
   }
 
   /**
-   * Inlines only the provided CSS into HTML elements' style attributes using a pre-parsed
-   * element tree, avoiding redundant HTML re-parsing when the tree is already available.
+   * Inlines only the provided CSS into HTML elements' style attributes using a pre-parsed element
+   * tree, avoiding redundant HTML re-parsing when the tree is already available.
    *
-   * @param html  the original HTML string (for position-based modification)
-   * @param root  the pre-parsed element tree
-   * @param css   the CSS to inline
+   * @param html the original HTML string (for position-based modification)
+   * @param root the pre-parsed element tree
+   * @param css the CSS to inline
    * @return the HTML with the provided CSS inlined into matching elements
    */
   public static String inlineAdditionalOnly(String html, HtmlElement root, String css) {
@@ -185,8 +182,8 @@ public final class CssInliner {
     return inlineAdditionalOnlyWithElements(html, root, parseResult.rules());
   }
 
-  private static String inlineAdditionalOnlyWithElements(String html, HtmlElement root,
-      List<CssRule> rules) {
+  private static String inlineAdditionalOnlyWithElements(
+      String html, HtmlElement root, List<CssRule> rules) {
     // Parse selectors once and filter to inlineable rules
     List<ParsedRule> inlineableRules = new ArrayList<>();
     for (CssRule rule : rules) {
@@ -213,15 +210,14 @@ public final class CssInliner {
   }
 
   /**
-   * Matches CSS rules against HTML elements and merges matched styles into
-   * each element's inline style attribute. Uses element indexes by tag name
-   * and class name to pre-filter candidates, reducing O(n*m) to O(n + m*k)
-   * where k is the average candidate set size.
+   * Matches CSS rules against HTML elements and merges matched styles into each element's inline
+   * style attribute. Uses element indexes by tag name and class name to pre-filter candidates,
+   * reducing O(n*m) to O(n + m*k) where k is the average candidate set size.
    *
    * @return the list of elements whose styles were actually modified
    */
-  private static List<HtmlElement> matchAndApplyStyles(List<ParsedRule> inlineableRules,
-      List<HtmlElement> elements) {
+  private static List<HtmlElement> matchAndApplyStyles(
+      List<ParsedRule> inlineableRules, List<HtmlElement> elements) {
     // Build element indexes for fast candidate filtering
     ElementIndex index = new ElementIndex(elements);
 
@@ -235,9 +231,11 @@ public final class CssInliner {
 
       for (HtmlElement candidate : candidates) {
         if (CssSelectorMatcher.matches(parsed.selector(), candidate)) {
-          elementStyles.computeIfAbsent(candidate, k -> new ArrayList<>())
-              .add(new AppliedStyle(parsed.selector().specificity(), ruleIndex,
-                  parsed.rule().declarations()));
+          elementStyles
+              .computeIfAbsent(candidate, k -> new ArrayList<>())
+              .add(
+                  new AppliedStyle(
+                      parsed.selector().specificity(), ruleIndex, parsed.rule().declarations()));
         }
       }
     }
@@ -250,13 +248,14 @@ public final class CssInliner {
       }
 
       // Sort by specificity, then by source order
-      applicableStyles.sort((a, b) -> {
-        int cmp = a.specificity().compareTo(b.specificity());
-        if (cmp != 0) {
-          return cmp;
-        }
-        return Integer.compare(a.order(), b.order());
-      });
+      applicableStyles.sort(
+          (a, b) -> {
+            int cmp = a.specificity().compareTo(b.specificity());
+            if (cmp != 0) {
+              return cmp;
+            }
+            return Integer.compare(a.order(), b.order());
+          });
 
       // Parse existing inline style and merge
       List<CssDeclaration> existingStyle = StyleAttribute.parse(element.getStyle());
@@ -273,8 +272,85 @@ public final class CssInliner {
   }
 
   /**
-   * Index of HTML elements by tag name and class name for fast candidate pre-filtering.
+   * Rebuilds the HTML string with updated style attributes. Uses position tracking from the parser
+   * to make in-place modifications.
    */
+  private static String rebuildHtml(String html, List<HtmlElement> elements) {
+    // Collect all style changes, sorted by position (descending to avoid offset shifts)
+    TreeMap<Integer, StyleChange> changes = new TreeMap<>();
+
+    for (HtmlElement element : elements) {
+      String newStyle = element.getStyle();
+      if (newStyle == null || newStyle.isEmpty()) {
+        continue;
+      }
+
+      if (element.getStyleAttrStart() >= 0 && element.getStyleAttrEnd() >= 0) {
+        // Element had an existing style attribute - replace its value
+        changes.put(
+            element.getStyleAttrStart(),
+            new StyleChange(element.getStyleAttrStart(), element.getStyleAttrEnd(), newStyle));
+      } else if (element.hasPositionInfo()) {
+        // Element has no style attribute - insert one
+        // Insert before the closing > of the opening tag
+        int insertPos = element.getTagEnd() - 1;
+        // Check if it's a self-closing tag
+        if (insertPos > 0 && html.charAt(insertPos - 1) == '/') {
+          insertPos = insertPos - 1;
+          // Skip whitespace before /
+          while (insertPos > element.getTagStart() && html.charAt(insertPos - 1) == ' ') {
+            insertPos--;
+          }
+        }
+        changes.put(
+            insertPos, new StyleChange(insertPos, insertPos, " style=\"" + newStyle + "\""));
+      }
+    }
+
+    if (changes.isEmpty()) {
+      return html;
+    }
+
+    // Apply changes in reverse order (descending position)
+    StringBuilder sb = new StringBuilder(html);
+    for (StyleChange change : changes.descendingMap().values()) {
+      sb.replace(change.start(), change.end(), change.replacement());
+    }
+
+    return sb.toString();
+  }
+
+  /** Inserts a &lt;style&gt; block into the &lt;head&gt; of the HTML document. */
+  private static String insertStyleBlock(String html, String css) {
+    String styleBlock = "<style type=\"text/css\">\n" + css + "</style>\n";
+
+    String lower = html.toLowerCase();
+
+    // Try to insert before </head>
+    int headClose = lower.indexOf("</head>");
+    if (headClose >= 0) {
+      return html.substring(0, headClose) + styleBlock + html.substring(headClose);
+    }
+
+    // Fallback: insert after <body> tag
+    int bodyStart = lower.indexOf("<body");
+    if (bodyStart >= 0) {
+      int bodyEnd = html.indexOf('>', bodyStart);
+      if (bodyEnd >= 0) {
+        return html.substring(0, bodyEnd + 1) + "\n" + styleBlock + html.substring(bodyEnd + 1);
+      }
+    }
+
+    // Last resort: prepend
+    return styleBlock + html;
+  }
+
+  private record ParsedRule(CssSelector selector, CssRule rule) {}
+
+  private record AppliedStyle(
+      CssSpecificity specificity, int order, List<CssDeclaration> declarations) {}
+
+  /** Index of HTML elements by tag name and class name for fast candidate pre-filtering. */
   private static final class ElementIndex {
 
     private final Map<String, List<HtmlElement>> byTagName = new HashMap<>();
@@ -297,8 +373,19 @@ public final class CssInliner {
     }
 
     /**
-     * Returns a pre-filtered list of candidate elements that could possibly match the
-     * given selector. Falls back to all elements for selectors that can't be pre-filtered.
+     * Extracts the rightmost (key) selector from a complex selector chain. For "div > p.foo", this
+     * returns "p.foo" since that's what the element must match directly.
+     */
+    private static CssSelector getRightmostSelector(CssSelector selector) {
+      if (selector instanceof ComplexSelector complex) {
+        return getRightmostSelector(complex.right());
+      }
+      return selector;
+    }
+
+    /**
+     * Returns a pre-filtered list of candidate elements that could possibly match the given
+     * selector. Falls back to all elements for selectors that can't be pre-filtered.
      */
     List<HtmlElement> getCandidates(CssSelector selector) {
       // Extract the rightmost/key selector from complex selectors
@@ -357,95 +444,7 @@ public final class CssInliner {
 
       return allElements;
     }
-
-    /**
-     * Extracts the rightmost (key) selector from a complex selector chain.
-     * For "div > p.foo", this returns "p.foo" since that's what the element
-     * must match directly.
-     */
-    private static CssSelector getRightmostSelector(CssSelector selector) {
-      if (selector instanceof ComplexSelector complex) {
-        return getRightmostSelector(complex.right());
-      }
-      return selector;
-    }
   }
 
-  /**
-   * Rebuilds the HTML string with updated style attributes.
-   * Uses position tracking from the parser to make in-place modifications.
-   */
-  private static String rebuildHtml(String html, List<HtmlElement> elements) {
-    // Collect all style changes, sorted by position (descending to avoid offset shifts)
-    TreeMap<Integer, StyleChange> changes = new TreeMap<>();
-
-    for (HtmlElement element : elements) {
-      String newStyle = element.getStyle();
-      if (newStyle == null || newStyle.isEmpty()) {
-        continue;
-      }
-
-      if (element.getStyleAttrStart() >= 0 && element.getStyleAttrEnd() >= 0) {
-        // Element had an existing style attribute - replace its value
-        changes.put(element.getStyleAttrStart(),
-            new StyleChange(element.getStyleAttrStart(), element.getStyleAttrEnd(), newStyle));
-      } else if (element.hasPositionInfo()) {
-        // Element has no style attribute - insert one
-        // Insert before the closing > of the opening tag
-        int insertPos = element.getTagEnd() - 1;
-        // Check if it's a self-closing tag
-        if (insertPos > 0 && html.charAt(insertPos - 1) == '/') {
-          insertPos = insertPos - 1;
-          // Skip whitespace before /
-          while (insertPos > element.getTagStart() && html.charAt(insertPos - 1) == ' ') {
-            insertPos--;
-          }
-        }
-        changes.put(insertPos,
-            new StyleChange(insertPos, insertPos, " style=\"" + newStyle + "\""));
-      }
-    }
-
-    if (changes.isEmpty()) {
-      return html;
-    }
-
-    // Apply changes in reverse order (descending position)
-    StringBuilder sb = new StringBuilder(html);
-    for (StyleChange change : changes.descendingMap().values()) {
-      sb.replace(change.start(), change.end(), change.replacement());
-    }
-
-    return sb.toString();
-  }
-
-  /**
-   * Inserts a &lt;style&gt; block into the &lt;head&gt; of the HTML document.
-   */
-  private static String insertStyleBlock(String html, String css) {
-    String styleBlock = "<style type=\"text/css\">\n" + css + "</style>\n";
-
-    String lower = html.toLowerCase();
-
-    // Try to insert before </head>
-    int headClose = lower.indexOf("</head>");
-    if (headClose >= 0) {
-      return html.substring(0, headClose) + styleBlock + html.substring(headClose);
-    }
-
-    // Fallback: insert after <body> tag
-    int bodyStart = lower.indexOf("<body");
-    if (bodyStart >= 0) {
-      int bodyEnd = html.indexOf('>', bodyStart);
-      if (bodyEnd >= 0) {
-        return html.substring(0, bodyEnd + 1) + "\n" + styleBlock + html.substring(bodyEnd + 1);
-      }
-    }
-
-    // Last resort: prepend
-    return styleBlock + html;
-  }
-
-  private record StyleChange(int start, int end, String replacement) {
-  }
+  private record StyleChange(int start, int end, String replacement) {}
 }

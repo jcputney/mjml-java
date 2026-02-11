@@ -1,15 +1,11 @@
 package dev.jcputney.mjml.component.interactive;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-accordion component rendering.
- */
+/** Tests for the mj-accordion component rendering. */
 class MjAccordionTest {
 
   private String render(String mjml) {
@@ -21,7 +17,10 @@ class MjAccordionTest {
 
   @Test
   void basicAccordionRendersWithChildren() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -42,23 +41,20 @@ class MjAccordionTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Question 1"),
-        "Should contain first accordion title");
-    assertTrue(html.contains("Answer 1"),
-        "Should contain first accordion text");
-    assertTrue(html.contains("Question 2"),
-        "Should contain second accordion title");
-    assertTrue(html.contains("Answer 2"),
-        "Should contain second accordion text");
-    assertTrue(html.contains("mj-accordion"),
-        "Should have mj-accordion class on the table");
-    assertTrue(html.contains("checkbox"),
-        "Should use checkbox hack for expand/collapse");
+    assertTrue(html.contains("Question 1"), "Should contain first accordion title");
+    assertTrue(html.contains("Answer 1"), "Should contain first accordion text");
+    assertTrue(html.contains("Question 2"), "Should contain second accordion title");
+    assertTrue(html.contains("Answer 2"), "Should contain second accordion text");
+    assertTrue(html.contains("mj-accordion"), "Should have mj-accordion class on the table");
+    assertTrue(html.contains("checkbox"), "Should use checkbox hack for expand/collapse");
   }
 
   @Test
   void cssInjectionHappens() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -75,17 +71,21 @@ class MjAccordionTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("noinput.mj-accordion-checkbox"),
+    assertTrue(
+        html.contains("noinput.mj-accordion-checkbox"),
         "Should inject accordion CSS with noinput rule");
-    assertTrue(html.contains("mj-accordion-content"),
+    assertTrue(
+        html.contains("mj-accordion-content"),
         "Should inject CSS controlling accordion content visibility");
-    assertTrue(html.contains("mj-accordion-more"),
-        "Should inject CSS for more/less toggle icons");
+    assertTrue(html.contains("mj-accordion-more"), "Should inject CSS for more/less toggle icons");
   }
 
   @Test
   void multipleAccordionsDontDuplicateCss() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -109,15 +109,15 @@ class MjAccordionTest {
         """);
 
     // Both accordions should render
-    assertTrue(html.contains("First Accordion Title"),
-        "Should render first accordion");
-    assertTrue(html.contains("Second Accordion Title"),
-        "Should render second accordion");
+    assertTrue(html.contains("First Accordion Title"), "Should render first accordion");
+    assertTrue(html.contains("Second Accordion Title"), "Should render second accordion");
 
     // The accordion CSS should only appear once
     int firstIndex = html.indexOf("noinput.mj-accordion-checkbox");
     int lastIndex = html.lastIndexOf("noinput.mj-accordion-checkbox");
-    assertTrue(firstIndex == lastIndex,
+    assertEquals(
+        firstIndex,
+        lastIndex,
         "Accordion CSS should only be injected once, not duplicated for multiple accordions");
   }
 }

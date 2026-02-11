@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * An {@link IncludeResolver} that chains multiple resolvers together.
- * The first resolver that succeeds wins; if all fail, the last exception is rethrown.
+ * An {@link IncludeResolver} that chains multiple resolvers together. The first resolver that
+ * succeeds wins; if all fail, the last exception is rethrown.
  */
 public final class CompositeIncludeResolver implements IncludeResolver {
 

@@ -13,19 +13,16 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /**
- * Applies {@code mj-html-attributes} to rendered HTML by matching CSS selectors
- * against elements and inserting the specified attributes.
+ * Applies {@code mj-html-attributes} to rendered HTML by matching CSS selectors against elements
+ * and inserting the specified attributes.
  */
 final class HtmlAttributeApplier {
 
   private static final Pattern VALID_ATTR_NAME = Pattern.compile("[a-zA-Z][a-zA-Z0-9-]*");
 
-  private HtmlAttributeApplier() {
-  }
+  private HtmlAttributeApplier() {}
 
-  /**
-   * Applies mj-html-attributes from the global context to the rendered HTML.
-   */
+  /** Applies mj-html-attributes from the global context to the rendered HTML. */
   static String apply(String html, GlobalContext ctx) {
     Map<String, Map<String, String>> htmlAttrs = ctx.attributes().getHtmlAttributes();
     if (htmlAttrs.isEmpty()) {
@@ -37,12 +34,12 @@ final class HtmlAttributeApplier {
   }
 
   /**
-   * Applies mj-html-attributes from the global context to the rendered HTML,
-   * using a pre-parsed element tree to avoid re-parsing.
+   * Applies mj-html-attributes from the global context to the rendered HTML, using a pre-parsed
+   * element tree to avoid re-parsing.
    *
    * @param html the original HTML string (for position-based modification)
    * @param root the pre-parsed element tree
-   * @param ctx  the global context containing html attributes
+   * @param ctx the global context containing html attributes
    * @return the HTML with attributes applied
    */
   static String applyToElements(String html, HtmlElement root, GlobalContext ctx) {
@@ -73,8 +70,7 @@ final class HtmlAttributeApplier {
             // Check for self-closing tag
             if (insertPos > 0 && html.charAt(insertPos - 1) == '/') {
               insertPos = insertPos - 1;
-              while (insertPos > element.getTagStart()
-                  && html.charAt(insertPos - 1) == ' ') {
+              while (insertPos > element.getTagStart() && html.charAt(insertPos - 1) == ' ') {
                 insertPos--;
               }
             }
@@ -85,8 +81,11 @@ final class HtmlAttributeApplier {
               if (!VALID_ATTR_NAME.matcher(attrName).matches()) {
                 continue;
               }
-              attrStr.append(' ').append(attrName)
-                  .append("=\"").append(HtmlEscaper.escapeAttributeValue(attr.getValue()))
+              attrStr
+                  .append(' ')
+                  .append(attrName)
+                  .append("=\"")
+                  .append(HtmlEscaper.escapeAttributeValue(attr.getValue()))
                   .append('"');
             }
             // Merge with existing insertion at same position

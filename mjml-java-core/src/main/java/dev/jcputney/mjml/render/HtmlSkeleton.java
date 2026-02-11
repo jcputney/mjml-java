@@ -8,9 +8,8 @@ import dev.jcputney.mjml.util.HtmlEscaper;
 import java.util.Set;
 
 /**
- * Generates the complete HTML document skeleton wrapping the rendered body.
- * Includes DOCTYPE, html/head/body tags, CSS resets, font imports,
- * MSO XML settings, media queries, and preview text.
+ * Generates the complete HTML document skeleton wrapping the rendered body. Includes DOCTYPE,
+ * html/head/body tags, CSS resets, font imports, MSO XML settings, media queries, and preview text.
  */
 public final class HtmlSkeleton {
 
@@ -23,11 +22,14 @@ public final class HtmlSkeleton {
   /** Max-width breakpoint (px) for fluid-on-mobile responsive styles. */
   private static final int FLUID_MOBILE_BREAKPOINT_PX = 479;
 
-  private HtmlSkeleton() {
-  }
+  private HtmlSkeleton() {}
 
   /**
    * Assembles the full HTML document from the rendered body content.
+   *
+   * @param bodyContent the rendered HTML body content to embed in the document
+   * @param ctx the global context providing configuration, styles, and metadata
+   * @return the complete HTML document string
    */
   public static String assemble(String bodyContent, GlobalContext ctx) {
     StringBuilder sb = new StringBuilder(INITIAL_BUFFER_CAPACITY);
@@ -46,7 +48,11 @@ public final class HtmlSkeleton {
 
     // DOCTYPE + html tag
     sb.append("<!doctype html>\n");
-    sb.append("<html lang=\"").append(escapeHtml(lang)).append("\" dir=\"").append(dir).append("\"");
+    sb.append("<html lang=\"")
+        .append(escapeHtml(lang))
+        .append("\" dir=\"")
+        .append(dir)
+        .append("\"");
     sb.append(" xmlns=\"http://www.w3.org/1999/xhtml\"");
     sb.append(" xmlns:v=\"urn:schemas-microsoft-com:vml\"");
     sb.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n");
@@ -100,7 +106,9 @@ public final class HtmlSkeleton {
     if (hasFluid || hasComponentStyles) {
       sb.append("  <style type=\"text/css\">\n");
       if (hasFluid) {
-        sb.append("    @media only screen and (max-width:").append(FLUID_MOBILE_BREAKPOINT_PX).append("px) {\n");
+        sb.append("    @media only screen and (max-width:")
+            .append(FLUID_MOBILE_BREAKPOINT_PX)
+            .append("px) {\n");
         sb.append("      table.mj-full-width-mobile {\n");
         sb.append("        width: 100% !important;\n");
         sb.append("      }\n");
@@ -144,7 +152,8 @@ public final class HtmlSkeleton {
 
     // Preview text
     if (!ctx.metadata().getPreviewText().isEmpty()) {
-      sb.append("  <div style=\"display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;\">");
+      sb.append(
+          "  <div style=\"display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;\">");
       sb.append(escapeHtml(ctx.metadata().getPreviewText()));
       sb.append("</div>\n");
     }
@@ -167,7 +176,8 @@ public final class HtmlSkeleton {
     // Wrap link tags + @import in non-MSO conditional
     sb.append("  <!--[if !mso]><!-->\n");
     for (FontDef font : ctx.styles().getFonts()) {
-      sb.append("  <link href=\"").append(escapeHtml(font.href()))
+      sb.append("  <link href=\"")
+          .append(escapeHtml(font.href()))
           .append("\" rel=\"stylesheet\" type=\"text/css\">\n");
     }
     sb.append("  <style type=\"text/css\">\n");
@@ -182,7 +192,8 @@ public final class HtmlSkeleton {
   }
 
   private static void appendBaseStyles(StringBuilder sb) {
-    sb.append("""
+    sb.append(
+        """
             #outlook a {
               padding: 0;
             }
@@ -228,7 +239,8 @@ public final class HtmlSkeleton {
     MediaQuery[] queryArr = queries.toArray(new MediaQuery[0]);
     sb.append("  <style type=\"text/css\">\n");
     sb.append("    @media only screen and (min-width:")
-        .append(ctx.metadata().getBreakpoint()).append(") {\n");
+        .append(ctx.metadata().getBreakpoint())
+        .append(") {\n");
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
@@ -245,7 +257,9 @@ public final class HtmlSkeleton {
     sb.append("  </style>\n");
 
     // Thunderbird-specific styles (flat selectors, not nested)
-    sb.append("  <style media=\"screen and (min-width:").append(ctx.metadata().getBreakpoint()).append(")\">\n");
+    sb.append("  <style media=\"screen and (min-width:")
+        .append(ctx.metadata().getBreakpoint())
+        .append(")\">\n");
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
@@ -262,8 +276,8 @@ public final class HtmlSkeleton {
   }
 
   /**
-   * Reformats CSS content to use consistent indentation inside a style block.
-   * Official MJML uses 4-space indent for rules, 6-space for properties.
+   * Reformats CSS content to use consistent indentation inside a style block. Official MJML uses
+   * 4-space indent for rules, 6-space for properties.
    */
   private static String reformatCss(String css) {
     StringBuilder out = new StringBuilder();

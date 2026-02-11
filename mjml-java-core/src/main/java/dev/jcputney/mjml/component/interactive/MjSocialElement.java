@@ -4,57 +4,80 @@ import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.SocialNetworkRegistry;
 import dev.jcputney.mjml.util.SocialNetworkRegistry.NetworkInfo;
-import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A single social element ({@code <mj-social-element>}).
- * Renders a table containing a social icon image and an optional text label.
- * When used in horizontal mode, each element is wrapped in its own inline table.
- * When used in vertical mode, each element is a row in the parent's shared table.
+ * A single social element ({@code <mj-social-element>}). Renders a table containing a social icon
+ * image and an optional text label. When used in horizontal mode, each element is wrapped in its
+ * own inline table. When used in vertical mode, each element is a row in the parent's shared table.
  */
 public class MjSocialElement extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("align", "left"),
-      Map.entry("alt", ""),
-      Map.entry("background-color", ""),
-      Map.entry("border-radius", "3px"),
-      Map.entry("color", "#000"),
-      Map.entry("css-class", ""),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("font-size", "13px"),
-      Map.entry("font-style", ""),
-      Map.entry("font-weight", ""),
-      Map.entry("href", ""),
-      Map.entry("icon-height", ""),
-      Map.entry("icon-padding", ""),
-      Map.entry("icon-position", "left"),
-      Map.entry("icon-size", "20px"),
-      Map.entry("inner-padding", "4px 4px"),
-      Map.entry("line-height", "1"),
-      Map.entry("name", ""),
-      Map.entry("padding", "4px"),
-      Map.entry("padding-bottom", ""),
-      Map.entry("padding-left", ""),
-      Map.entry("padding-right", ""),
-      Map.entry("padding-top", ""),
-      Map.entry("sizes", ""),
-      Map.entry("src", ""),
-      Map.entry("srcset", ""),
-      Map.entry("target", "_blank"),
-      Map.entry("title", ""),
-      Map.entry("text-decoration", "none"),
-      Map.entry("text-padding", "4px 4px 4px 0"),
-      Map.entry("vertical-align", "middle")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("align", "left"),
+          Map.entry("alt", ""),
+          Map.entry("background-color", ""),
+          Map.entry("border-radius", "3px"),
+          Map.entry("color", "#000"),
+          Map.entry("css-class", ""),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("font-size", "13px"),
+          Map.entry("font-style", ""),
+          Map.entry("font-weight", ""),
+          Map.entry("href", ""),
+          Map.entry("icon-height", ""),
+          Map.entry("icon-padding", ""),
+          Map.entry("icon-position", "left"),
+          Map.entry("icon-size", "20px"),
+          Map.entry("inner-padding", "4px 4px"),
+          Map.entry("line-height", "1"),
+          Map.entry("name", ""),
+          Map.entry("padding", "4px"),
+          Map.entry("padding-bottom", ""),
+          Map.entry("padding-left", ""),
+          Map.entry("padding-right", ""),
+          Map.entry("padding-top", ""),
+          Map.entry("sizes", ""),
+          Map.entry("src", ""),
+          Map.entry("srcset", ""),
+          Map.entry("target", "_blank"),
+          Map.entry("title", ""),
+          Map.entry("text-decoration", "none"),
+          Map.entry("text-padding", "4px 4px 4px 0"),
+          Map.entry("vertical-align", "middle"));
 
-  public MjSocialElement(MjmlNode node, GlobalContext globalContext,
-      RenderContext renderContext) {
+  /**
+   * Creates a new MjSocialElement component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
+  public MjSocialElement(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
+  }
+
+  /** Normalizes CSS padding shorthand: "4px 4px" -> "4px", "4px 4px 4px 4px" -> "4px". */
+  private static String normalizePadding(String padding) {
+    if (padding == null || padding.isEmpty()) {
+      return padding;
+    }
+    String[] parts = CssUnitParser.WHITESPACE.split(padding.trim());
+    if (parts.length == 2 && parts[0].equals(parts[1])) {
+      return parts[0];
+    }
+    if (parts.length == 4
+        && parts[0].equals(parts[1])
+        && parts[1].equals(parts[2])
+        && parts[2].equals(parts[3])) {
+      return parts[0];
+    }
+    return padding;
   }
 
   @Override
@@ -75,12 +98,16 @@ public class MjSocialElement extends BodyComponent {
 
   /**
    * Renders this element in horizontal mode (each element in its own inline table).
+   *
+   * @param parent the parent MjSocial component, or {@code null} if rendering standalone
+   * @return the rendered HTML string for this social element in horizontal layout
    */
   public String renderHorizontal(MjSocial parent) {
     StringBuilder sb = new StringBuilder();
     String align = getInheritedAttribute(parent, "align", "left");
 
-    sb.append("<table align=\"").append(align)
+    sb.append("<table align=\"")
+        .append(align)
         .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"")
         .append(" style=\"float:none;display:inline-table;\">\n");
     sb.append("<tbody>\n");
@@ -97,6 +124,9 @@ public class MjSocialElement extends BodyComponent {
 
   /**
    * Renders this element in vertical mode (a single row in the parent's shared table).
+   *
+   * @param parent the parent MjSocial component, or {@code null} if rendering standalone
+   * @return the rendered HTML string for this social element in vertical layout
    */
   public String renderVertical(MjSocial parent) {
     StringBuilder sb = new StringBuilder();
@@ -149,16 +179,22 @@ public class MjSocialElement extends BodyComponent {
     innerPadding = normalizePadding(innerPadding);
 
     // Icon cell: outer td with inner-padding, inner table with background
-    sb.append("<td style=\"padding:").append(innerPadding)
-        .append(";vertical-align:").append(verticalAlign).append(";\">\n");
+    sb.append("<td style=\"padding:")
+        .append(innerPadding)
+        .append(";vertical-align:")
+        .append(verticalAlign)
+        .append(";\">\n");
 
     sb.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
     sb.append(" style=\"");
     if (!backgroundColor.isEmpty()) {
       sb.append("background:").append(backgroundColor).append(";");
     }
-    sb.append("border-radius:").append(borderRadius)
-        .append(";width:").append(iconSize).append(";\">\n");
+    sb.append("border-radius:")
+        .append(borderRadius)
+        .append(";width:")
+        .append(iconSize)
+        .append(";\">\n");
     sb.append("<tbody>\n");
     sb.append("<tr>\n");
 
@@ -179,8 +215,11 @@ public class MjSocialElement extends BodyComponent {
       sb.append(" target=\"").append(escapeAttr(target)).append("\">\n");
     }
 
-    sb.append("<img alt=\"").append(escapeAttr(alt))
-        .append("\" src=\"").append(escapeAttr(src)).append("\"");
+    sb.append("<img alt=\"")
+        .append(escapeAttr(alt))
+        .append("\" src=\"")
+        .append(escapeAttr(src))
+        .append("\"");
     sb.append(" style=\"border-radius:").append(borderRadius).append(";display:block;\"");
     sb.append(" width=\"").append(iconSizeNum).append("\"");
     sb.append(" />\n");
@@ -200,14 +239,16 @@ public class MjSocialElement extends BodyComponent {
     if (!textContent.isEmpty()) {
       String textPadding = getInheritedAttribute(parent, "text-padding", "4px 4px 4px 0");
       String color = getInheritedAttribute(parent, "color", "#000");
-      String fontFamily = getInheritedAttribute(parent, "font-family",
-          "Ubuntu, Helvetica, Arial, sans-serif");
+      String fontFamily =
+          getInheritedAttribute(parent, "font-family", "Ubuntu, Helvetica, Arial, sans-serif");
       String fontSize = getInheritedAttribute(parent, "font-size", "13px");
       String lineHeight = getInheritedAttribute(parent, "line-height", "1");
       String textDecoration = getInheritedAttribute(parent, "text-decoration", "none");
 
-      sb.append("<td style=\"vertical-align:").append(verticalAlign)
-          .append(";padding:").append(textPadding)
+      sb.append("<td style=\"vertical-align:")
+          .append(verticalAlign)
+          .append(";padding:")
+          .append(textPadding)
           .append(";text-align:left;\">\n");
 
       Map<String, String> textStyles = new LinkedHashMap<>();
@@ -234,34 +275,16 @@ public class MjSocialElement extends BodyComponent {
   }
 
   /**
-   * Normalizes CSS padding shorthand: "4px 4px" -> "4px", "4px 4px 4px 4px" -> "4px".
-   */
-  private static String normalizePadding(String padding) {
-    if (padding == null || padding.isEmpty()) {
-      return padding;
-    }
-    String[] parts = CssUnitParser.WHITESPACE.split(padding.trim());
-    if (parts.length == 2 && parts[0].equals(parts[1])) {
-      return parts[0];
-    }
-    if (parts.length == 4 && parts[0].equals(parts[1]) && parts[1].equals(parts[2])
-        && parts[2].equals(parts[3])) {
-      return parts[0];
-    }
-    return padding;
-  }
-
-  /**
-   * Gets an attribute value only if explicitly set on the element or its parent.
-   * Returns null if neither has it set.
+   * Gets an attribute value only if explicitly set on the element or its parent. Returns null if
+   * neither has it set.
    *
-   * <p>This custom cascade is needed because mj-social-element uses a parent-child
-   * inheritance model that differs from the standard mj-attributes cascade. The standard
-   * cascade resolves attributes via mj-class/tag-defaults/mj-all, but social elements
-   * also need to inherit presentational attributes (icon-size, border-radius, colors, etc.)
-   * directly from their enclosing mj-social parent. This two-level lookup
-   * (element -> parent -> defaults) lets the parent act as a shared configuration
-   * for all its child elements without requiring mj-attributes.</p>
+   * <p>This custom cascade is needed because mj-social-element uses a parent-child inheritance
+   * model that differs from the standard mj-attributes cascade. The standard cascade resolves
+   * attributes via mj-class/tag-defaults/mj-all, but social elements also need to inherit
+   * presentational attributes (icon-size, border-radius, colors, etc.) directly from their
+   * enclosing mj-social parent. This two-level lookup (element -> parent -> defaults) lets the
+   * parent act as a shared configuration for all its child elements without requiring
+   * mj-attributes.
    */
   private String getExplicitAttribute(MjSocial parent, String attrName) {
     String value = node.getAttribute(attrName);
@@ -278,9 +301,9 @@ public class MjSocialElement extends BodyComponent {
   }
 
   /**
-   * Gets an attribute value, falling back to the parent MjSocial's value if the element
-   * doesn't have it set explicitly. See {@link #getExplicitAttribute} for why this
-   * custom cascade exists alongside the standard mj-attributes cascade.
+   * Gets an attribute value, falling back to the parent MjSocial's value if the element doesn't
+   * have it set explicitly. See {@link #getExplicitAttribute} for why this custom cascade exists
+   * alongside the standard mj-attributes cascade.
    */
   private String getInheritedAttribute(MjSocial parent, String attrName, String defaultValue) {
     // Check if explicitly set on this element

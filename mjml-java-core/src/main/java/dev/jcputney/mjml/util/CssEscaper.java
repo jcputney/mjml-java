@@ -1,18 +1,21 @@
 package dev.jcputney.mjml.util;
 
 /**
- * Utility to escape values for safe interpolation into CSS contexts.
- * Used to prevent CSS injection when embedding user-controlled values in
- * {@code url()}, {@code @import}, and other CSS constructs.
+ * Utility to escape values for safe interpolation into CSS contexts. Used to prevent CSS injection
+ * when embedding user-controlled values in {@code url()}, {@code @import}, and other CSS
+ * constructs.
  */
 public final class CssEscaper {
 
-  private CssEscaper() {
-  }
+  private CssEscaper() {}
 
   /**
-   * Escapes a URL for safe use inside a CSS {@code url("...")} context.
-   * Escapes backslashes, double quotes, and parentheses to prevent breakout.
+   * Escapes a URL for safe use inside a CSS {@code url("...")} context. Escapes backslashes, double
+   * quotes, and parentheses to prevent breakout.
+   *
+   * @param url the URL string to escape
+   * @return the escaped URL string safe for CSS interpolation, or the original value if null or
+   *     empty
    */
   public static String escapeCssUrl(String url) {
     if (url == null || url.isEmpty()) {

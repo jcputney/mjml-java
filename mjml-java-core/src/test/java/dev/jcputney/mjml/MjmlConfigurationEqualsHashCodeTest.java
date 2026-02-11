@@ -6,30 +6,30 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for MjmlConfiguration equals/hashCode.
- */
+/** Tests for MjmlConfiguration equals/hashCode. */
 class MjmlConfigurationEqualsHashCodeTest {
 
   @Test
   void identicalBuildersProduceEqualConfigs() {
-    MjmlConfiguration a = MjmlConfiguration.builder()
-        .language("en")
-        .direction(Direction.LTR)
-        .maxInputSize(500_000)
-        .maxNestingDepth(50)
-        .maxIncludeDepth(10)
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration a =
+        MjmlConfiguration.builder()
+            .language("en")
+            .direction(Direction.LTR)
+            .maxInputSize(500_000)
+            .maxNestingDepth(50)
+            .maxIncludeDepth(10)
+            .sanitizeOutput(true)
+            .build();
 
-    MjmlConfiguration b = MjmlConfiguration.builder()
-        .language("en")
-        .direction(Direction.LTR)
-        .maxInputSize(500_000)
-        .maxNestingDepth(50)
-        .maxIncludeDepth(10)
-        .sanitizeOutput(true)
-        .build();
+    MjmlConfiguration b =
+        MjmlConfiguration.builder()
+            .language("en")
+            .direction(Direction.LTR)
+            .maxInputSize(500_000)
+            .maxNestingDepth(50)
+            .maxIncludeDepth(10)
+            .sanitizeOutput(true)
+            .build();
 
     assertEquals(a, b);
     assertEquals(a.hashCode(), b.hashCode());

@@ -8,31 +8,31 @@ import java.util.Set;
 
 /**
  * Lightweight HTML tokenizer that builds an {@link HtmlElement} tree from HTML text.
- * <p>
- * This is NOT a full HTML5 parser. It handles the well-structured HTML output
- * from the MJML renderer, including:
+ *
+ * <p>This is NOT a full HTML5 parser. It handles the well-structured HTML output from the MJML
+ * renderer, including:
+ *
  * <ul>
- *   <li>Opening tags with attributes</li>
- *   <li>Self-closing tags</li>
- *   <li>Closing tags</li>
- *   <li>HTML comments (including MSO conditionals)</li>
- *   <li>DOCTYPE declarations</li>
+ *   <li>Opening tags with attributes
+ *   <li>Self-closing tags
+ *   <li>Closing tags
+ *   <li>HTML comments (including MSO conditionals)
+ *   <li>DOCTYPE declarations
  * </ul>
- * <p>
- * It tracks tag positions in the source string to enable in-place style modification.
+ *
+ * <p>It tracks tag positions in the source string to enable in-place style modification.
  */
 public final class HtmlDocumentParser {
 
-  private static final Set<String> VOID_ELEMENTS = Set.of(
-      "area", "base", "br", "col", "embed", "hr", "img", "input",
-      "link", "meta", "param", "source", "track", "wbr"
-  );
+  private static final Set<String> VOID_ELEMENTS =
+      Set.of(
+          "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param",
+          "source", "track", "wbr");
 
   /** Raw text elements whose content should not be parsed as HTML. */
   private static final Set<String> RAW_TEXT_ELEMENTS = Set.of("style", "script");
 
-  private HtmlDocumentParser() {
-  }
+  private HtmlDocumentParser() {}
 
   /**
    * Parses HTML into an element tree rooted at a virtual document element.
@@ -80,9 +80,9 @@ public final class HtmlDocumentParser {
   }
 
   /**
-   * Attempts to skip comments, DOCTYPE, CDATA, and processing instructions.
-   * Returns the new position after skipping, or the original position if not a special tag,
-   * or -1 if the tag is unterminated (signals parse loop should break).
+   * Attempts to skip comments, DOCTYPE, CDATA, and processing instructions. Returns the new
+   * position after skipping, or the original position if not a special tag, or -1 if the tag is
+   * unterminated (signals parse loop should break).
    */
   private static int skipSpecialTag(String html, int pos, int len) {
     // Skip comments (including MSO conditionals)
@@ -113,8 +113,8 @@ public final class HtmlDocumentParser {
   }
 
   /**
-   * Handles a closing tag at the given position. Returns the new parse position,
-   * or -1 if the tag is unterminated.
+   * Handles a closing tag at the given position. Returns the new parse position, or -1 if the tag
+   * is unterminated.
    */
   private static int handleClosingTag(String html, int pos, Deque<HtmlElement> stack) {
     int closeEnd = html.indexOf('>', pos);
@@ -127,8 +127,8 @@ public final class HtmlDocumentParser {
   }
 
   /**
-   * Handles an opening tag at the given position. Creates the element, adds it to the tree,
-   * and optionally skips raw text content. Returns the new parse position.
+   * Handles an opening tag at the given position. Creates the element, adds it to the tree, and
+   * optionally skips raw text content. Returns the new parse position.
    */
   private static int handleOpeningTag(String html, int pos, Deque<HtmlElement> stack) {
     int tagEnd = findTagEnd(html, pos);
@@ -157,9 +157,10 @@ public final class HtmlDocumentParser {
       return tagEnd + 1;
     }
 
-    int[] styleRange = new int[]{-1, -1};
-    Map<String, String> attrs = parseAttributes(attrString,
-        pos + 1 + (firstSpace >= 0 ? firstSpace : tagContent.length()), styleRange);
+    int[] styleRange = new int[] {-1, -1};
+    Map<String, String> attrs =
+        parseAttributes(
+            attrString, pos + 1 + (firstSpace >= 0 ? firstSpace : tagContent.length()), styleRange);
 
     HtmlElement element = new HtmlElement(tagName, attrs);
     element.setTagStart(pos);
@@ -184,11 +185,9 @@ public final class HtmlDocumentParser {
     return newPos;
   }
 
-  /**
-   * Skips the content of a raw text element (style, script) and pops it from the stack.
-   */
-  private static int skipRawTextContent(String html, String tagName, int pos,
-      Deque<HtmlElement> stack) {
+  /** Skips the content of a raw text element (style, script) and pops it from the stack. */
+  private static int skipRawTextContent(
+      String html, String tagName, int pos, Deque<HtmlElement> stack) {
     String closeTag = "</" + tagName;
     int closeStart = indexOfIgnoreCase(html, closeTag, pos);
     if (closeStart >= 0) {
@@ -202,8 +201,11 @@ public final class HtmlDocumentParser {
   }
 
   /**
-   * Extracts all CSS from &lt;style&gt; blocks in the HTML and returns
-   * the HTML with those blocks removed.
+   * Extracts all CSS from &lt;style&gt; blocks in the HTML and returns the HTML with those blocks
+   * removed.
+   *
+   * @param html the HTML string to extract styles from
+   * @return a {@link StyleExtractionResult} containing the cleaned HTML and extracted CSS
    */
   public static StyleExtractionResult extractStyles(String html) {
     StringBuilder cleanHtml = new StringBuilder(html.length());
@@ -253,11 +255,6 @@ public final class HtmlDocumentParser {
     return new StyleExtractionResult(cleanHtml.toString(), css.toString());
   }
 
-  public record StyleExtractionResult(String html, String css) {
-  }
-
-  // --- Helper methods ---
-
   private static int findTagEnd(String html, int tagStart) {
     boolean inSingle = false;
     boolean inDouble = false;
@@ -274,6 +271,8 @@ public final class HtmlDocumentParser {
     return -1;
   }
 
+  // --- Helper methods ---
+
   private static void popUntilTag(Deque<HtmlElement> stack, String tagName) {
     while (stack.size() > 1) {
       HtmlElement top = stack.peek();
@@ -286,8 +285,8 @@ public final class HtmlDocumentParser {
     }
   }
 
-  private static Map<String, String> parseAttributes(String attrString, int baseOffset,
-      int[] styleRange) {
+  private static Map<String, String> parseAttributes(
+      String attrString, int baseOffset, int[] styleRange) {
     Map<String, String> attrs = new LinkedHashMap<>();
     if (attrString == null || attrString.isBlank()) {
       return attrs;
@@ -304,7 +303,8 @@ public final class HtmlDocumentParser {
 
       // Parse attribute name
       int nameStart = posHolder[0];
-      while (posHolder[0] < len && attrString.charAt(posHolder[0]) != '='
+      while (posHolder[0] < len
+          && attrString.charAt(posHolder[0]) != '='
           && !Character.isWhitespace(attrString.charAt(posHolder[0]))
           && attrString.charAt(posHolder[0]) != '/') {
         posHolder[0]++;
@@ -332,8 +332,8 @@ public final class HtmlDocumentParser {
         continue;
       }
 
-      String value = parseAttrValue(attrString, posHolder, len, baseOffset,
-          "style".equals(name), styleRange);
+      String value =
+          parseAttrValue(attrString, posHolder, len, baseOffset, "style".equals(name), styleRange);
       attrs.put(name, value);
     }
 
@@ -346,8 +346,13 @@ public final class HtmlDocumentParser {
     }
   }
 
-  private static String parseAttrValue(String attrString, int[] posHolder, int len,
-      int baseOffset, boolean isStyle, int[] styleRange) {
+  private static String parseAttrValue(
+      String attrString,
+      int[] posHolder,
+      int len,
+      int baseOffset,
+      boolean isStyle,
+      int[] styleRange) {
     char quote = attrString.charAt(posHolder[0]);
     if (quote == '"' || quote == '\'') {
       posHolder[0]++; // consume opening quote
@@ -372,7 +377,8 @@ public final class HtmlDocumentParser {
 
     // Unquoted attribute value
     int valueStart = posHolder[0];
-    while (posHolder[0] < len && !Character.isWhitespace(attrString.charAt(posHolder[0]))
+    while (posHolder[0] < len
+        && !Character.isWhitespace(attrString.charAt(posHolder[0]))
         && attrString.charAt(posHolder[0]) != '>') {
       posHolder[0]++;
     }
@@ -398,4 +404,12 @@ public final class HtmlDocumentParser {
     }
     return -1;
   }
+
+  /**
+   * Result of extracting CSS from HTML, containing the cleaned HTML and collected CSS text.
+   *
+   * @param html the HTML with style blocks removed
+   * @param css the concatenated CSS extracted from style blocks
+   */
+  public record StyleExtractionResult(String html, String css) {}
 }

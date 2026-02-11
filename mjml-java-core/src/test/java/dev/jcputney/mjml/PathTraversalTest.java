@@ -11,15 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Comprehensive tests for path traversal prevention in FileSystemIncludeResolver.
- * Verifies that the resolver blocks all known path traversal techniques.
+ * Comprehensive tests for path traversal prevention in FileSystemIncludeResolver. Verifies that the
+ * resolver blocks all known path traversal techniques.
  */
 class PathTraversalTest {
 
   private static final ResolverContext TEST_CONTEXT = ResolverContext.root("mjml");
 
-  @TempDir
-  Path tempDir;
+  @TempDir Path tempDir;
 
   // --- Basic ../ traversal ---
 
@@ -27,7 +26,8 @@ class PathTraversalTest {
   void blocksSimpleDotDotSlash() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("../outside.mjml", TEST_CONTEXT),
         "Should block ../ traversal");
   }
@@ -36,7 +36,8 @@ class PathTraversalTest {
   void blocksMultipleDotDotSlash() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("../../../etc/passwd", TEST_CONTEXT),
         "Should block multiple ../ traversal");
   }
@@ -46,7 +47,8 @@ class PathTraversalTest {
     Files.createDirectory(tempDir.resolve("subdir"));
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("subdir/../../outside.mjml", TEST_CONTEXT),
         "Should block subdir/../../ traversal");
   }
@@ -57,7 +59,8 @@ class PathTraversalTest {
     Files.createDirectories(deep);
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("a/b/c/../../../../outside.mjml", TEST_CONTEXT),
         "Should block deep subdirectory traversal");
   }
@@ -70,7 +73,8 @@ class PathTraversalTest {
 
     // On Unix, backslashes are valid filename characters but Path.resolve
     // may normalize them. The key is that the resolved path must stay within baseDir.
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("..\\outside.mjml", TEST_CONTEXT),
         "Should block ..\\ traversal");
   }
@@ -79,7 +83,8 @@ class PathTraversalTest {
   void blocksMultipleBackslashTraversal() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("..\\..\\..\\etc\\passwd", TEST_CONTEXT),
         "Should block multiple ..\\ traversal");
   }
@@ -90,7 +95,8 @@ class PathTraversalTest {
   void blocksMixedSlashTraversal() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("subdir\\..\\..\\outside.mjml", TEST_CONTEXT),
         "Should block mixed slash traversal");
   }
@@ -101,9 +107,8 @@ class PathTraversalTest {
   void dotDotAloneBlocked() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
-        () -> resolver.resolve("..", TEST_CONTEXT),
-        "Should block bare '..'");
+    assertThrows(
+        MjmlException.class, () -> resolver.resolve("..", TEST_CONTEXT), "Should block bare '..'");
   }
 
   // --- Valid paths still work ---
@@ -149,8 +154,7 @@ class PathTraversalTest {
     // a/../b/file.mjml normalizes to b/file.mjml which is still within tempDir
     String content = resolver.resolve("a/../b/file.mjml", TEST_CONTEXT);
     assertNotNull(content);
-    assertTrue(content.contains("In B"),
-        "Traversal within base dir should be allowed");
+    assertTrue(content.contains("In B"), "Traversal within base dir should be allowed");
   }
 
   // --- Edge cases ---
@@ -159,25 +163,24 @@ class PathTraversalTest {
   void rejectsNullPath() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
-        () -> resolver.resolve(null, TEST_CONTEXT),
-        "Should reject null path");
+    assertThrows(
+        MjmlException.class, () -> resolver.resolve(null, TEST_CONTEXT), "Should reject null path");
   }
 
   @Test
   void rejectsEmptyPath() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
-        () -> resolver.resolve("", TEST_CONTEXT),
-        "Should reject empty path");
+    assertThrows(
+        MjmlException.class, () -> resolver.resolve("", TEST_CONTEXT), "Should reject empty path");
   }
 
   @Test
   void rejectsWhitespacePath() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("   ", TEST_CONTEXT),
         "Should reject whitespace-only path");
   }
@@ -186,7 +189,8 @@ class PathTraversalTest {
   void rejectsNonExistentFile() {
     FileSystemIncludeResolver resolver = new FileSystemIncludeResolver(tempDir);
 
-    assertThrows(MjmlException.class,
+    assertThrows(
+        MjmlException.class,
         () -> resolver.resolve("nonexistent.mjml", TEST_CONTEXT),
         "Should reject non-existent file");
   }
@@ -195,7 +199,9 @@ class PathTraversalTest {
 
   @Test
   void rendererBlocksTraversalViaInclude() throws IOException {
-    Files.writeString(tempDir.resolve("safe.mjml"), """
+    Files.writeString(
+        tempDir.resolve("safe.mjml"),
+        """
         <mj-section>
           <mj-column>
             <mj-text>Safe</mj-text>
@@ -203,11 +209,12 @@ class PathTraversalTest {
         </mj-section>
         """);
 
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .includeResolver(new FileSystemIncludeResolver(tempDir))
-        .build();
+    MjmlConfiguration config =
+        MjmlConfiguration.builder().includeResolver(new FileSystemIncludeResolver(tempDir)).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-include path="../../../etc/passwd" />
@@ -215,7 +222,9 @@ class PathTraversalTest {
         </mjml>
         """;
 
-    assertThrows(MjmlException.class, () -> MjmlRenderer.render(mjml, config),
+    assertThrows(
+        MjmlException.class,
+        () -> MjmlRenderer.render(mjml, config),
         "Renderer should propagate path traversal exception");
   }
 }

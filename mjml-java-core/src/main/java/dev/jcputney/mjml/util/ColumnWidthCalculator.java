@@ -4,27 +4,26 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.List;
 
 /**
- * Calculates column pixel widths and responsive width specifications
- * from a list of column nodes and a container width.
- * Shared by MjSection and MjGroup.
+ * Calculates column pixel widths and responsive width specifications from a list of column nodes
+ * and a container width. Shared by MjSection and MjGroup.
  */
 public final class ColumnWidthCalculator {
 
-  private ColumnWidthCalculator() {
-  }
+  private ColumnWidthCalculator() {}
 
   /**
-   * Calculates pixel widths for each column. Columns with explicit widths get their
-   * specified value; auto columns share remaining space equally using percentage-based
-   * distribution to match MJML's floating-point behavior.
+   * Calculates pixel widths for each column. Columns with explicit widths get their specified
+   * value; auto columns share remaining space equally using percentage-based distribution to match
+   * MJML's floating-point behavior.
    *
-   * @param columns        the column nodes
+   * @param columns the column nodes
    * @param containerWidth the available width in pixels
-   * @param usePercentAuto if true, auto columns use pct*containerWidth/100 (MJML section
-   *                       behavior); if false, auto columns use (remaining)/count (MJML group behavior)
+   * @param usePercentAuto if true, auto columns use pct*containerWidth/100 (MJML section behavior);
+   *     if false, auto columns use (remaining)/count (MJML group behavior)
+   * @return an array of pixel widths corresponding to each column
    */
-  public static double[] calculatePixelWidths(List<MjmlNode> columns, double containerWidth,
-      boolean usePercentAuto) {
+  public static double[] calculatePixelWidths(
+      List<MjmlNode> columns, double containerWidth, boolean usePercentAuto) {
     double[] widths = new double[columns.size()];
     boolean[] isAuto = new boolean[columns.size()];
     double totalUsed = 0;
@@ -34,8 +33,7 @@ public final class ColumnWidthCalculator {
       String widthAttr = columns.get(i).getAttribute("width");
       if (widthAttr != null && !widthAttr.isEmpty()) {
         if (widthAttr.endsWith("%")) {
-          widths[i] = containerWidth * CssUnitParser.parsePx(
-              widthAttr.replace("%", ""), 0) / 100.0;
+          widths[i] = containerWidth * CssUnitParser.parsePx(widthAttr.replace("%", ""), 0) / 100.0;
         } else {
           widths[i] = CssUnitParser.parsePx(widthAttr, 0);
         }
@@ -65,8 +63,11 @@ public final class ColumnWidthCalculator {
   }
 
   /**
-   * Calculates column width specifications for responsive media queries.
-   * Returns strings like "100" (percentage), "33.33" (percentage), or "150px" (pixel).
+   * Calculates column width specifications for responsive media queries. Returns strings like "100"
+   * (percentage), "33.33" (percentage), or "150px" (pixel).
+   *
+   * @param columns the list of column nodes to calculate width specs for
+   * @return an array of width specification strings for each column
    */
   public static String[] calculateWidthSpecs(List<MjmlNode> columns) {
     String[] specs = new String[columns.size()];

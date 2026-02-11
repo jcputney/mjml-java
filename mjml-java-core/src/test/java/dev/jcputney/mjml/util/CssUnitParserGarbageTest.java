@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests that CssUnitParser.parseIntPx() rejects garbage input
- * instead of extracting numbers from within invalid strings.
+ * Tests that CssUnitParser.parseIntPx() rejects garbage input instead of extracting numbers from
+ * within invalid strings.
  */
 class CssUnitParserGarbageTest {
 

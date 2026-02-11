@@ -8,34 +8,39 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A single link in a navbar ({@code <mj-navbar-link>}).
- * Renders a plain anchor tag ({@code <a>}) with text styling.
- * The parent {@link MjNavbar} wraps links with MSO table conditionals.
+ * A single link in a navbar ({@code <mj-navbar-link>}). Renders a plain anchor tag ({@code <a>})
+ * with text styling. The parent {@link MjNavbar} wraps links with MSO table conditionals.
  */
 public class MjNavbarLink extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("color", "#000000"),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("font-size", "13px"),
-      Map.entry("font-style", ""),
-      Map.entry("font-weight", ""),
-      Map.entry("href", "#"),
-      Map.entry("letter-spacing", ""),
-      Map.entry("line-height", "22px"),
-      Map.entry("padding", "15px 10px"),
-      Map.entry("padding-bottom", ""),
-      Map.entry("padding-left", ""),
-      Map.entry("padding-right", ""),
-      Map.entry("padding-top", ""),
-      Map.entry("rel", ""),
-      Map.entry("target", ""),
-      Map.entry("text-decoration", "none"),
-      Map.entry("text-transform", "uppercase")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("color", "#000000"),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("font-size", "13px"),
+          Map.entry("font-style", ""),
+          Map.entry("font-weight", ""),
+          Map.entry("href", "#"),
+          Map.entry("letter-spacing", ""),
+          Map.entry("line-height", "22px"),
+          Map.entry("padding", "15px 10px"),
+          Map.entry("padding-bottom", ""),
+          Map.entry("padding-left", ""),
+          Map.entry("padding-right", ""),
+          Map.entry("padding-top", ""),
+          Map.entry("rel", ""),
+          Map.entry("target", ""),
+          Map.entry("text-decoration", "none"),
+          Map.entry("text-transform", "uppercase"));
 
-  public MjNavbarLink(MjmlNode node, GlobalContext globalContext,
-      RenderContext renderContext) {
+  /**
+   * Creates a new MjNavbarLink component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
+  public MjNavbarLink(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
 
@@ -57,7 +62,8 @@ public class MjNavbarLink extends BodyComponent {
     Map<String, String> anchorStyles = new LinkedHashMap<>();
     anchorStyles.put("display", "inline-block");
     anchorStyles.put("color", getAttribute("color", "#000000"));
-    anchorStyles.put("font-family", getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif"));
+    anchorStyles.put(
+        "font-family", getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif"));
     anchorStyles.put("font-size", getAttribute("font-size", "13px"));
     addIfPresent(anchorStyles, "font-style");
     addIfPresent(anchorStyles, "font-weight");

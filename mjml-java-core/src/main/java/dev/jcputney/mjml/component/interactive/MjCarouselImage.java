@@ -7,11 +7,12 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.Map;
 
 /**
- * A single image in a carousel ({@code <mj-carousel-image>}).
- * Renders an image element with an optional link wrapper. The {@code thumbnails-src}
- * attribute can specify an alternate thumbnail image for the carousel navigation.
+ * A single image in a carousel ({@code <mj-carousel-image>}). Renders an image element with an
+ * optional link wrapper. The {@code thumbnails-src} attribute can specify an alternate thumbnail
+ * image for the carousel navigation.
  *
  * <p>When rendered by the parent MjCarousel, each image produces output like:
+ *
  * <pre>{@code
  * <a href="HREF" target="TARGET">
  *   <img title="TITLE" src="SRC" alt="ALT"
@@ -22,23 +23,29 @@ import java.util.Map;
  */
 public class MjCarouselImage extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("alt", ""),
-      Map.entry("css-class", ""),
-      Map.entry("href", ""),
-      Map.entry("rel", ""),
-      Map.entry("src", ""),
-      Map.entry("target", "_blank"),
-      Map.entry("tb-border", ""),
-      Map.entry("tb-border-radius", ""),
-      Map.entry("tb-hover-border-color", ""),
-      Map.entry("tb-selected-border-color", ""),
-      Map.entry("title", ""),
-      Map.entry("thumbnails-src", "")
-  );
+  private static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("alt", ""),
+          Map.entry("css-class", ""),
+          Map.entry("href", ""),
+          Map.entry("rel", ""),
+          Map.entry("src", ""),
+          Map.entry("target", "_blank"),
+          Map.entry("tb-border", ""),
+          Map.entry("tb-border-radius", ""),
+          Map.entry("tb-hover-border-color", ""),
+          Map.entry("tb-selected-border-color", ""),
+          Map.entry("title", ""),
+          Map.entry("thumbnails-src", ""));
 
-  public MjCarouselImage(MjmlNode node, GlobalContext globalContext,
-      RenderContext renderContext) {
+  /**
+   * Creates a new MjCarouselImage component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   */
+  public MjCarouselImage(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
 
@@ -53,8 +60,8 @@ public class MjCarouselImage extends BodyComponent {
   }
 
   /**
-   * Renders this carousel image. The parent MjCarousel calls this method and wraps
-   * the result in the appropriate carousel image div.
+   * Renders this carousel image. The parent MjCarousel calls this method and wraps the result in
+   * the appropriate carousel image div.
    *
    * @param borderRadius the border-radius inherited from the parent mj-carousel
    * @param width the pixel width of the image (container width)
@@ -84,13 +91,17 @@ public class MjCarouselImage extends BodyComponent {
     img.append(" />");
 
     if (!href.isEmpty()) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<a href=\"").append(escapeAttr(href)).append("\"");
-      sb.append(" target=\"").append(escapeAttr(target)).append("\"");
-      sb.append(">");
-      sb.append(img);
-      sb.append("</a>");
-      return sb.toString();
+      String sb =
+          "<a href=\""
+              + escapeAttr(href)
+              + "\""
+              + " target=\""
+              + escapeAttr(target)
+              + "\""
+              + ">"
+              + img
+              + "</a>";
+      return sb;
     }
 
     return img.toString();

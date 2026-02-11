@@ -1,10 +1,10 @@
 package dev.jcputney.mjml;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersSimpleTextTemplate() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -35,7 +37,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersWithTitle() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-title>My Email</mj-title>
@@ -58,7 +62,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersPreviewText() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-preview>Preview text here</mj-preview>
@@ -80,7 +86,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersTwoColumns() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -105,7 +113,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersWithLanguage() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -117,9 +127,7 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    MjmlConfiguration config = MjmlConfiguration.builder()
-        .language("en")
-        .build();
+    MjmlConfiguration config = MjmlConfiguration.builder().language("en").build();
     MjmlRenderResult result = MjmlRenderer.render(mjml, config);
 
     assertTrue(result.html().contains("lang=\"en\""));
@@ -127,7 +135,9 @@ class MjmlRendererTest {
 
   @Test
   void containsRequiredHtmlStructure() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -172,7 +182,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersWithHtmlEntities() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-section>
@@ -192,7 +204,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersWithFonts() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto" />
@@ -214,7 +228,9 @@ class MjmlRendererTest {
 
   @Test
   void rendersWithCustomStyle() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-style>.custom { color: red; }</mj-style>

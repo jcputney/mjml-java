@@ -33,25 +33,25 @@ class CssUnitParserTest {
   @Test
   void parsesShorthand1Value() {
     double[] result = CssUnitParser.parseShorthand("10px");
-    assertArrayEquals(new double[]{10, 10, 10, 10}, result);
+    assertArrayEquals(new double[] {10, 10, 10, 10}, result);
   }
 
   @Test
   void parsesShorthand2Values() {
     double[] result = CssUnitParser.parseShorthand("10px 20px");
-    assertArrayEquals(new double[]{10, 20, 10, 20}, result);
+    assertArrayEquals(new double[] {10, 20, 10, 20}, result);
   }
 
   @Test
   void parsesShorthand3Values() {
     double[] result = CssUnitParser.parseShorthand("10px 20px 30px");
-    assertArrayEquals(new double[]{10, 20, 30, 20}, result);
+    assertArrayEquals(new double[] {10, 20, 30, 20}, result);
   }
 
   @Test
   void parsesShorthand4Values() {
     double[] result = CssUnitParser.parseShorthand("10px 20px 30px 40px");
-    assertArrayEquals(new double[]{10, 20, 30, 40}, result);
+    assertArrayEquals(new double[] {10, 20, 30, 40}, result);
   }
 
   @Test

@@ -23,7 +23,10 @@ class HtmlAttributeApplierTest {
   @Test
   void returnsUnchangedHtmlWhenNoAttributes() {
     // No mj-html-attributes means the HTML should pass through unchanged
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -41,7 +44,10 @@ class HtmlAttributeApplierTest {
 
   @Test
   void addsAttributeToMatchingElement() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -60,13 +66,17 @@ class HtmlAttributeApplierTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("data-id=\"test-value\""),
+    assertTrue(
+        html.contains("data-id=\"test-value\""),
         "Should add the data-id attribute to the matching element");
   }
 
   @Test
   void escapesXssInAttributeValues() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -86,15 +96,18 @@ class HtmlAttributeApplierTest {
         """);
 
     // The attribute value should be escaped - no raw <script> in an attribute
-    assertFalse(html.contains("data-val=\"<script>"),
-        "XSS payload should be escaped in attribute value");
+    assertFalse(
+        html.contains("data-val=\"<script>"), "XSS payload should be escaped in attribute value");
   }
 
   @Test
   void filtersInvalidAttributeNames() {
     // HtmlAttributeApplier validates attribute names against [a-zA-Z][a-zA-Z0-9-]*
     // Invalid names like "on*" patterns should be filtered
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -113,14 +126,16 @@ class HtmlAttributeApplierTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("data-safe=\"safe\""),
-        "Valid attribute names should be applied");
+    assertTrue(html.contains("data-safe=\"safe\""), "Valid attribute names should be applied");
   }
 
   @Test
   void handlesSelfClosingTags() {
     // Test that attributes can be applied to self-closing elements like img
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -139,13 +154,16 @@ class HtmlAttributeApplierTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("loading=\"lazy\""),
-        "Should add attribute to self-closing img element");
+    assertTrue(
+        html.contains("loading=\"lazy\""), "Should add attribute to self-closing img element");
   }
 
   @Test
   void handlesMultipleMatchingElements() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -175,7 +193,6 @@ class HtmlAttributeApplierTest {
       count++;
       idx += "role=\"cell\"".length();
     }
-    assertTrue(count >= 2,
-        "Should add attribute to multiple matching elements, found " + count);
+    assertTrue(count >= 2, "Should add attribute to multiple matching elements, found " + count);
   }
 }

@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for the mj-breakpoint component rendering.
- */
+/** Tests for the mj-breakpoint component rendering. */
 class MjBreakpointTest {
 
   private String render(String mjml) {
@@ -21,7 +19,10 @@ class MjBreakpointTest {
 
   @Test
   void customBreakpointInMediaQuery() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-breakpoint width="400px" />
@@ -36,15 +37,16 @@ class MjBreakpointTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("400px"),
-        "Should include the custom breakpoint value in the output");
-    assertTrue(html.contains("@media"),
-        "Should contain a media query");
+    assertTrue(html.contains("400px"), "Should include the custom breakpoint value in the output");
+    assertTrue(html.contains("@media"), "Should contain a media query");
   }
 
   @Test
   void defaultBreakpointUsed() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section>
@@ -56,15 +58,16 @@ class MjBreakpointTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("480px"),
-        "Default breakpoint should be 480px");
-    assertTrue(html.contains("@media"),
-        "Should contain a media query with default breakpoint");
+    assertTrue(html.contains("480px"), "Default breakpoint should be 480px");
+    assertTrue(html.contains("@media"), "Should contain a media query with default breakpoint");
   }
 
   @Test
   void breakpointAffectsResponsiveStyles() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-head>
             <mj-breakpoint width="320px" />
@@ -79,7 +82,6 @@ class MjBreakpointTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("320px"),
-        "Should use 320px breakpoint in responsive styles");
+    assertTrue(html.contains("320px"), "Should use 320px breakpoint in responsive styles");
   }
 }

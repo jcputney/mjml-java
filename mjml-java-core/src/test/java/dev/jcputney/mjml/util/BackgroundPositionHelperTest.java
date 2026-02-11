@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for BackgroundPositionHelper which normalizes CSS background-position
- * values to "x y" format. Shared by MjSection and MjWrapper.
+ * Tests for BackgroundPositionHelper which normalizes CSS background-position values to "x y"
+ * format. Shared by MjSection and MjWrapper.
  */
 class BackgroundPositionHelperTest {
 

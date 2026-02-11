@@ -8,30 +8,30 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import java.util.Map;
 
 /**
- * The accordion component ({@code <mj-accordion>}).
- * Uses a CSS checkbox hack to create expand/collapse sections without JavaScript.
- * Wraps child {@code mj-accordion-element} components in a table and injects the
- * required CSS into the global context.
+ * The accordion component ({@code <mj-accordion>}). Uses a CSS checkbox hack to create
+ * expand/collapse sections without JavaScript. Wraps child {@code mj-accordion-element} components
+ * in a table and injects the required CSS into the global context.
  */
 public class MjAccordion extends BodyComponent {
 
-  static final Map<String, String> DEFAULTS = Map.ofEntries(
-      Map.entry("border", "2px solid black"),
-      Map.entry("container-background-color", ""),
-      Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-      Map.entry("icon-align", "middle"),
-      Map.entry("icon-color", "#000000"),
-      Map.entry("icon-height", "32px"),
-      Map.entry("icon-position", "right"),
-      Map.entry("icon-unwrapped-alt", "-"),
-      Map.entry("icon-unwrapped-url", "https://i.imgur.com/w4uTygT.png"),
-      Map.entry("icon-width", "32px"),
-      Map.entry("icon-wrapped-alt", "+"),
-      Map.entry("icon-wrapped-url", "https://i.imgur.com/bIXv1bk.png"),
-      Map.entry("padding", "10px 25px")
-  );
+  static final Map<String, String> DEFAULTS =
+      Map.ofEntries(
+          Map.entry("border", "2px solid black"),
+          Map.entry("container-background-color", ""),
+          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+          Map.entry("icon-align", "middle"),
+          Map.entry("icon-color", "#000000"),
+          Map.entry("icon-height", "32px"),
+          Map.entry("icon-position", "right"),
+          Map.entry("icon-unwrapped-alt", "-"),
+          Map.entry("icon-unwrapped-url", "https://i.imgur.com/w4uTygT.png"),
+          Map.entry("icon-width", "32px"),
+          Map.entry("icon-wrapped-alt", "+"),
+          Map.entry("icon-wrapped-url", "https://i.imgur.com/bIXv1bk.png"),
+          Map.entry("padding", "10px 25px"));
 
-  private static final String ACCORDION_CSS = """
+  private static final String ACCORDION_CSS =
+      """
       noinput.mj-accordion-checkbox {
         display: block !important;
       }
@@ -101,7 +101,18 @@ public class MjAccordion extends BodyComponent {
 
   private final ComponentRegistry registry;
 
-  public MjAccordion(MjmlNode node, GlobalContext globalContext, RenderContext renderContext,
+  /**
+   * Creates a new MjAccordion component.
+   *
+   * @param node the parsed MJML node for this component
+   * @param globalContext the global rendering context
+   * @param renderContext the current render context
+   * @param registry the component registry for creating child components
+   */
+  public MjAccordion(
+      MjmlNode node,
+      GlobalContext globalContext,
+      RenderContext renderContext,
       ComponentRegistry registry) {
     super(node, globalContext, renderContext);
     this.registry = registry;
@@ -129,13 +140,14 @@ public class MjAccordion extends BodyComponent {
 
     sb.append("<table cellspacing=\"0\" cellpadding=\"0\" class=\"mj-accordion\"");
     sb.append(" style=\"");
-    sb.append(buildStyle(orderedMap(
-        "width", "100%",
-        "border-collapse", "collapse",
-        "border", border,
-        "border-bottom", "none",
-        "font-family", fontFamily
-    )));
+    sb.append(
+        buildStyle(
+            orderedMap(
+                "width", "100%",
+                "border-collapse", "collapse",
+                "border", border,
+                "border-bottom", "none",
+                "font-family", fontFamily)));
     sb.append("\">\n");
     sb.append("<tbody>\n");
 

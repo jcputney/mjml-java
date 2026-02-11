@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 
 class RenderPipelineCacheTest {
 
-  private static final String MINIMAL_MJML = """
+  private static final String MINIMAL_MJML =
+      // language=MJML
+      """
       <mjml>
         <mj-body>
           <mj-section>
@@ -21,22 +23,6 @@ class RenderPipelineCacheTest {
         </mj-body>
       </mjml>
       """;
-
-  @Test
-  void registryCacheIsBounded() throws Exception {
-    int maxSize = readCacheMaxSize();
-
-    for (int i = 0; i < maxSize + 50; i++) {
-      MjmlConfiguration config = MjmlConfiguration.builder()
-          .language("lang-" + i)
-          .build();
-      MjmlRenderer.render(MINIMAL_MJML, config);
-    }
-
-    Map<?, ?> cache = readRegistryCache();
-    assertTrue(cache.size() <= maxSize,
-        "Registry cache should stay bounded at " + maxSize + " entries");
-  }
 
   private static int readCacheMaxSize() throws Exception {
     Field maxSizeField = RenderPipeline.class.getDeclaredField("REGISTRY_CACHE_MAX_SIZE");
@@ -50,5 +36,19 @@ class RenderPipelineCacheTest {
     @SuppressWarnings("unchecked")
     Map<?, ?> cache = (Map<?, ?>) cacheField.get(null);
     return cache;
+  }
+
+  @Test
+  void registryCacheIsBounded() throws Exception {
+    int maxSize = readCacheMaxSize();
+
+    for (int i = 0; i < maxSize + 50; i++) {
+      MjmlConfiguration config = MjmlConfiguration.builder().language("lang-" + i).build();
+      MjmlRenderer.render(MINIMAL_MJML, config);
+    }
+
+    Map<?, ?> cache = readRegistryCache();
+    assertTrue(
+        cache.size() <= maxSize, "Registry cache should stay bounded at " + maxSize + " entries");
   }
 }

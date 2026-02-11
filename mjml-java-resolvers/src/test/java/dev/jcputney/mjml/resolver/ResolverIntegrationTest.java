@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.MjmlConfiguration;
-import dev.jcputney.mjml.MjmlRenderer;
 import dev.jcputney.mjml.MjmlRenderResult;
+import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -15,16 +15,16 @@ class ResolverIntegrationTest {
 
   @Test
   void mapResolverWithMjInclude() {
-    var resolver = MapIncludeResolver.of(
-        "header.mjml",
-        "<mj-section><mj-column><mj-text>Included Header</mj-text></mj-column></mj-section>"
-    );
+    var resolver =
+        MapIncludeResolver.of(
+            "header.mjml",
+            "<mj-section><mj-column><mj-text>Included Header</mj-text></mj-column></mj-section>");
 
-    var config = MjmlConfiguration.builder()
-        .includeResolver(resolver)
-        .build();
+    var config = MjmlConfiguration.builder().includeResolver(resolver).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-include path="header.mjml" />
@@ -45,18 +45,22 @@ class ResolverIntegrationTest {
 
   @Test
   void compositeResolverWithMjInclude() {
-    var primary = MapIncludeResolver.of("header.mjml",
-        "<mj-section><mj-column><mj-text>Primary Header</mj-text></mj-column></mj-section>");
-    var fallback = MapIncludeResolver.of("footer.mjml",
-        "<mj-section><mj-column><mj-text>Fallback Footer</mj-text></mj-column></mj-section>");
+    var primary =
+        MapIncludeResolver.of(
+            "header.mjml",
+            "<mj-section><mj-column><mj-text>Primary Header</mj-text></mj-column></mj-section>");
+    var fallback =
+        MapIncludeResolver.of(
+            "footer.mjml",
+            "<mj-section><mj-column><mj-text>Fallback Footer</mj-text></mj-column></mj-section>");
 
     var composite = CompositeIncludeResolver.of(primary, fallback);
 
-    var config = MjmlConfiguration.builder()
-        .includeResolver(composite)
-        .build();
+    var config = MjmlConfiguration.builder().includeResolver(composite).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-include path="header.mjml" />
@@ -72,17 +76,17 @@ class ResolverIntegrationTest {
 
   @Test
   void cachingResolverWithMjInclude() {
-    var delegate = MapIncludeResolver.of("header.mjml",
-        "<mj-section><mj-column><mj-text>Cached Header</mj-text></mj-column></mj-section>");
-    var caching = CachingIncludeResolver.builder()
-        .delegate(delegate)
-        .build();
+    var delegate =
+        MapIncludeResolver.of(
+            "header.mjml",
+            "<mj-section><mj-column><mj-text>Cached Header</mj-text></mj-column></mj-section>");
+    var caching = CachingIncludeResolver.builder().delegate(delegate).build();
 
-    var config = MjmlConfiguration.builder()
-        .includeResolver(caching)
-        .build();
+    var config = MjmlConfiguration.builder().includeResolver(caching).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-include path="header.mjml" />
@@ -100,20 +104,18 @@ class ResolverIntegrationTest {
 
   @Test
   void prefixRoutingResolverWithMjInclude() {
-    var memResolver = MapIncludeResolver.of(
-        "templates/header.mjml",
-        "<mj-section><mj-column><mj-text>From Memory</mj-text></mj-column></mj-section>"
-    );
+    var memResolver =
+        MapIncludeResolver.of(
+            "templates/header.mjml",
+            "<mj-section><mj-column><mj-text>From Memory</mj-text></mj-column></mj-section>");
 
-    var router = PrefixRoutingIncludeResolver.builder()
-        .route("mem:", memResolver)
-        .build();
+    var router = PrefixRoutingIncludeResolver.builder().route("mem:", memResolver).build();
 
-    var config = MjmlConfiguration.builder()
-        .includeResolver(router)
-        .build();
+    var config = MjmlConfiguration.builder().includeResolver(router).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-body>
             <mj-include path="mem:templates/header.mjml" />
@@ -127,16 +129,13 @@ class ResolverIntegrationTest {
 
   @Test
   void cssInlineIncludeWithMapResolver() {
-    var resolver = MapIncludeResolver.of(
-        "styles.css",
-        ".red { color: red; }"
-    );
+    var resolver = MapIncludeResolver.of("styles.css", ".red { color: red; }");
 
-    var config = MjmlConfiguration.builder()
-        .includeResolver(resolver)
-        .build();
+    var config = MjmlConfiguration.builder().includeResolver(resolver).build();
 
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-include path="styles.css" type="css-inline" />

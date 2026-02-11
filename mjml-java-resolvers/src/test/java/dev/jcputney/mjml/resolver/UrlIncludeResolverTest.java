@@ -11,13 +11,14 @@ import java.net.Authenticator;
 import java.net.CookieHandler;
 import java.net.ProxySelector;
 import java.net.URI;
-import java.time.Duration;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -33,290 +34,289 @@ class UrlIncludeResolverTest {
   @Test
   void httpsOnlyRejectsHttp() {
     var resolver = UrlIncludeResolver.builder().build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://example.com/template.mjml", CTX));
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://example.com/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("Only HTTPS"));
   }
 
   @Test
   void invalidUrlThrows() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("not a url at all [}", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    assertThrows(MjmlIncludeException.class, () -> resolver.resolve("not a url at all [}", CTX));
   }
 
   @Test
   void noSchemeThrows() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
     // URI with no scheme parses but has null scheme
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("//example.com/path", CTX));
+    var ex =
+        assertThrows(MjmlIncludeException.class, () -> resolver.resolve("//example.com/path", CTX));
     assertTrue(ex.getMessage().contains("no scheme"));
   }
 
   @Test
   void unsupportedSchemeThrows() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("ftp://example.com/file", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class, () -> resolver.resolve("ftp://example.com/file", CTX));
     assertTrue(ex.getMessage().contains("Unsupported URL scheme"));
   }
 
   @Test
   void ssrfBlocksLoopback127() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://127.0.0.1/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://127.0.0.1/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void ssrfBlocksLocalhost() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://localhost/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://localhost/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void ssrfBlocks10PrivateRange() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
     // 10.0.0.1 is site-local
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://10.0.0.1/template.mjml", CTX));
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://10.0.0.1/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void ssrfBlocks192168PrivateRange() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://192.168.1.1/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://192.168.1.1/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void ssrfBlocksLinkLocal() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
     // 169.254.x.x is link-local
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://169.254.169.254/metadata", CTX));
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://169.254.169.254/metadata", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void hostDenylistBlocks() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .deniedHosts("evil.com")
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://evil.com/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).deniedHosts("evil.com").build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://evil.com/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("denied"));
   }
 
   @Test
   void hostDenylistIsCaseInsensitive() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .deniedHosts("evil.com")
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://EVIL.COM/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).deniedHosts("evil.com").build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://EVIL.COM/template.mjml", CTX));
     // URI.getHost() lowercases domain names
     assertTrue(ex.getMessage().contains("denied"));
   }
 
   @Test
   void hostAllowlistBlocksUnlisted() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .allowedHosts("trusted.com")
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://other.com/template.mjml", CTX));
+    var resolver =
+        UrlIncludeResolver.builder().httpsOnly(false).allowedHosts("trusted.com").build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://other.com/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("not in allowlist"));
   }
 
   @Test
   void hostnameRequiresExplicitAllowlist() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://example.com/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://example.com/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("require explicit allowlist"));
   }
 
   @Test
   void allowlistNormalizationTrimsAndLowercases() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .allowedHosts(" THIS-HOST-DOES-NOT-EXIST-XYZ123.INVALID ")
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://this-host-does-not-exist-xyz123.invalid/template.mjml", CTX));
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpsOnly(false)
+            .allowedHosts(" THIS-HOST-DOES-NOT-EXIST-XYZ123.INVALID ")
+            .build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () ->
+                resolver.resolve(
+                    "http://this-host-does-not-exist-xyz123.invalid/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("Cannot resolve host"));
   }
 
   @Test
   void denylistNormalizationTrimsAndLowercases() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .deniedHosts(" EVIL.COM ")
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://evil.com/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).deniedHosts(" EVIL.COM ").build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://evil.com/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("denied"));
   }
 
   @Test
   void noHostThrows() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http:///path", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex = assertThrows(MjmlIncludeException.class, () -> resolver.resolve("http:///path", CTX));
     assertTrue(ex.getMessage().contains("no host"));
   }
 
   @Test
   void builderDefaultsToHttpsOnly() {
     var resolver = UrlIncludeResolver.builder().build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://example.com/x", CTX));
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class, () -> resolver.resolve("http://example.com/x", CTX));
     assertTrue(ex.getMessage().contains("Only HTTPS"));
   }
 
   @Test
   void customHttpClientAccepted() {
-    var client = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(1))
-        .followRedirects(HttpClient.Redirect.NEVER)
-        .build();
-    var resolver = UrlIncludeResolver.builder()
-        .httpClient(client)
-        .httpsOnly(false)
-        .build();
+    var client =
+        HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(1))
+            .followRedirects(HttpClient.Redirect.NEVER)
+            .build();
+    var resolver = UrlIncludeResolver.builder().httpClient(client).httpsOnly(false).build();
     // Loopback SSRF will block this, confirming SSRF still works with custom client
-    assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://127.0.0.1/template.mjml", CTX));
+    assertThrows(
+        MjmlIncludeException.class, () -> resolver.resolve("http://127.0.0.1/template.mjml", CTX));
   }
 
   @Test
   void unresolvedHostThrows() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .allowedHosts("this-host-does-not-exist-xyz123.invalid")
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://this-host-does-not-exist-xyz123.invalid/path", CTX));
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpsOnly(false)
+            .allowedHosts("this-host-does-not-exist-xyz123.invalid")
+            .build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://this-host-does-not-exist-xyz123.invalid/path", CTX));
     assertTrue(ex.getMessage().contains("Cannot resolve host"));
   }
 
   @Test
   void timeoutConfigurationAccepted() {
-    var resolver = UrlIncludeResolver.builder()
-        .connectTimeout(Duration.ofSeconds(1))
-        .readTimeout(Duration.ofSeconds(2))
-        .build();
+    var resolver =
+        UrlIncludeResolver.builder()
+            .connectTimeout(Duration.ofSeconds(1))
+            .readTimeout(Duration.ofSeconds(2))
+            .build();
     // Just verify it builds; actual timeout behavior requires real HTTP calls
-    assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://example.com/x", CTX));
+    assertThrows(MjmlIncludeException.class, () -> resolver.resolve("http://example.com/x", CTX));
   }
 
   @Test
   void maxResponseSizeConfigurationAccepted() {
-    var resolver = UrlIncludeResolver.builder()
-        .maxResponseSize(512)
-        .build();
+    var resolver = UrlIncludeResolver.builder().maxResponseSize(512).build();
     // Just verify it builds
-    assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://example.com/x", CTX));
+    assertThrows(MjmlIncludeException.class, () -> resolver.resolve("http://example.com/x", CTX));
   }
 
   @Test
   void ssrfBlocksIPv6Loopback() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://[::1]/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class, () -> resolver.resolve("http://[::1]/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void ssrfBlocksZeroAddress() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://0.0.0.0/template.mjml", CTX));
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://0.0.0.0/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("SSRF"));
   }
 
   @Test
   void ssrfBlocksMulticastIPv4() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
     // 224.0.0.1 is a multicast address (224.0.0.0/4 range)
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://224.0.0.1/template.mjml", CTX));
-    assertTrue(ex.getMessage().contains("SSRF"),
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://224.0.0.1/template.mjml", CTX));
+    assertTrue(
+        ex.getMessage().contains("SSRF"),
         "Multicast IPv4 address should be blocked by SSRF protection");
   }
 
   @Test
   void ssrfBlocksMulticastIPv6() {
-    var resolver = UrlIncludeResolver.builder()
-        .httpsOnly(false)
-        .build();
+    var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
     // ff02::1 is a well-known IPv6 multicast address (all nodes)
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://[ff02::1]/template.mjml", CTX));
-    assertTrue(ex.getMessage().contains("SSRF"),
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://[ff02::1]/template.mjml", CTX));
+    assertTrue(
+        ex.getMessage().contains("SSRF"),
         "Multicast IPv6 address should be blocked by SSRF protection");
   }
 
   @Test
   void enforcesMaxResponseSizeInBytes() {
     byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 3 chars, 6 bytes
-    var resolver = UrlIncludeResolver.builder()
-        .httpClient(new StubHttpClient(200, body))
-        .httpsOnly(false)
-        .maxResponseSize(5)
-        .build();
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpClient(new StubHttpClient(200, body))
+            .httpsOnly(false)
+            .maxResponseSize(5)
+            .build();
 
-    var ex = assertThrows(MjmlIncludeException.class,
-        () -> resolver.resolve("http://93.184.216.34/template.mjml", CTX));
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://93.184.216.34/template.mjml", CTX));
     assertTrue(ex.getMessage().contains("bytes"));
   }
 
   @Test
   void returnsResponseWithinByteLimit() {
     byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 6 bytes
-    var resolver = UrlIncludeResolver.builder()
-        .httpClient(new StubHttpClient(200, body))
-        .httpsOnly(false)
-        .maxResponseSize(6)
-        .build();
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpClient(new StubHttpClient(200, body))
+            .httpsOnly(false)
+            .maxResponseSize(6)
+            .build();
 
     String content = resolver.resolve("http://93.184.216.34/template.mjml", CTX);
     assertTrue(content.contains("ééé"));
@@ -378,7 +378,8 @@ class UrlIncludeResolverTest {
     }
 
     @Override
-    public <T> HttpResponse<T> send(HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler)
+    public <T> HttpResponse<T> send(
+        HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler)
         throws IOException, InterruptedException {
       @SuppressWarnings("unchecked")
       T responseBody = (T) new ByteArrayInputStream(body);
@@ -386,40 +387,22 @@ class UrlIncludeResolverTest {
     }
 
     @Override
-    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
-        HttpResponse.BodyHandler<T> responseBodyHandler) {
+    public <T> CompletableFuture<HttpResponse<T>> sendAsync(
+        HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler) {
       throw new UnsupportedOperationException("sendAsync not used in tests");
     }
 
     @Override
-    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
+    public <T> CompletableFuture<HttpResponse<T>> sendAsync(
+        HttpRequest request,
         HttpResponse.BodyHandler<T> responseBodyHandler,
         HttpResponse.PushPromiseHandler<T> pushPromiseHandler) {
       throw new UnsupportedOperationException("sendAsync not used in tests");
     }
   }
 
-  private static final class StubHttpResponse<T> implements HttpResponse<T> {
-
-    private final int statusCode;
-    private final HttpRequest request;
-    private final T body;
-
-    private StubHttpResponse(int statusCode, HttpRequest request, T body) {
-      this.statusCode = statusCode;
-      this.request = request;
-      this.body = body;
-    }
-
-    @Override
-    public int statusCode() {
-      return statusCode;
-    }
-
-    @Override
-    public HttpRequest request() {
-      return request;
-    }
+  private record StubHttpResponse<T>(int statusCode, HttpRequest request, T body)
+      implements HttpResponse<T> {
 
     @Override
     public Optional<HttpResponse<T>> previousResponse() {
@@ -428,12 +411,7 @@ class UrlIncludeResolverTest {
 
     @Override
     public HttpHeaders headers() {
-      return HttpHeaders.of(java.util.Map.of(), (k, v) -> true);
-    }
-
-    @Override
-    public T body() {
-      return body;
+      return HttpHeaders.of(Map.of(), (k, v) -> true);
     }
 
     @Override

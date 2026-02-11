@@ -8,9 +8,8 @@ import dev.jcputney.mjml.MjmlRenderer;
 import org.junit.jupiter.api.Test;
 
 /**
- * Integration tests for MjSection's 4 render variants:
- * normal, normal+bg-image, full-width, full-width+bg-image.
- * These verify structural patterns that must be preserved during refactoring.
+ * Integration tests for MjSection's 4 render variants: normal, normal+bg-image, full-width,
+ * full-width+bg-image. These verify structural patterns that must be preserved during refactoring.
  */
 class MjSectionRenderTest {
 
@@ -23,7 +22,10 @@ class MjSectionRenderTest {
 
   @Test
   void renderNormalSimple() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section background-color="#ffffff" padding="20px 0">
@@ -43,7 +45,10 @@ class MjSectionRenderTest {
 
   @Test
   void renderNormalWithBgImage() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section background-url="https://example.com/bg.jpg" background-color="#ff0000">
@@ -65,7 +70,10 @@ class MjSectionRenderTest {
 
   @Test
   void renderFullWidthSimple() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section full-width="full-width" background-color="#00ff00">
@@ -85,7 +93,10 @@ class MjSectionRenderTest {
 
   @Test
   void renderFullWidthWithBgImage() {
-    String html = render("""
+    String html =
+        render(
+            // language=MJML
+            """
         <mjml>
           <mj-body>
             <mj-section full-width="full-width" background-url="https://example.com/hero.jpg" background-color="#333">
@@ -95,7 +106,8 @@ class MjSectionRenderTest {
         </mjml>
         """);
     // Outer table with background attribute
-    assertTrue(html.contains("background=\"https://example.com/hero.jpg\""),
+    assertTrue(
+        html.contains("background=\"https://example.com/hero.jpg\""),
         "Should have background attribute on outer table");
     // VML for Outlook
     assertTrue(html.contains("v:rect"), "Should have VML rect");

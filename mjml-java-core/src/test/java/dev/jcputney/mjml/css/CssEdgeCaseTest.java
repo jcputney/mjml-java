@@ -9,9 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Edge case tests for the CSS parsing, inlining, and selector matching subsystem.
- * Covers specificity conflicts, malformed CSS recovery, complex selectors,
- * !important handling, and pseudo-class preservation.
+ * Edge case tests for the CSS parsing, inlining, and selector matching subsystem. Covers
+ * specificity conflicts, malformed CSS recovery, complex selectors, !important handling, and
+ * pseudo-class preservation.
  */
 class CssEdgeCaseTest {
 
@@ -19,7 +19,8 @@ class CssEdgeCaseTest {
 
   @Test
   void idSelectorBeatsClassSelector() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         .red { color: red; }
@@ -29,13 +30,14 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:green"),
-        "ID selector (#special) should beat class selector (.red)");
+    assertTrue(
+        result.contains("color:green"), "ID selector (#special) should beat class selector (.red)");
   }
 
   @Test
   void classSelectorBeatsTypeSelector() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         div { color: red; }
@@ -45,13 +47,14 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"),
-        "Class selector (.blue) should beat type selector (div)");
+    assertTrue(
+        result.contains("color:blue"), "Class selector (.blue) should beat type selector (div)");
   }
 
   @Test
   void idBeatClassBeatsTag() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         p { color: red; }
@@ -62,13 +65,13 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:green"),
-        "ID > class > tag specificity should hold");
+    assertTrue(result.contains("color:green"), "ID > class > tag specificity should hold");
   }
 
   @Test
   void laterRuleWinsAtEqualSpecificity() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         .first { color: red; }
@@ -78,13 +81,13 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"),
-        "Later rule should win when specificity is equal");
+    assertTrue(result.contains("color:blue"), "Later rule should win when specificity is equal");
   }
 
   @Test
   void compoundSelectorHigherSpecificityThanSimple() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         .a { color: red; }
@@ -94,7 +97,8 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"),
+    assertTrue(
+        result.contains("color:blue"),
         "Compound selector (div.a) should have higher specificity than simple (.a)");
   }
 
@@ -122,9 +126,9 @@ class CssEdgeCaseTest {
     List<CssDeclaration> decls = CssParser.parseDeclarations("color red; font-size: 14px");
     // The first declaration is malformed (no colon), should be skipped
     // The second should parse correctly
-    boolean hasFontSize = decls.stream()
-        .anyMatch(d -> "font-size".equals(d.property()));
-    assertTrue(hasFontSize, "Valid declarations should be parsed even with preceding malformed ones");
+    boolean hasFontSize = decls.stream().anyMatch(d -> "font-size".equals(d.property()));
+    assertTrue(
+        hasFontSize, "Valid declarations should be parsed even with preceding malformed ones");
   }
 
   @Test
@@ -144,8 +148,8 @@ class CssEdgeCaseTest {
 
   @Test
   void cssCommentStripping() {
-    CssParser.ParseResult result = CssParser.parse(
-        "/* comment */ .a { color: red; } /* another comment */");
+    CssParser.ParseResult result =
+        CssParser.parse("/* comment */ .a { color: red; } /* another comment */");
     assertNotNull(result);
     assertEquals(1, result.rules().size());
     assertEquals(".a", result.rules().get(0).selectorText());
@@ -163,7 +167,8 @@ class CssEdgeCaseTest {
 
   @Test
   void descendantSelectorMatches() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>.parent .child { color: red; }</style></head>
         <body>
@@ -179,13 +184,14 @@ class CssEdgeCaseTest {
     assertTrue(firstSpan >= 0 && secondSpan >= 0, "Should have two spans");
 
     String firstTag = result.substring(firstSpan, result.indexOf(">", firstSpan) + 1);
-    assertTrue(firstTag.contains("color:red"),
-        "Descendant span inside .parent should get the style");
+    assertTrue(
+        firstTag.contains("color:red"), "Descendant span inside .parent should get the style");
   }
 
   @Test
   void childSelectorMatches() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>.parent > .child { color: blue; }</style></head>
         <body>
@@ -194,13 +200,13 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"),
-        "Direct child selector should match");
+    assertTrue(result.contains("color:blue"), "Direct child selector should match");
   }
 
   @Test
   void adjacentSiblingSelector() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>h1 + p { color: red; }</style></head>
         <body>
@@ -212,13 +218,14 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     // At least one p should get the style
-    assertTrue(result.contains("color:red"),
-        "Adjacent sibling selector should match first p after h1");
+    assertTrue(
+        result.contains("color:red"), "Adjacent sibling selector should match first p after h1");
   }
 
   @Test
   void generalSiblingSelector() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>h1 ~ p { margin-top: 0; }</style></head>
         <body>
@@ -229,13 +236,15 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("margin-top:0"),
+    assertTrue(
+        result.contains("margin-top:0"),
         "General sibling selector should match p elements after h1");
   }
 
   @Test
   void selectorListMatchesAllSelectors() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>h1, h2, h3 { font-weight: bold; }</style></head>
         <body><h1>A</h1><h2>B</h2><p>C</p></body>
@@ -251,20 +260,21 @@ class CssEdgeCaseTest {
 
   @Test
   void importantOverridesInlineStyle() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>.override { color: blue !important; }</style></head>
         <body><div class="override" style="color:red">Hello</div></body>
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"),
-        "!important should override existing inline style");
+    assertTrue(result.contains("color:blue"), "!important should override existing inline style");
   }
 
   @Test
   void importantOverridesLowerSpecificity() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         #unique { color: green; }
@@ -274,13 +284,13 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"),
-        "!important on lower specificity should still win");
+    assertTrue(result.contains("color:blue"), "!important on lower specificity should still win");
   }
 
   @Test
   void bothImportantHigherSpecificityWins() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         .cls { color: red !important; }
@@ -290,17 +300,17 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:green"),
-        "When both are !important, higher specificity should win");
+    assertTrue(
+        result.contains("color:green"), "When both are !important, higher specificity should win");
   }
 
   @Test
   void importantDeclarationParsedCorrectly() {
-    List<CssDeclaration> decls = CssParser.parseDeclarations("color: red !important; font-size: 14px");
+    List<CssDeclaration> decls =
+        CssParser.parseDeclarations("color: red !important; font-size: 14px");
     assertEquals(2, decls.size());
-    CssDeclaration colorDecl = decls.stream()
-        .filter(d -> "color".equals(d.property()))
-        .findFirst().orElseThrow();
+    CssDeclaration colorDecl =
+        decls.stream().filter(d -> "color".equals(d.property())).findFirst().orElseThrow();
     assertTrue(colorDecl.important(), "Declaration should be marked as important");
     assertEquals("red", colorDecl.value(), "Value should not contain !important text");
   }
@@ -309,7 +319,8 @@ class CssEdgeCaseTest {
 
   @Test
   void hoverPseudoClassNotInlined() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         a { color: blue; }
@@ -320,13 +331,14 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(result.contains("color:blue"), "Base rule should be inlined");
-    assertTrue(result.contains("a:hover"),
-        ":hover rule should be preserved in style block, not inlined");
+    assertTrue(
+        result.contains("a:hover"), ":hover rule should be preserved in style block, not inlined");
   }
 
   @Test
   void firstChildPseudoClassNotInlined() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         p:first-child { margin-top: 0; }
@@ -336,15 +348,15 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("p:first-child"),
-        ":first-child rule should be preserved in style block");
-    assertTrue(result.contains("margin:10px"),
-        "Base rule should be inlined");
+    assertTrue(
+        result.contains("p:first-child"), ":first-child rule should be preserved in style block");
+    assertTrue(result.contains("margin:10px"), "Base rule should be inlined");
   }
 
   @Test
   void pseudoElementPreserved() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         p::before { content: ">>"; }
@@ -354,17 +366,17 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("p::before"),
-        "::before pseudo-element should be preserved in style block");
-    assertTrue(result.contains("color:blue"),
-        "Base rule should be inlined");
+    assertTrue(
+        result.contains("p::before"), "::before pseudo-element should be preserved in style block");
+    assertTrue(result.contains("color:blue"), "Base rule should be inlined");
   }
 
   // --- @media preservation ---
 
   @Test
   void mediaQueryPreservedNotInlined() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>
         .normal { color: red; }
@@ -377,13 +389,14 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(result.contains("color:red"), "Regular rule should be inlined");
-    assertTrue(result.contains("@media"),
-        "Media query should be preserved in style block");
+    assertTrue(result.contains("@media"), "Media query should be preserved in style block");
   }
 
   @Test
   void keyframesPreserved() {
-    CssParser.ParseResult result = CssParser.parse("""
+    CssParser.ParseResult result =
+        CssParser.parse(
+            """
         .animated { animation: fade 1s; }
         @keyframes fade {
           from { opacity: 0; }
@@ -392,7 +405,8 @@ class CssEdgeCaseTest {
         """);
     assertEquals(1, result.rules().size(), "Regular rule should be parsed");
     assertEquals(1, result.preservedAtRules().size(), "@keyframes should be preserved");
-    assertTrue(result.preservedAtRules().get(0).contains("@keyframes fade"),
+    assertTrue(
+        result.preservedAtRules().get(0).contains("@keyframes fade"),
         "Preserved at-rule should contain keyframes");
   }
 
@@ -400,7 +414,8 @@ class CssEdgeCaseTest {
 
   @Test
   void attributeExactMatch() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>[data-type="header"] { color: red; }</style></head>
         <body>
@@ -414,13 +429,13 @@ class CssEdgeCaseTest {
     int headerIdx = result.indexOf("Header");
     int divBefore = result.lastIndexOf("<div", headerIdx);
     String divTag = result.substring(divBefore, result.indexOf(">", divBefore) + 1);
-    assertTrue(divTag.contains("color:red"),
-        "Attribute exact match should apply style");
+    assertTrue(divTag.contains("color:red"), "Attribute exact match should apply style");
   }
 
   @Test
   void attributePresenceMatch() {
-    String html = """
+    String html =
+        """
         <html>
         <head><style>[data-active] { font-weight: bold; }</style></head>
         <body>
@@ -430,7 +445,8 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("font-weight:bold"),
+    assertTrue(
+        result.contains("font-weight:bold"),
         "Attribute presence selector should match element with attribute");
   }
 
@@ -440,31 +456,31 @@ class CssEdgeCaseTest {
   void hasPseudoDetectsHover() {
     CssSelector selector = CssSelectorParser.parse("a:hover");
     assertNotNull(selector);
-    assertTrue(CssSelectorMatcher.hasPseudo(selector),
-        ":hover should be detected as pseudo");
+    assertTrue(CssSelectorMatcher.hasPseudo(selector), ":hover should be detected as pseudo");
   }
 
   @Test
   void hasPseudoDetectsBefore() {
     CssSelector selector = CssSelectorParser.parse("p::before");
     assertNotNull(selector);
-    assertTrue(CssSelectorMatcher.hasPseudo(selector),
-        "::before should be detected as pseudo");
+    assertTrue(CssSelectorMatcher.hasPseudo(selector), "::before should be detected as pseudo");
   }
 
   @Test
   void hasPseudoFalseForSimpleSelector() {
     CssSelector selector = CssSelectorParser.parse("div.class#id");
     assertNotNull(selector);
-    assertFalse(CssSelectorMatcher.hasPseudo(selector),
-        "Simple compound selector should not have pseudo");
+    assertFalse(
+        CssSelectorMatcher.hasPseudo(selector), "Simple compound selector should not have pseudo");
   }
 
   // --- Integration with MJML renderer ---
 
   @Test
   void mjmlInlineStyleOverridesCssClass() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-style inline="inline">
@@ -488,7 +504,9 @@ class CssEdgeCaseTest {
 
   @Test
   void mjmlNonInlineStylePreservedInHead() {
-    String mjml = """
+    String mjml =
+        // language=MJML
+        """
         <mjml>
           <mj-head>
             <mj-style>
@@ -507,7 +525,8 @@ class CssEdgeCaseTest {
 
     String html = dev.jcputney.mjml.MjmlRenderer.render(mjml).html();
     assertNotNull(html);
-    assertTrue(html.contains(".custom:hover"),
+    assertTrue(
+        html.contains(".custom:hover"),
         "Non-inline mj-style should preserve :hover in style block");
   }
 }

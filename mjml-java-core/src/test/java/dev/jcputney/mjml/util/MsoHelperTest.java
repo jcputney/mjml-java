@@ -47,20 +47,20 @@ class MsoHelperTest {
 
   @Test
   void msoConditionalTableClosing() {
-    assertEquals("<!--[if mso | IE]></td></tr></table><![endif]-->",
-        MsoHelper.msoConditionalTableClosing());
+    assertEquals(
+        "<!--[if mso | IE]></td></tr></table><![endif]-->", MsoHelper.msoConditionalTableClosing());
   }
 
   @Test
   void msoTdStyleConstant() {
-    assertEquals("line-height:0px;font-size:0px;mso-line-height-rule:exactly;",
-        MsoHelper.MSO_TD_STYLE);
+    assertEquals(
+        "line-height:0px;font-size:0px;mso-line-height-rule:exactly;", MsoHelper.MSO_TD_STYLE);
   }
 
   @Test
   void msoTdStyleHeroConstant() {
-    assertEquals("line-height:0;font-size:0;mso-line-height-rule:exactly;",
-        MsoHelper.MSO_TD_STYLE_HERO);
+    assertEquals(
+        "line-height:0;font-size:0;mso-line-height-rule:exactly;", MsoHelper.MSO_TD_STYLE_HERO);
   }
 
   @Test

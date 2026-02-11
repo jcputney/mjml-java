@@ -1,24 +1,18 @@
 package dev.jcputney.mjml;
 
-/**
- * Text direction for the HTML document.
- */
+/** Text direction for the HTML document. */
 public enum Direction {
+  /** Left-to-right text direction. */
   LTR("ltr"),
+  /** Right-to-left text direction. */
   RTL("rtl"),
+  /** Automatic text direction determined by the browser. */
   AUTO("auto");
 
   private final String value;
 
   Direction(String value) {
     this.value = value;
-  }
-
-  /**
-   * Returns the lowercase string representation used in HTML output.
-   */
-  public String value() {
-    return value;
   }
 
   /**
@@ -38,6 +32,15 @@ public enum Direction {
       case "auto" -> AUTO;
       default -> throw new IllegalArgumentException("Unknown direction: " + direction);
     };
+  }
+
+  /**
+   * Returns the lowercase string representation used in HTML output.
+   *
+   * @return the lowercase direction string (e.g. "ltr", "rtl", "auto")
+   */
+  public String value() {
+    return value;
   }
 
   @Override
