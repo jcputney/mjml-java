@@ -52,7 +52,7 @@
         <version.plugin.central-publishing>0.10.0</version.plugin.central-publishing>
         <version.plugin.gpg>3.2.8</version.plugin.gpg>
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
-        <version.plugin.release>3.1.1</version.plugin.release>
+        <version.plugin.release>3.3.1</version.plugin.release>
         <version.plugin.source>3.4.0</version.plugin.source>
         <version.plugin.spotbugs>4.9.8.2</version.plugin.spotbugs>
         <version.plugin.spotless>3.2.1</version.plugin.spotless>
