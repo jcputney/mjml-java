@@ -49,13 +49,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>5.10.2</junit.version>
-        <version.plugin.central-publishing>0.9.0</version.plugin.central-publishing>
+        <junit.version>6.0.2</junit.version>
+        <version.plugin.central-publishing>0.10.0</version.plugin.central-publishing>
         <version.plugin.gpg>3.2.8</version.plugin.gpg>
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
         <version.plugin.release>3.1.1</version.plugin.release>
-        <version.plugin.source>3.3.1</version.plugin.source>
-        <version.plugin.spotbugs>4.8.6.6</version.plugin.spotbugs>
+        <version.plugin.source>3.4.0</version.plugin.source>
+        <version.plugin.spotbugs>4.9.8.2</version.plugin.spotbugs>
     </properties>
 
     <dependencyManagement>
@@ -75,7 +75,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.12.1</version>
+                    <version>3.15.0</version>
                     <configuration>
                         <source>17</source>
                         <target>17</target>
@@ -89,12 +89,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.5</version>
+                    <version>3.5.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.12</version>
+                    <version>0.8.14</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
