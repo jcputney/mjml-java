@@ -4,7 +4,7 @@
 
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>mjml-java-parent</name>
@@ -15,7 +15,7 @@
         <url>${project.url}</url>
         <connection>scm:git:https://github.com/jcputney/mjml-java.git</connection>
         <developerConnection>scm:git:git@github.com:jcputney/mjml-java.git</developerConnection>
-        <tag>v1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
