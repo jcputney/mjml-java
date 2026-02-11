@@ -55,12 +55,41 @@ jobs:
           coverage-token: ${{secrets.QLTY_COVERAGE_TOKEN}}
           files: "**/target/site/jacoco/jacoco.xml"
 
+      - name: Merge JaCoCo reports
+        run: |
+          python3 - <<'PYEOF'
+          import xml.etree.ElementTree as ET, sys
+          files = [
+              "mjml-java-core/target/site/jacoco/jacoco.xml",
+              "mjml-java-resolvers/target/site/jacoco/jacoco.xml",
+              "mjml-java-spring/target/site/jacoco/jacoco.xml",
+          ]
+          merged = None
+          for f in files:
+              root = ET.parse(f).getroot()
+              if merged is None:
+                  merged = root
+                  continue
+              for pkg in root.findall("package"):
+                  merged.append(pkg)
+              for counter in root.findall("counter"):
+                  ctype = counter.get("type")
+                  existing = merged.find(f"counter[@type='{ctype}']")
+                  if existing is not None:
+                      existing.set("missed", str(int(existing.get("missed")) + int(counter.get("missed"))))
+                      existing.set("covered", str(int(existing.get("covered")) + int(counter.get("covered"))))
+                  else:
+                      merged.append(counter)
+          import os; os.makedirs("target", exist_ok=True)
+          ET.ElementTree(merged).write("target/jacoco-merged.xml", xml_declaration=True, encoding="UTF-8")
+          PYEOF
+
       # generates coverage-report.md and publishes as checkrun
       - name: JaCoCo Code Coverage Report
         id: jacoco_reporter
         uses: PavanMudigonda/jacoco-reporter@v5.1
         with:
-          coverage_results_path: "mjml-java-core/target/site/jacoco/jacoco.xml,mjml-java-resolvers/target/site/jacoco/jacoco.xml,mjml-java-spring/target/site/jacoco/jacoco.xml"
+          coverage_results_path: target/jacoco-merged.xml
           coverage_report_name: Coverage
           coverage_report_title: JaCoCo
           github_token: ${{ secrets.GITHUB_TOKEN }}
