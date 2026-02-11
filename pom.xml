@@ -55,7 +55,7 @@
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
         <version.plugin.release>3.1.1</version.plugin.release>
         <version.plugin.source>3.3.1</version.plugin.source>
-        <version.plugin.spotbugs>4.8.6.6</version.plugin.spotbugs>
+        <version.plugin.spotbugs>4.9.8.2</version.plugin.spotbugs>
     </properties>
 
     <dependencyManagement>
