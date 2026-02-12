@@ -161,7 +161,7 @@ Builder options:
 | `httpClient(HttpClient)` | (auto-created) | Custom `HttpClient` (useful for testing) |
 
 :::warning SSRF Protection
-`UrlIncludeResolver` automatically blocks requests to loopback, site-local, link-local, and any-local IP addresses. This protects against SSRF attacks where an attacker uses `<mj-include>` to probe internal network resources.
+`UrlIncludeResolver` automatically blocks requests to loopback, link-local, site-local (IPv4), any-local, multicast, and IPv6 unique-local (`fc00::/7`) addresses. This protects against SSRF attacks where an attacker uses `<mj-include>` to probe internal network resources.
 
 For hostname URLs (for example `https://cdn.example.com/file.mjml`), configure `allowedHosts(...)`. Without an explicit allowlist, hostname requests are rejected.
 :::

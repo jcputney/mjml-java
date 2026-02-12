@@ -197,6 +197,6 @@ If a custom component's `render()` method modifies shared mutable state, that st
 
 ## Performance Considerations
 
-- Each render call creates a new pipeline, component registry, and context. This allocation is intentional and lightweight compared to the actual rendering work.
+- Each static render call creates a new pipeline and context. Component registries are reused from a bounded shared cache keyed by configuration, so registry construction is usually amortized across calls.
 - `MjmlConfiguration` is created once and reused, so there is no configuration overhead per render.
 - The `FileSystemIncludeResolver` reads files via `Files.readString()`, which is safe for concurrent access at the OS level, though disk I/O may become a bottleneck under high concurrency. Consider a caching resolver for production workloads.

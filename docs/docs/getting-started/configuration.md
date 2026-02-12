@@ -23,7 +23,7 @@ MjmlConfiguration config = MjmlConfiguration.builder()
 |---|---|---|---|
 | `language(String)` | `String` | `"und"` | Sets the `lang` attribute on the root `<html>` element. Use a BCP 47 language tag (e.g., `"en"`, `"fr"`, `"ja"`). |
 | `direction(String)` or `direction(Direction)` | `String` or `Direction` | `Direction.AUTO` | Sets the `dir` attribute on the root `<html>` element. Accepts a string (`"ltr"`, `"rtl"`, `"auto"`) or a `Direction` enum value. |
-| `includeResolver(IncludeResolver)` | `IncludeResolver` | `null` | Provides a resolver for `<mj-include>` elements. When `null`, any `<mj-include>` in the template will cause an error. |
+| `includeResolver(IncludeResolver)` | `IncludeResolver` | `null` | Provides a resolver for `<mj-include>` elements. When `null`, `<mj-include>` nodes are left unresolved and ignored during rendering (a warning is logged). |
 | `registerComponent(String, ComponentFactory)` | -- | -- | Registers a custom component under the given tag name. Can be called multiple times to register several components. |
 | `sanitizeOutput(boolean)` | `boolean` | `true` | When `true`, HTML special characters (`"`, `<`, `>`, `&`) in attribute values are escaped in the rendered output to prevent XSS. |
 | `maxInputSize(int)` | `int` | `1048576` (1 MB) | Maximum allowed MJML input size in characters. Inputs exceeding this limit are rejected before processing. |

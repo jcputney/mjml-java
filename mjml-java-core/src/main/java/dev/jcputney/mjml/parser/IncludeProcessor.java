@@ -146,7 +146,10 @@ public final class IncludeProcessor {
     }
 
     String content = resolver.resolve(path, context);
-    if (maxInputSize > 0 && content != null && content.length() > maxInputSize) {
+    if (content == null) {
+      throw new MjmlIncludeException("Include resolver returned null for path: " + path);
+    }
+    if (maxInputSize > 0 && content.length() > maxInputSize) {
       throw new MjmlValidationException(
           "Included content from '"
               + path

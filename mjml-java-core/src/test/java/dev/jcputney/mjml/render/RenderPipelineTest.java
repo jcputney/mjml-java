@@ -272,4 +272,30 @@ class RenderPipelineTest {
     // When inline CSS is applied, self-closing tags lose the slash (juice behavior emulation)
     assertFalse(html.contains(" />"), "CSS inlining should remove self-closing tag slashes");
   }
+
+  @Test
+  void cssInliningDoesNotMutateTextContentContainingSelfClosingSequence() {
+    String mjml =
+        // language=MJML
+        """
+        <mjml>
+          <mj-head>
+            <mj-style inline="inline">
+              .custom-class { color: #ff0000; }
+            </mj-style>
+          </mj-head>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-text css-class="custom-class">A /> B</mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """;
+    String html = render(mjml);
+    assertTrue(
+        html.contains("A /> B"),
+        "Post-processing for inlined CSS should not alter plain text content");
+  }
 }

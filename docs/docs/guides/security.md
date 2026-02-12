@@ -5,7 +5,7 @@ title: Security
 
 # Security
 
-mjml-java includes several security mechanisms to protect against common attack vectors when rendering untrusted MJML input. All protections are enabled by default.
+mjml-java includes several security mechanisms to protect against common attack vectors when rendering untrusted MJML input. Core protections are enabled by default; optional hardening such as `contentSanitizer` must be configured explicitly for untrusted inner HTML.
 
 ## Input Size Limits
 

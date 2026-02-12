@@ -269,6 +269,25 @@ class IncludeProcessorTest {
   }
 
   @Test
+  void throwsOnNullResolvedIncludeContent() {
+    IncludeResolver resolver = (path, context) -> null;
+    MjmlConfiguration config = MjmlConfiguration.builder().includeResolver(resolver).build();
+
+    String mjml =
+        // language=MJML
+        """
+        <mjml>
+          <mj-body>
+            <mj-include path="null-content.mjml" />
+          </mj-body>
+        </mjml>
+        """;
+
+    MjmlException ex = assertThrows(MjmlException.class, () -> MjmlRenderer.render(mjml, config));
+    assertTrue(ex.getMessage().contains("returned null"));
+  }
+
+  @Test
   void includesCssInlineType() {
     MapIncludeResolver resolver =
         new MapIncludeResolver().put("inline.css", ".bold { font-weight: bold; }");

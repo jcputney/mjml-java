@@ -292,6 +292,22 @@ class UrlIncludeResolverTest {
   }
 
   @Test
+  void ssrfBlocksIpv6UniqueLocalAddress() {
+    var resolver =
+        UrlIncludeResolver.builder()
+            .httpClient(new StubHttpClient(200, "ok".getBytes(StandardCharsets.UTF_8)))
+            .httpsOnly(false)
+            .build();
+    var ex =
+        assertThrows(
+            MjmlIncludeException.class,
+            () -> resolver.resolve("http://[fd00::1]/template.mjml", CTX));
+    assertTrue(
+        ex.getMessage().contains("SSRF"),
+        "IPv6 unique local addresses should be blocked by SSRF protection");
+  }
+
+  @Test
   void enforcesMaxResponseSizeInBytes() {
     byte[] body = "ééé".getBytes(StandardCharsets.UTF_8); // 3 chars, 6 bytes
     var resolver =

@@ -126,6 +126,8 @@ public final class RenderPipeline {
     int i = 0;
     int len = html.length();
     boolean inMsoComment = false;
+    boolean inTag = false;
+    char quoteChar = 0;
     while (i < len) {
       // Track MSO conditional comment boundaries to avoid modifying VML content
       if (!inMsoComment && i + 4 <= len && html.startsWith("<!--", i)) {
@@ -146,7 +148,36 @@ public final class RenderPipeline {
         i++;
         continue;
       }
-      // Check for " style=\"\"" (9 chars) -> replace with " style" (6 chars)
+      char ch = html.charAt(i);
+      if (!inTag) {
+        if (ch == '<') {
+          inTag = true;
+        }
+        sb.append(ch);
+        i++;
+        continue;
+      }
+      if (quoteChar != 0) {
+        sb.append(ch);
+        if (ch == quoteChar) {
+          quoteChar = 0;
+        }
+        i++;
+        continue;
+      }
+      if (ch == '"' || ch == '\'') {
+        quoteChar = ch;
+        sb.append(ch);
+        i++;
+        continue;
+      }
+      if (ch == '>') {
+        inTag = false;
+        sb.append(ch);
+        i++;
+        continue;
+      }
+      // Only rewrite within tag syntax, never in text content.
       if (i + 9 <= len && html.startsWith(" style=\"\"", i)) {
         sb.append(" style");
         i += 9;

@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.Inet6Address;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
@@ -169,11 +170,7 @@ public final class UrlIncludeResolver implements IncludeResolver {
     try {
       InetAddress[] addresses = InetAddress.getAllByName(host);
       for (InetAddress addr : addresses) {
-        if (addr.isLoopbackAddress()
-            || addr.isSiteLocalAddress()
-            || addr.isLinkLocalAddress()
-            || addr.isAnyLocalAddress()
-            || addr.isMulticastAddress()) {
+        if (isBlockedAddress(addr)) {
           throw new MjmlIncludeException(
               "SSRF protection: host resolves to private/local address: " + host);
         }
@@ -181,6 +178,34 @@ public final class UrlIncludeResolver implements IncludeResolver {
     } catch (UnknownHostException e) {
       throw new MjmlIncludeException("Cannot resolve host: " + host, e);
     }
+  }
+
+  private static boolean isBlockedAddress(InetAddress addr) {
+    return addr.isLoopbackAddress()
+        || addr.isSiteLocalAddress()
+        || addr.isLinkLocalAddress()
+        || addr.isAnyLocalAddress()
+        || addr.isMulticastAddress()
+        || isIpv6UniqueLocal(addr)
+        || isIpv6DeprecatedSiteLocal(addr);
+  }
+
+  private static boolean isIpv6UniqueLocal(InetAddress addr) {
+    if (!(addr instanceof Inet6Address inet6)) {
+      return false;
+    }
+    byte[] bytes = inet6.getAddress();
+    // Unique local addresses: fc00::/7 (first 7 bits are 1111110x)
+    return (bytes[0] & 0xFE) == 0xFC;
+  }
+
+  private static boolean isIpv6DeprecatedSiteLocal(InetAddress addr) {
+    if (!(addr instanceof Inet6Address inet6)) {
+      return false;
+    }
+    byte[] bytes = inet6.getAddress();
+    // Deprecated site-local addresses: fec0::/10 (first 10 bits are 1111111011)
+    return (bytes[0] & 0xFF) == 0xFE && (bytes[1] & 0xC0) == 0xC0;
   }
 
   /** Builder for {@link UrlIncludeResolver}. */
