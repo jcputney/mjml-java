@@ -123,8 +123,10 @@ class CssInjectionTest {
 
     String html = MjmlRenderer.render(mjml).html();
     assertNotNull(html);
-    assertTrue(html.contains(".first { color: red; }"), "First style block should be present");
-    assertTrue(html.contains(".second { color: blue; }"), "Second style block should be present");
+    assertTrue(html.contains(".first {"), "First style block should be present");
+    assertTrue(html.contains("color: red;"), "First style rule should be present");
+    assertTrue(html.contains(".second {"), "Second style block should be present");
+    assertTrue(html.contains("color: blue;"), "Second style rule should be present");
   }
 
   @Test

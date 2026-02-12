@@ -151,9 +151,9 @@ public class MjAccordionTitle extends BodyComponent {
                 "vertical-align", align)));
     sb.append("\">");
 
-    // "more" image (shown when collapsed): uses WRAPPED URL, unwrapped alt
+    // "more" image (shown when collapsed): uses WRAPPED URL, wrapped alt
     sb.append("<img src=\"").append(escapeAttr(wrappedUrl)).append("\"");
-    sb.append(" alt=\"").append(escapeAttr(unwrappedAlt)).append("\"");
+    sb.append(" alt=\"").append(escapeAttr(wrappedAlt)).append("\"");
     sb.append(" class=\"mj-accordion-more\"");
     sb.append(" style=\"");
     sb.append(
@@ -164,9 +164,9 @@ public class MjAccordionTitle extends BodyComponent {
                 "height", height)));
     sb.append("\" />");
 
-    // "less" image (shown when expanded): uses UNWRAPPED URL, wrapped alt
+    // "less" image (shown when expanded): uses UNWRAPPED URL, unwrapped alt
     sb.append("<img src=\"").append(escapeAttr(unwrappedUrl)).append("\"");
-    sb.append(" alt=\"").append(escapeAttr(wrappedAlt)).append("\"");
+    sb.append(" alt=\"").append(escapeAttr(unwrappedAlt)).append("\"");
     sb.append(" class=\"mj-accordion-less\"");
     sb.append(" style=\"");
     sb.append(

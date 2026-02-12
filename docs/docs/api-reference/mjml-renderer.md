@@ -5,7 +5,7 @@ title: MjmlRenderer
 
 # MjmlRenderer
 
-`dev.jcputney.mjml.MjmlRenderer` is the main entry point for converting MJML templates to HTML. It is a `final` class with a private constructor -- all methods are static.
+`dev.jcputney.mjml.MjmlRenderer` is the main entry point for converting MJML templates to HTML. It is a `final` class providing both static convenience methods and an instance API via `create()`.
 
 ## Methods
 

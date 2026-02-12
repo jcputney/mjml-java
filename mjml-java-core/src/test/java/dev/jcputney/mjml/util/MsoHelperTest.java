@@ -20,7 +20,7 @@ class MsoHelperTest {
   void msoTableOpening() {
     String result = MsoHelper.msoTableOpening(600, "my-class", "#ffffff", MsoHelper.MSO_TD_STYLE);
     assertTrue(result.startsWith("<table align=\"center\""));
-    assertTrue(result.contains("class=\"my-class\""));
+    assertTrue(result.contains("class=\"my-class-outlook\""));
     assertTrue(result.contains("style=\"width:600px;\""));
     assertTrue(result.contains("width=\"600\""));
     assertTrue(result.contains("bgcolor=\"#ffffff\""));

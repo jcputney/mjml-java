@@ -25,6 +25,7 @@ import org.xml.sax.SAXParseException;
 public final class MjmlParser {
 
   private static final DocumentBuilderFactory FACTORY;
+  private static final ThreadLocal<DocumentBuilder> BUILDER_TL;
   private static final int DEFAULT_MAX_DEPTH = 100;
 
   static {
@@ -39,6 +40,15 @@ public final class MjmlParser {
     } catch (Exception e) {
       throw new ExceptionInInitializerError(e);
     }
+    BUILDER_TL =
+        ThreadLocal.withInitial(
+            () -> {
+              try {
+                return FACTORY.newDocumentBuilder();
+              } catch (Exception e) {
+                throw new IllegalStateException("Failed to create DocumentBuilder", e);
+              }
+            });
   }
 
   private MjmlParser() {}
@@ -73,10 +83,8 @@ public final class MjmlParser {
 
   private static MjmlDocument parseXml(String xml, int maxNestingDepth) {
     try {
-      DocumentBuilder builder;
-      synchronized (FACTORY) {
-        builder = FACTORY.newDocumentBuilder();
-      }
+      DocumentBuilder builder = BUILDER_TL.get();
+      builder.reset();
       Document document = builder.parse(new InputSource(new StringReader(xml)));
 
       Element root = document.getDocumentElement();

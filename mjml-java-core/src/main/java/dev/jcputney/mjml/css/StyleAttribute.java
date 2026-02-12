@@ -50,13 +50,14 @@ public final class StyleAttribute {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < declarations.size(); i++) {
       if (i > 0) {
-        sb.append(";");
+        sb.append(" ");
       }
       CssDeclaration d = declarations.get(i);
-      sb.append(d.property()).append(":").append(d.value());
+      sb.append(d.property()).append(": ").append(d.value());
       if (d.important()) {
         sb.append(" !important");
       }
+      sb.append(";");
     }
     return sb.toString();
   }

@@ -93,7 +93,7 @@ public class MjCarouselImage extends BodyComponent {
     if (!href.isEmpty()) {
       String sb =
           "<a href=\""
-              + escapeAttr(href)
+              + escapeHref(href)
               + "\""
               + " target=\""
               + escapeAttr(target)

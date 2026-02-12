@@ -48,9 +48,8 @@ import dev.jcputney.mjml.parser.MjmlDocument;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.parser.MjmlParser;
 import dev.jcputney.mjml.util.CssUnitParser;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -80,15 +79,8 @@ public final class RenderPipeline {
    */
   private static final int REGISTRY_CACHE_MAX_SIZE = 256;
 
-  private static final Map<MjmlConfiguration, ComponentRegistry> REGISTRY_CACHE =
-      Collections.synchronizedMap(
-          new LinkedHashMap<>(REGISTRY_CACHE_MAX_SIZE, 0.75f, true) {
-            @Override
-            protected boolean removeEldestEntry(
-                Map.Entry<MjmlConfiguration, ComponentRegistry> eldest) {
-              return size() > REGISTRY_CACHE_MAX_SIZE;
-            }
-          });
+  private static final ConcurrentHashMap<MjmlConfiguration, ComponentRegistry> REGISTRY_CACHE =
+      new ConcurrentHashMap<>();
   // Pre-compiled patterns for MSO transition merging. Use \s+ between the closing
   // conditional and the opening conditional so that indentation changes don't break the merge.
   private static final Pattern MSO_SECTION_MERGE =
@@ -129,6 +121,54 @@ public final class RenderPipeline {
     return html;
   }
 
+  private static String postProcessInlinedHtml(String html) {
+    StringBuilder sb = new StringBuilder(html.length());
+    int i = 0;
+    int len = html.length();
+    boolean inMsoComment = false;
+    while (i < len) {
+      // Track MSO conditional comment boundaries to avoid modifying VML content
+      if (!inMsoComment && i + 4 <= len && html.startsWith("<!--", i)) {
+        inMsoComment = true;
+        sb.append("<!--");
+        i += 4;
+        continue;
+      }
+      if (inMsoComment && i + 3 <= len && html.startsWith("-->", i)) {
+        inMsoComment = false;
+        sb.append("-->");
+        i += 3;
+        continue;
+      }
+      if (inMsoComment) {
+        // Inside MSO conditional — copy verbatim (preserves VML self-closing tags)
+        sb.append(html.charAt(i));
+        i++;
+        continue;
+      }
+      // Check for " style=\"\"" (9 chars) -> replace with " style" (6 chars)
+      if (i + 9 <= len && html.startsWith(" style=\"\"", i)) {
+        sb.append(" style");
+        i += 9;
+      } else if (i + 7 <= len && html.startsWith(" alt=\"\"", i)) {
+        // " alt=\"\"" -> " alt" (cheerio converts empty alt to boolean attribute)
+        sb.append(" alt");
+        i += 7;
+      } else if (i + 3 <= len
+          && html.charAt(i) == ' '
+          && html.charAt(i + 1) == '/'
+          && html.charAt(i + 2) == '>') {
+        // " />" -> ">"
+        sb.append('>');
+        i += 3;
+      } else {
+        sb.append(html.charAt(i));
+        i++;
+      }
+    }
+    return sb.toString();
+  }
+
   private static void warnUnresolvedIncludes(MjmlNode node) {
     if (node == null) {
       return;
@@ -144,19 +184,14 @@ public final class RenderPipeline {
   }
 
   private ComponentRegistry getOrCreateRegistry(MjmlConfiguration config) {
-    ComponentRegistry cached = REGISTRY_CACHE.get(config);
-    if (cached != null) {
-      return cached;
+    ComponentRegistry result =
+        REGISTRY_CACHE.computeIfAbsent(config, this::createAndFreezeRegistry);
+    // Evict an arbitrary entry if cache exceeds max size
+    if (REGISTRY_CACHE.size() > REGISTRY_CACHE_MAX_SIZE) {
+      REGISTRY_CACHE.keys().asIterator().next();
+      REGISTRY_CACHE.remove(REGISTRY_CACHE.keys().asIterator().next());
     }
-    synchronized (REGISTRY_CACHE) {
-      cached = REGISTRY_CACHE.get(config);
-      if (cached != null) {
-        return cached;
-      }
-      ComponentRegistry created = createAndFreezeRegistry(config);
-      REGISTRY_CACHE.put(config, created);
-      return created;
-    }
+    return result;
   }
 
   private ComponentRegistry createAndFreezeRegistry(MjmlConfiguration config) {
@@ -238,8 +273,7 @@ public final class RenderPipeline {
         // 2. cheerio serializes self-closing tags without the slash: /> -> >
         // Our CSS inliner preserves the original markup, so we apply these
         // transformations explicitly to match the expected golden output.
-        html = html.replace(" style=\"\"", " style");
-        html = html.replace(" />", ">");
+        html = postProcessInlinedHtml(html);
       }
 
       return new MjmlRenderResult(

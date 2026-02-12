@@ -150,7 +150,9 @@ public final class HtmlDocumentParser {
       attrString = "";
     } else {
       tagName = tagContent.substring(0, firstSpace).trim().toLowerCase();
-      attrString = tagContent.substring(firstSpace).trim();
+      // Don't trim — parseAttributes skips leading whitespace internally,
+      // and trimming shifts positions, breaking style attribute range tracking
+      attrString = tagContent.substring(firstSpace);
     }
 
     if (tagName.isEmpty() || tagName.startsWith("!")) {

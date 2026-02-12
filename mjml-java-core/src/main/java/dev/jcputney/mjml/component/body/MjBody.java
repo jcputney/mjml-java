@@ -77,6 +77,12 @@ public class MjBody extends BodyComponent {
 
     sb.append(" aria-roledescription=\"email\"");
 
+    // class attribute before style (matches MJML ordering)
+    String cssClass = getAttribute("css-class", "");
+    if (!cssClass.isEmpty()) {
+      sb.append(" class=\"").append(escapeAttr(cssClass)).append("\"");
+    }
+
     // style attribute (always emit, even if empty)
     String style = "";
     if (!bgColor.isEmpty()) {
@@ -87,11 +93,6 @@ public class MjBody extends BodyComponent {
     sb.append(" role=\"article\"");
     sb.append(" lang=\"").append(escapeAttr(lang)).append("\"");
     sb.append(" dir=\"auto\"");
-
-    String cssClass = getAttribute("css-class", "");
-    if (!cssClass.isEmpty()) {
-      sb.append(" class=\"").append(escapeAttr(cssClass)).append("\"");
-    }
     sb.append(">\n");
 
     // Render children with the body's container width
@@ -102,7 +103,9 @@ public class MjBody extends BodyComponent {
       if (child.getTagName().startsWith("#")) {
         // Check if it's a comment node (#comment) and output it
         if ("#comment".equals(child.getTagName())) {
-          sb.append("    <!-- ").append(child.getTextContent().trim()).append(" -->\n");
+          sb.append("    <!-- ")
+              .append(child.getTextContent().trim().replace("--", ""))
+              .append(" -->\n");
         }
         continue;
       }

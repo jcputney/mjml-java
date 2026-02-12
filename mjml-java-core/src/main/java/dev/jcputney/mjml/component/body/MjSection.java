@@ -260,8 +260,10 @@ public class MjSection extends AbstractSectionComponent {
       MjmlNode col = columns.get(i);
       boolean isGroup = "mj-group".equals(col.getTagName());
 
-      // MSO column td — groups don't get vertical-align
-      sb.append("<td class=\"").append(escapeAttr(getCssClass())).append("\" style=\"");
+      // MSO column td — use column's css-class with -outlook suffix
+      String colCssClass = col.getAttribute("css-class", "");
+      String msoColClass = colCssClass.isEmpty() ? "" : colCssClass + "-outlook";
+      sb.append("<td class=\"").append(escapeAttr(msoColClass)).append("\" style=\"");
       if (!isGroup) {
         String verticalAlign = col.getAttribute("vertical-align", "top");
         sb.append("vertical-align:").append(escapeAttr(verticalAlign)).append(";");

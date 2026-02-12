@@ -15,7 +15,7 @@ mjml-java is a multi-module project. Most users only need the core module:
 |---|---|---|
 | **Core** | `mjml-java-core` | MJML renderer, all 31 components, CSS inliner. Zero external dependencies. |
 | **Resolvers** | `mjml-java-resolvers` | Additional `IncludeResolver` implementations: URL, caching, composite, map, prefix-routing. `UrlIncludeResolver` includes SSRF protections and explicit hostname allowlisting. Zero external dependencies (JDK `java.net.http`). |
-| **Spring** | `mjml-java-spring` | Spring Boot 3.2+ auto-configuration, `MjmlService`, Thymeleaf integration. |
+| **Spring** | `mjml-java-spring` | Spring Boot 4.0+ auto-configuration, `MjmlService`, Thymeleaf integration. |
 | **BOM** | `mjml-java-bom` | Bill of Materials for consistent version management. |
 
 ## Core Module
@@ -28,7 +28,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -37,13 +37,13 @@ Add the following dependency to your `pom.xml`:
 Add the following to your `build.gradle`:
 
 ```groovy
-implementation 'dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT'
+implementation 'dev.jcputney:mjml-java-core:1.0.1-SNAPSHOT'
 ```
 
 Or for Kotlin DSL (`build.gradle.kts`):
 
 ```kotlin
-implementation("dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT")
+implementation("dev.jcputney:mjml-java-core:1.0.1-SNAPSHOT")
 ```
 
 ## Using the BOM
@@ -58,7 +58,7 @@ To manage versions across multiple modules, import the BOM:
         <dependency>
             <groupId>dev.jcputney</groupId>
             <artifactId>mjml-java-bom</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -81,7 +81,7 @@ To manage versions across multiple modules, import the BOM:
 
 ```groovy
 dependencies {
-    implementation platform('dev.jcputney:mjml-java-bom:1.0.0-SNAPSHOT')
+    implementation platform('dev.jcputney:mjml-java-bom:1.0.1-SNAPSHOT')
     implementation 'dev.jcputney:mjml-java-core'
     implementation 'dev.jcputney:mjml-java-resolvers'
 }
@@ -115,4 +115,4 @@ The module exports the following packages:
 
 - **Java 17** or later
 - Core and Resolvers modules: zero external dependencies (JDK standard library only)
-- Spring module: Spring Boot 3.2+, optional Thymeleaf 3.1+
+- Spring module: Spring Boot 4.0+, optional Thymeleaf 3.1+

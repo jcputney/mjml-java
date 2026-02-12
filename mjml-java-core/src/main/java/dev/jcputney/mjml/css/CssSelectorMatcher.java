@@ -11,8 +11,8 @@ import dev.jcputney.mjml.css.CssSelector.SelectorList;
 import dev.jcputney.mjml.css.CssSelector.SimpleSelector;
 import dev.jcputney.mjml.css.CssSelector.TypeSelector;
 import dev.jcputney.mjml.css.CssSelector.UniversalSelector;
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * Matches CSS selectors against {@link HtmlElement} nodes.
@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
  * pseudo-elements never match (they're preserved in style blocks, not inlined).
  */
 public final class CssSelectorMatcher {
-
-  private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
   private CssSelectorMatcher() {}
 
@@ -182,7 +180,7 @@ public final class CssSelectorMatcher {
     if ("=".equals(op)) {
       return value.equals(expected);
     } else if ("~=".equals(op)) {
-      Set<String> words = Set.of(WHITESPACE.split(value));
+      Set<String> words = Set.of(CssUnitParser.WHITESPACE.split(value));
       return words.contains(expected);
     } else if ("|=".equals(op)) {
       return value.equals(expected) || value.startsWith(expected + "-");

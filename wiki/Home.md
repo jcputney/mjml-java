@@ -39,13 +39,13 @@ mjml-java is a complete Java implementation of the [MJML v4](https://mjml.io/) e
 <dependency>
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
 **Gradle:**
 ```groovy
-implementation 'dev.jcputney:mjml-java-core:1.0.0-SNAPSHOT'
+implementation 'dev.jcputney:mjml-java-core:1.0.1-SNAPSHOT'
 ```
 
 ## Minimal Example

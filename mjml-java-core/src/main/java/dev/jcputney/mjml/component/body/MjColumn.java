@@ -84,10 +84,15 @@ public class MjColumn extends BodyComponent {
     // hasGutter: true when any padding attribute is set (triggers nested table structure)
     boolean hasGutter = hasGutter();
 
-    // Outer div with responsive class + mj-outlook-group-fix
+    // Outer div with responsive class + mj-outlook-group-fix + optional css-class
+    String cssClass = getAttribute("css-class", "");
     sb.append("              <div class=\"")
         .append(responsiveClass)
-        .append(" mj-outlook-group-fix\"");
+        .append(" mj-outlook-group-fix");
+    if (!cssClass.isEmpty()) {
+      sb.append(" ").append(escapeAttr(cssClass));
+    }
+    sb.append("\"");
     sb.append(" style=\"").append(buildOuterStyle()).append("\"");
     sb.append(">\n");
 

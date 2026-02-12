@@ -196,11 +196,11 @@ public class MjCustomHead extends HeadComponent {
 
 ## Code Style
 
-- Standard Java conventions (no external formatter enforced)
+- Google Java Format via Spotless (enforced on `mvn verify`)
 - Java 17 features are available (records, sealed classes, text blocks, etc.)
 - **Note:** Pattern-matching `switch` on sealed types is **not** available in Java 17; use `if-else instanceof` chains instead
 - Zero external runtime dependencies -- only JDK standard library
-- Test dependencies: JUnit Jupiter 5
+- Test dependencies: JUnit Jupiter 6
 
 ## Submitting Changes
 

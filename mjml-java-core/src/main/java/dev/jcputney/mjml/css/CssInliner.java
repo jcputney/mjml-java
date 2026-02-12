@@ -11,6 +11,7 @@ import dev.jcputney.mjml.css.CssSelector.UniversalSelector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -257,14 +258,41 @@ public final class CssInliner {
             return Integer.compare(a.order(), b.order());
           });
 
-      // Parse existing inline style and merge
+      // Parse existing inline style and merge with specificity tracking
       List<CssDeclaration> existingStyle = StyleAttribute.parse(element.getStyle());
-      List<CssDeclaration> merged = existingStyle;
-      for (AppliedStyle applied : applicableStyles) {
-        merged = StyleAttribute.merge(merged, applied.declarations(), applied.specificity());
+      Map<String, CssDeclaration> mergedMap = new LinkedHashMap<>();
+      Map<String, CssSpecificity> specMap = new LinkedHashMap<>();
+
+      // Inline styles have virtual specificity higher than any selector
+      CssSpecificity inlineSpec = new CssSpecificity(1000, 0, 0);
+      for (CssDeclaration decl : existingStyle) {
+        mergedMap.put(decl.property(), decl);
+        specMap.put(decl.property(), inlineSpec);
       }
 
-      element.setStyle(StyleAttribute.serialize(merged));
+      // Merge each applicable stylesheet rule, respecting specificity
+      for (AppliedStyle applied : applicableStyles) {
+        CssSpecificity ruleSpec = applied.specificity();
+        for (CssDeclaration newDecl : applied.declarations()) {
+          CssDeclaration existing = mergedMap.get(newDecl.property());
+          if (existing == null) {
+            mergedMap.put(newDecl.property(), newDecl);
+            specMap.put(newDecl.property(), ruleSpec);
+          } else if (newDecl.important() && !existing.important()) {
+            mergedMap.put(newDecl.property(), newDecl);
+            specMap.put(newDecl.property(), ruleSpec);
+          } else if (!existing.important() || newDecl.important()) {
+            CssSpecificity existSpec =
+                specMap.getOrDefault(newDecl.property(), CssSpecificity.ZERO);
+            if (ruleSpec.compareTo(existSpec) >= 0) {
+              mergedMap.put(newDecl.property(), newDecl);
+              specMap.put(newDecl.property(), ruleSpec);
+            }
+          }
+        }
+      }
+
+      element.setStyle(StyleAttribute.serialize(new ArrayList<>(mergedMap.values())));
       modified.add(element);
     }
 
@@ -311,11 +339,15 @@ public final class CssInliner {
       return html;
     }
 
-    // Apply changes in reverse order (descending position)
-    StringBuilder sb = new StringBuilder(html);
-    for (StyleChange change : changes.descendingMap().values()) {
-      sb.replace(change.start(), change.end(), change.replacement());
+    // Single forward pass: copy original segments between changes, append replacements
+    StringBuilder sb = new StringBuilder(html.length() + changes.size() * 64);
+    int lastEnd = 0;
+    for (StyleChange change : changes.values()) {
+      sb.append(html, lastEnd, change.start());
+      sb.append(change.replacement());
+      lastEnd = change.end();
     }
+    sb.append(html, lastEnd, html.length());
 
     return sb.toString();
   }

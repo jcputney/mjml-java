@@ -172,18 +172,31 @@ public class MjSocialElement extends BodyComponent {
     String iconSize = getInheritedAttribute(parent, "icon-size", "20px");
     // icon-padding is only included in style if explicitly set on element or parent
     String iconPadding = getExplicitAttribute(parent, "icon-padding");
-    String innerPadding = getInheritedAttribute(parent, "inner-padding", "4px 4px");
     String verticalAlign = getAttribute("vertical-align", "middle");
 
     String iconSizeNum = iconSize.replace("px", "");
-    innerPadding = normalizePadding(innerPadding);
 
-    // Icon cell: outer td with inner-padding, inner table with background
-    sb.append("<td style=\"padding:")
-        .append(innerPadding)
-        .append(";vertical-align:")
-        .append(verticalAlign)
-        .append(";\">\n");
+    // Icon cell: outer td with padding from cascade
+    // MJML converts parent mj-social inner-padding to child padding
+    String outerPadding = getAttribute("padding", "4px");
+    if (parent != null) {
+      String parentInnerPadding = parent.getNode().getAttribute("inner-padding");
+      if (parentInnerPadding != null && !parentInnerPadding.isEmpty()) {
+        // Only override if child doesn't have explicit padding
+        String childExplicit = node.getAttribute("padding");
+        if (childExplicit == null || childExplicit.isEmpty()) {
+          outerPadding = parentInnerPadding;
+        }
+      }
+    }
+    Map<String, String> tdStyles = new LinkedHashMap<>();
+    tdStyles.put("padding", normalizePadding(outerPadding));
+    addIfPresent(tdStyles, "padding-top");
+    addIfPresent(tdStyles, "padding-right");
+    addIfPresent(tdStyles, "padding-bottom");
+    addIfPresent(tdStyles, "padding-left");
+    tdStyles.put("vertical-align", verticalAlign);
+    sb.append("<td style=\"").append(buildStyle(tdStyles)).append("\">\n");
 
     sb.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
     sb.append(" style=\"");
@@ -211,15 +224,12 @@ public class MjSocialElement extends BodyComponent {
     // Icon image with link
     boolean hasHref = !href.isEmpty();
     if (hasHref) {
-      sb.append("<a href=\"").append(escapeAttr(href)).append("\"");
+      sb.append("<a href=\"").append(escapeHref(href)).append("\"");
       sb.append(" target=\"").append(escapeAttr(target)).append("\">\n");
     }
 
-    sb.append("<img alt=\"")
-        .append(escapeAttr(alt))
-        .append("\" src=\"")
-        .append(escapeAttr(src))
-        .append("\"");
+    sb.append("<img alt=\"").append(escapeAttr(alt)).append("\"");
+    sb.append(" src=\"").append(escapeAttr(src)).append("\"");
     sb.append(" style=\"border-radius:").append(borderRadius).append(";display:block;\"");
     sb.append(" width=\"").append(iconSizeNum).append("\"");
     sb.append(" />\n");
@@ -259,7 +269,7 @@ public class MjSocialElement extends BodyComponent {
       textStyles.put("text-decoration", textDecoration);
 
       if (hasHref) {
-        sb.append("<a href=\"").append(escapeAttr(href)).append("\"");
+        sb.append("<a href=\"").append(escapeHref(href)).append("\"");
         sb.append(" style=\"").append(buildStyle(textStyles)).append("\"");
         sb.append(" target=\"").append(escapeAttr(target)).append("\">");
         sb.append(" ").append(textContent).append(" ");

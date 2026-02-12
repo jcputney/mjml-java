@@ -249,10 +249,10 @@ public abstract class AbstractSectionComponent extends BodyComponent {
     } else {
       sb.append("<![endif]-->\n");
       sb.append("    <div");
-      sb.append(" style=\"").append(buildOuterDivStyle()).append("\"");
       if (!outerDivClass.isEmpty()) {
         sb.append(" class=\"").append(escapeAttr(outerDivClass)).append("\"");
       }
+      sb.append(" style=\"").append(buildOuterDivStyle()).append("\"");
       sb.append(">\n");
       sb.append(
           "      <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");

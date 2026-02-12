@@ -19,9 +19,6 @@ public final class HtmlSkeleton {
   /** MSO PixelsPerInch setting for Outlook rendering. */
   private static final int MSO_PIXELS_PER_INCH = 96;
 
-  /** Max-width breakpoint (px) for fluid-on-mobile responsive styles. */
-  private static final int FLUID_MOBILE_BREAKPOINT_PX = 479;
-
   private HtmlSkeleton() {}
 
   /**
@@ -106,8 +103,9 @@ public final class HtmlSkeleton {
     if (hasFluid || hasComponentStyles) {
       sb.append("  <style type=\"text/css\">\n");
       if (hasFluid) {
+        int fluidBreakpoint = ctx.metadata().getBreakpointPx() - 1;
         sb.append("    @media only screen and (max-width:")
-            .append(FLUID_MOBILE_BREAKPOINT_PX)
+            .append(fluidBreakpoint)
             .append("px) {\n");
         sb.append("      table.mj-full-width-mobile {\n");
         sb.append("        width: 100% !important;\n");
@@ -146,7 +144,9 @@ public final class HtmlSkeleton {
     sb.append("<body style=\"word-spacing:normal;");
     String bodyBgColor = ctx.metadata().getBodyBackgroundColor();
     if (bodyBgColor != null && !bodyBgColor.isEmpty()) {
-      sb.append("background-color:").append(bodyBgColor).append(";");
+      sb.append("background-color:")
+          .append(HtmlEscaper.escapeAttributeValue(bodyBgColor))
+          .append(";");
     }
     sb.append("\">\n");
 
@@ -182,9 +182,10 @@ public final class HtmlSkeleton {
     }
     sb.append("  <style type=\"text/css\">\n");
     for (FontDef font : ctx.styles().getFonts()) {
-      // CSS-escape the URL to prevent injection via url() breakout
-      String safeUrl = CssEscaper.escapeCssUrl(font.href());
-      sb.append("    @import url(\"").append(safeUrl).append("\");\n");
+      // CSS-escape the URL to prevent injection via url() breakout, then HTML-encode
+      // ampersands since the @import is inside a <style> element in an HTML document.
+      String safeUrl = CssEscaper.escapeCssUrl(font.href()).replace("&", "&amp;");
+      sb.append("    @import url(").append(safeUrl).append(");\n");
     }
     sb.append("\n");
     sb.append("  </style>\n");
@@ -239,7 +240,7 @@ public final class HtmlSkeleton {
     MediaQuery[] queryArr = queries.toArray(new MediaQuery[0]);
     sb.append("  <style type=\"text/css\">\n");
     sb.append("    @media only screen and (min-width:")
-        .append(ctx.metadata().getBreakpoint())
+        .append(HtmlEscaper.escapeAttributeValue(ctx.metadata().getBreakpoint()))
         .append(") {\n");
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
@@ -258,7 +259,7 @@ public final class HtmlSkeleton {
 
     // Thunderbird-specific styles (flat selectors, not nested)
     sb.append("  <style media=\"screen and (min-width:")
-        .append(ctx.metadata().getBreakpoint())
+        .append(HtmlEscaper.escapeAttributeValue(ctx.metadata().getBreakpoint()))
         .append(")\">\n");
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
@@ -277,11 +278,15 @@ public final class HtmlSkeleton {
 
   /**
    * Reformats CSS content to use consistent indentation inside a style block. Official MJML uses
-   * 4-space indent for rules, 6-space for properties.
+   * 4-space indent for rules, 6-space for properties. Single-line rules (e.g. {@code p { margin: 0
+   * !important; }}) are expanded into multi-line format to match the reference MJML output.
    */
   private static String reformatCss(String css) {
+    // Pre-expand single-line rules: "selector { prop: val; }" → multi-line
+    String expanded = expandSingleLineRules(css);
+
     StringBuilder out = new StringBuilder();
-    String[] lines = css.split("\n");
+    String[] lines = expanded.split("\n");
     int braceDepth = 0;
     for (String rawLine : lines) {
       String trimmed = rawLine.trim();
@@ -306,8 +311,51 @@ public final class HtmlSkeleton {
       if (trimmed.endsWith("{")) {
         braceDepth++;
       }
+      // Blank line after closing brace to separate rules (matching official MJML output)
+      if (trimmed.equals("}")) {
+        out.append("\n");
+      }
     }
-    out.append("\n");
+    // Remove trailing double-newline from last rule, keep single trailing newline
+    String result = out.toString();
+    while (result.endsWith("\n\n")) {
+      result = result.substring(0, result.length() - 1);
+    }
+    return result;
+  }
+
+  /**
+   * Expands single-line CSS rules into multi-line. A line like {@code .foo { color: red; margin: 0;
+   * }} becomes three lines: selector + opening brace, each declaration, and closing brace.
+   */
+  private static String expandSingleLineRules(String css) {
+    StringBuilder out = new StringBuilder();
+    for (String line : css.split("\n")) {
+      String trimmed = line.trim();
+      if (trimmed.isEmpty()) {
+        out.append("\n");
+        continue;
+      }
+      int openIdx = trimmed.indexOf('{');
+      int closeIdx = trimmed.lastIndexOf('}');
+      if (openIdx >= 0 && closeIdx > openIdx + 1) {
+        // Contains both { and } on one line with content between them
+        String selector = trimmed.substring(0, openIdx).trim();
+        String body = trimmed.substring(openIdx + 1, closeIdx).trim();
+        if (!body.isEmpty()) {
+          out.append(selector).append(" {\n");
+          for (String prop : body.split(";")) {
+            String p = prop.trim();
+            if (!p.isEmpty()) {
+              out.append(p).append(";\n");
+            }
+          }
+          out.append("}\n");
+          continue;
+        }
+      }
+      out.append(trimmed).append("\n");
+    }
     return out.toString();
   }
 

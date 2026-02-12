@@ -42,7 +42,7 @@ class StyleAttributeTest {
             new CssDeclaration("color", "red", false),
             new CssDeclaration("font-size", "14px", true));
     String result = StyleAttribute.serialize(decls);
-    assertEquals("color:red;font-size:14px !important", result);
+    assertEquals("color: red; font-size: 14px !important;", result);
   }
 
   @Test

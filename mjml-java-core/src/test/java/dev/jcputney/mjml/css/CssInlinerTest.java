@@ -19,7 +19,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:red"), "Should inline color:red");
+    assertTrue(result.contains("color: red"), "Should inline color: red");
     assertTrue(result.contains("class=\"red\""), "Should keep class attribute");
   }
 
@@ -33,7 +33,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("font-size:14px"), "Should inline font-size on p");
+    assertTrue(result.contains("font-size: 14px"), "Should inline font-size on p");
     // The div should NOT have a style attribute with font-size
     int divIdx = result.indexOf("<div");
     assertTrue(divIdx >= 0, "Should still contain div");
@@ -47,12 +47,12 @@ class CssInlinerTest {
         """
         <html>
         <head><style>.bold { font-weight: bold; }</style></head>
-        <body><div class="bold" style="color:red">Hello</div></body>
+        <body><div class="bold" style="color: red">Hello</div></body>
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:red"), "Should keep existing inline style");
-    assertTrue(result.contains("font-weight:bold"), "Should add new style");
+    assertTrue(result.contains("color: red"), "Should keep existing inline style");
+    assertTrue(result.contains("font-weight: bold"), "Should add new style");
   }
 
   @Test
@@ -61,11 +61,11 @@ class CssInlinerTest {
         """
         <html>
         <head><style>.override { color: blue !important; }</style></head>
-        <body><div class="override" style="color:red">Hello</div></body>
+        <body><div class="override" style="color: red">Hello</div></body>
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "!important should override inline");
+    assertTrue(result.contains("color: blue"), "!important should override inline");
   }
 
   @Test
@@ -81,7 +81,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:red"), "Should inline the regular rule");
+    assertTrue(result.contains("color: red"), "Should inline the regular rule");
     assertTrue(result.contains("@media"), "Should preserve media query");
   }
 
@@ -98,7 +98,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "Should inline regular rule");
+    assertTrue(result.contains("color: blue"), "Should inline regular rule");
     assertTrue(result.contains("a:hover"), "Should preserve :hover rule in style block");
   }
 
@@ -116,7 +116,7 @@ class CssInlinerTest {
 
     String result = CssInliner.inline(html);
     // The p inside .container should get the style
-    assertTrue(result.contains("margin:0"), "Should inline on descendant p");
+    assertTrue(result.contains("margin: 0"), "Should inline on descendant p");
   }
 
   @Test
@@ -129,7 +129,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html, ".custom { background: yellow; }");
-    assertTrue(result.contains("background:yellow"), "Should inline additional CSS");
+    assertTrue(result.contains("background: yellow"), "Should inline additional CSS");
   }
 
   @Test
@@ -142,7 +142,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("padding:10px"), "Should inline ID-selected rule");
+    assertTrue(result.contains("padding: 10px"), "Should inline ID-selected rule");
   }
 
   @Test
@@ -160,7 +160,7 @@ class CssInlinerTest {
 
     String result = CssInliner.inline(html);
     // ID should win (highest specificity)
-    assertTrue(result.contains("color:green"), "ID selector should win due to higher specificity");
+    assertTrue(result.contains("color: green"), "ID selector should win due to higher specificity");
   }
 
   @Test
@@ -194,7 +194,7 @@ class CssInlinerTest {
 
     String result = CssInliner.inline(html);
     // h1 and h2 should get the style, but not p
-    int firstBold = result.indexOf("font-weight:bold");
+    int firstBold = result.indexOf("font-weight: bold");
     assertTrue(firstBold >= 0, "Should inline on at least one heading");
   }
 
@@ -213,7 +213,7 @@ class CssInlinerTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("color:green"),
+        result.contains("color: green"),
         "Higher specificity !important should win over lower specificity !important");
   }
 
@@ -251,9 +251,9 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:red"), "Rule from first style block should be inlined");
+    assertTrue(result.contains("color: red"), "Rule from first style block should be inlined");
     assertTrue(
-        result.contains("font-weight:bold"), "Rule from second style block should be inlined");
+        result.contains("font-weight: bold"), "Rule from second style block should be inlined");
   }
 
   @Test
@@ -287,7 +287,7 @@ class CssInlinerTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:red"), "Regular rules should be inlined");
+    assertTrue(result.contains("color: red"), "Regular rules should be inlined");
     assertTrue(result.contains("@media"), "Media queries should be preserved in style block");
     // The .mobile rule inside @media should NOT be inlined as an inline style
     // (media queries are kept in <style> blocks for email clients that support them)

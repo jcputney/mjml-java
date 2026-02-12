@@ -102,6 +102,26 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
   }
 
   /**
+   * Resolves a single side of a CSS shorthand property. Checks the individual override attribute
+   * first (e.g., padding-left), then falls back to extracting that side from the shorthand (e.g.,
+   * padding). Matches MJML's {@code getShorthandAttrValue()} behavior.
+   *
+   * @param shorthandAttr the shorthand attribute name (e.g., "padding")
+   * @param sideAttr the individual side attribute (e.g., "padding-left")
+   * @param sideIndex the index within the shorthand (0=top, 1=right, 2=bottom, 3=left)
+   * @return the resolved pixel value for that side
+   */
+  protected double resolveShorthandSide(String shorthandAttr, String sideAttr, int sideIndex) {
+    String sideVal = getAttribute(sideAttr, "");
+    if (!sideVal.isEmpty()) {
+      return CssUnitParser.parsePx(sideVal, 0);
+    }
+    String shorthand = getAttribute(shorthandAttr, "0");
+    double[] parts = CssUnitParser.parseShorthand(shorthand);
+    return parts[sideIndex];
+  }
+
+  /**
    * Builds a CSS style string from a map of property/value pairs.
    *
    * @param styles the map of CSS property names to values
@@ -155,6 +175,21 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
     return globalContext.getConfiguration().isSanitizeOutput()
         ? HtmlEscaper.escapeAttributeValue(value)
         : value;
+  }
+
+  /**
+   * Escapes an href attribute value for safe HTML interpolation. Only escapes the double-quote
+   * character to prevent attribute breakout, matching the reference MJML implementation which does
+   * not HTML-encode ampersands in URL query parameters.
+   *
+   * @param href the href value to escape (should already be sanitized via {@link #sanitizeHref})
+   * @return the escaped href value, or an empty string if null
+   */
+  protected static String escapeHref(String href) {
+    if (href == null) {
+      return "";
+    }
+    return href.replace("\"", "&quot;");
   }
 
   /**

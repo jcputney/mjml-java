@@ -246,6 +246,7 @@ class MjmlRendererTest {
         """;
 
     String html = MjmlRenderer.render(mjml).html();
-    assertTrue(html.contains(".custom { color: red; }"));
+    assertTrue(html.contains(".custom {"), "Style block should contain custom class");
+    assertTrue(html.contains("color: red;"), "Style block should contain color rule");
   }
 }

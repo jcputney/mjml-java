@@ -33,7 +33,7 @@ public class MjButton extends BodyComponent {
           Map.entry("font-style", ""),
           Map.entry("font-weight", "normal"),
           Map.entry("height", ""),
-          Map.entry("href", "#"),
+          Map.entry("href", ""),
           Map.entry("inner-padding", "10px 25px"),
           Map.entry("line-height", "120%"),
           Map.entry("letter-spacing", ""),
@@ -73,7 +73,10 @@ public class MjButton extends BodyComponent {
   public String render() {
     String backgroundColor = getAttribute("background-color", "#414141");
     String borderRadius = getAttribute("border-radius", "3px");
-    String href = sanitizeHref(getAttribute("href", "#"));
+    // MJML renders <p> when no href is provided, <a> when href is present.
+    // Use cascaded attribute (includes mj-class, mj-all, etc.) — not just raw node attribute.
+    String href = sanitizeHref(getAttribute("href", ""));
+    boolean hasHref = !href.isEmpty();
     String innerPadding = getAttribute("inner-padding", "10px 25px");
     String verticalAlign = getAttribute("vertical-align", "middle");
     // Build TD style: border, border-radius, cursor:auto, font-style (if italic),
@@ -141,17 +144,22 @@ public class MjButton extends BodyComponent {
     sb.append(" style=\"").append(innerTableStyle).append("\"");
     sb.append(" valign=\"").append(escapeAttr(verticalAlign)).append("\">\n");
 
-    // Anchor styled as button (no rel attribute)
-    sb.append("                                <a href=\"").append(escapeAttr(href)).append("\"");
-    String rel = getAttribute("rel", "");
-    if (!rel.isEmpty()) {
-      sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
-    }
-    sb.append(" style=\"").append(anchorStyle).append("\"");
-    sb.append(" target=\"").append(escapeAttr(getAttribute("target", "_blank"))).append("\">");
     String buttonContent = WHITESPACE.matcher(node.getInnerHtml()).replaceAll(" ").trim();
-    sb.append(" ").append(sanitizeContent(buttonContent)).append(" ");
-    sb.append("</a>\n");
+    if (hasHref) {
+      sb.append("                                <a href=\"").append(escapeHref(href)).append("\"");
+      String rel = getAttribute("rel", "");
+      if (!rel.isEmpty()) {
+        sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
+      }
+      sb.append(" style=\"").append(anchorStyle).append("\"");
+      sb.append(" target=\"").append(escapeAttr(getAttribute("target", "_blank"))).append("\">");
+      sb.append(" ").append(sanitizeContent(buttonContent)).append(" ");
+      sb.append("</a>\n");
+    } else {
+      sb.append("                                <p style=\"").append(anchorStyle).append("\">");
+      sb.append(" ").append(sanitizeContent(buttonContent)).append(" ");
+      sb.append("</p>\n");
+    }
 
     sb.append("                              </td>\n");
     sb.append("                            </tr>\n");

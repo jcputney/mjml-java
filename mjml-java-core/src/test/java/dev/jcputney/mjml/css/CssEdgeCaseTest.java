@@ -31,7 +31,8 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("color:green"), "ID selector (#special) should beat class selector (.red)");
+        result.contains("color: green"),
+        "ID selector (#special) should beat class selector (.red)");
   }
 
   @Test
@@ -48,7 +49,7 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("color:blue"), "Class selector (.blue) should beat type selector (div)");
+        result.contains("color: blue"), "Class selector (.blue) should beat type selector (div)");
   }
 
   @Test
@@ -65,7 +66,7 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:green"), "ID > class > tag specificity should hold");
+    assertTrue(result.contains("color: green"), "ID > class > tag specificity should hold");
   }
 
   @Test
@@ -81,7 +82,7 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "Later rule should win when specificity is equal");
+    assertTrue(result.contains("color: blue"), "Later rule should win when specificity is equal");
   }
 
   @Test
@@ -98,7 +99,7 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("color:blue"),
+        result.contains("color: blue"),
         "Compound selector (div.a) should have higher specificity than simple (.a)");
   }
 
@@ -185,7 +186,7 @@ class CssEdgeCaseTest {
 
     String firstTag = result.substring(firstSpan, result.indexOf(">", firstSpan) + 1);
     assertTrue(
-        firstTag.contains("color:red"), "Descendant span inside .parent should get the style");
+        firstTag.contains("color: red"), "Descendant span inside .parent should get the style");
   }
 
   @Test
@@ -200,7 +201,7 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "Direct child selector should match");
+    assertTrue(result.contains("color: blue"), "Direct child selector should match");
   }
 
   @Test
@@ -219,7 +220,7 @@ class CssEdgeCaseTest {
     String result = CssInliner.inline(html);
     // At least one p should get the style
     assertTrue(
-        result.contains("color:red"), "Adjacent sibling selector should match first p after h1");
+        result.contains("color: red"), "Adjacent sibling selector should match first p after h1");
   }
 
   @Test
@@ -237,7 +238,7 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("margin-top:0"),
+        result.contains("margin-top: 0"),
         "General sibling selector should match p elements after h1");
   }
 
@@ -252,7 +253,7 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     // h1 and h2 should match, p should not
-    int firstBold = result.indexOf("font-weight:bold");
+    int firstBold = result.indexOf("font-weight: bold");
     assertTrue(firstBold >= 0, "At least one heading should get bold style");
   }
 
@@ -264,11 +265,11 @@ class CssEdgeCaseTest {
         """
         <html>
         <head><style>.override { color: blue !important; }</style></head>
-        <body><div class="override" style="color:red">Hello</div></body>
+        <body><div class="override" style="color: red">Hello</div></body>
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "!important should override existing inline style");
+    assertTrue(result.contains("color: blue"), "!important should override existing inline style");
   }
 
   @Test
@@ -284,7 +285,7 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "!important on lower specificity should still win");
+    assertTrue(result.contains("color: blue"), "!important on lower specificity should still win");
   }
 
   @Test
@@ -301,7 +302,7 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("color:green"), "When both are !important, higher specificity should win");
+        result.contains("color: green"), "When both are !important, higher specificity should win");
   }
 
   @Test
@@ -330,7 +331,7 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:blue"), "Base rule should be inlined");
+    assertTrue(result.contains("color: blue"), "Base rule should be inlined");
     assertTrue(
         result.contains("a:hover"), ":hover rule should be preserved in style block, not inlined");
   }
@@ -350,7 +351,7 @@ class CssEdgeCaseTest {
     String result = CssInliner.inline(html);
     assertTrue(
         result.contains("p:first-child"), ":first-child rule should be preserved in style block");
-    assertTrue(result.contains("margin:10px"), "Base rule should be inlined");
+    assertTrue(result.contains("margin: 10px"), "Base rule should be inlined");
   }
 
   @Test
@@ -368,7 +369,7 @@ class CssEdgeCaseTest {
     String result = CssInliner.inline(html);
     assertTrue(
         result.contains("p::before"), "::before pseudo-element should be preserved in style block");
-    assertTrue(result.contains("color:blue"), "Base rule should be inlined");
+    assertTrue(result.contains("color: blue"), "Base rule should be inlined");
   }
 
   // --- @media preservation ---
@@ -388,7 +389,7 @@ class CssEdgeCaseTest {
         </html>""";
 
     String result = CssInliner.inline(html);
-    assertTrue(result.contains("color:red"), "Regular rule should be inlined");
+    assertTrue(result.contains("color: red"), "Regular rule should be inlined");
     assertTrue(result.contains("@media"), "Media query should be preserved in style block");
   }
 
@@ -429,7 +430,7 @@ class CssEdgeCaseTest {
     int headerIdx = result.indexOf("Header");
     int divBefore = result.lastIndexOf("<div", headerIdx);
     String divTag = result.substring(divBefore, result.indexOf(">", divBefore) + 1);
-    assertTrue(divTag.contains("color:red"), "Attribute exact match should apply style");
+    assertTrue(divTag.contains("color: red"), "Attribute exact match should apply style");
   }
 
   @Test
@@ -446,7 +447,7 @@ class CssEdgeCaseTest {
 
     String result = CssInliner.inline(html);
     assertTrue(
-        result.contains("font-weight:bold"),
+        result.contains("font-weight: bold"),
         "Attribute presence selector should match element with attribute");
   }
 

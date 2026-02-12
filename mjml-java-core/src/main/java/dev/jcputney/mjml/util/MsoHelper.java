@@ -55,8 +55,10 @@ public final class MsoHelper {
    */
   public static String msoTableOpening(int width, String cssClass, String bgColor, String tdStyle) {
     StringBuilder sb = new StringBuilder();
+    // MJML appends "-outlook" suffix to css-class on MSO tables
+    String msoClass = cssClass.isEmpty() ? "" : cssClass + "-outlook";
     sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
-        .append(cssClass)
+        .append(msoClass)
         .append("\" role=\"presentation\" style=\"width:")
         .append(width)
         .append("px;\" width=\"")

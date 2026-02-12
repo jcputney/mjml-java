@@ -72,6 +72,10 @@ public class MjGroup extends BodyComponent {
     sb.append(" style=\"").append(buildOuterStyle(direction)).append("\"");
     sb.append(">\n");
 
+    // Register group's responsive media query BEFORE rendering children,
+    // matching MJML's ordering (group registers before its child columns)
+    registerMediaQuery(responsiveClass, widthSpec);
+
     // MSO table open
     sb.append(
         "                <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
@@ -111,9 +115,6 @@ public class MjGroup extends BodyComponent {
     }
 
     sb.append("              </div>\n");
-
-    // Add responsive media query for this group
-    registerMediaQuery(responsiveClass, widthSpec);
 
     return sb.toString();
   }

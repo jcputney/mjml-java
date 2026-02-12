@@ -22,7 +22,7 @@ $MVN test -pl mjml-java-core
 $MVN test -pl mjml-java-core -Dtest=MjmlRendererTest
 
 # Single test method
-$MVN test -pl mjml-java-core -Dtest=MjmlRendererTest#rendersSimpleEmail
+$MVN test -pl mjml-java-core -Dtest=MjmlRendererTest#rendersSimpleTextTemplate
 
 # Format code (Google Java Format)
 $MVN spotless:apply
@@ -131,6 +131,6 @@ All `render()`/`renderTemplate()` overloads return `MjmlRenderResult`.
 - `mj-hero` default mode is `fluid-height` (not `fixed-height`)
 - Preprocessor wraps raw content in CDATA; single-pass alternation regex
 - VML origin/position uses different formulas for repeat vs no-repeat backgrounds
-- `DocumentBuilderFactory` access is `synchronized(FACTORY)` for thread safety
+- `DocumentBuilder` access uses `ThreadLocal<DocumentBuilder>` with `reset()` before each parse
 - `ColumnWidthCalculator` uses `boolean[]` for auto-width tracking (not 0 sentinel)
 - `DEFAULT_CONTAINER_WIDTH = 600` constant in `MjmlConfiguration`

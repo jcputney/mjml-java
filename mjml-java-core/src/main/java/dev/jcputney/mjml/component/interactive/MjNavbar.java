@@ -25,12 +25,12 @@ public class MjNavbar extends BodyComponent {
           Map.entry("base-url", ""),
           Map.entry("hamburger", ""),
           Map.entry("ico-align", "center"),
-          Map.entry("ico-close", "999999"),
+          Map.entry("ico-close", "&#8855;"),
           Map.entry("ico-color", "000000"),
           Map.entry("ico-font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
           Map.entry("ico-font-size", "30px"),
           Map.entry("ico-line-height", "30px"),
-          Map.entry("ico-open", "999999"),
+          Map.entry("ico-open", "&#9776;"),
           Map.entry("ico-padding", "10px"),
           Map.entry("ico-padding-bottom", "10px"),
           Map.entry("ico-padding-left", "10px"),
@@ -199,11 +199,17 @@ public class MjNavbar extends BodyComponent {
                 icoPadding)));
     sb.append("\" align=\"").append(icoAlign).append("\">\n");
 
-    // Open icon (hamburger)
-    sb.append("<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> &#9776; </span>\n");
-    // Close icon (X)
-    sb.append(
-        "<span class=\"mj-menu-icon-close\" style=\"display:none;mso-hide:all;\"> &#10005; </span>\n");
+    // Open icon (hamburger) — from ico-open attribute
+    // Re-encode non-ASCII chars as HTML entities (XML parser decodes them)
+    String icoOpen = encodeNonAscii(getAttribute("ico-open", "&#9776;"));
+    sb.append("<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> ")
+        .append(icoOpen)
+        .append(" </span>\n");
+    // Close icon (X) — from ico-close attribute
+    String icoClose = encodeNonAscii(getAttribute("ico-close", "&#8855;"));
+    sb.append("<span class=\"mj-menu-icon-close\" style=\"display:none;mso-hide:all;\"> ")
+        .append(icoClose)
+        .append(" </span>\n");
 
     sb.append("</label>\n");
     sb.append("</div>\n");
@@ -245,5 +251,30 @@ public class MjNavbar extends BodyComponent {
         }
         """
         .formatted(breakpoint);
+  }
+
+  /**
+   * Encodes non-ASCII characters as HTML numeric entities. The XML parser decodes character
+   * references (like {@code &#9776;}) into Unicode characters during parsing. This method
+   * re-encodes them to preserve the entity reference form in the HTML output.
+   */
+  private static String encodeNonAscii(String value) {
+    if (value == null) {
+      return "";
+    }
+    // If already an entity reference (from defaults), return as-is
+    if (value.contains("&#")) {
+      return value;
+    }
+    StringBuilder sb = new StringBuilder(value.length());
+    for (int i = 0; i < value.length(); i++) {
+      char c = value.charAt(i);
+      if (c > 127) {
+        sb.append("&#").append((int) c).append(';');
+      } else {
+        sb.append(c);
+      }
+    }
+    return sb.toString();
   }
 }

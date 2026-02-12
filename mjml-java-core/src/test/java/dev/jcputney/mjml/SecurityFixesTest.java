@@ -465,8 +465,8 @@ class SecurityFixesTest {
 
       String html = MjmlRenderer.render(mjml).html();
       assertNotNull(html);
-      // Should use quoted form: @import url("...")
-      assertTrue(html.contains("@import url(\""), "Font @import should use properly quoted url()");
+      // Should use @import url(...) — unquoted to match MJML 4.18.0 output
+      assertTrue(html.contains("@import url("), "Font @import should use url()");
     }
 
     @Test

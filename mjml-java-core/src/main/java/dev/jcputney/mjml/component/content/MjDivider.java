@@ -55,10 +55,10 @@ public class MjDivider extends BodyComponent {
     String borderTop = borderStyle + " " + borderWidth + " " + borderColor;
 
     // Compute actual pixel width for MSO table
-    // The MSO width is based on the container width minus the divider's own horizontal padding
+    // Use individual padding overrides if present, falling back to shorthand parsing
     double containerWidth = renderContext.getContainerWidth();
-    double paddingLeft = getBoxModel().paddingLeft();
-    double paddingRight = getBoxModel().paddingRight();
+    double paddingLeft = resolveShorthandSide("padding", "padding-left", 3);
+    double paddingRight = resolveShorthandSide("padding", "padding-right", 1);
     double availableWidth = containerWidth - paddingLeft - paddingRight;
     int msoWidth;
     if (width.endsWith("%")) {

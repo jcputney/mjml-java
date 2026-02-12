@@ -113,7 +113,7 @@ public class MjImage extends BodyComponent {
     }
 
     img.append(" width=\"").append(widthPx).append("\"");
-    img.append(" height=\"").append(getAttribute("height", "auto")).append("\"");
+    img.append(" height=\"").append(escapeAttr(getAttribute("height", "auto"))).append("\"");
     img.append(" />");
 
     String href = sanitizeHref(getAttribute("href", ""));
@@ -143,7 +143,7 @@ public class MjImage extends BodyComponent {
     sb.append(">\n");
 
     if (!href.isEmpty()) {
-      sb.append("                                <a href=\"").append(escapeAttr(href)).append("\"");
+      sb.append("                                <a href=\"").append(escapeHref(href)).append("\"");
       String rel = getAttribute("rel", "");
       if (!rel.isEmpty()) {
         sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
@@ -172,9 +172,11 @@ public class MjImage extends BodyComponent {
    * as px) and the available width (container minus the image component's own horizontal padding).
    */
   private double computeImageWidth(double containerWidth) {
-    // Subtract the image's own horizontal padding from container width
-    double hPadding = getBoxModel().paddingLeft() + getBoxModel().paddingRight();
-    double availableWidth = containerWidth - hPadding;
+    // Subtract the image's own horizontal padding from container width,
+    // checking individual padding-left/right overrides before shorthand
+    double paddingLeft = resolveShorthandSide("padding", "padding-left", 3);
+    double paddingRight = resolveShorthandSide("padding", "padding-right", 1);
+    double availableWidth = containerWidth - paddingLeft - paddingRight;
 
     String widthAttr = getAttribute("width", "");
     if (widthAttr.isEmpty()) {

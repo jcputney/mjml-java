@@ -19,7 +19,7 @@ public class MjNavbarLink extends BodyComponent {
           Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
           Map.entry("font-size", "13px"),
           Map.entry("font-style", ""),
-          Map.entry("font-weight", ""),
+          Map.entry("font-weight", "normal"),
           Map.entry("href", "#"),
           Map.entry("letter-spacing", ""),
           Map.entry("line-height", "22px"),
@@ -56,7 +56,13 @@ public class MjNavbarLink extends BodyComponent {
 
   @Override
   public String render() {
-    String href = sanitizeHref(getAttribute("href", "#"));
+    String rawHref = getAttribute("href", "#");
+    // Prepend base-url from parent mj-navbar if present
+    String baseUrl = resolveParentAttr("base-url", "");
+    if (!baseUrl.isEmpty() && !rawHref.startsWith("http") && !rawHref.startsWith("#")) {
+      rawHref = baseUrl + rawHref;
+    }
+    String href = sanitizeHref(rawHref);
     String padding = getAttribute("padding", "15px 10px");
 
     Map<String, String> anchorStyles = new LinkedHashMap<>();
@@ -66,7 +72,7 @@ public class MjNavbarLink extends BodyComponent {
         "font-family", getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif"));
     anchorStyles.put("font-size", getAttribute("font-size", "13px"));
     addIfPresent(anchorStyles, "font-style");
-    addIfPresent(anchorStyles, "font-weight");
+    anchorStyles.put("font-weight", getAttribute("font-weight", "normal"));
     addIfPresent(anchorStyles, "letter-spacing");
     anchorStyles.put("line-height", getAttribute("line-height", "22px"));
     anchorStyles.put("text-decoration", getAttribute("text-decoration", "none"));
@@ -74,7 +80,7 @@ public class MjNavbarLink extends BodyComponent {
     anchorStyles.put("padding", padding);
 
     StringBuilder sb = new StringBuilder();
-    sb.append("<a class=\"mj-link\" href=\"").append(escapeAttr(href)).append("\"");
+    sb.append("<a class=\"mj-link\" href=\"").append(escapeHref(href)).append("\"");
     String rel = getAttribute("rel", "");
     if (!rel.isEmpty()) {
       sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
@@ -90,5 +96,23 @@ public class MjNavbarLink extends BodyComponent {
     sb.append("</a>");
 
     return sb.toString();
+  }
+
+  /**
+   * Resolves an attribute from the parent mj-navbar node.
+   *
+   * @param name the attribute name
+   * @param fallback the default value if not found
+   * @return the resolved attribute value
+   */
+  private String resolveParentAttr(String name, String fallback) {
+    MjmlNode parent = node.getParent();
+    if (parent != null) {
+      String val = parent.getAttribute(name);
+      if (val != null && !val.isEmpty()) {
+        return val;
+      }
+    }
+    return fallback;
   }
 }

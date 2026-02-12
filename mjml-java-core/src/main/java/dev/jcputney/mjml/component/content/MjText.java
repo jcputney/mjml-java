@@ -44,6 +44,9 @@ public class MjText extends BodyComponent {
       Pattern.compile(
           "<(" + String.join("|", BLOCK_ELEMENTS) + ")[\\s>/]", Pattern.CASE_INSENSITIVE);
 
+  /** Matches whitespace sequences containing at least one newline. */
+  private static final Pattern NEWLINE_WHITESPACE = Pattern.compile("\\s*\\n\\s*");
+
   /**
    * Creates a new MjText component.
    *
@@ -73,6 +76,8 @@ public class MjText extends BodyComponent {
           break;
         }
         String tag = html.substring(i, end + 1);
+        // Normalize multi-line tag whitespace (e.g., attributes split across lines)
+        tag = normalizeTagWhitespace(tag);
         String lower = tag.toLowerCase();
         String tagName =
             lower.startsWith("</")
@@ -91,8 +96,9 @@ public class MjText extends BodyComponent {
         }
         String textRun = html.substring(i, next);
         String collapsed = CssUnitParser.WHITESPACE.matcher(textRun).replaceAll(" ");
-        if (afterBlockBoundary && collapsed.trim().isEmpty()) {
-          // Whitespace-only text run after a block boundary — emit newline
+        if (collapsed.trim().isEmpty() && textRun.contains("\n")) {
+          // Whitespace-only text run containing newlines — preserve one newline
+          // (matches MJML/cheerio behavior of preserving original whitespace structure)
           sb.append("\n");
         } else {
           sb.append(collapsed);
@@ -105,6 +111,22 @@ public class MjText extends BodyComponent {
       }
     }
     return sb.toString();
+  }
+
+  /**
+   * Normalizes whitespace inside an HTML tag that spans multiple lines. Collapses
+   * newline-containing whitespace to a single space and removes trailing space before {@code >}.
+   */
+  private static String normalizeTagWhitespace(String tag) {
+    if (!tag.contains("\n")) {
+      return tag;
+    }
+    String normalized = NEWLINE_WHITESPACE.matcher(tag).replaceAll(" ");
+    // Remove space before closing > at end of tag (but not before />)
+    if (normalized.endsWith(" >")) {
+      normalized = normalized.substring(0, normalized.length() - 2) + ">";
+    }
+    return normalized;
   }
 
   private static String extractTagName(String s) {
@@ -195,7 +217,11 @@ public class MjText extends BodyComponent {
     // newlines between block-level tags
     if (containsBlockElements(trimmed)) {
       String processed = collapseInlineWhitespace(trimmed);
-      return "\n" + processed + "\n";
+      // Add leading newline only when content starts with a block element.
+      // When content starts with text (e.g., "You are... <p>...</p>"),
+      // MJML puts the text directly after the containing <div>.
+      boolean startsWithBlock = processed.length() > 0 && processed.charAt(0) == '<';
+      return (startsWithBlock ? "\n" : "") + processed + "\n";
     }
 
     // Has inline HTML (e.g., <br/>, <a>, <span>) but no block elements.

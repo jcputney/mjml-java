@@ -1,12 +1,12 @@
 package dev.jcputney.mjml.css;
 
+import dev.jcputney.mjml.util.CssUnitParser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * Lightweight HTML element representation for CSS selector matching and style inlining. This is NOT
@@ -14,8 +14,6 @@ import java.util.regex.Pattern;
  * name, attributes, parent/child/sibling navigation.
  */
 public final class HtmlElement {
-
-  private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
   private final String tagName;
   private final Map<String, String> attributes;
@@ -105,7 +103,7 @@ public final class HtmlElement {
     if (cls == null || cls.isBlank()) {
       cachedClassNames = Set.of();
     } else {
-      cachedClassNames = Set.of(WHITESPACE.split(cls.trim()));
+      cachedClassNames = Set.of(CssUnitParser.WHITESPACE.split(cls.trim()));
     }
     return cachedClassNames;
   }

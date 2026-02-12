@@ -51,7 +51,7 @@ Add the resolvers module to your project:
 <dependency>
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-resolvers</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
