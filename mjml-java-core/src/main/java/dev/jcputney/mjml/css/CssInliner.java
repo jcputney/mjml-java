@@ -9,6 +9,7 @@ import dev.jcputney.mjml.css.CssSelector.SimpleSelector;
 import dev.jcputney.mjml.css.CssSelector.TypeSelector;
 import dev.jcputney.mjml.css.CssSelector.UniversalSelector;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -42,6 +43,9 @@ import java.util.logging.Logger;
 public final class CssInliner {
 
   private static final Logger LOG = Logger.getLogger(CssInliner.class.getName());
+
+  private static final Comparator<AppliedStyle> APPLIED_STYLE_ORDER =
+      Comparator.comparing(AppliedStyle::specificity).thenComparingInt(AppliedStyle::order);
 
   private CssInliner() {}
 
@@ -249,14 +253,7 @@ public final class CssInliner {
       }
 
       // Sort by specificity, then by source order
-      applicableStyles.sort(
-          (a, b) -> {
-            int cmp = a.specificity().compareTo(b.specificity());
-            if (cmp != 0) {
-              return cmp;
-            }
-            return Integer.compare(a.order(), b.order());
-          });
+      applicableStyles.sort(APPLIED_STYLE_ORDER);
 
       // Parse existing inline style and merge with specificity tracking
       List<CssDeclaration> existingStyle = StyleAttribute.parse(element.getStyle());

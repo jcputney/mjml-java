@@ -376,32 +376,27 @@ public class MjCarousel extends BodyComponent {
   /** Appends CSS rules for hiding all images and showing the active image per radio state. */
   private void appendRadioVisibilityCss(StringBuilder css, String carouselId, int count) {
     // Hide all images when any radio is checked
-    for (int level = 0; level < count; level++) {
-      css.append(".").append(carouselId).append("-radio:checked");
-      css.append(siblingChain(level));
-      css.append("+.mj-carousel-content .mj-carousel-image");
-      if (level < count - 1) {
-        css.append(",\n");
-      } else {
-        css.append(" {\n");
-        css.append("  display: none !important;\n");
-        css.append("}\n\n");
-      }
-    }
+    appendCssRuleBlock(
+        css,
+        count,
+        (sb, i) -> {
+          sb.append(".").append(carouselId).append("-radio:checked");
+          sb.append(siblingChain(i));
+          sb.append("+.mj-carousel-content .mj-carousel-image");
+        },
+        "  display: none !important;\n");
 
     // Show specific image when its radio is checked
-    for (int i = 1; i <= count; i++) {
-      css.append(".").append(carouselId).append("-radio-").append(i).append(":checked");
-      css.append(siblingChain(count - i));
-      css.append("+.mj-carousel-content .mj-carousel-image-").append(i);
-      if (i < count) {
-        css.append(",\n");
-      } else {
-        css.append(" {\n");
-        css.append("  display: block !important;\n");
-        css.append("}\n\n");
-      }
-    }
+    appendCssRuleBlock(
+        css,
+        count,
+        (sb, i) -> {
+          int idx = i + 1;
+          sb.append(".").append(carouselId).append("-radio-").append(idx).append(":checked");
+          sb.append(siblingChain(count - idx));
+          sb.append("+.mj-carousel-content .mj-carousel-image-").append(idx);
+        },
+        "  display: block !important;\n");
   }
 
   /** Appends CSS rules for previous/next navigation icon visibility. */
@@ -409,7 +404,7 @@ public class MjCarousel extends BodyComponent {
     css.append(".mj-carousel-previous-icons,\n");
     css.append(".mj-carousel-next-icons,\n");
 
-    // Next: radio-i shows next-(i+1), circular
+    // Next: radio-i shows next-(i+1), circular — these selectors always end with comma
     for (int i = 1; i <= count; i++) {
       int nextIdx = (i % count) + 1;
       css.append(".").append(carouselId).append("-radio-").append(i).append(":checked");
@@ -419,19 +414,17 @@ public class MjCarousel extends BodyComponent {
     }
 
     // Previous: radio-i shows previous-((i-2+N)%N+1), circular
-    for (int i = 1; i <= count; i++) {
-      int prevIdx = ((i - 2 + count) % count) + 1;
-      css.append(".").append(carouselId).append("-radio-").append(i).append(":checked");
-      css.append(siblingChain(count - i));
-      css.append("+.mj-carousel-content .mj-carousel-previous-").append(prevIdx);
-      if (i < count) {
-        css.append(",\n");
-      } else {
-        css.append(" {\n");
-        css.append("  display: block !important;\n");
-        css.append("}\n\n");
-      }
-    }
+    appendCssRuleBlock(
+        css,
+        count,
+        (sb, i) -> {
+          int idx = i + 1;
+          int prevIdx = ((idx - 2 + count) % count) + 1;
+          sb.append(".").append(carouselId).append("-radio-").append(idx).append(":checked");
+          sb.append(siblingChain(count - idx));
+          sb.append("+.mj-carousel-content .mj-carousel-previous-").append(prevIdx);
+        },
+        "  display: block !important;\n");
   }
 
   /** Appends CSS rules for thumbnail selected border, hover behavior, and visibility. */
@@ -443,33 +436,32 @@ public class MjCarousel extends BodyComponent {
       String tbSelectedBorderColor) {
     // Active thumbnail selected border color
     if (!tbSelectedBorderColor.isEmpty()) {
-      for (int i = 1; i <= count; i++) {
-        css.append(".").append(carouselId).append("-radio-").append(i).append(":checked");
-        css.append(siblingChain(count - i));
-        css.append("+.mj-carousel-content .").append(carouselId).append("-thumbnail-").append(i);
-        if (i < count) {
-          css.append(",\n");
-        } else {
-          css.append(" {\n");
-          css.append("  border-color: ").append(tbSelectedBorderColor).append(" !important;\n");
-          css.append("}\n\n");
-        }
-      }
+      appendCssRuleBlock(
+          css,
+          count,
+          (sb, i) -> {
+            int idx = i + 1;
+            sb.append(".").append(carouselId).append("-radio-").append(idx).append(":checked");
+            sb.append(siblingChain(count - idx));
+            sb.append("+.mj-carousel-content .")
+                .append(carouselId)
+                .append("-thumbnail-")
+                .append(idx);
+          },
+          "  border-color: " + tbSelectedBorderColor + " !important;\n");
     }
 
     // Show thumbnails as inline-block when radio checked
-    for (int i = 1; i <= count; i++) {
-      css.append(".").append(carouselId).append("-radio-").append(i).append(":checked");
-      css.append(siblingChain(count - i));
-      css.append("+.mj-carousel-content .").append(carouselId).append("-thumbnail");
-      if (i < count) {
-        css.append(",\n");
-      } else {
-        css.append(" {\n");
-        css.append("  display: inline-block !important;\n");
-        css.append("}\n\n");
-      }
-    }
+    appendCssRuleBlock(
+        css,
+        count,
+        (sb, i) -> {
+          int idx = i + 1;
+          sb.append(".").append(carouselId).append("-radio-").append(idx).append(":checked");
+          sb.append(siblingChain(count - idx));
+          sb.append("+.mj-carousel-content .").append(carouselId).append("-thumbnail");
+        },
+        "  display: inline-block !important;\n");
 
     // Hide image+div siblings
     css.append(".mj-carousel-image img+div,\n");
@@ -477,19 +469,17 @@ public class MjCarousel extends BodyComponent {
     css.append("  display: none !important;\n");
     css.append("}\n\n");
 
-    // Thumbnail hover: hide all images
-    for (int level = count - 1; level >= 0; level--) {
-      css.append(".").append(carouselId).append("-thumbnail:hover");
-      css.append(siblingChain(level));
-      css.append("+.mj-carousel-main .mj-carousel-image");
-      if (level > 0) {
-        css.append(",\n");
-      } else {
-        css.append(" {\n");
-        css.append("  display: none !important;\n");
-        css.append("}\n\n");
-      }
-    }
+    // Thumbnail hover: hide all images (iterates count-1 down to 0)
+    appendCssRuleBlock(
+        css,
+        count,
+        (sb, i) -> {
+          int level = count - 1 - i;
+          sb.append(".").append(carouselId).append("-thumbnail:hover");
+          sb.append(siblingChain(level));
+          sb.append("+.mj-carousel-main .mj-carousel-image");
+        },
+        "  display: none !important;\n");
 
     // Thumbnail hover border color
     if (!tbHoverBorderColor.isEmpty()) {
@@ -499,18 +489,45 @@ public class MjCarousel extends BodyComponent {
     }
 
     // Thumbnail hover: show specific image
-    for (int i = 1; i <= count; i++) {
-      css.append(".").append(carouselId).append("-thumbnail-").append(i).append(":hover");
-      css.append(siblingChain(count - i));
-      css.append("+.mj-carousel-main .mj-carousel-image-").append(i);
-      if (i < count) {
+    appendCssRuleBlock(
+        css,
+        count,
+        (sb, i) -> {
+          int idx = i + 1;
+          sb.append(".").append(carouselId).append("-thumbnail-").append(idx).append(":hover");
+          sb.append(siblingChain(count - idx));
+          sb.append("+.mj-carousel-main .mj-carousel-image-").append(idx);
+        },
+        "  display: block !important;\n");
+  }
+
+  /**
+   * Appends a CSS rule block consisting of comma-separated selectors followed by a declaration
+   * block. The selectorWriter is called with a zero-based index to generate each selector.
+   *
+   * @param css the output buffer
+   * @param count the number of selectors to generate
+   * @param selectorWriter writes the selector for the given zero-based index
+   * @param declarations the CSS declarations inside the rule block (already indented)
+   */
+  private void appendCssRuleBlock(
+      StringBuilder css, int count, SelectorWriter selectorWriter, String declarations) {
+    for (int i = 0; i < count; i++) {
+      selectorWriter.write(css, i);
+      if (i < count - 1) {
         css.append(",\n");
       } else {
         css.append(" {\n");
-        css.append("  display: block !important;\n");
+        css.append(declarations);
         css.append("}\n\n");
       }
     }
+  }
+
+  /** Functional interface for writing a single CSS selector into a StringBuilder. */
+  @FunctionalInterface
+  private interface SelectorWriter {
+    void write(StringBuilder sb, int index);
   }
 
   /** Appends fallback CSS rules: noinput, OWA, and Yahoo media query. */

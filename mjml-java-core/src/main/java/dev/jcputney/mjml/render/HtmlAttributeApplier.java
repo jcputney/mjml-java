@@ -50,7 +50,7 @@ final class HtmlAttributeApplier {
 
     List<HtmlElement> allElements = root.allDescendants();
 
-    // Track attribute insertions by position (descending to avoid offset shifts)
+    // Track attribute insertions by position (ascending for forward-pass segment copy)
     TreeMap<Integer, String> insertions = new TreeMap<>();
 
     for (Map.Entry<String, Map<String, String>> entry : htmlAttrs.entrySet()) {
@@ -100,11 +100,15 @@ final class HtmlAttributeApplier {
       return html;
     }
 
-    // Apply insertions in reverse order
-    StringBuilder sb = new StringBuilder(html);
-    for (Map.Entry<Integer, String> ins : insertions.descendingMap().entrySet()) {
-      sb.insert(ins.getKey(), ins.getValue());
+    // Single forward pass: copy original segments between insertion points
+    StringBuilder sb = new StringBuilder(html.length() + insertions.size() * 64);
+    int lastEnd = 0;
+    for (Map.Entry<Integer, String> ins : insertions.entrySet()) {
+      sb.append(html, lastEnd, ins.getKey());
+      sb.append(ins.getValue());
+      lastEnd = ins.getKey();
     }
+    sb.append(html, lastEnd, html.length());
     return sb.toString();
   }
 }

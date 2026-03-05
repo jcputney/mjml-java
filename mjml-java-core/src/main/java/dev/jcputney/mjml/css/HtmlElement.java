@@ -22,6 +22,8 @@ public final class HtmlElement {
 
   // Cached class names set (computed lazily)
   private Set<String> cachedClassNames;
+  // Cached unmodifiable attributes wrapper (invalidated on mutation)
+  private Map<String, String> cachedUnmodifiableAttributes;
   // Cached index in parent's children list (set during addChild)
   private int cachedIndex = -1;
   // Cached list of all descendants (computed lazily, tree is immutable after parse)
@@ -77,7 +79,10 @@ public final class HtmlElement {
    * @return an unmodifiable map of attribute names to values
    */
   public Map<String, String> getAttributes() {
-    return Collections.unmodifiableMap(attributes);
+    if (cachedUnmodifiableAttributes == null) {
+      cachedUnmodifiableAttributes = Collections.unmodifiableMap(attributes);
+    }
+    return cachedUnmodifiableAttributes;
   }
 
   /**
@@ -124,6 +129,7 @@ public final class HtmlElement {
    */
   public void setStyle(String style) {
     attributes.put("style", style);
+    cachedUnmodifiableAttributes = null;
   }
 
   /**

@@ -40,9 +40,9 @@ public final class AttributeResolver {
     }
 
     // Level 2: mj-class attributes
-    String mjClass = node.getAttribute("mj-class");
-    if (mjClass != null) {
-      for (String className : dev.jcputney.mjml.util.CssUnitParser.WHITESPACE.split(mjClass)) {
+    String[] mjClassNames = node.getMjClassNames();
+    if (mjClassNames.length > 0) {
+      for (String className : mjClassNames) {
         Map<String, String> classAttrs = globalContext.attributes().getClassAttributes(className);
         value = classAttrs.get(attributeName);
         if (value != null) {
@@ -80,14 +80,14 @@ public final class AttributeResolver {
       char r = value.charAt(1);
       char g = value.charAt(2);
       char b = value.charAt(3);
-      return "#" + r + r + g + g + b + b;
+      return new String(new char[] {'#', r, r, g, g, b, b});
     }
     if (len == 5 && value.charAt(0) == '#' && isHex(value, 1, 5)) {
       char r = value.charAt(1);
       char g = value.charAt(2);
       char b = value.charAt(3);
       char a = value.charAt(4);
-      return "#" + r + r + g + g + b + b + a + a;
+      return new String(new char[] {'#', r, r, g, g, b, b, a, a});
     }
     return value;
   }

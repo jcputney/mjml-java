@@ -159,7 +159,7 @@ public final class HtmlDocumentParser {
       return tagEnd + 1;
     }
 
-    int[] styleRange = new int[] {-1, -1};
+    StyleRange styleRange = new StyleRange();
     Map<String, String> attrs =
         parseAttributes(
             attrString, pos + 1 + (firstSpace >= 0 ? firstSpace : tagContent.length()), styleRange);
@@ -167,9 +167,9 @@ public final class HtmlDocumentParser {
     HtmlElement element = new HtmlElement(tagName, attrs);
     element.setTagStart(pos);
     element.setTagEnd(tagEnd + 1);
-    if (styleRange[0] >= 0) {
-      element.setStyleAttrStart(styleRange[0]);
-      element.setStyleAttrEnd(styleRange[1]);
+    if (styleRange.start >= 0) {
+      element.setStyleAttrStart(styleRange.start);
+      element.setStyleAttrEnd(styleRange.end);
     }
 
     stack.peek().addChild(element);
@@ -288,7 +288,7 @@ public final class HtmlDocumentParser {
   }
 
   private static Map<String, String> parseAttributes(
-      String attrString, int baseOffset, int[] styleRange) {
+      String attrString, int baseOffset, StyleRange styleRange) {
     Map<String, String> attrs = new LinkedHashMap<>();
     if (attrString == null || attrString.isBlank()) {
       return attrs;
@@ -354,7 +354,7 @@ public final class HtmlDocumentParser {
       int len,
       int baseOffset,
       boolean isStyle,
-      int[] styleRange) {
+      StyleRange styleRange) {
     char quote = attrString.charAt(posHolder[0]);
     if (quote == '"' || quote == '\'') {
       posHolder[0]++; // consume opening quote
@@ -367,8 +367,8 @@ public final class HtmlDocumentParser {
       String value = attrString.substring(valueStart, posHolder[0]);
 
       if (isStyle) {
-        styleRange[0] = absValueStart;
-        styleRange[1] = baseOffset + posHolder[0];
+        styleRange.start = absValueStart;
+        styleRange.end = baseOffset + posHolder[0];
       }
 
       if (posHolder[0] < len) {
@@ -405,6 +405,13 @@ public final class HtmlDocumentParser {
       }
     }
     return -1;
+  }
+
+  /** Tracks the start and end positions of a style attribute value in the source HTML. */
+  private static final class StyleRange {
+
+    int start = -1;
+    int end = -1;
   }
 
   /**

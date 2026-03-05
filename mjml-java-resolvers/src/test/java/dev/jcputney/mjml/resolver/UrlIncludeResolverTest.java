@@ -247,6 +247,22 @@ class UrlIncludeResolverTest {
   }
 
   @Test
+  void zeroMaxResponseSizeThrows() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> UrlIncludeResolver.builder().maxResponseSize(0).build(),
+        "maxResponseSize of 0 should throw IllegalArgumentException");
+  }
+
+  @Test
+  void negativeMaxResponseSizeThrows() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> UrlIncludeResolver.builder().maxResponseSize(-100).build(),
+        "Negative maxResponseSize should throw IllegalArgumentException");
+  }
+
+  @Test
   void ssrfBlocksIPv6Loopback() {
     var resolver = UrlIncludeResolver.builder().httpsOnly(false).build();
     var ex =

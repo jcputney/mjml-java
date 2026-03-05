@@ -18,6 +18,7 @@ public class MjmlNode {
   private final List<MjmlNode> children;
   private List<MjmlNode> unmodifiableChildren;
   private Map<String, String> unmodifiableAttributes;
+  private String[] cachedMjClassNames;
   private String textContent;
   private MjmlNode parent;
 
@@ -64,6 +65,24 @@ public class MjmlNode {
   }
 
   /**
+   * Returns the cached array of mj-class names on this node. The result is cached and invalidated
+   * when the "mj-class" attribute is changed via {@link #setAttribute(String, String)}.
+   *
+   * @return the array of class names, or an empty array if no mj-class attribute is set
+   */
+  public String[] getMjClassNames() {
+    if (cachedMjClassNames == null) {
+      String mjClass = attributes.get("mj-class");
+      if (mjClass == null || mjClass.isEmpty()) {
+        cachedMjClassNames = new String[0];
+      } else {
+        cachedMjClassNames = mjClass.split("\\s+");
+      }
+    }
+    return cachedMjClassNames;
+  }
+
+  /**
    * Sets the attribute with the given name to the given value.
    *
    * @param name the attribute name
@@ -72,6 +91,9 @@ public class MjmlNode {
   public void setAttribute(String name, String value) {
     attributes.put(name, value);
     unmodifiableAttributes = null; // invalidate cache
+    if ("mj-class".equals(name)) {
+      cachedMjClassNames = null; // invalidate mj-class cache
+    }
   }
 
   /**

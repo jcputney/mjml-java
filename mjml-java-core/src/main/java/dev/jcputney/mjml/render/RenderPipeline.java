@@ -219,8 +219,10 @@ public final class RenderPipeline {
         REGISTRY_CACHE.computeIfAbsent(config, this::createAndFreezeRegistry);
     // Evict an arbitrary entry if cache exceeds max size
     if (REGISTRY_CACHE.size() > REGISTRY_CACHE_MAX_SIZE) {
-      REGISTRY_CACHE.keys().asIterator().next();
-      REGISTRY_CACHE.remove(REGISTRY_CACHE.keys().asIterator().next());
+      var it = REGISTRY_CACHE.keys().asIterator();
+      if (it.hasNext()) {
+        REGISTRY_CACHE.remove(it.next());
+      }
     }
     return result;
   }

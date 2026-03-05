@@ -112,6 +112,175 @@ class MjSocialTest {
   }
 
   @Test
+  void verticalModeLayoutProducesRows() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social mode="vertical">
+                  <mj-social-element name="facebook" href="https://facebook.com">FB</mj-social-element>
+                  <mj-social-element name="twitter" href="https://twitter.com">TW</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    // In vertical mode, each element renders as a <tr> rather than an inline table
+    assertTrue(html.contains("FB"), "Should render first social element text");
+    assertTrue(html.contains("TW"), "Should render second social element text");
+    // Vertical mode should NOT use inline-table
+    assertFalse(
+        html.contains("display:inline-table"), "Vertical mode should not use inline-table display");
+  }
+
+  @Test
+  void noHrefRenderingUsesSpanNotAnchor() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social>
+                  <mj-social-element name="facebook">No link</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("No link"), "Should render text content");
+    // Without href, the text should be in a <span> not an <a>
+    assertTrue(
+        html.contains("<span style="),
+        "No-href social element should use <span> for text, not <a>");
+  }
+
+  @Test
+  void customIconWithNoName() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social>
+                  <mj-social-element src="https://example.com/icon.png" href="https://example.com">Custom</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("icon.png"), "Should use the custom src attribute directly");
+    assertTrue(html.contains("Custom"), "Should render custom text label");
+  }
+
+  @Test
+  void iconSizeOverride() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social>
+                  <mj-social-element name="facebook" icon-size="40px" href="https://facebook.com">FB</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("width:40px"), "Should use custom icon-size in width style");
+    assertTrue(html.contains("width=\"40\""), "Should use custom icon-size as img width attribute");
+  }
+
+  @Test
+  void zeroPaddingRendersCorrectly() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social>
+                  <mj-social-element name="facebook" padding="0px" href="https://facebook.com">FB</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("padding:0px"), "Should respect zero padding");
+    assertTrue(html.contains("FB"), "Should render text content");
+  }
+
+  @Test
+  void parentInnerPaddingOverridesChildDefault() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social inner-padding="8px 12px">
+                  <mj-social-element name="facebook" href="https://facebook.com">FB</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("padding:8px 12px"), "Should use parent's inner-padding override");
+  }
+
+  @Test
+  void noshareVariantDoesNotApplyShareUrl() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-social>
+                  <mj-social-element name="facebook-noshare" href="https://facebook.com/mypage">FB</mj-social-element>
+                </mj-social>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    // -noshare should prevent share URL substitution, keeping the original href
+    assertTrue(
+        html.contains("facebook.com/mypage"), "Noshare variant should preserve the original href");
+  }
+
+  @Test
   void multipleNetworks() {
     String html =
         render(

@@ -224,7 +224,7 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
         || check.startsWith("tel:")
         || cleaned.startsWith("#")
         || cleaned.startsWith("/")) {
-      return href;
+      return cleaned;
     }
     // Block everything else (javascript:, vbscript:, data:, blob:, etc.)
     return "#";
@@ -260,6 +260,9 @@ public abstract non-sealed class BodyComponent extends BaseComponent {
    * @return a LinkedHashMap containing the non-empty key/value pairs
    */
   protected Map<String, String> orderedMap(String... pairs) {
+    if (pairs.length % 2 != 0) {
+      throw new IllegalArgumentException("orderedMap requires an even number of arguments");
+    }
     int capacity = (pairs.length / 2) + 1;
     Map<String, String> map = new LinkedHashMap<>(capacity);
     for (int i = 0; i < pairs.length - 1; i += 2) {

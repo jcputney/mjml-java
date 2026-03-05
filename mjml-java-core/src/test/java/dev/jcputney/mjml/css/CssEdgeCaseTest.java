@@ -503,6 +503,57 @@ class CssEdgeCaseTest {
     // The inline CSS engine should process the rule
   }
 
+  // --- Shorthand conflicts ---
+
+  @Test
+  void marginShorthandOverriddenByMarginTop() {
+    String html =
+        """
+        <html>
+        <head><style>
+        .box { margin: 10px; margin-top: 20px; }
+        </style></head>
+        <body><div class="box">Hello</div></body>
+        </html>""";
+
+    String result = CssInliner.inline(html);
+    assertTrue(result.contains("margin-top: 20px"), "margin-top should override shorthand margin");
+    assertTrue(result.contains("margin: 10px"), "shorthand margin should still be present");
+  }
+
+  @Test
+  void importantOnShorthandOverridesLonghand() {
+    String html =
+        """
+        <html>
+        <head><style>
+        .box { padding-top: 5px; }
+        .box { padding: 20px !important; }
+        </style></head>
+        <body><div class="box">Hello</div></body>
+        </html>""";
+
+    String result = CssInliner.inline(html);
+    assertTrue(
+        result.contains("padding: 20px"),
+        "!important shorthand should be present in inlined styles");
+  }
+
+  @Test
+  void laterLonghandOverridesEarlierShorthand() {
+    String html =
+        """
+        <html>
+        <head><style>
+        .box { border: 1px solid black; border-color: red; }
+        </style></head>
+        <body><div class="box">Hello</div></body>
+        </html>""";
+
+    String result = CssInliner.inline(html);
+    assertTrue(result.contains("border-color: red"), "Later longhand should be present");
+  }
+
   @Test
   void mjmlNonInlineStylePreservedInHead() {
     String mjml =

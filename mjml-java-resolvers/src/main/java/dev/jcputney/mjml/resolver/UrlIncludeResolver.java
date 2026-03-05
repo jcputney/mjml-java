@@ -327,6 +327,9 @@ public final class UrlIncludeResolver implements IncludeResolver {
      * @return a new {@link UrlIncludeResolver}
      */
     public UrlIncludeResolver build() {
+      if (maxResponseSize <= 0) {
+        throw new IllegalArgumentException("maxResponseSize must be positive");
+      }
       HttpClient client = this.httpClient;
       if (client == null) {
         client =

@@ -63,25 +63,25 @@ public class MjTable extends BodyComponent {
                 "width", getAttribute("width", "100%"),
                 "border", getAttribute("border", "none")));
 
-    String sb =
-        "<table"
-            + " cellpadding=\""
-            + escapeAttr(getAttribute("cellpadding", "0"))
-            + "\""
-            + " cellspacing=\""
-            + escapeAttr(getAttribute("cellspacing", "0"))
-            + "\""
-            + " width=\""
-            + escapeAttr(getAttribute("width", "100%"))
-            + "\""
-            + " border=\"0\""
-            + " style=\""
-            + tableStyle
-            + "\""
-            + ">\n"
-            + sanitizeContent(node.getInnerHtml())
-            + "</table>\n";
+    StringBuilder sb = new StringBuilder();
+    sb.append("<table")
+        .append(" cellpadding=\"")
+        .append(escapeAttr(getAttribute("cellpadding", "0")))
+        .append("\"")
+        .append(" cellspacing=\"")
+        .append(escapeAttr(getAttribute("cellspacing", "0")))
+        .append("\"")
+        .append(" width=\"")
+        .append(escapeAttr(getAttribute("width", "100%")))
+        .append("\"")
+        .append(" border=\"0\"")
+        .append(" style=\"")
+        .append(tableStyle)
+        .append("\"")
+        .append(">\n")
+        .append(sanitizeContent(node.getInnerHtml()))
+        .append("</table>\n");
 
-    return sb;
+    return sb.toString();
   }
 }

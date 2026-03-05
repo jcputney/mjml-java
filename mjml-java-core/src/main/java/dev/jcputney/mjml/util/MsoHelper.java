@@ -88,4 +88,50 @@ public final class MsoHelper {
   public static String msoConditionalTableClosing() {
     return MSO_CONDITIONAL_TABLE_CLOSING;
   }
+
+  /**
+   * Builds the MSO conditional opening for the first child inside an mj-wrapper. Opens the outer
+   * table, a td with container width, an inner table with inner width, and a tr/td.
+   *
+   * @param containerWidth the wrapper's container width in pixels
+   * @param innerWidth the computed inner width (container minus padding/borders)
+   * @return the MSO conditional opening markup
+   */
+  public static String msoWrapperNestedOpening(int containerWidth, int innerWidth) {
+    return "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\""
+        + " cellspacing=\"0\"><tr><td class=\"\" width=\""
+        + containerWidth
+        + "px\" >"
+        + "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\""
+        + " class=\"\" role=\"presentation\" style=\"width:"
+        + innerWidth
+        + "px;\" width=\""
+        + innerWidth
+        + "\" >"
+        + "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">"
+        + "<![endif]-->";
+  }
+
+  /**
+   * Builds the MSO conditional transition markup between adjacent children inside an mj-wrapper.
+   * Closes the current inner table and td, then opens a new tr/td with container width and a new
+   * inner table with inner width.
+   *
+   * @param containerWidth the wrapper's container width in pixels
+   * @param innerWidth the computed inner width (container minus padding/borders)
+   * @return the MSO conditional transition markup
+   */
+  public static String msoWrapperTransition(int containerWidth, int innerWidth) {
+    return "<!--[if mso | IE]></td></tr></table></td></tr><tr><td class=\"\" width=\""
+        + containerWidth
+        + "px\" >"
+        + "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\""
+        + " class=\"\" role=\"presentation\" style=\"width:"
+        + innerWidth
+        + "px;\" width=\""
+        + innerWidth
+        + "\" >"
+        + "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">"
+        + "<![endif]-->";
+  }
 }

@@ -92,4 +92,76 @@ class MjFontTest {
     assertTrue(html.contains("family=Lato"), "Should include first font reference");
     assertTrue(html.contains("family=Merriweather"), "Should include second font reference");
   }
+
+  @Test
+  void emptyNameIsIgnored() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-head>
+            <mj-font name="" href="https://fonts.googleapis.com/css?family=Roboto" />
+          </mj-head>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-text>Text</mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertFalse(html.contains("family=Roboto"), "Empty name should cause the font to be skipped");
+  }
+
+  @Test
+  void emptyHrefIsIgnored() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-head>
+            <mj-font name="Roboto" href="" />
+          </mj-head>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-text>Text</mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    // With empty href, the font should not be registered (no @import for it)
+    assertFalse(
+        html.contains("@import url(Roboto"), "Empty href should cause the font to be skipped");
+  }
+
+  @Test
+  void nonHttpHrefIsRejected() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-head>
+            <mj-font name="EvilFont" href="javascript:alert(1)" />
+          </mj-head>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-text>Text</mj-text>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertFalse(html.contains("javascript:"), "Non-http/https href should be rejected");
+    assertFalse(html.contains("EvilFont"), "Font with invalid href should not be registered");
+  }
 }

@@ -65,7 +65,6 @@ public class MjText extends BodyComponent {
   private static String collapseInlineWhitespace(String html) {
     StringBuilder sb = new StringBuilder();
     int i = 0;
-    boolean afterBlockBoundary = false;
 
     while (i < html.length()) {
       if (html.charAt(i) == '<') {
@@ -78,15 +77,8 @@ public class MjText extends BodyComponent {
         String tag = html.substring(i, end + 1);
         // Normalize multi-line tag whitespace (e.g., attributes split across lines)
         tag = normalizeTagWhitespace(tag);
-        String lower = tag.toLowerCase();
-        String tagName =
-            lower.startsWith("</")
-                ? extractTagName(lower.substring(2))
-                : extractTagName(lower.substring(1));
-        boolean isBlock = isBlockElement(tagName);
 
         sb.append(tag);
-        afterBlockBoundary = isBlock;
         i = end + 1;
       } else {
         // In a text run — find the next tag or end
@@ -102,10 +94,6 @@ public class MjText extends BodyComponent {
           sb.append("\n");
         } else {
           sb.append(collapsed);
-        }
-        // Don't reset afterBlockBoundary for whitespace-only runs
-        if (!collapsed.trim().isEmpty()) {
-          afterBlockBoundary = false;
         }
         i = next;
       }
@@ -131,15 +119,15 @@ public class MjText extends BodyComponent {
 
   private static String extractTagName(String s) {
     // Extract tag name from after < or </
-    StringBuilder name = new StringBuilder();
-    for (int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
+    int end = 0;
+    while (end < s.length()) {
+      char c = s.charAt(end);
       if (c == ' ' || c == '>' || c == '/' || c == '\t' || c == '\n') {
         break;
       }
-      name.append(c);
+      end++;
     }
-    return name.toString();
+    return s.substring(0, end);
   }
 
   private static boolean containsBlockElements(String html) {

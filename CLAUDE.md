@@ -112,7 +112,7 @@ All `render()`/`renderTemplate()` overloads return `MjmlRenderResult`.
 
 ## Testing
 
-~1,014 tests total (core: ~923, resolvers: ~70, spring: ~21).
+~1,116 tests total (core: ~1,020, resolvers: ~75, spring: ~21).
 
 ### Golden File Tests
 

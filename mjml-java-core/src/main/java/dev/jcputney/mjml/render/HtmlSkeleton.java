@@ -46,7 +46,7 @@ public final class HtmlSkeleton {
     // DOCTYPE + html tag
     sb.append("<!doctype html>\n");
     sb.append("<html lang=\"")
-        .append(escapeHtml(lang))
+        .append(escapeText(lang))
         .append("\" dir=\"")
         .append(dir)
         .append("\"");
@@ -57,7 +57,7 @@ public final class HtmlSkeleton {
 
     // Head
     sb.append("<head>\n");
-    sb.append("  <title>").append(escapeHtml(ctx.metadata().getTitle())).append("</title>\n");
+    sb.append("  <title>").append(escapeText(ctx.metadata().getTitle())).append("</title>\n");
 
     // Meta tags
     sb.append("  <!--[if !mso]><!-->\n");
@@ -154,7 +154,7 @@ public final class HtmlSkeleton {
     if (!ctx.metadata().getPreviewText().isEmpty()) {
       sb.append(
           "  <div style=\"display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;\">");
-      sb.append(escapeHtml(ctx.metadata().getPreviewText()));
+      sb.append(escapeText(ctx.metadata().getPreviewText()));
       sb.append("</div>\n");
     }
 
@@ -177,7 +177,7 @@ public final class HtmlSkeleton {
     sb.append("  <!--[if !mso]><!-->\n");
     for (FontDef font : ctx.styles().getFonts()) {
       sb.append("  <link href=\"")
-          .append(escapeHtml(font.href()))
+          .append(escapeText(font.href()))
           .append("\" rel=\"stylesheet\" type=\"text/css\">\n");
     }
     sb.append("  <style type=\"text/css\">\n");
@@ -245,7 +245,7 @@ public final class HtmlSkeleton {
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
-      sb.append("      .").append(query.className()).append(" {\n");
+      sb.append("      .").append(sanitizeClassName(query.className())).append(" {\n");
       sb.append("        width: ").append(query.widthValue()).append(unit).append(" !important;\n");
       sb.append("        max-width: ").append(query.widthValue()).append(unit).append(";\n");
       sb.append("      }\n");
@@ -264,7 +264,7 @@ public final class HtmlSkeleton {
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
-      sb.append("    .moz-text-html .").append(query.className()).append(" {\n");
+      sb.append("    .moz-text-html .").append(sanitizeClassName(query.className())).append(" {\n");
       sb.append("      width: ").append(query.widthValue()).append(unit).append(" !important;\n");
       sb.append("      max-width: ").append(query.widthValue()).append(unit).append(";\n");
       sb.append("    }\n");
@@ -359,7 +359,11 @@ public final class HtmlSkeleton {
     return out.toString();
   }
 
-  private static String escapeHtml(String text) {
+  private static String sanitizeClassName(String className) {
+    return className.replaceAll("[^a-zA-Z0-9_\\-]", "");
+  }
+
+  private static String escapeText(String text) {
     if (text == null) {
       return "";
     }

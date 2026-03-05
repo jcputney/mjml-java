@@ -24,7 +24,7 @@ public final class CssEscaper {
     boolean needsEscape = false;
     for (int i = 0; i < url.length(); i++) {
       char c = url.charAt(i);
-      if (c == '\\' || c == '"' || c == '\'' || c == '(' || c == ')') {
+      if (c == '\\' || c == '"' || c == '\'' || c == '(' || c == ')' || c == '\n' || c == '\r') {
         needsEscape = true;
         break;
       }
@@ -41,6 +41,8 @@ public final class CssEscaper {
         case '\'' -> sb.append("\\'");
         case '(' -> sb.append("\\(");
         case ')' -> sb.append("\\)");
+        case '\n' -> sb.append("\\a ");
+        case '\r' -> sb.append("\\d ");
         default -> sb.append(c);
       }
     }

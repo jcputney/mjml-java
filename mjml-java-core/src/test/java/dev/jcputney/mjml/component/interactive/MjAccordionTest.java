@@ -120,4 +120,116 @@ class MjAccordionTest {
         lastIndex,
         "Accordion CSS should only be injected once, not duplicated for multiple accordions");
   }
+
+  @Test
+  void rightIconPosition() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-accordion icon-position="right">
+                  <mj-accordion-element>
+                    <mj-accordion-title>Right Icon Title</mj-accordion-title>
+                    <mj-accordion-text>Right Icon Content</mj-accordion-text>
+                  </mj-accordion-element>
+                </mj-accordion>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("Right Icon Title"), "Should render the title content");
+    assertTrue(html.contains("Right Icon Content"), "Should render the text content");
+    assertTrue(html.contains("mj-accordion-ico"), "Should render the icon td");
+  }
+
+  @Test
+  void leftIconPosition() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-accordion icon-position="left">
+                  <mj-accordion-element>
+                    <mj-accordion-title>Left Icon Title</mj-accordion-title>
+                    <mj-accordion-text>Left Icon Content</mj-accordion-text>
+                  </mj-accordion-element>
+                </mj-accordion>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("Left Icon Title"), "Should render the title content");
+    assertTrue(html.contains("Left Icon Content"), "Should render the text content");
+    assertTrue(html.contains("mj-accordion-ico"), "Should render the icon td for left position");
+  }
+
+  @Test
+  void customIconUrls() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-accordion
+                  icon-wrapped-url="https://example.com/plus.png"
+                  icon-unwrapped-url="https://example.com/minus.png"
+                  icon-wrapped-alt="Expand"
+                  icon-unwrapped-alt="Collapse">
+                  <mj-accordion-element>
+                    <mj-accordion-title>Custom Icons</mj-accordion-title>
+                    <mj-accordion-text>Content here</mj-accordion-text>
+                  </mj-accordion-element>
+                </mj-accordion>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("example.com/plus.png"), "Should use custom wrapped icon URL");
+    assertTrue(html.contains("example.com/minus.png"), "Should use custom unwrapped icon URL");
+    assertTrue(html.contains("Expand"), "Should use custom wrapped alt text");
+    assertTrue(html.contains("Collapse"), "Should use custom unwrapped alt text");
+  }
+
+  @Test
+  void missingTitleChildStillRenders() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-section>
+              <mj-column>
+                <mj-accordion>
+                  <mj-accordion-element>
+                    <mj-accordion-text>Text without title</mj-accordion-text>
+                  </mj-accordion-element>
+                </mj-accordion>
+              </mj-column>
+            </mj-section>
+          </mj-body>
+        </mjml>
+        """);
+
+    assertTrue(html.contains("Text without title"), "Should render accordion text content");
+    assertTrue(
+        html.contains("mj-accordion-element"), "Should still render the accordion element label");
+  }
 }

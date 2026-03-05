@@ -186,18 +186,9 @@ public class MjWrapper extends AbstractSectionComponent {
       if (isFirst) {
         // Open first MSO wrapper: table > tr > td (container width) > inner table (inner width) >
         // tr > td
-        sb.append(
-                "              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td class=\"\" width=\"")
-            .append(containerWidth)
-            .append("px\" >");
-        sb.append(
-                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
-            .append(innerWidth)
-            .append("px;\" width=\"")
-            .append(innerWidth)
-            .append("\" >");
-        sb.append(
-            "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
+        sb.append("              ")
+            .append(MsoHelper.msoWrapperNestedOpening(containerWidth, innerWidth))
+            .append("\n");
       }
 
       // Insert gap spacer between adjacent children (not before the first)
@@ -228,18 +219,9 @@ public class MjWrapper extends AbstractSectionComponent {
       if (!isLast) {
         // MSO transition between children: close inner table, close td, new tr > td (container
         // width), new inner table (inner width)
-        sb.append(
-                "              <!--[if mso | IE]></td></tr></table></td></tr><tr><td class=\"\" width=\"")
-            .append(containerWidth)
-            .append("px\" >");
-        sb.append(
-                "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"\" role=\"presentation\" style=\"width:")
-            .append(innerWidth)
-            .append("px;\" width=\"")
-            .append(innerWidth)
-            .append("\" >");
-        sb.append(
-            "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\"><![endif]-->\n");
+        sb.append("              ")
+            .append(MsoHelper.msoWrapperTransition(containerWidth, innerWidth))
+            .append("\n");
       } else {
         // Close last MSO wrapper: close inner table, close td, close tr, close outer table
         sb.append(

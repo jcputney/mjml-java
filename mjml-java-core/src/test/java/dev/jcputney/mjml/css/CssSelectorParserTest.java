@@ -153,6 +153,71 @@ class CssSelectorParserTest {
   }
 
   @Test
+  void parsesUniversalInCompoundSelector() {
+    // *.class should parse as compound with universal + class
+    CssSelector sel = CssSelectorParser.parse("*.red");
+    assertInstanceOf(CompoundSelector.class, sel);
+    CompoundSelector compound = (CompoundSelector) sel;
+    assertEquals(2, compound.parts().size());
+    assertInstanceOf(UniversalSelector.class, compound.parts().get(0));
+    assertInstanceOf(ClassSelector.class, compound.parts().get(1));
+    assertEquals("red", ((ClassSelector) compound.parts().get(1)).className());
+    // Specificity: * contributes (0,0,0), .red contributes (0,1,0) = (0,1,0)
+    assertEquals(new CssSpecificity(0, 1, 0), sel.specificity());
+  }
+
+  @Test
+  void parsesAttributeStartsWithOperator() {
+    CssSelector sel = CssSelectorParser.parse("[href^=\"https\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    AttributeSelector attr = (AttributeSelector) sel;
+    assertEquals("href", attr.attribute());
+    assertEquals("^=", attr.operator());
+    assertEquals("https", attr.value());
+  }
+
+  @Test
+  void parsesAttributeEndsWithOperator() {
+    CssSelector sel = CssSelectorParser.parse("[src$=\".png\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    AttributeSelector attr = (AttributeSelector) sel;
+    assertEquals("src", attr.attribute());
+    assertEquals("$=", attr.operator());
+    assertEquals(".png", attr.value());
+  }
+
+  @Test
+  void parsesAttributeContainsOperator() {
+    CssSelector sel = CssSelectorParser.parse("[class*=\"col\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    assertEquals("*=", ((AttributeSelector) sel).operator());
+    assertEquals("col", ((AttributeSelector) sel).value());
+  }
+
+  @Test
+  void parsesMultipleCombinatorChain() {
+    // "div > ul li > a" should parse as nested complex selectors
+    CssSelector sel = CssSelectorParser.parse("div > ul li > a");
+    assertNotNull(sel);
+    assertInstanceOf(ComplexSelector.class, sel);
+    // The rightmost combinator should be CHILD (> a)
+    ComplexSelector outermost = (ComplexSelector) sel;
+    assertEquals(Combinator.CHILD, outermost.combinator());
+    assertInstanceOf(TypeSelector.class, outermost.right());
+    assertEquals("a", ((TypeSelector) outermost.right()).tagName());
+  }
+
+  @Test
+  void parsesThreeCombinatorChain() {
+    // "body > main p span" = ((body > main) p) span
+    CssSelector sel = CssSelectorParser.parse("body > main p span");
+    assertNotNull(sel);
+    assertInstanceOf(ComplexSelector.class, sel);
+    // Specificity: 4 types = (0,0,4)
+    assertEquals(new CssSpecificity(0, 0, 4), sel.specificity());
+  }
+
+  @Test
   void specificityCounts() {
     // Type: (0,0,1)
     assertEquals(new CssSpecificity(0, 0, 1), CssSelectorParser.parse("div").specificity());

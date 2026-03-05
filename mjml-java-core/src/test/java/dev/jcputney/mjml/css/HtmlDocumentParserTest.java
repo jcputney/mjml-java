@@ -130,6 +130,48 @@ class HtmlDocumentParserTest {
   }
 
   @Test
+  void skipsNestedMsoConditionalComments() {
+    // Nested MSO conditionals: <!--[if mso]> ... <!--[if gte mso 9]> ... <![endif]--> <![endif]-->
+    String html =
+        "<div>"
+            + "<!--[if mso]><table><tr><td>"
+            + "<!--[if gte mso 9]><v:rect><![endif]-->"
+            + "<span>content</span>"
+            + "<!--[if mso]></v:rect><![endif]-->"
+            + "</td></tr></table><![endif]-->"
+            + "<p>visible</p>"
+            + "</div>";
+    HtmlElement root = HtmlDocumentParser.parse(html);
+    HtmlElement div = root.getChildren().get(0);
+    // The span inside the MSO comment and the p after it
+    // Parser should handle nesting without crashing
+    assertNotNull(div);
+    assertTrue(div.getChildren().size() >= 1, "Should have at least the <p> element");
+  }
+
+  @Test
+  void handlesMalformedMsoCommentGracefully() {
+    // Malformed MSO comment with no proper closing
+    String html = "<div><!--[if mso]><table><tr><td>mso content<span>real</span></div>";
+    HtmlElement root = HtmlDocumentParser.parse(html);
+    assertNotNull(root, "Should not throw on malformed MSO comments");
+    assertTrue(root.getChildren().size() >= 1, "Should parse at least the div");
+  }
+
+  @Test
+  void skipsMsoConditionalsPreservingRealContent() {
+    String html =
+        "<div><!--[if mso | IE]><table><![endif]-->"
+            + "<span class=\"real\">text</span>"
+            + "<!--[if mso | IE]></table><![endif]--></div>";
+    HtmlElement root = HtmlDocumentParser.parse(html);
+    HtmlElement div = root.getChildren().get(0);
+    // The real span should be parsed
+    boolean hasSpan = div.getChildren().stream().anyMatch(e -> "span".equals(e.getTagName()));
+    assertTrue(hasSpan, "Real content between MSO conditionals should be parsed");
+  }
+
+  @Test
   void skipsStyleContentFromParsing() {
     HtmlElement root =
         HtmlDocumentParser.parse("<style><div>not a real div</div></style><div>real</div>");

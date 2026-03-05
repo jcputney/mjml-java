@@ -97,4 +97,89 @@ class MjWrapperRenderTest {
     // Content
     assertTrue(html.contains("Full width wrapper"), "Should render content");
   }
+
+  @Test
+  void renderBgImageWithoutBgColor() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-wrapper background-url="https://example.com/bg-only.jpg">
+              <mj-section>
+                <mj-column><mj-text>Bg image only</mj-text></mj-column>
+              </mj-section>
+            </mj-wrapper>
+          </mj-body>
+        </mjml>
+        """);
+    // VML should still render
+    assertTrue(html.contains("v:rect"), "Should have VML rect for bg image");
+    assertTrue(html.contains("v:fill"), "Should have VML fill");
+    assertTrue(html.contains("bg-only.jpg"), "Should reference bg image");
+    assertTrue(html.contains("Bg image only"), "Should render child content");
+  }
+
+  @Test
+  void renderBgWithRepeatSizePosition() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-wrapper
+              background-url="https://example.com/pattern.png"
+              background-color="#aabbcc"
+              background-repeat="repeat"
+              background-size="cover"
+              background-position="left top"
+            >
+              <mj-section>
+                <mj-column><mj-text>Repeat bg</mj-text></mj-column>
+              </mj-section>
+            </mj-wrapper>
+          </mj-body>
+        </mjml>
+        """);
+    assertTrue(html.contains("v:rect"), "Should have VML rect");
+    assertTrue(html.contains("pattern.png"), "Should reference bg image");
+    assertTrue(html.contains("#aabbcc"), "Should have background color");
+    assertTrue(html.contains("Repeat bg"), "Should render child content");
+  }
+
+  @Test
+  void renderWrapperWithMultipleChildSections() {
+    String html =
+        render(
+            // language=MJML
+            """
+        <mjml>
+          <mj-body>
+            <mj-wrapper background-color="#eeeeee" css-class="my-wrapper">
+              <mj-section>
+                <mj-column><mj-text>Section One</mj-text></mj-column>
+              </mj-section>
+              <mj-section>
+                <mj-column><mj-text>Section Two</mj-text></mj-column>
+              </mj-section>
+              <mj-section>
+                <mj-column><mj-text>Section Three</mj-text></mj-column>
+              </mj-section>
+            </mj-wrapper>
+          </mj-body>
+        </mjml>
+        """);
+    // MSO conditional present
+    assertTrue(html.contains("<!--[if mso | IE]>"), "Should have MSO conditional");
+    // All three sections rendered
+    assertTrue(html.contains("Section One"), "Should render first section");
+    assertTrue(html.contains("Section Two"), "Should render second section");
+    assertTrue(html.contains("Section Three"), "Should render third section");
+    // css-class with -outlook suffix for MSO
+    assertTrue(html.contains("my-wrapper-outlook"), "Should have -outlook suffix on MSO table");
+    // Background color applied
+    assertTrue(html.contains("#eeeeee"), "Should have wrapper background color");
+  }
 }

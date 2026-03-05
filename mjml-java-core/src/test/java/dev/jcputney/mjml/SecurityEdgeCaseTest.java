@@ -1,13 +1,23 @@
 package dev.jcputney.mjml;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.parser.MjmlPreprocessor;
 import dev.jcputney.mjml.render.VmlHelper;
 import dev.jcputney.mjml.util.CssEscaper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Security edge case tests covering: - sanitizeHref allowlist coverage - sanitizeContent
@@ -429,6 +439,146 @@ class SecurityEdgeCaseTest {
 
       assertTrue(html.contains("a=\"x&quot;y\""), "First attr should be escaped");
       assertTrue(html.contains("b=\"1&lt;2\""), "Second attr should be escaped");
+    }
+  }
+
+  // ── ReDoS regression tests ──────────────────────────────────────────────
+
+  @Nested
+  class ReDoSRegression {
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    void preprocessorHandlesPathologicalNestedTags() {
+      // Pathological input: deeply nested mj-text open tags without matching closes
+      // This could cause catastrophic backtracking in a naive regex
+      StringBuilder sb = new StringBuilder("<mjml><mj-body>");
+      for (int i = 0; i < 100; i++) {
+        sb.append("<mj-text>content").append(i);
+      }
+      sb.append("</mj-text>".repeat(100));
+      sb.append("</mj-body></mjml>");
+      // Should complete without hanging
+      String result = MjmlPreprocessor.preprocess(sb.toString());
+      assertNotNull(result);
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    void preprocessorHandlesRepeatedAttributes() {
+      // Many attributes on a single mj-text tag
+      StringBuilder sb = new StringBuilder("<mj-text");
+      for (int i = 0; i < 200; i++) {
+        sb.append(" attr").append(i).append("=\"val").append(i).append("\"");
+      }
+      sb.append(">content</mj-text>");
+      String result = MjmlPreprocessor.preprocess(sb.toString());
+      assertNotNull(result);
+      assertTrue(result.contains("content"), "Content should be present in output");
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    void rendererHandlesLargeAttributeValues() {
+      // Large attribute values that could stress CSS/style parsing
+      String longValue = "x".repeat(5000);
+      String mjml =
+          """
+          <mjml>
+            <mj-body>
+              <mj-section>
+                <mj-column>
+                  <mj-text css-class="%s">content</mj-text>
+                </mj-column>
+              </mj-section>
+            </mj-body>
+          </mjml>
+          """
+              .formatted(longValue);
+      String html = MjmlRenderer.render(mjml).html();
+      assertNotNull(html);
+      assertTrue(html.contains("content"));
+    }
+  }
+
+  // ── Concurrent stress tests ─────────────────────────────────────────────
+
+  @Nested
+  class ConcurrentStress {
+
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    void concurrentRenderingWithVariedTemplates() throws Exception {
+      String[] templates = {
+        """
+          <mjml><mj-body><mj-section><mj-column>
+            <mj-text>Simple text</mj-text>
+          </mj-column></mj-section></mj-body></mjml>""",
+        """
+          <mjml><mj-body><mj-section><mj-column>
+            <mj-button href="https://example.com">Button</mj-button>
+          </mj-column></mj-section></mj-body></mjml>""",
+        """
+          <mjml><mj-body><mj-section><mj-column>
+            <mj-image src="https://example.com/img.png" />
+          </mj-column></mj-section></mj-body></mjml>""",
+      };
+
+      int threadCount = 8;
+      int iterationsPerThread = 5;
+      ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+      List<Future<String>> futures = new ArrayList<>();
+
+      for (int t = 0; t < threadCount; t++) {
+        int templateIdx = t % templates.length;
+        futures.add(
+            executor.submit(
+                () -> {
+                  for (int i = 0; i < iterationsPerThread; i++) {
+                    MjmlRenderer.render(templates[templateIdx]);
+                  }
+                  return "ok";
+                }));
+      }
+
+      executor.shutdown();
+      for (Future<String> f : futures) {
+        assertEquals("ok", f.get(), "Thread should complete without exception");
+      }
+    }
+
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    void concurrentRenderingWithMixedConfigurations() throws Exception {
+      MjmlConfiguration sanitizedConfig = MjmlConfiguration.builder().sanitizeOutput(true).build();
+      MjmlConfiguration defaultConfig = MjmlConfiguration.builder().build();
+
+      String mjml =
+          """
+          <mjml><mj-body><mj-section><mj-column>
+            <mj-text>Hello</mj-text>
+          </mj-column></mj-section></mj-body></mjml>""";
+
+      int threadCount = 6;
+      ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+      List<Future<String>> futures = new ArrayList<>();
+
+      for (int t = 0; t < threadCount; t++) {
+        MjmlConfiguration config = (t % 2 == 0) ? sanitizedConfig : defaultConfig;
+        futures.add(
+            executor.submit(
+                () -> {
+                  for (int i = 0; i < 10; i++) {
+                    MjmlRenderer.render(mjml, config);
+                  }
+                  return "ok";
+                }));
+      }
+
+      executor.shutdown();
+      for (Future<String> f : futures) {
+        assertEquals("ok", f.get(), "Thread should complete without exception");
+      }
     }
   }
 }

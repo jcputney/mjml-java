@@ -40,7 +40,6 @@ public final class VmlHelper {
       String bgPosition,
       String bgSize,
       String bgRepeat) {
-    StringBuilder sb = new StringBuilder();
     boolean isNoRepeat = "no-repeat".equals(bgRepeat);
 
     String[] posParts = CssUnitParser.WHITESPACE.split(bgPosition.trim());
@@ -74,52 +73,14 @@ public final class VmlHelper {
       }
     }
 
-    sb.append("<v:rect style=\"");
-    if (widthStyle.contains("mso-width-percent")) {
-      sb.append(widthStyle);
-    } else {
-      sb.append("width:").append(widthStyle).append(";");
-    }
-    sb.append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\">");
+    String origin = formatVmlCoord(vOriginX) + ", " + formatVmlCoord(vOriginY);
+    String position = formatVmlCoord(vPosX) + ", " + formatVmlCoord(vPosY);
 
-    sb.append("<v:fill origin=\"")
-        .append(formatVmlCoord(vOriginX))
-        .append(", ")
-        .append(formatVmlCoord(vOriginY))
-        .append("\" position=\"")
-        .append(formatVmlCoord(vPosX))
-        .append(", ")
-        .append(formatVmlCoord(vPosY))
-        .append("\" src=\"")
-        .append(HtmlEscaper.escapeAttributeValue(bgUrl))
-        .append("\"");
-
-    if (bgColor != null && !bgColor.isEmpty()) {
-      sb.append(" color=\"").append(HtmlEscaper.escapeAttributeValue(bgColor)).append("\"");
-    }
-
-    sb.append(" type=\"").append(vmlType).append("\"");
-
-    if ("cover".equals(bgSize)) {
-      sb.append(" size=\"1,1\" aspect=\"atleast\"");
-    } else if ("contain".equals(bgSize)) {
-      sb.append(" size=\"1,1\" aspect=\"atmost\"");
-    } else if (!"auto".equals(bgSize)) {
-      String[] bgSplit = CssUnitParser.WHITESPACE.split(bgSize.trim());
-      if (bgSplit.length == 1) {
-        sb.append(" size=\"")
-            .append(HtmlEscaper.escapeAttributeValue(bgSize))
-            .append("\" aspect=\"atmost\"");
-      } else {
-        sb.append(" size=\"")
-            .append(HtmlEscaper.escapeAttributeValue(String.join(",", bgSplit)))
-            .append("\"");
-      }
-    }
-
-    sb.append(" />");
-    sb.append("<v:textbox style=\"mso-fit-shape-to-text:true\" inset=\"0,0,0,0\">");
-
+    StringBuilder sb = new StringBuilder();
+    appendVmlRectOpening(sb, widthStyle);
+    appendVmlFill(sb, origin, position, bgUrl, bgColor, vmlType);
+    appendSectionBgSize(sb, bgSize);
+    appendVmlFillAndTextboxClose(sb);
     return sb.toString();
   }
 
@@ -138,9 +99,20 @@ public final class VmlHelper {
    */
   public static String buildWrapperVmlRect(
       String widthStyle, String bgUrl, String bgColor, String bgPosition, String bgSize) {
-    StringBuilder sb = new StringBuilder();
     String vmlOrigin = cssPositionToVmlOrigin(bgPosition);
 
+    StringBuilder sb = new StringBuilder();
+    appendVmlRectOpening(sb, widthStyle);
+    appendVmlFill(sb, vmlOrigin, vmlOrigin, bgUrl, bgColor, "tile");
+    appendWrapperBgSize(sb, bgSize);
+    appendVmlFillAndTextboxClose(sb);
+    return sb.toString();
+  }
+
+  // --- Private VML building blocks ---
+
+  /** Appends the {@code <v:rect style="...">} opening tag. */
+  private static void appendVmlRectOpening(StringBuilder sb, String widthStyle) {
     sb.append("<v:rect style=\"");
     if (widthStyle.contains("mso-width-percent")) {
       sb.append(widthStyle);
@@ -148,11 +120,20 @@ public final class VmlHelper {
       sb.append("width:").append(widthStyle).append(";");
     }
     sb.append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\">");
+  }
 
+  /** Appends the {@code <v:fill origin="..." position="..." src="..." [color="..."] type="...">} */
+  private static void appendVmlFill(
+      StringBuilder sb,
+      String origin,
+      String position,
+      String bgUrl,
+      String bgColor,
+      String vmlType) {
     sb.append("<v:fill origin=\"")
-        .append(vmlOrigin)
+        .append(origin)
         .append("\" position=\"")
-        .append(vmlOrigin)
+        .append(position)
         .append("\" src=\"")
         .append(HtmlEscaper.escapeAttributeValue(bgUrl))
         .append("\"");
@@ -161,8 +142,31 @@ public final class VmlHelper {
       sb.append(" color=\"").append(HtmlEscaper.escapeAttributeValue(bgColor)).append("\"");
     }
 
-    sb.append(" type=\"tile\"");
+    sb.append(" type=\"").append(vmlType).append("\"");
+  }
 
+  /** Appends section-specific bgSize attributes (single value gets aspect="atmost"). */
+  private static void appendSectionBgSize(StringBuilder sb, String bgSize) {
+    if ("cover".equals(bgSize)) {
+      sb.append(" size=\"1,1\" aspect=\"atleast\"");
+    } else if ("contain".equals(bgSize)) {
+      sb.append(" size=\"1,1\" aspect=\"atmost\"");
+    } else if (!"auto".equals(bgSize)) {
+      String[] bgSplit = CssUnitParser.WHITESPACE.split(bgSize.trim());
+      if (bgSplit.length == 1) {
+        sb.append(" size=\"")
+            .append(HtmlEscaper.escapeAttributeValue(bgSize))
+            .append("\" aspect=\"atmost\"");
+      } else {
+        sb.append(" size=\"")
+            .append(HtmlEscaper.escapeAttributeValue(String.join(",", bgSplit)))
+            .append("\"");
+      }
+    }
+  }
+
+  /** Appends wrapper-specific bgSize attributes (spaces replaced with commas). */
+  private static void appendWrapperBgSize(StringBuilder sb, String bgSize) {
     if ("cover".equals(bgSize)) {
       sb.append(" size=\"1,1\" aspect=\"atleast\"");
     } else if ("contain".equals(bgSize)) {
@@ -172,11 +176,12 @@ public final class VmlHelper {
           .append(HtmlEscaper.escapeAttributeValue(bgSize.trim().replace(" ", ",")))
           .append("\"");
     }
+  }
 
+  /** Closes the {@code <v:fill />} and opens the {@code <v:textbox>}. */
+  private static void appendVmlFillAndTextboxClose(StringBuilder sb) {
     sb.append(" />");
     sb.append("<v:textbox style=\"mso-fit-shape-to-text:true\" inset=\"0,0,0,0\">");
-
-    return sb.toString();
   }
 
   // --- Shared sub-helpers ---

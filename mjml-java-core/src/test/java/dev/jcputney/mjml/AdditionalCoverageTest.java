@@ -1,6 +1,7 @@
 package dev.jcputney.mjml;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -244,6 +245,116 @@ class AdditionalCoverageTest {
       String html = MjmlRenderer.render(mjml, config).html();
       // Default config uses Direction.AUTO
       assertTrue(html.contains("dir=\"auto\""), "Default configuration should use dir=\"auto\"");
+    }
+  }
+
+  // ─── Direction enum branch coverage ──────────────────────────────────────
+
+  @Nested
+  class DirectionEnumBranches {
+
+    @Test
+    void directionLtrSetsExplicitDir() {
+      MjmlConfiguration config = MjmlConfiguration.builder().direction(Direction.LTR).build();
+
+      String mjml =
+          // language=MJML
+          """
+          <mjml>
+            <mj-body>
+              <mj-section>
+                <mj-column>
+                  <mj-text>LTR content</mj-text>
+                </mj-column>
+              </mj-section>
+            </mj-body>
+          </mjml>
+          """;
+
+      String html = MjmlRenderer.render(mjml, config).html();
+      assertNotNull(html);
+      assertTrue(
+          html.contains("dir=\"ltr\""), "Direction.LTR should produce dir=\"ltr\" on html element");
+    }
+
+    @Test
+    void directionRtlSetsExplicitDir() {
+      MjmlConfiguration config = MjmlConfiguration.builder().direction(Direction.RTL).build();
+
+      String mjml =
+          // language=MJML
+          """
+          <mjml>
+            <mj-body>
+              <mj-section>
+                <mj-column>
+                  <mj-text>RTL content</mj-text>
+                </mj-column>
+              </mj-section>
+            </mj-body>
+          </mjml>
+          """;
+
+      String html = MjmlRenderer.render(mjml, config).html();
+      assertNotNull(html);
+      assertTrue(
+          html.contains("dir=\"rtl\""), "Direction.RTL should produce dir=\"rtl\" on html element");
+    }
+
+    @Test
+    void directionAutoDoesNotSetLtrOrRtl() {
+      MjmlConfiguration config = MjmlConfiguration.builder().direction(Direction.AUTO).build();
+
+      String mjml =
+          // language=MJML
+          """
+          <mjml>
+            <mj-body>
+              <mj-section>
+                <mj-column>
+                  <mj-text>Auto direction</mj-text>
+                </mj-column>
+              </mj-section>
+            </mj-body>
+          </mjml>
+          """;
+
+      String html = MjmlRenderer.render(mjml, config).html();
+      assertNotNull(html);
+      assertTrue(html.contains("dir=\"auto\""), "Direction.AUTO should produce dir=\"auto\"");
+      // Ensure it doesn't set dir="ltr" or dir="rtl"
+      assertFalse(html.contains("dir=\"ltr\""), "Direction.AUTO should not produce dir=\"ltr\"");
+      assertFalse(html.contains("dir=\"rtl\""), "Direction.AUTO should not produce dir=\"rtl\"");
+    }
+
+    @Test
+    void directionOfParsesStrings() {
+      assertEquals(Direction.LTR, Direction.of("ltr"));
+      assertEquals(Direction.RTL, Direction.of("rtl"));
+      assertEquals(Direction.AUTO, Direction.of("auto"));
+    }
+
+    @Test
+    void directionOfCaseInsensitive() {
+      assertEquals(Direction.LTR, Direction.of("LTR"));
+      assertEquals(Direction.RTL, Direction.of("Rtl"));
+      assertEquals(Direction.AUTO, Direction.of("AUTO"));
+    }
+
+    @Test
+    void directionOfRejectsNull() {
+      assertThrows(IllegalArgumentException.class, () -> Direction.of(null));
+    }
+
+    @Test
+    void directionOfRejectsUnknown() {
+      assertThrows(IllegalArgumentException.class, () -> Direction.of("bidi"));
+    }
+
+    @Test
+    void directionStringBuilderOverload() {
+      MjmlConfiguration config = MjmlConfiguration.builder().direction("rtl").build();
+      assertEquals(Direction.RTL, config.getDirection());
     }
   }
 

@@ -42,7 +42,8 @@ public class AttributeContext {
    * @return the attribute map for the tag, or an empty map if none are set
    */
   public Map<String, String> getDefaultAttributes(String tagName) {
-    return defaultAttributes.getOrDefault(tagName, Map.of());
+    Map<String, String> attrs = defaultAttributes.get(tagName);
+    return attrs != null ? Collections.unmodifiableMap(attrs) : Map.of();
   }
 
   /**
@@ -72,7 +73,8 @@ public class AttributeContext {
    * @return the attribute map for the class, or an empty map if none are set
    */
   public Map<String, String> getClassAttributes(String className) {
-    return classAttributes.getOrDefault(className, Map.of());
+    Map<String, String> attrs = classAttributes.get(className);
+    return attrs != null ? Collections.unmodifiableMap(attrs) : Map.of();
   }
 
   /**

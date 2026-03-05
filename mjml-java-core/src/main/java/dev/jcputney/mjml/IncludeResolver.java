@@ -19,6 +19,8 @@ public interface IncludeResolver {
    * @param context metadata about the include chain (including path, type, depth)
    * @return the resolved content string
    * @throws MjmlException if the path cannot be resolved
+   * @implNote Implementations should validate paths to prevent directory traversal attacks (e.g.,
+   *     paths containing "../" sequences).
    */
   String resolve(String path, ResolverContext context);
 }
