@@ -12,23 +12,23 @@ package dev.jcputney.mjml;
  */
 public record ResolverContext(String includingPath, String includeType, int depth) {
 
-  /**
-   * Creates a root context for top-level includes.
-   *
-   * @param includeType the include type
-   * @return a new context with null includingPath and depth 0
-   */
-  public static ResolverContext root(String includeType) {
-    return new ResolverContext(null, includeType, 0);
-  }
+    /**
+     * Creates a root context for top-level includes.
+     *
+     * @param includeType the include type
+     * @return a new context with null includingPath and depth 0
+     */
+    public static ResolverContext root(String includeType) {
+        return new ResolverContext(null, includeType, 0);
+    }
 
-  /**
-   * Creates a nested context for includes within included files.
-   *
-   * @param newIncludingPath the path of the file that contains the nested include
-   * @return a new context with incremented depth
-   */
-  public ResolverContext nested(String newIncludingPath) {
-    return new ResolverContext(newIncludingPath, includeType, depth + 1);
-  }
+    /**
+     * Creates a nested context for includes within included files.
+     *
+     * @param newIncludingPath the path of the file that contains the nested include
+     * @return a new context with incremented depth
+     */
+    public ResolverContext nested(String newIncludingPath) {
+        return new ResolverContext(newIncludingPath, includeType, depth + 1);
+    }
 }

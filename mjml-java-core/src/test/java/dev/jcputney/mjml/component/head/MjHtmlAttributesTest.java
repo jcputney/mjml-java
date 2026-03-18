@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 /** Tests for mj-html-attributes processing and application. */
 class MjHtmlAttributesTest {
 
-  @Test
-  void appliesDataAttributeToMatchingElement() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void appliesDataAttributeToMatchingElement() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -31,18 +31,17 @@ class MjHtmlAttributesTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertTrue(
-        html.contains("data-id=\"123\""),
-        "Should apply data-id attribute to element matching .custom-class");
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertTrue(
+                html.contains("data-id=\"123\""), "Should apply data-id attribute to element matching .custom-class");
+    }
 
-  @Test
-  void appliesMultipleAttributesToSameSelector() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void appliesMultipleAttributesToSameSelector() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -62,17 +61,17 @@ class MjHtmlAttributesTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertTrue(html.contains("data-x=\"a\""), "Should apply data-x attribute");
-    assertTrue(html.contains("data-y=\"b\""), "Should apply data-y attribute");
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertTrue(html.contains("data-x=\"a\""), "Should apply data-x attribute");
+        assertTrue(html.contains("data-y=\"b\""), "Should apply data-y attribute");
+    }
 
-  @Test
-  void doesNotApplyToNonMatchingElements() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void doesNotApplyToNonMatchingElements() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -91,17 +90,16 @@ class MjHtmlAttributesTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(
-        html.contains("data-test"), "Should not apply attribute when no element matches selector");
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.contains("data-test"), "Should not apply attribute when no element matches selector");
+    }
 
-  @Test
-  void handlesEmptyHtmlAttributes() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void handlesEmptyHtmlAttributes() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -117,16 +115,16 @@ class MjHtmlAttributesTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertTrue(html.contains("Content"));
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertTrue(html.contains("Content"));
+    }
 
-  @Test
-  void handlesMultipleSelectorsInSameBlock() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void handlesMultipleSelectorsInSameBlock() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-html-attributes>
@@ -153,9 +151,9 @@ class MjHtmlAttributesTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertTrue(html.contains("data-order=\"1\""), "Should apply first selector attributes");
-    assertTrue(html.contains("data-order=\"2\""), "Should apply second selector attributes");
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertTrue(html.contains("data-order=\"1\""), "Should apply first selector attributes");
+        assertTrue(html.contains("data-order=\"2\""), "Should apply second selector attributes");
+    }
 }

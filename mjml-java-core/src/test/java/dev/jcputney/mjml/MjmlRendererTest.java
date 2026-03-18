@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 class MjmlRendererTest {
 
-  @Test
-  void rendersSimpleTextTemplate() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersSimpleTextTemplate() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -26,20 +26,20 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
+        String html = MjmlRenderer.render(mjml).html();
 
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    assertTrue(html.contains("<!doctype html>"));
-    assertTrue(html.contains("Hello World"));
-    assertTrue(html.contains("</html>"));
-  }
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        assertTrue(html.contains("<!doctype html>"));
+        assertTrue(html.contains("Hello World"));
+        assertTrue(html.contains("</html>"));
+    }
 
-  @Test
-  void rendersWithTitle() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersWithTitle() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-title>My Email</mj-title>
@@ -54,17 +54,17 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    MjmlRenderResult result = MjmlRenderer.render(mjml, MjmlConfiguration.defaults());
+        MjmlRenderResult result = MjmlRenderer.render(mjml, MjmlConfiguration.defaults());
 
-    assertEquals("My Email", result.title());
-    assertTrue(result.html().contains("<title>My Email</title>"));
-  }
+        assertEquals("My Email", result.title());
+        assertTrue(result.html().contains("<title>My Email</title>"));
+    }
 
-  @Test
-  void rendersPreviewText() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersPreviewText() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-preview>Preview text here</mj-preview>
@@ -79,16 +79,16 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertTrue(html.contains("Preview text here"));
-    assertTrue(html.contains("display:none"));
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertTrue(html.contains("Preview text here"));
+        assertTrue(html.contains("display:none"));
+    }
 
-  @Test
-  void rendersTwoColumns() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersTwoColumns() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -103,19 +103,19 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
+        String html = MjmlRenderer.render(mjml).html();
 
-    assertTrue(html.contains("Left column"));
-    assertTrue(html.contains("Right column"));
-    // Should have MSO conditional comments for columns
-    assertTrue(html.contains("<!--[if mso | IE]>"));
-  }
+        assertTrue(html.contains("Left column"));
+        assertTrue(html.contains("Right column"));
+        // Should have MSO conditional comments for columns
+        assertTrue(html.contains("<!--[if mso | IE]>"));
+    }
 
-  @Test
-  void rendersWithLanguage() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersWithLanguage() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -127,17 +127,17 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    MjmlConfiguration config = MjmlConfiguration.builder().language("en").build();
-    MjmlRenderResult result = MjmlRenderer.render(mjml, config);
+        MjmlConfiguration config = MjmlConfiguration.builder().language("en").build();
+        MjmlRenderResult result = MjmlRenderer.render(mjml, config);
 
-    assertTrue(result.html().contains("lang=\"en\""));
-  }
+        assertTrue(result.html().contains("lang=\"en\""));
+    }
 
-  @Test
-  void containsRequiredHtmlStructure() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void containsRequiredHtmlStructure() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -149,42 +149,42 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
+        String html = MjmlRenderer.render(mjml).html();
 
-    // DOCTYPE
-    assertTrue(html.contains("<!doctype html>"));
-    // Namespaces for Outlook
-    assertTrue(html.contains("xmlns:v=\"urn:schemas-microsoft-com:vml\""));
-    assertTrue(html.contains("xmlns:o=\"urn:schemas-microsoft-com:office:office\""));
-    // Meta tags
-    assertTrue(html.contains("Content-Type"));
-    assertTrue(html.contains("viewport"));
-    // MSO Office settings
-    assertTrue(html.contains("OfficeDocumentSettings"));
-    assertTrue(html.contains("AllowPNG"));
-    // Base CSS resets
-    assertTrue(html.contains("#outlook a"));
-    assertTrue(html.contains("border-collapse: collapse"));
-    // Body
-    assertTrue(html.contains("<body"));
-    assertTrue(html.contains("</body>"));
-  }
+        // DOCTYPE
+        assertTrue(html.contains("<!doctype html>"));
+        // Namespaces for Outlook
+        assertTrue(html.contains("xmlns:v=\"urn:schemas-microsoft-com:vml\""));
+        assertTrue(html.contains("xmlns:o=\"urn:schemas-microsoft-com:office:office\""));
+        // Meta tags
+        assertTrue(html.contains("Content-Type"));
+        assertTrue(html.contains("viewport"));
+        // MSO Office settings
+        assertTrue(html.contains("OfficeDocumentSettings"));
+        assertTrue(html.contains("AllowPNG"));
+        // Base CSS resets
+        assertTrue(html.contains("#outlook a"));
+        assertTrue(html.contains("border-collapse: collapse"));
+        // Body
+        assertTrue(html.contains("<body"));
+        assertTrue(html.contains("</body>"));
+    }
 
-  @Test
-  void throwsOnNullInput() {
-    assertThrows(MjmlException.class, () -> MjmlRenderer.render((String) null));
-  }
+    @Test
+    void throwsOnNullInput() {
+        assertThrows(MjmlException.class, () -> MjmlRenderer.render((String) null));
+    }
 
-  @Test
-  void throwsOnEmptyInput() {
-    assertThrows(MjmlException.class, () -> MjmlRenderer.render(""));
-  }
+    @Test
+    void throwsOnEmptyInput() {
+        assertThrows(MjmlException.class, () -> MjmlRenderer.render(""));
+    }
 
-  @Test
-  void rendersWithHtmlEntities() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersWithHtmlEntities() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -196,17 +196,17 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    // Should render without error
-    assertTrue(html.contains("<!doctype html>"));
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        // Should render without error
+        assertTrue(html.contains("<!doctype html>"));
+    }
 
-  @Test
-  void rendersWithFonts() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersWithFonts() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto" />
@@ -221,16 +221,16 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertTrue(html.contains("fonts.googleapis.com"));
-    assertTrue(html.contains("Roboto"));
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertTrue(html.contains("fonts.googleapis.com"));
+        assertTrue(html.contains("Roboto"));
+    }
 
-  @Test
-  void rendersWithCustomStyle() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersWithCustomStyle() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-style>.custom { color: red; }</mj-style>
@@ -245,8 +245,8 @@ class MjmlRendererTest {
         </mjml>
         """;
 
-    String html = MjmlRenderer.render(mjml).html();
-    assertTrue(html.contains(".custom {"), "Style block should contain custom class");
-    assertTrue(html.contains("color: red;"), "Style block should contain color rule");
-  }
+        String html = MjmlRenderer.render(mjml).html();
+        assertTrue(html.contains(".custom {"), "Style block should contain custom class");
+        assertTrue(html.contains("color: red;"), "Style block should contain color rule");
+    }
 }

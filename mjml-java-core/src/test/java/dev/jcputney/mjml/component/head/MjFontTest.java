@@ -10,19 +10,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-font component rendering. */
 class MjFontTest {
 
-  private String render(String mjml) {
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    return html;
-  }
+    private String render(String mjml) {
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        return html;
+    }
 
-  @Test
-  void fontLinkInOutput() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void fontLinkInOutput() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto" />
@@ -37,17 +36,14 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("fonts.googleapis.com"),
-        "Should include Google Fonts link in the HTML output");
-  }
+        assertTrue(html.contains("fonts.googleapis.com"), "Should include Google Fonts link in the HTML output");
+    }
 
-  @Test
-  void fontRegistrationAppearsInStyleTag() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void fontRegistrationAppearsInStyleTag() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="Open Sans" href="https://fonts.googleapis.com/css?family=Open+Sans" />
@@ -62,17 +58,16 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("@import url(") || html.contains("<link"),
-        "Should include font import or link tag in the output");
-  }
+        assertTrue(
+                html.contains("@import url(") || html.contains("<link"),
+                "Should include font import or link tag in the output");
+    }
 
-  @Test
-  void multipleFontsRegistered() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void multipleFontsRegistered() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="Lato" href="https://fonts.googleapis.com/css?family=Lato" />
@@ -89,16 +84,15 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("family=Lato"), "Should include first font reference");
-    assertTrue(html.contains("family=Merriweather"), "Should include second font reference");
-  }
+        assertTrue(html.contains("family=Lato"), "Should include first font reference");
+        assertTrue(html.contains("family=Merriweather"), "Should include second font reference");
+    }
 
-  @Test
-  void emptyNameIsIgnored() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void emptyNameIsIgnored() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="" href="https://fonts.googleapis.com/css?family=Roboto" />
@@ -113,15 +107,14 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertFalse(html.contains("family=Roboto"), "Empty name should cause the font to be skipped");
-  }
+        assertFalse(html.contains("family=Roboto"), "Empty name should cause the font to be skipped");
+    }
 
-  @Test
-  void emptyHrefIsIgnored() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void emptyHrefIsIgnored() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="Roboto" href="" />
@@ -136,17 +129,15 @@ class MjFontTest {
         </mjml>
         """);
 
-    // With empty href, the font should not be registered (no @import for it)
-    assertFalse(
-        html.contains("@import url(Roboto"), "Empty href should cause the font to be skipped");
-  }
+        // With empty href, the font should not be registered (no @import for it)
+        assertFalse(html.contains("@import url(Roboto"), "Empty href should cause the font to be skipped");
+    }
 
-  @Test
-  void nonHttpHrefIsRejected() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void nonHttpHrefIsRejected() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-font name="EvilFont" href="javascript:alert(1)" />
@@ -161,7 +152,7 @@ class MjFontTest {
         </mjml>
         """);
 
-    assertFalse(html.contains("javascript:"), "Non-http/https href should be rejected");
-    assertFalse(html.contains("EvilFont"), "Font with invalid href should not be registered");
-  }
+        assertFalse(html.contains("javascript:"), "Non-http/https href should be rejected");
+        assertFalse(html.contains("EvilFont"), "Font with invalid href should not be registered");
+    }
 }

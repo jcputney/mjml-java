@@ -14,20 +14,23 @@ import org.springframework.context.annotation.Configuration;
 @SpringBootTest(classes = MjmlServiceIntegrationTest.TestConfig.class)
 class MjmlServiceIntegrationTest {
 
-  @Autowired private MjmlService mjmlService;
-  @Autowired private MjmlConfiguration mjmlConfiguration;
+    @Autowired
+    private MjmlService mjmlService;
 
-  @Test
-  void serviceIsWired() {
-    assertThat(mjmlService).isNotNull();
-    assertThat(mjmlConfiguration).isNotNull();
-  }
+    @Autowired
+    private MjmlConfiguration mjmlConfiguration;
 
-  @Test
-  void rendersSimpleMjml() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void serviceIsWired() {
+        assertThat(mjmlService).isNotNull();
+        assertThat(mjmlConfiguration).isNotNull();
+    }
+
+    @Test
+    void rendersSimpleMjml() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -39,16 +42,16 @@ class MjmlServiceIntegrationTest {
         </mjml>
         """;
 
-    String html = mjmlService.render(mjml);
-    assertThat(html).contains("<!doctype html>");
-    assertThat(html).contains("Integration test content");
-  }
+        String html = mjmlService.render(mjml);
+        assertThat(html).contains("<!doctype html>");
+        assertThat(html).contains("Integration test content");
+    }
 
-  @Test
-  void rendersWithMetadata() {
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void rendersWithMetadata() {
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-title>Integration Title</mj-title>
@@ -64,13 +67,13 @@ class MjmlServiceIntegrationTest {
         </mjml>
         """;
 
-    MjmlRenderResult result = mjmlService.renderResult(mjml);
-    assertThat(result.title()).isEqualTo("Integration Title");
-    assertThat(result.previewText()).isEqualTo("Integration Preview");
-    assertThat(result.html()).contains("Content");
-  }
+        MjmlRenderResult result = mjmlService.renderResult(mjml);
+        assertThat(result.title()).isEqualTo("Integration Title");
+        assertThat(result.previewText()).isEqualTo("Integration Preview");
+        assertThat(result.html()).contains("Content");
+    }
 
-  @Configuration(proxyBeanMethods = false)
-  @ImportAutoConfiguration(MjmlAutoConfiguration.class)
-  static class TestConfig {}
+    @Configuration(proxyBeanMethods = false)
+    @ImportAutoConfiguration(MjmlAutoConfiguration.class)
+    static class TestConfig {}
 }

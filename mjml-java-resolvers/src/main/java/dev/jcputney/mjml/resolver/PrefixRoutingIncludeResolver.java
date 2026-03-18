@@ -16,84 +16,84 @@ import java.util.Map;
  */
 public final class PrefixRoutingIncludeResolver implements IncludeResolver {
 
-  private final LinkedHashMap<String, IncludeResolver> routes;
-  private final IncludeResolver defaultResolver;
+    private final LinkedHashMap<String, IncludeResolver> routes;
+    private final IncludeResolver defaultResolver;
 
-  private PrefixRoutingIncludeResolver(
-      LinkedHashMap<String, IncludeResolver> routes, IncludeResolver defaultResolver) {
-    this.routes = routes;
-    this.defaultResolver = defaultResolver;
-  }
-
-  /**
-   * Returns a new builder.
-   *
-   * @return builder instance
-   */
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  /**
-   * Resolves by matching the first configured prefix in insertion order. The matched prefix is
-   * stripped before delegating.
-   *
-   * @throws MjmlIncludeException if no prefix matches and no default resolver is configured
-   */
-  @Override
-  public String resolve(String path, ResolverContext context) {
-    for (Map.Entry<String, IncludeResolver> entry : routes.entrySet()) {
-      if (path.startsWith(entry.getKey())) {
-        String strippedPath = path.substring(entry.getKey().length());
-        return entry.getValue().resolve(strippedPath, context);
-      }
-    }
-
-    if (defaultResolver != null) {
-      return defaultResolver.resolve(path, context);
-    }
-
-    throw new MjmlIncludeException("No resolver matched prefix for path: " + path);
-  }
-
-  /** Builder for {@link PrefixRoutingIncludeResolver}. */
-  public static final class Builder {
-
-    private final LinkedHashMap<String, IncludeResolver> routes = new LinkedHashMap<>();
-    private IncludeResolver defaultResolver;
-
-    private Builder() {}
-
-    /**
-     * Adds a prefix-to-resolver route. Prefixes are matched in insertion order.
-     *
-     * @param prefix the prefix to match (e.g. "classpath:", "https://")
-     * @param resolver the resolver to delegate to
-     * @return this builder
-     */
-    public Builder route(String prefix, IncludeResolver resolver) {
-      routes.put(prefix, resolver);
-      return this;
+    private PrefixRoutingIncludeResolver(
+            LinkedHashMap<String, IncludeResolver> routes, IncludeResolver defaultResolver) {
+        this.routes = routes;
+        this.defaultResolver = defaultResolver;
     }
 
     /**
-     * Sets the default resolver for paths that don't match any prefix.
+     * Returns a new builder.
      *
-     * @param resolver the fallback resolver
-     * @return this builder
+     * @return builder instance
      */
-    public Builder defaultResolver(IncludeResolver resolver) {
-      this.defaultResolver = resolver;
-      return this;
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
-     * Builds the prefix routing resolver.
+     * Resolves by matching the first configured prefix in insertion order. The matched prefix is
+     * stripped before delegating.
      *
-     * @return a new {@link PrefixRoutingIncludeResolver}
+     * @throws MjmlIncludeException if no prefix matches and no default resolver is configured
      */
-    public PrefixRoutingIncludeResolver build() {
-      return new PrefixRoutingIncludeResolver(new LinkedHashMap<>(routes), defaultResolver);
+    @Override
+    public String resolve(String path, ResolverContext context) {
+        for (Map.Entry<String, IncludeResolver> entry : routes.entrySet()) {
+            if (path.startsWith(entry.getKey())) {
+                String strippedPath = path.substring(entry.getKey().length());
+                return entry.getValue().resolve(strippedPath, context);
+            }
+        }
+
+        if (defaultResolver != null) {
+            return defaultResolver.resolve(path, context);
+        }
+
+        throw new MjmlIncludeException("No resolver matched prefix for path: " + path);
     }
-  }
+
+    /** Builder for {@link PrefixRoutingIncludeResolver}. */
+    public static final class Builder {
+
+        private final LinkedHashMap<String, IncludeResolver> routes = new LinkedHashMap<>();
+        private IncludeResolver defaultResolver;
+
+        private Builder() {}
+
+        /**
+         * Adds a prefix-to-resolver route. Prefixes are matched in insertion order.
+         *
+         * @param prefix the prefix to match (e.g. "classpath:", "https://")
+         * @param resolver the resolver to delegate to
+         * @return this builder
+         */
+        public Builder route(String prefix, IncludeResolver resolver) {
+            routes.put(prefix, resolver);
+            return this;
+        }
+
+        /**
+         * Sets the default resolver for paths that don't match any prefix.
+         *
+         * @param resolver the fallback resolver
+         * @return this builder
+         */
+        public Builder defaultResolver(IncludeResolver resolver) {
+            this.defaultResolver = resolver;
+            return this;
+        }
+
+        /**
+         * Builds the prefix routing resolver.
+         *
+         * @return a new {@link PrefixRoutingIncludeResolver}
+         */
+        public PrefixRoutingIncludeResolver build() {
+            return new PrefixRoutingIncludeResolver(new LinkedHashMap<>(routes), defaultResolver);
+        }
+    }
 }

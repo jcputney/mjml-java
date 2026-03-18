@@ -19,9 +19,9 @@ import org.junit.jupiter.api.Test;
  */
 class ThreadSafetyTest {
 
-  private static final String SIMPLE_TEMPLATE =
-      // language=MJML
-      """
+    private static final String SIMPLE_TEMPLATE =
+            // language=MJML
+            """
       <mjml>
         <mj-body>
           <mj-section>
@@ -33,54 +33,50 @@ class ThreadSafetyTest {
       </mjml>
       """;
 
-  private static final int THREAD_COUNT = 32;
+    private static final int THREAD_COUNT = 32;
 
-  @Test
-  void sharedRendererProducesCorrectOutputAcross32Threads() throws InterruptedException {
-    MjmlRenderer sharedRenderer = MjmlRenderer.create();
+    @Test
+    void sharedRendererProducesCorrectOutputAcross32Threads() throws InterruptedException {
+        MjmlRenderer sharedRenderer = MjmlRenderer.create();
 
-    ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
-    CountDownLatch startLatch = new CountDownLatch(1);
-    CountDownLatch doneLatch = new CountDownLatch(THREAD_COUNT);
-    List<String> results = new CopyOnWriteArrayList<>();
-    List<Throwable> errors = new CopyOnWriteArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch doneLatch = new CountDownLatch(THREAD_COUNT);
+        List<String> results = new CopyOnWriteArrayList<>();
+        List<Throwable> errors = new CopyOnWriteArrayList<>();
 
-    for (int t = 0; t < THREAD_COUNT; t++) {
-      executor.submit(
-          () -> {
-            try {
-              startLatch.await();
-              MjmlRenderResult result = sharedRenderer.renderTemplate(SIMPLE_TEMPLATE);
-              String html = result.html();
-              assertNotNull(html, "Rendered HTML must not be null");
-              assertFalse(html.isEmpty(), "Rendered HTML must not be empty");
-              assertTrue(
-                  html.contains("<!doctype html>"), "Rendered HTML must contain <!doctype html>");
-              assertTrue(
-                  html.contains("Hello World"), "Rendered HTML must contain the template text");
-              results.add(html);
-            } catch (Throwable e) {
-              errors.add(e);
-            } finally {
-              doneLatch.countDown();
-            }
-          });
+        for (int t = 0; t < THREAD_COUNT; t++) {
+            executor.submit(() -> {
+                try {
+                    startLatch.await();
+                    MjmlRenderResult result = sharedRenderer.renderTemplate(SIMPLE_TEMPLATE);
+                    String html = result.html();
+                    assertNotNull(html, "Rendered HTML must not be null");
+                    assertFalse(html.isEmpty(), "Rendered HTML must not be empty");
+                    assertTrue(html.contains("<!doctype html>"), "Rendered HTML must contain <!doctype html>");
+                    assertTrue(html.contains("Hello World"), "Rendered HTML must contain the template text");
+                    results.add(html);
+                } catch (Throwable e) {
+                    errors.add(e);
+                } finally {
+                    doneLatch.countDown();
+                }
+            });
+        }
+
+        startLatch.countDown();
+        assertTrue(doneLatch.await(60, TimeUnit.SECONDS), "All 32 threads should finish within 60 seconds");
+        executor.shutdown();
+
+        if (!errors.isEmpty()) {
+            Throwable first = errors.get(0);
+            fail(
+                    "Expected no errors across 32 concurrent renders but got "
+                            + errors.size()
+                            + ". First: "
+                            + first.getMessage(),
+                    first);
+        }
+        assertEquals(THREAD_COUNT, results.size(), "All 32 threads should produce a result");
     }
-
-    startLatch.countDown();
-    assertTrue(
-        doneLatch.await(60, TimeUnit.SECONDS), "All 32 threads should finish within 60 seconds");
-    executor.shutdown();
-
-    if (!errors.isEmpty()) {
-      Throwable first = errors.get(0);
-      fail(
-          "Expected no errors across 32 concurrent renders but got "
-              + errors.size()
-              + ". First: "
-              + first.getMessage(),
-          first);
-    }
-    assertEquals(THREAD_COUNT, results.size(), "All 32 threads should produce a result");
-  }
 }

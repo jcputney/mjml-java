@@ -14,19 +14,18 @@ import org.junit.jupiter.api.Test;
  */
 class AttributeCascadeIntegrationTest {
 
-  private String render(String mjml) {
-    MjmlRenderResult result = MjmlRenderer.render(mjml);
-    assertNotNull(result.html());
-    assertFalse(result.html().isEmpty());
-    return result.html();
-  }
+    private String render(String mjml) {
+        MjmlRenderResult result = MjmlRenderer.render(mjml);
+        assertNotNull(result.html());
+        assertFalse(result.html().isEmpty());
+        return result.html();
+    }
 
-  @Test
-  void inlineOverridesMjClass() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void inlineOverridesMjClass() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -42,16 +41,15 @@ class AttributeCascadeIntegrationTest {
           </mj-body>
         </mjml>
         """);
-    // Inline color="blue" should override mj-class color="red"
-    assertTrue(html.contains("color:blue"), "Inline attribute should override mj-class attribute");
-  }
+        // Inline color="blue" should override mj-class color="red"
+        assertTrue(html.contains("color:blue"), "Inline attribute should override mj-class attribute");
+    }
 
-  @Test
-  void mjAllAffectsAllComponents() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void mjAllAffectsAllComponents() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -68,16 +66,15 @@ class AttributeCascadeIntegrationTest {
           </mj-body>
         </mjml>
         """);
-    assertTrue(html.contains("Helvetica"), "mj-all font-family should appear in rendered output");
-  }
+        assertTrue(html.contains("Helvetica"), "mj-all font-family should appear in rendered output");
+    }
 
-  @Test
-  void tagDefaultOverridesComponentDefault() {
-    // mj-text default font-size is 13px; tag default overrides to 18px
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void tagDefaultOverridesComponentDefault() {
+        // mj-text default font-size is 13px; tag default overrides to 18px
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -93,17 +90,14 @@ class AttributeCascadeIntegrationTest {
           </mj-body>
         </mjml>
         """);
-    assertTrue(
-        html.contains("font-size:18px"),
-        "Tag default (18px) should override component default (13px)");
-  }
+        assertTrue(html.contains("font-size:18px"), "Tag default (18px) should override component default (13px)");
+    }
 
-  @Test
-  void multipleMjClassesMerge() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void multipleMjClassesMerge() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -120,20 +114,19 @@ class AttributeCascadeIntegrationTest {
           </mj-body>
         </mjml>
         """);
-    assertTrue(html.contains("font-weight:bold"), "First mj-class attribute should be applied");
-    assertTrue(html.contains("font-size:24px"), "Second mj-class attribute should be applied");
-  }
+        assertTrue(html.contains("font-weight:bold"), "First mj-class attribute should be applied");
+        assertTrue(html.contains("font-size:24px"), "Second mj-class attribute should be applied");
+    }
 
-  @Test
-  void fullCascadePriorityTest() {
-    // Test all cascade levels together:
-    // component default padding=10px 25px, mj-all padding=5px, mj-text padding=15px,
-    // mj-class padding=20px, inline padding=30px
-    // inline should win
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void fullCascadePriorityTest() {
+        // Test all cascade levels together:
+        // component default padding=10px 25px, mj-all padding=5px, mj-text padding=15px,
+        // mj-class padding=20px, inline padding=30px
+        // inline should win
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -151,10 +144,8 @@ class AttributeCascadeIntegrationTest {
           </mj-body>
         </mjml>
         """);
-    // inline color="blue" > mj-class color="red" > tag default color="green"
-    assertTrue(html.contains("color:blue"), "Inline should win over all other cascade levels");
-    assertTrue(
-        html.contains("Arial"),
-        "mj-all font-family should still be applied for non-overridden attributes");
-  }
+        // inline color="blue" > mj-class color="red" > tag default color="green"
+        assertTrue(html.contains("color:blue"), "Inline should win over all other cascade levels");
+        assertTrue(html.contains("Arial"), "mj-all font-family should still be applied for non-overridden attributes");
+    }
 }

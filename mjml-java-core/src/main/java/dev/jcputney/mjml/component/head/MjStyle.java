@@ -18,33 +18,32 @@ import java.util.regex.Pattern;
  */
 public class MjStyle extends HeadComponent {
 
-  private static final Pattern STYLE_CLOSE_TAG =
-      Pattern.compile("</style", Pattern.CASE_INSENSITIVE);
+    private static final Pattern STYLE_CLOSE_TAG = Pattern.compile("</style", Pattern.CASE_INSENSITIVE);
 
-  public MjStyle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-    super(node, globalContext, renderContext);
-  }
-
-  @Override
-  public String getTagName() {
-    return "mj-style";
-  }
-
-  @Override
-  public void process() {
-    String content = node.getInnerHtml().trim();
-    if (content.isEmpty()) {
-      return;
+    public MjStyle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+        super(node, globalContext, renderContext);
     }
 
-    // Strip any closing style tag injection to prevent CSS breakout
-    content = STYLE_CLOSE_TAG.matcher(content).replaceAll("");
-
-    String inline = node.getAttribute("inline");
-    if ("inline".equals(inline)) {
-      globalContext.styles().addInlineStyle(content);
-    } else {
-      globalContext.styles().addStyle(content);
+    @Override
+    public String getTagName() {
+        return "mj-style";
     }
-  }
+
+    @Override
+    public void process() {
+        String content = node.getInnerHtml().trim();
+        if (content.isEmpty()) {
+            return;
+        }
+
+        // Strip any closing style tag injection to prevent CSS breakout
+        content = STYLE_CLOSE_TAG.matcher(content).replaceAll("");
+
+        String inline = node.getAttribute("inline");
+        if ("inline".equals(inline)) {
+            globalContext.styles().addInlineStyle(content);
+        } else {
+            globalContext.styles().addStyle(content);
+        }
+    }
 }

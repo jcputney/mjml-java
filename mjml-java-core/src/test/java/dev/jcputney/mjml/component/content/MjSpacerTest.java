@@ -10,19 +10,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-spacer component rendering. */
 class MjSpacerTest {
 
-  private String render(String mjml) {
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    return html;
-  }
+    private String render(String mjml) {
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        return html;
+    }
 
-  @Test
-  void defaultSpacerRendersWithDefaultHeight() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void defaultSpacerRendersWithDefaultHeight() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -34,16 +33,15 @@ class MjSpacerTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("height:0px"), "Default spacer should have 0px height per MJML spec");
-    assertTrue(html.contains("line-height:0px"), "Default spacer should have matching line-height");
-  }
+        assertTrue(html.contains("height:0px"), "Default spacer should have 0px height per MJML spec");
+        assertTrue(html.contains("line-height:0px"), "Default spacer should have matching line-height");
+    }
 
-  @Test
-  void customHeightApplied() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void customHeightApplied() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -55,16 +53,15 @@ class MjSpacerTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("height:50px"), "Should use custom height of 50px");
-    assertTrue(html.contains("line-height:50px"), "Line-height should match custom height");
-  }
+        assertTrue(html.contains("height:50px"), "Should use custom height of 50px");
+        assertTrue(html.contains("line-height:50px"), "Line-height should match custom height");
+    }
 
-  @Test
-  void containerBackgroundColorApplied() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void containerBackgroundColorApplied() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -76,15 +73,14 @@ class MjSpacerTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("#eaeaea"), "Should include the container background color");
-  }
+        assertTrue(html.contains("#eaeaea"), "Should include the container background color");
+    }
 
-  @Test
-  void figureSpaceCharacterPresent() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void figureSpaceCharacterPresent() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -96,7 +92,6 @@ class MjSpacerTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("&#8202;"), "Should contain the figure space character for spacer content");
-  }
+        assertTrue(html.contains("&#8202;"), "Should contain the figure space character for spacer content");
+    }
 }

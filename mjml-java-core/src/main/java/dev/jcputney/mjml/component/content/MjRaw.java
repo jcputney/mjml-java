@@ -18,29 +18,29 @@ import java.util.Map;
  */
 public class MjRaw extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS = Map.of("position", "");
+    private static final Map<String, String> DEFAULTS = Map.of("position", "");
 
-  public MjRaw(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-    super(node, globalContext, renderContext);
-  }
-
-  @Override
-  public String getTagName() {
-    return "mj-raw";
-  }
-
-  @Override
-  public Map<String, String> getDefaultAttributes() {
-    return DEFAULTS;
-  }
-
-  @Override
-  public String render() {
-    String position = getAttribute("position", "");
-    if ("file-start".equals(position)) {
-      globalContext.metadata().addFileStartContent(sanitizeContent(node.getInnerHtml()));
-      return "";
+    public MjRaw(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+        super(node, globalContext, renderContext);
     }
-    return sanitizeContent(node.getInnerHtml());
-  }
+
+    @Override
+    public String getTagName() {
+        return "mj-raw";
+    }
+
+    @Override
+    public Map<String, String> getDefaultAttributes() {
+        return DEFAULTS;
+    }
+
+    @Override
+    public String render() {
+        String position = getAttribute("position", "");
+        if ("file-start".equals(position)) {
+            globalContext.metadata().addFileStartContent(sanitizeContent(node.getInnerHtml()));
+            return "";
+        }
+        return sanitizeContent(node.getInnerHtml());
+    }
 }

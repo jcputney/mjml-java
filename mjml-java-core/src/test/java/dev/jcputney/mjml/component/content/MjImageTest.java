@@ -10,19 +10,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-image component rendering. */
 class MjImageTest {
 
-  private String render(String mjml) {
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    return html;
-  }
+    private String render(String mjml) {
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        return html;
+    }
 
-  @Test
-  void basicImageRendersWithSrcAndAlt() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void basicImageRendersWithSrcAndAlt() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -34,20 +33,17 @@ class MjImageTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("src=\"https://example.com/photo.jpg\""),
-        "Should contain image src attribute");
-    assertTrue(html.contains("alt=\"A photo\""), "Should contain alt text attribute");
-    assertTrue(html.contains("<img"), "Should contain an img tag");
-    assertTrue(html.contains("width=\"300\""), "Should contain width attribute on img tag");
-  }
+        assertTrue(html.contains("src=\"https://example.com/photo.jpg\""), "Should contain image src attribute");
+        assertTrue(html.contains("alt=\"A photo\""), "Should contain alt text attribute");
+        assertTrue(html.contains("<img"), "Should contain an img tag");
+        assertTrue(html.contains("width=\"300\""), "Should contain width attribute on img tag");
+    }
 
-  @Test
-  void hrefWrapsImageInAnchorTag() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void hrefWrapsImageInAnchorTag() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -59,19 +55,16 @@ class MjImageTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("<a href=\"https://example.com/home\""),
-        "Should wrap image in anchor tag with href");
-    assertTrue(html.contains("target=\"_blank\""), "Should include target attribute on anchor");
-    assertTrue(html.contains("<img"), "Should still contain the img tag inside the anchor");
-  }
+        assertTrue(html.contains("<a href=\"https://example.com/home\""), "Should wrap image in anchor tag with href");
+        assertTrue(html.contains("target=\"_blank\""), "Should include target attribute on anchor");
+        assertTrue(html.contains("<img"), "Should still contain the img tag inside the anchor");
+    }
 
-  @Test
-  void fluidOnMobileAddsCssClass() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void fluidOnMobileAddsCssClass() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -83,17 +76,16 @@ class MjImageTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("mj-full-width-mobile"),
-        "Should add mj-full-width-mobile class when fluid-on-mobile is true");
-  }
+        assertTrue(
+                html.contains("mj-full-width-mobile"),
+                "Should add mj-full-width-mobile class when fluid-on-mobile is true");
+    }
 
-  @Test
-  void srcsetAttributeRenders() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void srcsetAttributeRenders() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -105,17 +97,16 @@ class MjImageTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("srcset=\""), "Should contain srcset attribute");
-    assertTrue(html.contains("img-300.jpg 300w"), "Should contain first srcset entry");
-    assertTrue(html.contains("img-600.jpg 600w"), "Should contain second srcset entry");
-  }
+        assertTrue(html.contains("srcset=\""), "Should contain srcset attribute");
+        assertTrue(html.contains("img-300.jpg 300w"), "Should contain first srcset entry");
+        assertTrue(html.contains("img-600.jpg 600w"), "Should contain second srcset entry");
+    }
 
-  @Test
-  void usemapAttributeRenders() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void usemapAttributeRenders() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -127,7 +118,6 @@ class MjImageTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("usemap=\"#mymap\""), "Should contain usemap attribute on the img tag");
-  }
+        assertTrue(html.contains("usemap=\"#mymap\""), "Should contain usemap attribute on the img tag");
+    }
 }

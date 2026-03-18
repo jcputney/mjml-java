@@ -10,122 +10,117 @@ package dev.jcputney.mjml.util;
  */
 public final class MsoHelper {
 
-  /** Standard MSO td style for resetting line-height. */
-  public static final String MSO_TD_STYLE =
-      "line-height:0px;font-size:0px;mso-line-height-rule:exactly;";
+    /** Standard MSO td style for resetting line-height. */
+    public static final String MSO_TD_STYLE = "line-height:0px;font-size:0px;mso-line-height-rule:exactly;";
 
-  /** Variant used by mj-hero (no trailing 'px' on line-height). */
-  public static final String MSO_TD_STYLE_HERO =
-      "line-height:0;font-size:0;mso-line-height-rule:exactly;";
+    /** Variant used by mj-hero (no trailing 'px' on line-height). */
+    public static final String MSO_TD_STYLE_HERO = "line-height:0;font-size:0;mso-line-height-rule:exactly;";
 
-  /** Pre-computed MSO conditional table closing string. */
-  private static final String MSO_CONDITIONAL_TABLE_CLOSING =
-      "<!--[if mso | IE]></td></tr></table><![endif]-->";
+    /** Pre-computed MSO conditional table closing string. */
+    private static final String MSO_CONDITIONAL_TABLE_CLOSING = "<!--[if mso | IE]></td></tr></table><![endif]-->";
 
-  private MsoHelper() {}
+    private MsoHelper() {}
 
-  /**
-   * Opens an MSO conditional comment block.
-   *
-   * @return {@code <!--[if mso | IE]>}
-   */
-  public static String conditionalStart() {
-    return "<!--[if mso | IE]>";
-  }
-
-  /**
-   * Closes an MSO conditional comment block.
-   *
-   * @return {@code <![endif]-->}
-   */
-  public static String conditionalEnd() {
-    return "<![endif]-->";
-  }
-
-  /**
-   * Builds an MSO table opening with width constraint. Emits: {@code <table align="center"
-   * border="0" cellpadding="0" cellspacing="0" class="{cssClass}" role="presentation"
-   * style="width:{width}px;" width="{width}" [bgcolor="{bgColor}"]><tr><td style="{tdStyle}">}
-   *
-   * @param width container width in pixels
-   * @param cssClass CSS class for the table (already escaped)
-   * @param bgColor background color, or null/empty to omit bgcolor attribute
-   * @param tdStyle style string for the inner td
-   * @return the MSO table opening markup (without conditional comments)
-   */
-  public static String msoTableOpening(int width, String cssClass, String bgColor, String tdStyle) {
-    StringBuilder sb = new StringBuilder();
-    // MJML appends "-outlook" suffix to css-class on MSO tables
-    String msoClass = cssClass.isEmpty() ? "" : cssClass + "-outlook";
-    sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
-        .append(msoClass)
-        .append("\" role=\"presentation\" style=\"width:")
-        .append(width)
-        .append("px;\" width=\"")
-        .append(width)
-        .append("\" ");
-    if (bgColor != null && !bgColor.isEmpty()) {
-      sb.append("bgcolor=\"").append(bgColor).append("\" ");
+    /**
+     * Opens an MSO conditional comment block.
+     *
+     * @return {@code <!--[if mso | IE]>}
+     */
+    public static String conditionalStart() {
+        return "<!--[if mso | IE]>";
     }
-    sb.append("><tr><td style=\"").append(tdStyle).append("\">");
-    return sb.toString();
-  }
 
-  /**
-   * Builds an MSO table closing.
-   *
-   * @return {@code </td></tr></table>}
-   */
-  public static String msoTableClosing() {
-    return "</td></tr></table>";
-  }
+    /**
+     * Closes an MSO conditional comment block.
+     *
+     * @return {@code <![endif]-->}
+     */
+    public static String conditionalEnd() {
+        return "<![endif]-->";
+    }
 
-  /**
-   * Builds a complete MSO table closing wrapped in conditional comments.
-   *
-   * @return {@code <!--[if mso | IE]></td></tr></table><![endif]-->}
-   */
-  public static String msoConditionalTableClosing() {
-    return MSO_CONDITIONAL_TABLE_CLOSING;
-  }
+    /**
+     * Builds an MSO table opening with width constraint. Emits: {@code <table align="center"
+     * border="0" cellpadding="0" cellspacing="0" class="{cssClass}" role="presentation"
+     * style="width:{width}px;" width="{width}" [bgcolor="{bgColor}"]><tr><td style="{tdStyle}">}
+     *
+     * @param width container width in pixels
+     * @param cssClass CSS class for the table (already escaped)
+     * @param bgColor background color, or null/empty to omit bgcolor attribute
+     * @param tdStyle style string for the inner td
+     * @return the MSO table opening markup (without conditional comments)
+     */
+    public static String msoTableOpening(int width, String cssClass, String bgColor, String tdStyle) {
+        StringBuilder sb = new StringBuilder();
+        // MJML appends "-outlook" suffix to css-class on MSO tables
+        String msoClass = cssClass.isEmpty() ? "" : cssClass + "-outlook";
+        sb.append("<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"")
+                .append(msoClass)
+                .append("\" role=\"presentation\" style=\"width:")
+                .append(width)
+                .append("px;\" width=\"")
+                .append(width)
+                .append("\" ");
+        if (bgColor != null && !bgColor.isEmpty()) {
+            sb.append("bgcolor=\"").append(bgColor).append("\" ");
+        }
+        sb.append("><tr><td style=\"").append(tdStyle).append("\">");
+        return sb.toString();
+    }
 
-  /**
-   * Builds the MSO conditional opening for the first child inside an mj-wrapper. Opens the outer
-   * table, a td with container width, an inner table with inner width, and a tr/td.
-   *
-   * @param containerWidth the wrapper's container width in pixels
-   * @param innerWidth the computed inner width (container minus padding/borders)
-   * @return the MSO conditional opening markup
-   */
-  public static String msoWrapperNestedOpening(int containerWidth, int innerWidth) {
-    return """
+    /**
+     * Builds an MSO table closing.
+     *
+     * @return {@code </td></tr></table>}
+     */
+    public static String msoTableClosing() {
+        return "</td></tr></table>";
+    }
+
+    /**
+     * Builds a complete MSO table closing wrapped in conditional comments.
+     *
+     * @return {@code <!--[if mso | IE]></td></tr></table><![endif]-->}
+     */
+    public static String msoConditionalTableClosing() {
+        return MSO_CONDITIONAL_TABLE_CLOSING;
+    }
+
+    /**
+     * Builds the MSO conditional opening for the first child inside an mj-wrapper. Opens the outer
+     * table, a td with container width, an inner table with inner width, and a tr/td.
+     *
+     * @param containerWidth the wrapper's container width in pixels
+     * @param innerWidth the computed inner width (container minus padding/borders)
+     * @return the MSO conditional opening markup
+     */
+    public static String msoWrapperNestedOpening(int containerWidth, int innerWidth) {
+        return """
         <!--[if mso | IE]>
         <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" width="%dpx" >
         <table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:%dpx;" width="%d" >
         <tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
         <![endif]-->
-        """
-        .formatted(containerWidth, innerWidth, innerWidth);
-  }
+        """.formatted(containerWidth, innerWidth, innerWidth);
+    }
 
-  /**
-   * Builds the MSO conditional transition markup between adjacent children inside an mj-wrapper.
-   * Closes the current inner table and td, then opens a new tr/td with container width and a new
-   * inner table with inner width.
-   *
-   * @param containerWidth the wrapper's container width in pixels
-   * @param innerWidth the computed inner width (container minus padding/borders)
-   * @return the MSO conditional transition markup
-   */
-  public static String msoWrapperTransition(int containerWidth, int innerWidth) {
-    // language=HTML
-    return """
+    /**
+     * Builds the MSO conditional transition markup between adjacent children inside an mj-wrapper.
+     * Closes the current inner table and td, then opens a new tr/td with container width and a new
+     * inner table with inner width.
+     *
+     * @param containerWidth the wrapper's container width in pixels
+     * @param innerWidth the computed inner width (container minus padding/borders)
+     * @return the MSO conditional transition markup
+     */
+    public static String msoWrapperTransition(int containerWidth, int innerWidth) {
+        // language=HTML
+        return """
         <!--[if mso | IE]>
         </td></tr></table></td></tr><tr><td class="" width="%dpx" >
         <table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:%dpx;" width="%d" >
         <tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
         <![endif]-->
-        """
-        .formatted(containerWidth, innerWidth, innerWidth);
-  }
+        """.formatted(containerWidth, innerWidth, innerWidth);
+    }
 }

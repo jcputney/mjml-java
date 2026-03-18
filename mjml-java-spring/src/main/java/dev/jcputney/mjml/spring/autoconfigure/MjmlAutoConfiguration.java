@@ -22,54 +22,52 @@ import org.springframework.core.io.ResourceLoader;
 @ConditionalOnClass(MjmlRenderer.class)
 public class MjmlAutoConfiguration {
 
-  public MjmlAutoConfiguration() {}
+    public MjmlAutoConfiguration() {}
 
-  /**
-   * Auto-configures an include resolver backed by Spring {@link ResourceLoader}.
-   *
-   * @param resourceLoader the Spring resource loader used to resolve include paths
-   * @param properties the MJML configuration properties
-   * @return the configured include resolver
-   */
-  @Bean
-  @ConditionalOnMissingBean
-  public IncludeResolver mjmlIncludeResolver(
-      ResourceLoader resourceLoader, MjmlProperties properties) {
-    return new SpringResourceIncludeResolver(
-        resourceLoader, properties.getTemplateLocation(), properties.getIncludeAllowedSchemes());
-  }
+    /**
+     * Auto-configures an include resolver backed by Spring {@link ResourceLoader}.
+     *
+     * @param resourceLoader the Spring resource loader used to resolve include paths
+     * @param properties the MJML configuration properties
+     * @return the configured include resolver
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public IncludeResolver mjmlIncludeResolver(ResourceLoader resourceLoader, MjmlProperties properties) {
+        return new SpringResourceIncludeResolver(
+                resourceLoader, properties.getTemplateLocation(), properties.getIncludeAllowedSchemes());
+    }
 
-  /**
-   * Auto-configures {@link MjmlConfiguration} from {@code spring.mjml.*} properties.
-   *
-   * @param properties the MJML configuration properties
-   * @param includeResolver the include resolver to use
-   * @return the configured MJML configuration
-   */
-  @Bean
-  @ConditionalOnMissingBean
-  public MjmlConfiguration mjmlConfiguration(
-      MjmlProperties properties, IncludeResolver includeResolver) {
-    return MjmlConfiguration.builder()
-        .language(properties.getLanguage())
-        .direction(properties.getDirection())
-        .sanitizeOutput(properties.isSanitizeOutput())
-        .maxInputSize(properties.getMaxInputSize())
-        .maxNestingDepth(properties.getMaxNestingDepth())
-        .maxIncludeDepth(properties.getMaxIncludeDepth())
-        .includeResolver(includeResolver)
-        .build();
-  }
+    /**
+     * Auto-configures {@link MjmlConfiguration} from {@code spring.mjml.*} properties.
+     *
+     * @param properties the MJML configuration properties
+     * @param includeResolver the include resolver to use
+     * @return the configured MJML configuration
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public MjmlConfiguration mjmlConfiguration(MjmlProperties properties, IncludeResolver includeResolver) {
+        return MjmlConfiguration.builder()
+                .language(properties.getLanguage())
+                .direction(properties.getDirection())
+                .sanitizeOutput(properties.isSanitizeOutput())
+                .maxInputSize(properties.getMaxInputSize())
+                .maxNestingDepth(properties.getMaxNestingDepth())
+                .maxIncludeDepth(properties.getMaxIncludeDepth())
+                .includeResolver(includeResolver)
+                .build();
+    }
 
-  /**
-   * Auto-configures the primary Spring rendering service.
-   *
-   * @param configuration the MJML configuration to use
-   * @return the configured MJML rendering service
-   */
-  @Bean
-  @ConditionalOnMissingBean
-  public MjmlService mjmlService(MjmlConfiguration configuration) {
-    return new MjmlService(configuration);
-  }
+    /**
+     * Auto-configures the primary Spring rendering service.
+     *
+     * @param configuration the MJML configuration to use
+     * @return the configured MJML rendering service
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public MjmlService mjmlService(MjmlConfiguration configuration) {
+        return new MjmlService(configuration);
+    }
 }

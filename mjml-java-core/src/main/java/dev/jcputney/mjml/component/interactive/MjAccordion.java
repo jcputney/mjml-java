@@ -17,24 +17,22 @@ import java.util.Map;
  */
 public class MjAccordion extends BodyComponent {
 
-  static final Map<String, String> DEFAULTS =
-      Map.ofEntries(
-          Map.entry("border", "2px solid black"),
-          Map.entry("container-background-color", ""),
-          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-          Map.entry("icon-align", "middle"),
-          Map.entry("icon-color", "#000000"),
-          Map.entry("icon-height", "32px"),
-          Map.entry("icon-position", "right"),
-          Map.entry("icon-unwrapped-alt", "-"),
-          Map.entry("icon-unwrapped-url", "https://i.imgur.com/w4uTygT.png"),
-          Map.entry("icon-width", "32px"),
-          Map.entry("icon-wrapped-alt", "+"),
-          Map.entry("icon-wrapped-url", "https://i.imgur.com/bIXv1bk.png"),
-          Map.entry("padding", "10px 25px"));
+    static final Map<String, String> DEFAULTS = Map.ofEntries(
+            Map.entry("border", "2px solid black"),
+            Map.entry("container-background-color", ""),
+            Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+            Map.entry("icon-align", "middle"),
+            Map.entry("icon-color", "#000000"),
+            Map.entry("icon-height", "32px"),
+            Map.entry("icon-position", "right"),
+            Map.entry("icon-unwrapped-alt", "-"),
+            Map.entry("icon-unwrapped-url", "https://i.imgur.com/w4uTygT.png"),
+            Map.entry("icon-width", "32px"),
+            Map.entry("icon-wrapped-alt", "+"),
+            Map.entry("icon-wrapped-url", "https://i.imgur.com/bIXv1bk.png"),
+            Map.entry("padding", "10px 25px"));
 
-  private static final String ACCORDION_CSS =
-      """
+    private static final String ACCORDION_CSS = """
       noinput.mj-accordion-checkbox {
         display: block !important;
       }
@@ -102,61 +100,56 @@ public class MjAccordion extends BodyComponent {
       }
       """;
 
-  private final ComponentRegistry registry;
+    private final ComponentRegistry registry;
 
-  public MjAccordion(
-      MjmlNode node,
-      GlobalContext globalContext,
-      RenderContext renderContext,
-      ComponentRegistry registry) {
-    super(node, globalContext, renderContext);
-    this.registry = registry;
-  }
+    public MjAccordion(
+            MjmlNode node, GlobalContext globalContext, RenderContext renderContext, ComponentRegistry registry) {
+        super(node, globalContext, renderContext);
+        this.registry = registry;
+    }
 
-  @Override
-  public String getTagName() {
-    return "mj-accordion";
-  }
+    @Override
+    public String getTagName() {
+        return "mj-accordion";
+    }
 
-  @Override
-  public Map<String, String> getDefaultAttributes() {
-    return DEFAULTS;
-  }
+    @Override
+    public Map<String, String> getDefaultAttributes() {
+        return DEFAULTS;
+    }
 
-  @Override
-  public String render() {
-    // Inject accordion CSS into global styles (only once, even with multiple accordions)
-    globalContext.styles().addStyleOnce("mj-accordion", ACCORDION_CSS);
+    @Override
+    public String render() {
+        // Inject accordion CSS into global styles (only once, even with multiple accordions)
+        globalContext.styles().addStyleOnce("mj-accordion", ACCORDION_CSS);
 
-    String border = getAttribute("border", "2px solid black");
-    String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
+        String border = getAttribute("border", "2px solid black");
+        String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
 
-    String tableStyle =
-        buildStyle(
-            orderedMap(
+        String tableStyle = buildStyle(orderedMap(
                 "width", "100%",
                 "border-collapse", "collapse",
                 "border", border,
                 "border-bottom", "none",
                 "font-family", fontFamily));
 
-    HtmlBuilder html = new HtmlBuilder();
+        HtmlBuilder html = new HtmlBuilder();
 
-    html.open(
-        "table",
-        attrs(
-            "cellspacing", "0",
-            "cellpadding", "0",
-            "class", "mj-accordion",
-            "style", tableStyle));
-    html.open("tbody");
+        html.open(
+                "table",
+                attrs(
+                        "cellspacing", "0",
+                        "cellpadding", "0",
+                        "class", "mj-accordion",
+                        "style", tableStyle));
+        html.open("tbody");
 
-    // Render accordion element children
-    html.rawVerbatim(renderChildren(registry));
+        // Render accordion element children
+        html.rawVerbatim(renderChildren(registry));
 
-    html.close("tbody");
-    html.close("table");
+        html.close("tbody");
+        html.close("table");
 
-    return html.toString();
-  }
+        return html.toString();
+    }
 }

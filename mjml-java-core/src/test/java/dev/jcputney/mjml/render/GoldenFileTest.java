@@ -24,117 +24,114 @@ import org.junit.jupiter.api.TestFactory;
  */
 class GoldenFileTest {
 
-  private static final Path GOLDEN_DIR = Path.of("src/test/resources/golden");
+    private static final Path GOLDEN_DIR = Path.of("src/test/resources/golden");
 
-  @TestFactory
-  Stream<DynamicTest> goldenFileTests() throws IOException {
-    if (!Files.exists(GOLDEN_DIR)) {
-      return Stream.empty();
+    @TestFactory
+    Stream<DynamicTest> goldenFileTests() throws IOException {
+        if (!Files.exists(GOLDEN_DIR)) {
+            return Stream.empty();
+        }
+
+        return Files.list(GOLDEN_DIR)
+                .filter(p -> p.toString().endsWith(".mjml"))
+                .sorted()
+                .map(mjmlPath -> {
+                    String name = mjmlPath.getFileName().toString().replace(".mjml", "");
+                    return DynamicTest.dynamicTest("golden:" + name, () -> runGoldenTest(mjmlPath));
+                });
     }
 
-    return Files.list(GOLDEN_DIR)
-        .filter(p -> p.toString().endsWith(".mjml"))
-        .sorted()
-        .map(
-            mjmlPath -> {
-              String name = mjmlPath.getFileName().toString().replace(".mjml", "");
-              return DynamicTest.dynamicTest("golden:" + name, () -> runGoldenTest(mjmlPath));
-            });
-  }
+    private void runGoldenTest(Path mjmlPath) throws IOException {
+        String mjml = Files.readString(mjmlPath);
+        assertNotNull(mjml);
+        assertFalse(mjml.isBlank(), "MJML file is empty: " + mjmlPath);
 
-  private void runGoldenTest(Path mjmlPath) throws IOException {
-    String mjml = Files.readString(mjmlPath);
-    assertNotNull(mjml);
-    assertFalse(mjml.isBlank(), "MJML file is empty: " + mjmlPath);
+        // Render
+        String html;
+        try {
+            html = MjmlRenderer.render(mjml).html();
+        } catch (Exception e) {
+            fail("Failed to render " + mjmlPath.getFileName() + ": " + e.getMessage());
+            return;
+        }
 
-    // Render
-    String html;
-    try {
-      html = MjmlRenderer.render(mjml).html();
-    } catch (Exception e) {
-      fail("Failed to render " + mjmlPath.getFileName() + ": " + e.getMessage());
-      return;
+        assertNotNull(html, "Rendered HTML is null for " + mjmlPath.getFileName());
+        assertFalse(html.isBlank(), "Rendered HTML is empty for " + mjmlPath.getFileName());
+
+        // Verify basic structure
+        assertTrue(html.contains("<!doctype html>"), "Missing DOCTYPE in " + mjmlPath.getFileName());
+        assertTrue(html.contains("</html>"), "Missing closing html tag in " + mjmlPath.getFileName());
+        assertTrue(html.contains("<body"), "Missing body tag in " + mjmlPath.getFileName());
+
+        // If expected HTML file exists, compare (with normalized whitespace)
+        Path expectedPath =
+                mjmlPath.resolveSibling(mjmlPath.getFileName().toString().replace(".mjml", ".html"));
+        if (Files.exists(expectedPath)) {
+            String expected = Files.readString(expectedPath);
+            String normalizedExpected = normalizeHtml(expected);
+            String normalizedActual = normalizeHtml(html);
+
+            if (!normalizedExpected.equals(normalizedActual)) {
+                // Write actual output for debugging
+                Path actualPath = mjmlPath.resolveSibling(
+                        mjmlPath.getFileName().toString().replace(".mjml", ".actual.html"));
+                Files.writeString(actualPath, html);
+
+                fail("Output mismatch for "
+                        + mjmlPath.getFileName()
+                        + "\nExpected file: "
+                        + expectedPath
+                        + "\nActual file: "
+                        + actualPath
+                        + "\n\nFirst difference at: "
+                        + findFirstDifference(normalizedExpected, normalizedActual));
+            }
+        }
     }
 
-    assertNotNull(html, "Rendered HTML is null for " + mjmlPath.getFileName());
-    assertFalse(html.isBlank(), "Rendered HTML is empty for " + mjmlPath.getFileName());
-
-    // Verify basic structure
-    assertTrue(html.contains("<!doctype html>"), "Missing DOCTYPE in " + mjmlPath.getFileName());
-    assertTrue(html.contains("</html>"), "Missing closing html tag in " + mjmlPath.getFileName());
-    assertTrue(html.contains("<body"), "Missing body tag in " + mjmlPath.getFileName());
-
-    // If expected HTML file exists, compare (with normalized whitespace)
-    Path expectedPath =
-        mjmlPath.resolveSibling(mjmlPath.getFileName().toString().replace(".mjml", ".html"));
-    if (Files.exists(expectedPath)) {
-      String expected = Files.readString(expectedPath);
-      String normalizedExpected = normalizeHtml(expected);
-      String normalizedActual = normalizeHtml(html);
-
-      if (!normalizedExpected.equals(normalizedActual)) {
-        // Write actual output for debugging
-        Path actualPath =
-            mjmlPath.resolveSibling(
-                mjmlPath.getFileName().toString().replace(".mjml", ".actual.html"));
-        Files.writeString(actualPath, html);
-
-        fail(
-            "Output mismatch for "
-                + mjmlPath.getFileName()
-                + "\nExpected file: "
-                + expectedPath
-                + "\nActual file: "
-                + actualPath
-                + "\n\nFirst difference at: "
-                + findFirstDifference(normalizedExpected, normalizedActual));
-      }
+    /**
+     * Normalizes HTML for comparison: collapses whitespace, removes blank lines, normalizes attribute
+     * quoting, and replaces dynamic IDs with placeholders.
+     */
+    private String normalizeHtml(String html) {
+        return html.replaceAll("\\r\\n", "\n")
+                .replaceAll("\\r", "\n")
+                .replaceAll("[ \\t]+", " ")
+                .replaceAll(" *\\n *", "\n")
+                .replaceAll("\\n{2,}", "\n")
+                // Collapse whitespace between tags so indentation changes are invisible
+                .replaceAll(">\\s+<", "><")
+                // Normalize dynamic IDs: hex (MJML golden) or deterministic (our output)
+                .replaceAll("id=\"[0-9a-f]{6,20}\"", "id=\"DYNAMIC_ID\"")
+                .replaceAll("id=\"(?:carousel|navbar)-\\d+\"", "id=\"DYNAMIC_ID\"")
+                .replaceAll("for=\"[0-9a-f]{6,20}\"", "for=\"DYNAMIC_ID\"")
+                .replaceAll("for=\"(?:carousel|navbar)-\\d+\"", "for=\"DYNAMIC_ID\"")
+                // Normalize dynamic hex IDs embedded in carousel/navbar identifiers.
+                // These appear in class names, CSS selectors, name/id attributes, etc.
+                // Match hex strings (6-20 chars) that appear after a dash and before a dash or
+                // word boundary, in contexts like mj-carousel-HEXID-radio, mj-carousel-radio-HEXID, etc.
+                .replaceAll("(?<=-)[0-9a-f]{6,20}(?=-|\"| |\\.|\\{|\\+|:|\\)|\\n|$)", "HEXID")
+                // Normalize deterministic IDs in similar embedded contexts
+                .replaceAll("(?<=-)(?:carousel|navbar)-\\d+(?=-|\"| |\\.|\\{|\\+|:|\\)|\\n|$)", "HEXID")
+                .trim();
     }
-  }
 
-  /**
-   * Normalizes HTML for comparison: collapses whitespace, removes blank lines, normalizes attribute
-   * quoting, and replaces dynamic IDs with placeholders.
-   */
-  private String normalizeHtml(String html) {
-    return html.replaceAll("\\r\\n", "\n")
-        .replaceAll("\\r", "\n")
-        .replaceAll("[ \\t]+", " ")
-        .replaceAll(" *\\n *", "\n")
-        .replaceAll("\\n{2,}", "\n")
-        // Collapse whitespace between tags so indentation changes are invisible
-        .replaceAll(">\\s+<", "><")
-        // Normalize dynamic IDs: hex (MJML golden) or deterministic (our output)
-        .replaceAll("id=\"[0-9a-f]{6,20}\"", "id=\"DYNAMIC_ID\"")
-        .replaceAll("id=\"(?:carousel|navbar)-\\d+\"", "id=\"DYNAMIC_ID\"")
-        .replaceAll("for=\"[0-9a-f]{6,20}\"", "for=\"DYNAMIC_ID\"")
-        .replaceAll("for=\"(?:carousel|navbar)-\\d+\"", "for=\"DYNAMIC_ID\"")
-        // Normalize dynamic hex IDs embedded in carousel/navbar identifiers.
-        // These appear in class names, CSS selectors, name/id attributes, etc.
-        // Match hex strings (6-20 chars) that appear after a dash and before a dash or
-        // word boundary, in contexts like mj-carousel-HEXID-radio, mj-carousel-radio-HEXID, etc.
-        .replaceAll("(?<=-)[0-9a-f]{6,20}(?=-|\"| |\\.|\\{|\\+|:|\\)|\\n|$)", "HEXID")
-        // Normalize deterministic IDs in similar embedded contexts
-        .replaceAll("(?<=-)(?:carousel|navbar)-\\d+(?=-|\"| |\\.|\\{|\\+|:|\\)|\\n|$)", "HEXID")
-        .trim();
-  }
-
-  private String findFirstDifference(String expected, String actual) {
-    int len = Math.min(expected.length(), actual.length());
-    for (int i = 0; i < len; i++) {
-      if (expected.charAt(i) != actual.charAt(i)) {
-        int start = Math.max(0, i - 30);
-        int end = Math.min(len, i + 30);
-        return "position "
-            + i
-            + "\n  Expected: ..."
-            + expected.substring(start, end)
-            + "..."
-            + "\n  Actual:   ..."
-            + actual.substring(start, end)
-            + "...";
-      }
+    private String findFirstDifference(String expected, String actual) {
+        int len = Math.min(expected.length(), actual.length());
+        for (int i = 0; i < len; i++) {
+            if (expected.charAt(i) != actual.charAt(i)) {
+                int start = Math.max(0, i - 30);
+                int end = Math.min(len, i + 30);
+                return "position "
+                        + i
+                        + "\n  Expected: ..."
+                        + expected.substring(start, end)
+                        + "..."
+                        + "\n  Actual:   ..."
+                        + actual.substring(start, end)
+                        + "...";
+            }
+        }
+        return "length difference: expected=" + expected.length() + " actual=" + actual.length();
     }
-    return "length difference: expected=" + expected.length() + " actual=" + actual.length();
-  }
 }

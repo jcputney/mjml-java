@@ -14,39 +14,36 @@ import java.util.Map;
  */
 public class MjSpacer extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS =
-      Map.ofEntries(
-          Map.entry("height", "0px"),
-          Map.entry("container-background-color", ""),
-          Map.entry("padding", ""),
-          Map.entry("vertical-align", ""));
+    private static final Map<String, String> DEFAULTS = Map.ofEntries(
+            Map.entry("height", "0px"),
+            Map.entry("container-background-color", ""),
+            Map.entry("padding", ""),
+            Map.entry("vertical-align", ""));
 
-  public MjSpacer(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-    super(node, globalContext, renderContext);
-  }
+    public MjSpacer(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+        super(node, globalContext, renderContext);
+    }
 
-  @Override
-  public String getTagName() {
-    return "mj-spacer";
-  }
+    @Override
+    public String getTagName() {
+        return "mj-spacer";
+    }
 
-  @Override
-  public Map<String, String> getDefaultAttributes() {
-    return DEFAULTS;
-  }
+    @Override
+    public Map<String, String> getDefaultAttributes() {
+        return DEFAULTS;
+    }
 
-  @Override
-  public String render() {
-    String height = getAttribute("height", "0px");
+    @Override
+    public String render() {
+        String height = getAttribute("height", "0px");
 
-    String style =
-        buildStyle(
-            orderedMap(
+        String style = buildStyle(orderedMap(
                 "height", height,
                 "line-height", height));
 
-    HtmlBuilder html = new HtmlBuilder();
-    html.openInline("div", attrs("style", style)).text("&#8202;").closeInline("div");
-    return html.toString();
-  }
+        HtmlBuilder html = new HtmlBuilder();
+        html.openInline("div", attrs("style", style)).text("&#8202;").closeInline("div");
+        return html.toString();
+    }
 }

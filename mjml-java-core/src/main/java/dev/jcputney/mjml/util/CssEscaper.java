@@ -7,45 +7,45 @@ package dev.jcputney.mjml.util;
  */
 public final class CssEscaper {
 
-  private CssEscaper() {}
+    private CssEscaper() {}
 
-  /**
-   * Escapes a URL for safe use inside a CSS {@code url("...")} context. Escapes backslashes, double
-   * quotes, and parentheses to prevent breakout.
-   *
-   * @param url the URL string to escape
-   * @return the escaped URL string safe for CSS interpolation, or the original value if null or
-   *     empty
-   */
-  public static String escapeCssUrl(String url) {
-    if (url == null || url.isEmpty()) {
-      return url;
+    /**
+     * Escapes a URL for safe use inside a CSS {@code url("...")} context. Escapes backslashes, double
+     * quotes, and parentheses to prevent breakout.
+     *
+     * @param url the URL string to escape
+     * @return the escaped URL string safe for CSS interpolation, or the original value if null or
+     *     empty
+     */
+    public static String escapeCssUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return url;
+        }
+        boolean needsEscape = false;
+        for (int i = 0; i < url.length(); i++) {
+            char c = url.charAt(i);
+            if (c == '\\' || c == '"' || c == '\'' || c == '(' || c == ')' || c == '\n' || c == '\r') {
+                needsEscape = true;
+                break;
+            }
+        }
+        if (!needsEscape) {
+            return url;
+        }
+        StringBuilder sb = new StringBuilder(url.length() + 16);
+        for (int i = 0; i < url.length(); i++) {
+            char c = url.charAt(i);
+            switch (c) {
+                case '\\' -> sb.append("\\\\");
+                case '"' -> sb.append("\\\"");
+                case '\'' -> sb.append("\\'");
+                case '(' -> sb.append("\\(");
+                case ')' -> sb.append("\\)");
+                case '\n' -> sb.append("\\a ");
+                case '\r' -> sb.append("\\d ");
+                default -> sb.append(c);
+            }
+        }
+        return sb.toString();
     }
-    boolean needsEscape = false;
-    for (int i = 0; i < url.length(); i++) {
-      char c = url.charAt(i);
-      if (c == '\\' || c == '"' || c == '\'' || c == '(' || c == ')' || c == '\n' || c == '\r') {
-        needsEscape = true;
-        break;
-      }
-    }
-    if (!needsEscape) {
-      return url;
-    }
-    StringBuilder sb = new StringBuilder(url.length() + 16);
-    for (int i = 0; i < url.length(); i++) {
-      char c = url.charAt(i);
-      switch (c) {
-        case '\\' -> sb.append("\\\\");
-        case '"' -> sb.append("\\\"");
-        case '\'' -> sb.append("\\'");
-        case '(' -> sb.append("\\(");
-        case ')' -> sb.append("\\)");
-        case '\n' -> sb.append("\\a ");
-        case '\r' -> sb.append("\\d ");
-        default -> sb.append(c);
-      }
-    }
-    return sb.toString();
-  }
 }

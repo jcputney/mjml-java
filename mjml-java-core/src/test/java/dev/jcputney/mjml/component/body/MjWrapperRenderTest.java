@@ -13,19 +13,18 @@ import org.junit.jupiter.api.Test;
  */
 class MjWrapperRenderTest {
 
-  private String render(String mjml) {
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    return html;
-  }
+    private String render(String mjml) {
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        return html;
+    }
 
-  @Test
-  void renderNormalSimple() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void renderNormalSimple() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-wrapper background-color="#f0f0f0" padding="20px 0">
@@ -36,22 +35,21 @@ class MjWrapperRenderTest {
           </mj-body>
         </mjml>
         """);
-    // MSO table wrapping present
-    assertTrue(html.contains("<!--[if mso | IE]>"), "Should have MSO conditional");
-    // Background on wrapper div
-    assertTrue(html.contains("#f0f0f0"), "Should have wrapper background color");
-    // No VML
-    assertFalse(html.contains("v:rect"), "Should NOT have VML without bg image");
-    // Child section rendered inside wrapper
-    assertTrue(html.contains("Wrapper child"), "Should render child section");
-  }
+        // MSO table wrapping present
+        assertTrue(html.contains("<!--[if mso | IE]>"), "Should have MSO conditional");
+        // Background on wrapper div
+        assertTrue(html.contains("#f0f0f0"), "Should have wrapper background color");
+        // No VML
+        assertFalse(html.contains("v:rect"), "Should NOT have VML without bg image");
+        // Child section rendered inside wrapper
+        assertTrue(html.contains("Wrapper child"), "Should render child section");
+    }
 
-  @Test
-  void renderNormalWithBgImage() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void renderNormalWithBgImage() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-wrapper background-url="https://example.com/wrap-bg.jpg" background-color="#222">
@@ -62,23 +60,21 @@ class MjWrapperRenderTest {
           </mj-body>
         </mjml>
         """);
-    // VML rect for Outlook
-    assertTrue(html.contains("v:rect"), "Should have VML rect");
-    assertTrue(html.contains("v:fill"), "Should have VML fill");
-    assertTrue(html.contains("wrap-bg.jpg"), "Should reference bg image");
-    // Background CSS
-    assertTrue(
-        html.contains("url('https://example.com/wrap-bg.jpg')"), "Should have CSS background");
-    // Child content
-    assertTrue(html.contains("With wrapper bg"), "Should render child content");
-  }
+        // VML rect for Outlook
+        assertTrue(html.contains("v:rect"), "Should have VML rect");
+        assertTrue(html.contains("v:fill"), "Should have VML fill");
+        assertTrue(html.contains("wrap-bg.jpg"), "Should reference bg image");
+        // Background CSS
+        assertTrue(html.contains("url('https://example.com/wrap-bg.jpg')"), "Should have CSS background");
+        // Child content
+        assertTrue(html.contains("With wrapper bg"), "Should render child content");
+    }
 
-  @Test
-  void renderFullWidth() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void renderFullWidth() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-wrapper full-width="full-width" background-color="#0000ff">
@@ -89,21 +85,20 @@ class MjWrapperRenderTest {
           </mj-body>
         </mjml>
         """);
-    // Full-width: outer real HTML table
-    assertTrue(html.contains("width:100%"), "Should have full-width table");
-    assertTrue(html.contains("#0000ff"), "Should have background color");
-    // Inner MSO table for width constraint
-    assertTrue(html.contains("width:600px"), "Should have inner width constraint");
-    // Content
-    assertTrue(html.contains("Full width wrapper"), "Should render content");
-  }
+        // Full-width: outer real HTML table
+        assertTrue(html.contains("width:100%"), "Should have full-width table");
+        assertTrue(html.contains("#0000ff"), "Should have background color");
+        // Inner MSO table for width constraint
+        assertTrue(html.contains("width:600px"), "Should have inner width constraint");
+        // Content
+        assertTrue(html.contains("Full width wrapper"), "Should render content");
+    }
 
-  @Test
-  void renderBgImageWithoutBgColor() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void renderBgImageWithoutBgColor() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-wrapper background-url="https://example.com/bg-only.jpg">
@@ -114,19 +109,18 @@ class MjWrapperRenderTest {
           </mj-body>
         </mjml>
         """);
-    // VML should still render
-    assertTrue(html.contains("v:rect"), "Should have VML rect for bg image");
-    assertTrue(html.contains("v:fill"), "Should have VML fill");
-    assertTrue(html.contains("bg-only.jpg"), "Should reference bg image");
-    assertTrue(html.contains("Bg image only"), "Should render child content");
-  }
+        // VML should still render
+        assertTrue(html.contains("v:rect"), "Should have VML rect for bg image");
+        assertTrue(html.contains("v:fill"), "Should have VML fill");
+        assertTrue(html.contains("bg-only.jpg"), "Should reference bg image");
+        assertTrue(html.contains("Bg image only"), "Should render child content");
+    }
 
-  @Test
-  void renderBgWithRepeatSizePosition() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void renderBgWithRepeatSizePosition() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-wrapper
@@ -143,18 +137,17 @@ class MjWrapperRenderTest {
           </mj-body>
         </mjml>
         """);
-    assertTrue(html.contains("v:rect"), "Should have VML rect");
-    assertTrue(html.contains("pattern.png"), "Should reference bg image");
-    assertTrue(html.contains("#aabbcc"), "Should have background color");
-    assertTrue(html.contains("Repeat bg"), "Should render child content");
-  }
+        assertTrue(html.contains("v:rect"), "Should have VML rect");
+        assertTrue(html.contains("pattern.png"), "Should reference bg image");
+        assertTrue(html.contains("#aabbcc"), "Should have background color");
+        assertTrue(html.contains("Repeat bg"), "Should render child content");
+    }
 
-  @Test
-  void renderWrapperWithMultipleChildSections() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void renderWrapperWithMultipleChildSections() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-wrapper background-color="#eeeeee" css-class="my-wrapper">
@@ -171,15 +164,15 @@ class MjWrapperRenderTest {
           </mj-body>
         </mjml>
         """);
-    // MSO conditional present
-    assertTrue(html.contains("<!--[if mso | IE]>"), "Should have MSO conditional");
-    // All three sections rendered
-    assertTrue(html.contains("Section One"), "Should render first section");
-    assertTrue(html.contains("Section Two"), "Should render second section");
-    assertTrue(html.contains("Section Three"), "Should render third section");
-    // css-class with -outlook suffix for MSO
-    assertTrue(html.contains("my-wrapper-outlook"), "Should have -outlook suffix on MSO table");
-    // Background color applied
-    assertTrue(html.contains("#eeeeee"), "Should have wrapper background color");
-  }
+        // MSO conditional present
+        assertTrue(html.contains("<!--[if mso | IE]>"), "Should have MSO conditional");
+        // All three sections rendered
+        assertTrue(html.contains("Section One"), "Should render first section");
+        assertTrue(html.contains("Section Two"), "Should render second section");
+        assertTrue(html.contains("Section Three"), "Should render third section");
+        // css-class with -outlook suffix for MSO
+        assertTrue(html.contains("my-wrapper-outlook"), "Should have -outlook suffix on MSO table");
+        // Background color applied
+        assertTrue(html.contains("#eeeeee"), "Should have wrapper background color");
+    }
 }

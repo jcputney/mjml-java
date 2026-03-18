@@ -12,47 +12,47 @@ import java.util.List;
  */
 public final class CompositeIncludeResolver implements IncludeResolver {
 
-  private final List<IncludeResolver> resolvers;
+    private final List<IncludeResolver> resolvers;
 
-  /**
-   * Creates a composite resolver from the given list (defensive copy).
-   *
-   * @param resolvers the resolvers to chain
-   * @throws IllegalArgumentException if the list is empty
-   */
-  public CompositeIncludeResolver(List<IncludeResolver> resolvers) {
-    if (resolvers.isEmpty()) {
-      throw new IllegalArgumentException("At least one resolver is required");
+    /**
+     * Creates a composite resolver from the given list (defensive copy).
+     *
+     * @param resolvers the resolvers to chain
+     * @throws IllegalArgumentException if the list is empty
+     */
+    public CompositeIncludeResolver(List<IncludeResolver> resolvers) {
+        if (resolvers.isEmpty()) {
+            throw new IllegalArgumentException("At least one resolver is required");
+        }
+        this.resolvers = List.copyOf(resolvers);
     }
-    this.resolvers = List.copyOf(resolvers);
-  }
 
-  /**
-   * Creates a composite resolver from varargs.
-   *
-   * @param resolvers the resolvers to chain
-   * @return a new composite resolver
-   * @throws IllegalArgumentException if no resolvers are provided
-   */
-  public static CompositeIncludeResolver of(IncludeResolver... resolvers) {
-    return new CompositeIncludeResolver(Arrays.asList(resolvers));
-  }
-
-  /**
-   * Attempts resolution in configured order and returns the first successful result.
-   *
-   * @throws MjmlIncludeException if all delegates fail
-   */
-  @Override
-  public String resolve(String path, ResolverContext context) {
-    MjmlIncludeException lastException = null;
-    for (IncludeResolver resolver : resolvers) {
-      try {
-        return resolver.resolve(path, context);
-      } catch (MjmlIncludeException e) {
-        lastException = e;
-      }
+    /**
+     * Creates a composite resolver from varargs.
+     *
+     * @param resolvers the resolvers to chain
+     * @return a new composite resolver
+     * @throws IllegalArgumentException if no resolvers are provided
+     */
+    public static CompositeIncludeResolver of(IncludeResolver... resolvers) {
+        return new CompositeIncludeResolver(Arrays.asList(resolvers));
     }
-    throw lastException;
-  }
+
+    /**
+     * Attempts resolution in configured order and returns the first successful result.
+     *
+     * @throws MjmlIncludeException if all delegates fail
+     */
+    @Override
+    public String resolve(String path, ResolverContext context) {
+        MjmlIncludeException lastException = null;
+        for (IncludeResolver resolver : resolvers) {
+            try {
+                return resolver.resolve(path, context);
+            } catch (MjmlIncludeException e) {
+                lastException = e;
+            }
+        }
+        throw lastException;
+    }
 }

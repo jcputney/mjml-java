@@ -9,69 +9,64 @@ import org.junit.jupiter.api.Test;
 
 class CssInlinerTest {
 
-  @Test
-  void inlinesSimpleClassRule() {
-    String html =
-        """
+    @Test
+    void inlinesSimpleClassRule() {
+        String html = """
         <html>
         <head><style>.red { color: red; }</style></head>
         <body><div class="red">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: red"), "Should inline color: red");
-    assertTrue(result.contains("class=\"red\""), "Should keep class attribute");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: red"), "Should inline color: red");
+        assertTrue(result.contains("class=\"red\""), "Should keep class attribute");
+    }
 
-  @Test
-  void inlinesTypeSelector() {
-    String html =
-        """
+    @Test
+    void inlinesTypeSelector() {
+        String html = """
         <html>
         <head><style>p { font-size: 14px; }</style></head>
         <body><p>Hello</p><div>World</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("font-size: 14px"), "Should inline font-size on p");
-    // The div should NOT have a style attribute with font-size
-    int divIdx = result.indexOf("<div");
-    assertTrue(divIdx >= 0, "Should still contain div");
-    String divTag = result.substring(divIdx, result.indexOf(">", divIdx) + 1);
-    assertFalse(divTag.contains("font-size"), "div should not get p's font-size style");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("font-size: 14px"), "Should inline font-size on p");
+        // The div should NOT have a style attribute with font-size
+        int divIdx = result.indexOf("<div");
+        assertTrue(divIdx >= 0, "Should still contain div");
+        String divTag = result.substring(divIdx, result.indexOf(">", divIdx) + 1);
+        assertFalse(divTag.contains("font-size"), "div should not get p's font-size style");
+    }
 
-  @Test
-  void mergesWithExistingInlineStyle() {
-    String html =
-        """
+    @Test
+    void mergesWithExistingInlineStyle() {
+        String html = """
         <html>
         <head><style>.bold { font-weight: bold; }</style></head>
         <body><div class="bold" style="color: red">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: red"), "Should keep existing inline style");
-    assertTrue(result.contains("font-weight: bold"), "Should add new style");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: red"), "Should keep existing inline style");
+        assertTrue(result.contains("font-weight: bold"), "Should add new style");
+    }
 
-  @Test
-  void respectsImportant() {
-    String html =
-        """
+    @Test
+    void respectsImportant() {
+        String html = """
         <html>
         <head><style>.override { color: blue !important; }</style></head>
         <body><div class="override" style="color: red">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: blue"), "!important should override inline");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: blue"), "!important should override inline");
+    }
 
-  @Test
-  void preservesMediaQueries() {
-    String html =
-        """
+    @Test
+    void preservesMediaQueries() {
+        String html = """
         <html>
         <head><style>
         .red { color: red; }
@@ -80,15 +75,14 @@ class CssInlinerTest {
         <body><div class="red">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: red"), "Should inline the regular rule");
-    assertTrue(result.contains("@media"), "Should preserve media query");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: red"), "Should inline the regular rule");
+        assertTrue(result.contains("@media"), "Should preserve media query");
+    }
 
-  @Test
-  void preservesPseudoClassRules() {
-    String html =
-        """
+    @Test
+    void preservesPseudoClassRules() {
+        String html = """
         <html>
         <head><style>
         a { color: blue; }
@@ -97,15 +91,14 @@ class CssInlinerTest {
         <body><a href="#">Link</a></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: blue"), "Should inline regular rule");
-    assertTrue(result.contains("a:hover"), "Should preserve :hover rule in style block");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: blue"), "Should inline regular rule");
+        assertTrue(result.contains("a:hover"), "Should preserve :hover rule in style block");
+    }
 
-  @Test
-  void inlinesDescendantSelector() {
-    String html =
-        """
+    @Test
+    void inlinesDescendantSelector() {
+        String html = """
         <html>
         <head><style>.container p { margin: 0; }</style></head>
         <body>
@@ -114,41 +107,38 @@ class CssInlinerTest {
         </body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    // The p inside .container should get the style
-    assertTrue(result.contains("margin: 0"), "Should inline on descendant p");
-  }
+        String result = CssInliner.inline(html);
+        // The p inside .container should get the style
+        assertTrue(result.contains("margin: 0"), "Should inline on descendant p");
+    }
 
-  @Test
-  void inlinesAdditionalCss() {
-    String html =
-        """
+    @Test
+    void inlinesAdditionalCss() {
+        String html = """
         <html>
         <head></head>
         <body><div class="custom">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html, ".custom { background: yellow; }");
-    assertTrue(result.contains("background: yellow"), "Should inline additional CSS");
-  }
+        String result = CssInliner.inline(html, ".custom { background: yellow; }");
+        assertTrue(result.contains("background: yellow"), "Should inline additional CSS");
+    }
 
-  @Test
-  void handlesIdSelector() {
-    String html =
-        """
+    @Test
+    void handlesIdSelector() {
+        String html = """
         <html>
         <head><style>#header { padding: 10px; }</style></head>
         <body><div id="header">Title</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("padding: 10px"), "Should inline ID-selected rule");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("padding: 10px"), "Should inline ID-selected rule");
+    }
 
-  @Test
-  void respectsSpecificityOrder() {
-    String html =
-        """
+    @Test
+    void respectsSpecificityOrder() {
+        String html = """
         <html>
         <head><style>
         div { color: red; }
@@ -158,51 +148,48 @@ class CssInlinerTest {
         <body><div id="unique" class="special">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    // ID should win (highest specificity)
-    assertTrue(result.contains("color: green"), "ID selector should win due to higher specificity");
-  }
+        String result = CssInliner.inline(html);
+        // ID should win (highest specificity)
+        assertTrue(result.contains("color: green"), "ID selector should win due to higher specificity");
+    }
 
-  @Test
-  void handlesNullHtml() {
-    assertNull(CssInliner.inline(null));
-  }
+    @Test
+    void handlesNullHtml() {
+        assertNull(CssInliner.inline(null));
+    }
 
-  @Test
-  void handlesEmptyHtml() {
-    String result = CssInliner.inline("");
-    assertNotNull(result);
-    assertTrue(result.isEmpty());
-  }
+    @Test
+    void handlesEmptyHtml() {
+        String result = CssInliner.inline("");
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
 
-  @Test
-  void handlesNoStyleBlocks() {
-    String html = "<html><body><div>Hello</div></body></html>";
-    String result = CssInliner.inline(html);
-    assertTrue(
-        result.contains("<div>Hello</div>"), "Should pass through HTML unchanged when no styles");
-  }
+    @Test
+    void handlesNoStyleBlocks() {
+        String html = "<html><body><div>Hello</div></body></html>";
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("<div>Hello</div>"), "Should pass through HTML unchanged when no styles");
+    }
 
-  @Test
-  void inlinesMultipleSelectorsInList() {
-    String html =
-        """
+    @Test
+    void inlinesMultipleSelectorsInList() {
+        String html = """
         <html>
         <head><style>h1, h2, h3 { font-weight: bold; }</style></head>
         <body><h1>A</h1><h2>B</h2><p>C</p></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    // h1 and h2 should get the style, but not p
-    int firstBold = result.indexOf("font-weight: bold");
-    assertTrue(firstBold >= 0, "Should inline on at least one heading");
-  }
+        String result = CssInliner.inline(html);
+        // h1 and h2 should get the style, but not p
+        int firstBold = result.indexOf("font-weight: bold");
+        assertTrue(firstBold >= 0, "Should inline on at least one heading");
+    }
 
-  @Test
-  void importantSpecificityConflict() {
-    // Both rules use !important - the more specific selector should win
-    String html =
-        """
+    @Test
+    void importantSpecificityConflict() {
+        // Both rules use !important - the more specific selector should win
+        String html = """
         <html>
         <head><style>
         .red { color: red !important; }
@@ -211,16 +198,15 @@ class CssInlinerTest {
         <body><div id="unique" class="red">Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(
-        result.contains("color: green"),
-        "Higher specificity !important should win over lower specificity !important");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(
+                result.contains("color: green"),
+                "Higher specificity !important should win over lower specificity !important");
+    }
 
-  @Test
-  void selfClosingElementsPreserved() {
-    String html =
-        """
+    @Test
+    void selfClosingElementsPreserved() {
+        String html = """
         <html>
         <head><style>.styled { color: red; }</style></head>
         <body>
@@ -230,16 +216,15 @@ class CssInlinerTest {
         </body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("<img"), "img tag should be preserved");
-    assertTrue(result.contains("<br"), "br tag should be preserved");
-    assertTrue(result.contains("<hr"), "hr tag should be preserved");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("<img"), "img tag should be preserved");
+        assertTrue(result.contains("<br"), "br tag should be preserved");
+        assertTrue(result.contains("<hr"), "hr tag should be preserved");
+    }
 
-  @Test
-  void multipleStyleBlocksAllProcessed() {
-    String html =
-        """
+    @Test
+    void multipleStyleBlocksAllProcessed() {
+        String html = """
         <html>
         <head>
         <style>.first { color: red; }</style>
@@ -250,30 +235,27 @@ class CssInlinerTest {
         </body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: red"), "Rule from first style block should be inlined");
-    assertTrue(
-        result.contains("font-weight: bold"), "Rule from second style block should be inlined");
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: red"), "Rule from first style block should be inlined");
+        assertTrue(result.contains("font-weight: bold"), "Rule from second style block should be inlined");
+    }
 
-  @Test
-  void emptyStyleBlockHandled() {
-    String html =
-        """
+    @Test
+    void emptyStyleBlockHandled() {
+        String html = """
         <html>
         <head><style></style></head>
         <body><div>Hello</div></body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertNotNull(result);
-    assertTrue(result.contains("<div>Hello</div>"), "Empty style block should not cause errors");
-  }
+        String result = CssInliner.inline(html);
+        assertNotNull(result);
+        assertTrue(result.contains("<div>Hello</div>"), "Empty style block should not cause errors");
+    }
 
-  @Test
-  void cssWithMediaQueriesPreservedNotInlined() {
-    String html =
-        """
+    @Test
+    void cssWithMediaQueriesPreservedNotInlined() {
+        String html = """
         <html>
         <head><style>
         .normal { color: red; }
@@ -286,19 +268,19 @@ class CssInlinerTest {
         </body>
         </html>""";
 
-    String result = CssInliner.inline(html);
-    assertTrue(result.contains("color: red"), "Regular rules should be inlined");
-    assertTrue(result.contains("@media"), "Media queries should be preserved in style block");
-    // The .mobile rule inside @media should NOT be inlined as an inline style
-    // (media queries are kept in <style> blocks for email clients that support them)
-  }
+        String result = CssInliner.inline(html);
+        assertTrue(result.contains("color: red"), "Regular rules should be inlined");
+        assertTrue(result.contains("@media"), "Media queries should be preserved in style block");
+        // The .mobile rule inside @media should NOT be inlined as an inline style
+        // (media queries are kept in <style> blocks for email clients that support them)
+    }
 
-  @Test
-  void integrationWithMjmlRenderer() {
-    // Test that CSS inlining works with MJML-rendered HTML
-    String mjml =
-        // language=MJML
-        """
+    @Test
+    void integrationWithMjmlRenderer() {
+        // Test that CSS inlining works with MJML-rendered HTML
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-head>
             <mj-style inline="inline">
@@ -314,9 +296,9 @@ class CssInlinerTest {
           </mj-body>
         </mjml>""";
 
-    String html = dev.jcputney.mjml.MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertTrue(html.contains("Styled text"));
-    // The inline CSS engine should process mj-style inline="inline" styles
-  }
+        String html = dev.jcputney.mjml.MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertTrue(html.contains("Styled text"));
+        // The inline CSS engine should process mj-style inline="inline" styles
+    }
 }

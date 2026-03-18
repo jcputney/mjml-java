@@ -8,20 +8,20 @@ import dev.jcputney.mjml.parser.MjmlNode;
 /** Sets the document title from mj-title content. */
 public class MjTitle extends HeadComponent {
 
-  public MjTitle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-    super(node, globalContext, renderContext);
-  }
-
-  @Override
-  public String getTagName() {
-    return "mj-title";
-  }
-
-  @Override
-  public void process() {
-    String content = node.getInnerHtml();
-    if (content != null && !content.isBlank()) {
-      globalContext.metadata().setTitle(content.trim());
+    public MjTitle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+        super(node, globalContext, renderContext);
     }
-  }
+
+    @Override
+    public String getTagName() {
+        return "mj-title";
+    }
+
+    @Override
+    public void process() {
+        String content = node.getInnerHtml();
+        if (content != null && !content.isBlank()) {
+            globalContext.metadata().setTitle(content.trim());
+        }
+    }
 }

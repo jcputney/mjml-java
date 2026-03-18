@@ -13,19 +13,18 @@ import org.junit.jupiter.api.Test;
  */
 class ColumnWidthTest {
 
-  private String render(String mjml) {
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    return html;
-  }
+    private String render(String mjml) {
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        return html;
+    }
 
-  @Test
-  void threeAutoColumnsGetEqualWidth() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void threeAutoColumnsGetEqualWidth() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -36,18 +35,17 @@ class ColumnWidthTest {
           </mj-body>
         </mjml>
         """);
-    // 600 / 3 = 200px each
-    assertTrue(html.contains("width:200px"), "Should have 200px column width");
-    // Responsive class: 100/3 = 33.33...
-    assertTrue(html.contains("mj-column-per-33"), "Should have 33% responsive class");
-  }
+        // 600 / 3 = 200px each
+        assertTrue(html.contains("width:200px"), "Should have 200px column width");
+        // Responsive class: 100/3 = 33.33...
+        assertTrue(html.contains("mj-column-per-33"), "Should have 33% responsive class");
+    }
 
-  @Test
-  void explicitPixelWidth() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void explicitPixelWidth() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -58,16 +56,15 @@ class ColumnWidthTest {
           </mj-body>
         </mjml>
         """);
-    assertTrue(html.contains("width:200px"), "Should have explicit 200px column");
-    assertTrue(html.contains("mj-column-px-200"), "Should have pixel responsive class");
-  }
+        assertTrue(html.contains("width:200px"), "Should have explicit 200px column");
+        assertTrue(html.contains("mj-column-px-200"), "Should have pixel responsive class");
+    }
 
-  @Test
-  void percentageWidth() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void percentageWidth() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -77,12 +74,12 @@ class ColumnWidthTest {
           </mj-body>
         </mjml>
         """);
-    // 25% of 600 = 150px
-    assertTrue(html.contains("width:150px"), "Should have 150px for 25% column");
-    // 75% of 600 = 450px
-    assertTrue(html.contains("width:450px"), "Should have 450px for 75% column");
-    // Responsive classes
-    assertTrue(html.contains("mj-column-per-25"), "Should have 25% responsive class");
-    assertTrue(html.contains("mj-column-per-75"), "Should have 75% responsive class");
-  }
+        // 25% of 600 = 150px
+        assertTrue(html.contains("width:150px"), "Should have 150px for 25% column");
+        // 75% of 600 = 450px
+        assertTrue(html.contains("width:450px"), "Should have 450px for 75% column");
+        // Responsive classes
+        assertTrue(html.contains("mj-column-per-25"), "Should have 25% responsive class");
+        assertTrue(html.contains("mj-column-per-75"), "Should have 75% responsive class");
+    }
 }

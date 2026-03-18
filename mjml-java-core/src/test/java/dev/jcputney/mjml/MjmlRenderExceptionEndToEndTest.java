@@ -14,16 +14,15 @@ import org.junit.jupiter.api.Test;
 /** Tests that a RuntimeException thrown during render() is wrapped in MjmlRenderException. */
 class MjmlRenderExceptionEndToEndTest {
 
-  @Test
-  void runtimeExceptionInCustomComponentWrappedInMjmlRenderException() {
-    MjmlConfiguration config =
-        MjmlConfiguration.builder()
-            .registerComponent("mj-exploding", ExplodingComponent::new)
-            .build();
+    @Test
+    void runtimeExceptionInCustomComponentWrappedInMjmlRenderException() {
+        MjmlConfiguration config = MjmlConfiguration.builder()
+                .registerComponent("mj-exploding", ExplodingComponent::new)
+                .build();
 
-    String mjml =
-        // language=MJML
-        """
+        String mjml =
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -35,35 +34,32 @@ class MjmlRenderExceptionEndToEndTest {
         </mjml>
         """;
 
-    MjmlRenderException ex =
-        assertThrows(MjmlRenderException.class, () -> MjmlRenderer.render(mjml, config));
-    assertNotNull(ex.getCause(), "MjmlRenderException should wrap the original exception");
-    assertInstanceOf(
-        IllegalStateException.class,
-        ex.getCause(),
-        "Original IllegalStateException should be the cause");
-  }
-
-  /** A custom component whose render() method always throws a RuntimeException. */
-  static class ExplodingComponent extends BodyComponent {
-
-    ExplodingComponent(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-      super(node, globalContext, renderContext);
+        MjmlRenderException ex = assertThrows(MjmlRenderException.class, () -> MjmlRenderer.render(mjml, config));
+        assertNotNull(ex.getCause(), "MjmlRenderException should wrap the original exception");
+        assertInstanceOf(
+                IllegalStateException.class, ex.getCause(), "Original IllegalStateException should be the cause");
     }
 
-    @Override
-    public String getTagName() {
-      return "mj-exploding";
-    }
+    /** A custom component whose render() method always throws a RuntimeException. */
+    static class ExplodingComponent extends BodyComponent {
 
-    @Override
-    public Map<String, String> getDefaultAttributes() {
-      return Map.of();
-    }
+        ExplodingComponent(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+            super(node, globalContext, renderContext);
+        }
 
-    @Override
-    public String render() {
-      throw new IllegalStateException("Boom! Component exploded during render");
+        @Override
+        public String getTagName() {
+            return "mj-exploding";
+        }
+
+        @Override
+        public Map<String, String> getDefaultAttributes() {
+            return Map.of();
+        }
+
+        @Override
+        public String render() {
+            throw new IllegalStateException("Boom! Component exploded during render");
+        }
     }
-  }
 }

@@ -9,76 +9,77 @@ import org.junit.jupiter.api.Test;
 
 class DefaultFontRegistryTest {
 
-  @Test
-  void registersKnownFontWhenUsed() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    DefaultFontRegistry.registerUsedFonts("Ubuntu, Helvetica, Arial, sans-serif", ctx);
+    @Test
+    void registersKnownFontWhenUsed() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        DefaultFontRegistry.registerUsedFonts("Ubuntu, Helvetica, Arial, sans-serif", ctx);
 
-    assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "Ubuntu".equals(f.name())));
-  }
+        assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "Ubuntu".equals(f.name())));
+    }
 
-  @Test
-  void registersMultipleKnownFonts() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    DefaultFontRegistry.registerUsedFonts("Open Sans, Lato, sans-serif", ctx);
+    @Test
+    void registersMultipleKnownFonts() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        DefaultFontRegistry.registerUsedFonts("Open Sans, Lato, sans-serif", ctx);
 
-    assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "Open Sans".equals(f.name())));
-    assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "Lato".equals(f.name())));
-  }
+        assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "Open Sans".equals(f.name())));
+        assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "Lato".equals(f.name())));
+    }
 
-  @Test
-  void fontUrlOverrideRespected() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    ctx.styles().registerFontOverride("Ubuntu", "https://custom.fonts/ubuntu.css");
-    DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
+    @Test
+    void fontUrlOverrideRespected() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        ctx.styles().registerFontOverride("Ubuntu", "https://custom.fonts/ubuntu.css");
+        DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
 
-    FontDef ubuntu =
-        ctx.styles().getFonts().stream()
-            .filter(f -> "Ubuntu".equals(f.name()))
-            .findFirst()
-            .orElse(null);
-    assertNotNull(ubuntu);
-    assertEquals("https://custom.fonts/ubuntu.css", ubuntu.href());
-  }
+        FontDef ubuntu = ctx.styles().getFonts().stream()
+                .filter(f -> "Ubuntu".equals(f.name()))
+                .findFirst()
+                .orElse(null);
+        assertNotNull(ubuntu);
+        assertEquals("https://custom.fonts/ubuntu.css", ubuntu.href());
+    }
 
-  @Test
-  void unknownFontIgnored() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    DefaultFontRegistry.registerUsedFonts("Comic Sans MS, cursive", ctx);
+    @Test
+    void unknownFontIgnored() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        DefaultFontRegistry.registerUsedFonts("Comic Sans MS, cursive", ctx);
 
-    assertTrue(ctx.styles().getFonts().isEmpty());
-  }
+        assertTrue(ctx.styles().getFonts().isEmpty());
+    }
 
-  @Test
-  void nullInputHandled() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    DefaultFontRegistry.registerUsedFonts(null, ctx);
-    assertTrue(ctx.styles().getFonts().isEmpty());
-  }
+    @Test
+    void nullInputHandled() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        DefaultFontRegistry.registerUsedFonts(null, ctx);
+        assertTrue(ctx.styles().getFonts().isEmpty());
+    }
 
-  @Test
-  void emptyInputHandled() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    DefaultFontRegistry.registerUsedFonts("", ctx);
-    assertTrue(ctx.styles().getFonts().isEmpty());
-  }
+    @Test
+    void emptyInputHandled() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        DefaultFontRegistry.registerUsedFonts("", ctx);
+        assertTrue(ctx.styles().getFonts().isEmpty());
+    }
 
-  @Test
-  void doesNotRegisterDuplicate() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
-    DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
+    @Test
+    void doesNotRegisterDuplicate() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
+        DefaultFontRegistry.registerUsedFonts("Ubuntu, sans-serif", ctx);
 
-    long count = ctx.styles().getFonts().stream().filter(f -> "Ubuntu".equals(f.name())).count();
-    assertEquals(1, count, "Should not register duplicate fonts");
-  }
+        long count = ctx.styles().getFonts().stream()
+                .filter(f -> "Ubuntu".equals(f.name()))
+                .count();
+        assertEquals(1, count, "Should not register duplicate fonts");
+    }
 
-  @Test
-  void registersCustomMjFontWhenUsedInFontFamily() {
-    GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
-    ctx.styles().registerFontOverride("CustomFont", "https://example.com/custom.css");
-    DefaultFontRegistry.registerUsedFonts("CustomFont, sans-serif", ctx);
+    @Test
+    void registersCustomMjFontWhenUsedInFontFamily() {
+        GlobalContext ctx = new GlobalContext(MjmlConfiguration.defaults());
+        ctx.styles().registerFontOverride("CustomFont", "https://example.com/custom.css");
+        DefaultFontRegistry.registerUsedFonts("CustomFont, sans-serif", ctx);
 
-    assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "CustomFont".equals(f.name())));
-  }
+        assertTrue(ctx.styles().getFonts().stream().anyMatch(f -> "CustomFont".equals(f.name())));
+    }
 }

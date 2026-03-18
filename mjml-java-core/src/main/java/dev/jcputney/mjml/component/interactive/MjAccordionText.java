@@ -16,56 +16,52 @@ import java.util.Map;
  */
 public class MjAccordionText extends BodyComponent {
 
-  private static final Map<String, String> DEFAULTS =
-      Map.ofEntries(
-          Map.entry("background-color", ""),
-          Map.entry("color", "#000000"),
-          Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-          Map.entry("font-size", "13px"),
-          Map.entry("font-weight", ""),
-          Map.entry("letter-spacing", ""),
-          Map.entry("line-height", "1"),
-          Map.entry("padding", "16px"),
-          Map.entry("padding-bottom", ""),
-          Map.entry("padding-left", ""),
-          Map.entry("padding-right", ""),
-          Map.entry("padding-top", ""));
+    private static final Map<String, String> DEFAULTS = Map.ofEntries(
+            Map.entry("background-color", ""),
+            Map.entry("color", "#000000"),
+            Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+            Map.entry("font-size", "13px"),
+            Map.entry("font-weight", ""),
+            Map.entry("letter-spacing", ""),
+            Map.entry("line-height", "1"),
+            Map.entry("padding", "16px"),
+            Map.entry("padding-bottom", ""),
+            Map.entry("padding-left", ""),
+            Map.entry("padding-right", ""),
+            Map.entry("padding-top", ""));
 
-  public MjAccordionText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-    super(node, globalContext, renderContext);
-  }
+    public MjAccordionText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+        super(node, globalContext, renderContext);
+    }
 
-  @Override
-  public String getTagName() {
-    return "mj-accordion-text";
-  }
+    @Override
+    public String getTagName() {
+        return "mj-accordion-text";
+    }
 
-  @Override
-  public Map<String, String> getDefaultAttributes() {
-    return DEFAULTS;
-  }
+    @Override
+    public Map<String, String> getDefaultAttributes() {
+        return DEFAULTS;
+    }
 
-  @Override
-  public String render() {
-    String backgroundColor = getAttribute("background-color", "");
-    String color = getAttribute("color", "#000000");
-    String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
-    String fontSize = getAttribute("font-size", "13px");
-    String lineHeight = getAttribute("line-height", "1");
-    String padding = getAttribute("padding", "16px");
+    @Override
+    public String render() {
+        String backgroundColor = getAttribute("background-color", "");
+        String color = getAttribute("color", "#000000");
+        String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
+        String fontSize = getAttribute("font-size", "13px");
+        String lineHeight = getAttribute("line-height", "1");
+        String padding = getAttribute("padding", "16px");
 
-    // Border comes from the accordion ancestor (via full cascade)
-    String border = resolveAncestorAttr("border", "2px solid black");
+        // Border comes from the accordion ancestor (via full cascade)
+        String border = resolveAncestorAttr("border", "2px solid black");
 
-    // Collapse whitespace in text content
-    String content =
-        sanitizeContent(
-            CssUnitParser.WHITESPACE.matcher(node.getInnerHtml().trim()).replaceAll(" "));
+        // Collapse whitespace in text content
+        String content = sanitizeContent(
+                CssUnitParser.WHITESPACE.matcher(node.getInnerHtml().trim()).replaceAll(" "));
 
-    String tableStyle = buildStyle(orderedMap("width", "100%", "border-bottom", border));
-    String tdStyle =
-        buildStyle(
-            orderedMap(
+        String tableStyle = buildStyle(orderedMap("width", "100%", "border-bottom", border));
+        String tdStyle = buildStyle(orderedMap(
                 "background", backgroundColor,
                 "font-size", fontSize,
                 "font-family", fontFamily,
@@ -73,21 +69,21 @@ public class MjAccordionText extends BodyComponent {
                 "color", color,
                 "padding", padding));
 
-    HtmlBuilder html = new HtmlBuilder();
-    html.open("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle));
-    html.open("tbody");
-    html.open("tr");
-    html.openInline("td", attrs("style", tdStyle));
-    html.text(" " + content + " ");
-    html.closeInlineLn("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
+        HtmlBuilder html = new HtmlBuilder();
+        html.open("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle));
+        html.open("tbody");
+        html.open("tr");
+        html.openInline("td", attrs("style", tdStyle));
+        html.text(" " + content + " ");
+        html.closeInlineLn("td");
+        html.close("tr");
+        html.close("tbody");
+        html.close("table");
 
-    return html.toString();
-  }
+        return html.toString();
+    }
 
-  private String resolveAncestorAttr(String name, String fallback) {
-    return AccordionHelper.resolveAncestorAttr(node, name, globalContext, fallback);
-  }
+    private String resolveAncestorAttr(String name, String fallback) {
+        return AccordionHelper.resolveAncestorAttr(node, name, globalContext, fallback);
+    }
 }

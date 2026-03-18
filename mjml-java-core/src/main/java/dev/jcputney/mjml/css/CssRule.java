@@ -11,17 +11,17 @@ import java.util.List;
  */
 public record CssRule(String selectorText, List<CssDeclaration> declarations) {
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(selectorText).append(" { ");
-    for (int i = 0; i < declarations.size(); i++) {
-      if (i > 0) {
-        sb.append(" ");
-      }
-      sb.append(declarations.get(i)).append(";");
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(selectorText).append(" { ");
+        for (int i = 0; i < declarations.size(); i++) {
+            if (i > 0) {
+                sb.append(" ");
+            }
+            sb.append(declarations.get(i)).append(";");
+        }
+        sb.append(" }");
+        return sb.toString();
     }
-    sb.append(" }");
-    return sb.toString();
-  }
 }

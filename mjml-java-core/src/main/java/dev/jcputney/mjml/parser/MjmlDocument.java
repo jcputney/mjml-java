@@ -9,33 +9,33 @@ package dev.jcputney.mjml.parser;
  */
 public record MjmlDocument(MjmlNode root) {
 
-  public MjmlDocument {}
+    public MjmlDocument {}
 
-  /**
-   * Returns the root node of this document.
-   *
-   * @return the root {@code <mjml>} node
-   */
-  @Override
-  public MjmlNode root() {
-    return root;
-  }
+    /**
+     * Returns the root node of this document.
+     *
+     * @return the root {@code <mjml>} node
+     */
+    @Override
+    public MjmlNode root() {
+        return root;
+    }
 
-  /**
-   * Returns the mj-head node, or {@code null} if not present.
-   *
-   * @return the {@code <mj-head>} node, or {@code null}
-   */
-  public MjmlNode getHead() {
-    return root.getFirstChildByTag("mj-head");
-  }
+    /**
+     * Returns the mj-head node, or {@code null} if not present.
+     *
+     * @return the {@code <mj-head>} node, or {@code null}
+     */
+    public MjmlNode getHead() {
+        return root.getFirstChildByTag("mj-head");
+    }
 
-  /**
-   * Returns the mj-body node, or {@code null} if not present.
-   *
-   * @return the {@code <mj-body>} node, or {@code null}
-   */
-  public MjmlNode getBody() {
-    return root.getFirstChildByTag("mj-body");
-  }
+    /**
+     * Returns the mj-body node, or {@code null} if not present.
+     *
+     * @return the {@code <mj-body>} node, or {@code null}
+     */
+    public MjmlNode getBody() {
+        return root.getFirstChildByTag("mj-body");
+    }
 }

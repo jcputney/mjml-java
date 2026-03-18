@@ -6,11 +6,11 @@ package dev.jcputney.mjml;
  */
 public class MjmlRenderException extends MjmlException {
 
-  public MjmlRenderException(String message) {
-    super(message);
-  }
+    public MjmlRenderException(String message) {
+        super(message);
+    }
 
-  public MjmlRenderException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public MjmlRenderException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

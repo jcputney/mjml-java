@@ -12,35 +12,34 @@ import java.util.Map;
  */
 final class AccordionHelper {
 
-  private AccordionHelper() {}
+    private AccordionHelper() {}
 
-  /**
-   * Resolves an attribute by walking up the node tree to find a value set on an ancestor (typically
-   * the mj-accordion-element or mj-accordion), using the full attribute cascade (inline, mj-class,
-   * tag defaults, mj-all).
-   */
-  static String resolveAncestorAttr(
-      MjmlNode node, String name, GlobalContext globalContext, String fallback) {
-    MjmlNode current = node.getParent();
-    while (current != null) {
-      Map<String, String> defaults = getDefaultsForTag(current.getTagName());
-      String value = AttributeResolver.resolve(current, name, globalContext, defaults);
-      if (value != null && !value.isEmpty()) {
-        return value;
-      }
-      current = current.getParent();
+    /**
+     * Resolves an attribute by walking up the node tree to find a value set on an ancestor (typically
+     * the mj-accordion-element or mj-accordion), using the full attribute cascade (inline, mj-class,
+     * tag defaults, mj-all).
+     */
+    static String resolveAncestorAttr(MjmlNode node, String name, GlobalContext globalContext, String fallback) {
+        MjmlNode current = node.getParent();
+        while (current != null) {
+            Map<String, String> defaults = getDefaultsForTag(current.getTagName());
+            String value = AttributeResolver.resolve(current, name, globalContext, defaults);
+            if (value != null && !value.isEmpty()) {
+                return value;
+            }
+            current = current.getParent();
+        }
+        return fallback;
     }
-    return fallback;
-  }
 
-  /** Returns the appropriate default attributes map for a given tag name. */
-  private static Map<String, String> getDefaultsForTag(String tagName) {
-    if ("mj-accordion".equals(tagName)) {
-      return MjAccordion.DEFAULTS;
+    /** Returns the appropriate default attributes map for a given tag name. */
+    private static Map<String, String> getDefaultsForTag(String tagName) {
+        if ("mj-accordion".equals(tagName)) {
+            return MjAccordion.DEFAULTS;
+        }
+        if ("mj-accordion-element".equals(tagName)) {
+            return MjAccordionElement.DEFAULTS;
+        }
+        return Map.of();
     }
-    if ("mj-accordion-element".equals(tagName)) {
-      return MjAccordionElement.DEFAULTS;
-    }
-    return Map.of();
-  }
 }

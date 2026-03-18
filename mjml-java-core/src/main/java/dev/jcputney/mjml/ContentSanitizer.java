@@ -19,11 +19,11 @@ package dev.jcputney.mjml;
 @FunctionalInterface
 public interface ContentSanitizer {
 
-  /**
-   * Sanitizes the given HTML content.
-   *
-   * @param html the raw HTML content from the MJML element
-   * @return sanitized HTML safe for inclusion in the rendered email
-   */
-  String sanitize(String html);
+    /**
+     * Sanitizes the given HTML content.
+     *
+     * @param html the raw HTML content from the MJML element
+     * @return sanitized HTML safe for inclusion in the rendered email
+     */
+    String sanitize(String html);
 }

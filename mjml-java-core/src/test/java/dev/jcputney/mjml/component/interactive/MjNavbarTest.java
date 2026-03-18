@@ -10,19 +10,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-navbar component rendering. */
 class MjNavbarTest {
 
-  private String render(String mjml) {
-    String html = MjmlRenderer.render(mjml).html();
-    assertNotNull(html);
-    assertFalse(html.isEmpty());
-    return html;
-  }
+    private String render(String mjml) {
+        String html = MjmlRenderer.render(mjml).html();
+        assertNotNull(html);
+        assertFalse(html.isEmpty());
+        return html;
+    }
 
-  @Test
-  void hamburgerModeRendersCheckbox() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void hamburgerModeRendersCheckbox() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -37,17 +36,16 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("type=\"checkbox\""), "Hamburger mode should render a checkbox input");
-    assertTrue(html.contains("mj-menu-trigger"), "Should contain menu trigger div for hamburger");
-    assertTrue(html.contains("&#9776;"), "Should contain hamburger icon character");
-  }
+        assertTrue(html.contains("type=\"checkbox\""), "Hamburger mode should render a checkbox input");
+        assertTrue(html.contains("mj-menu-trigger"), "Should contain menu trigger div for hamburger");
+        assertTrue(html.contains("&#9776;"), "Should contain hamburger icon character");
+    }
 
-  @Test
-  void linksRendered() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void linksRendered() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -63,18 +61,17 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Home"), "Should render Home link text");
-    assertTrue(html.contains("About"), "Should render About link text");
-    assertTrue(html.contains("Contact"), "Should render Contact link text");
-    assertTrue(html.contains("mj-inline-links"), "Should contain mj-inline-links class");
-  }
+        assertTrue(html.contains("Home"), "Should render Home link text");
+        assertTrue(html.contains("About"), "Should render About link text");
+        assertTrue(html.contains("Contact"), "Should render Contact link text");
+        assertTrue(html.contains("mj-inline-links"), "Should contain mj-inline-links class");
+    }
 
-  @Test
-  void hamburgerCssIncludesMediaQuery() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void hamburgerCssIncludesMediaQuery() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -88,15 +85,14 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("mj-menu-checkbox"), "Should include hamburger checkbox CSS");
-  }
+        assertTrue(html.contains("mj-menu-checkbox"), "Should include hamburger checkbox CSS");
+    }
 
-  @Test
-  void nonHamburgerModeNoCheckbox() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void nonHamburgerModeNoCheckbox() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -110,17 +106,15 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertFalse(
-        html.contains("mj-menu-trigger"), "Non-hamburger mode should not contain menu trigger");
-    assertTrue(html.contains("Simple Link"), "Should still render the link text");
-  }
+        assertFalse(html.contains("mj-menu-trigger"), "Non-hamburger mode should not contain menu trigger");
+        assertTrue(html.contains("Simple Link"), "Should still render the link text");
+    }
 
-  @Test
-  void hamburgerRendersWithLinks() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void hamburgerRendersWithLinks() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -136,22 +130,20 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("Link A"), "Should render first link");
-    assertTrue(html.contains("Link B"), "Should render second link");
-    assertTrue(html.contains("Link C"), "Should render third link");
-    assertTrue(html.contains("mj-menu-trigger"), "Should render hamburger trigger");
-    assertTrue(html.contains("mj-menu-icon-open"), "Should render open icon span");
-    assertTrue(html.contains("mj-menu-icon-close"), "Should render close icon span");
-    assertTrue(
-        html.contains("mj-menu-checkbox"), "Should inject hamburger CSS for checkbox toggle");
-  }
+        assertTrue(html.contains("Link A"), "Should render first link");
+        assertTrue(html.contains("Link B"), "Should render second link");
+        assertTrue(html.contains("Link C"), "Should render third link");
+        assertTrue(html.contains("mj-menu-trigger"), "Should render hamburger trigger");
+        assertTrue(html.contains("mj-menu-icon-open"), "Should render open icon span");
+        assertTrue(html.contains("mj-menu-icon-close"), "Should render close icon span");
+        assertTrue(html.contains("mj-menu-checkbox"), "Should inject hamburger CSS for checkbox toggle");
+    }
 
-  @Test
-  void hamburgerWithCustomIcoAttributes() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void hamburgerWithCustomIcoAttributes() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -170,18 +162,17 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("#ff0000"), "Should include custom ico color with # prefix");
-    assertTrue(html.contains("font-size:40px"), "Should use custom ico font size");
-    assertTrue(html.contains("padding:20px"), "Should use custom ico padding");
-    assertTrue(html.contains("align=\"left\""), "Should use custom ico alignment");
-  }
+        assertTrue(html.contains("#ff0000"), "Should include custom ico color with # prefix");
+        assertTrue(html.contains("font-size:40px"), "Should use custom ico font size");
+        assertTrue(html.contains("padding:20px"), "Should use custom ico padding");
+        assertTrue(html.contains("align=\"left\""), "Should use custom ico alignment");
+    }
 
-  @Test
-  void linkWithBaseUrl() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void linkWithBaseUrl() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -195,17 +186,15 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(
-        html.contains("https://example.com/about"), "Should prepend base-url to relative href");
-    assertTrue(html.contains("About"), "Should render link text");
-  }
+        assertTrue(html.contains("https://example.com/about"), "Should prepend base-url to relative href");
+        assertTrue(html.contains("About"), "Should render link text");
+    }
 
-  @Test
-  void linkWithRelAttribute() {
-    String html =
-        render(
-            // language=MJML
-            """
+    @Test
+    void linkWithRelAttribute() {
+        String html = render(
+                // language=MJML
+                """
         <mjml>
           <mj-body>
             <mj-section>
@@ -219,7 +208,7 @@ class MjNavbarTest {
         </mjml>
         """);
 
-    assertTrue(html.contains("rel=\"noopener\""), "Should include rel attribute when set");
-    assertTrue(html.contains("External"), "Should render link text");
-  }
+        assertTrue(html.contains("rel=\"noopener\""), "Should include rel attribute when set");
+        assertTrue(html.contains("External"), "Should render link text");
+    }
 }

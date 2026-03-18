@@ -18,52 +18,52 @@ import java.nio.file.Path;
  */
 public final class ClasspathIncludeResolver implements IncludeResolver {
 
-  private final ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
-  /** Creates a resolver that uses the thread's context class loader. */
-  public ClasspathIncludeResolver() {
-    this(Thread.currentThread().getContextClassLoader());
-  }
-
-  /**
-   * Creates a resolver that uses the given class loader.
-   *
-   * @param classLoader the class loader to use for resource lookups
-   */
-  public ClasspathIncludeResolver(ClassLoader classLoader) {
-    if (classLoader == null) {
-      throw new IllegalArgumentException("classLoader cannot be null");
-    }
-    this.classLoader = classLoader;
-  }
-
-  @Override
-  public String resolve(String path, ResolverContext context) {
-    if (path == null || path.isBlank()) {
-      throw new MjmlIncludeException("Include path cannot be empty");
+    /** Creates a resolver that uses the thread's context class loader. */
+    public ClasspathIncludeResolver() {
+        this(Thread.currentThread().getContextClassLoader());
     }
 
-    // Security: reject null bytes that could bypass path checks
-    if (path.indexOf('\0') >= 0) {
-      throw new MjmlIncludeException("Include path contains null bytes");
+    /**
+     * Creates a resolver that uses the given class loader.
+     *
+     * @param classLoader the class loader to use for resource lookups
+     */
+    public ClasspathIncludeResolver(ClassLoader classLoader) {
+        if (classLoader == null) {
+            throw new IllegalArgumentException("classLoader cannot be null");
+        }
+        this.classLoader = classLoader;
     }
 
-    // Security: normalize and prevent path traversal
-    String normalized = Path.of(path).normalize().toString();
-    if (normalized.startsWith("..")) {
-      throw new MjmlIncludeException("Include path cannot traverse above root: " + path);
-    }
+    @Override
+    public String resolve(String path, ResolverContext context) {
+        if (path == null || path.isBlank()) {
+            throw new MjmlIncludeException("Include path cannot be empty");
+        }
 
-    // Strip leading slash for classloader compatibility
-    String resourcePath = normalized.startsWith("/") ? normalized.substring(1) : normalized;
+        // Security: reject null bytes that could bypass path checks
+        if (path.indexOf('\0') >= 0) {
+            throw new MjmlIncludeException("Include path contains null bytes");
+        }
 
-    try (InputStream is = classLoader.getResourceAsStream(resourcePath)) {
-      if (is == null) {
-        throw new MjmlIncludeException("Include resource not found on classpath: " + path);
-      }
-      return new String(is.readAllBytes(), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new MjmlIncludeException("Failed to read include resource: " + path, e);
+        // Security: normalize and prevent path traversal
+        String normalized = Path.of(path).normalize().toString();
+        if (normalized.startsWith("..")) {
+            throw new MjmlIncludeException("Include path cannot traverse above root: " + path);
+        }
+
+        // Strip leading slash for classloader compatibility
+        String resourcePath = normalized.startsWith("/") ? normalized.substring(1) : normalized;
+
+        try (InputStream is = classLoader.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new MjmlIncludeException("Include resource not found on classpath: " + path);
+            }
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new MjmlIncludeException("Failed to read include resource: " + path, e);
+        }
     }
-  }
 }
