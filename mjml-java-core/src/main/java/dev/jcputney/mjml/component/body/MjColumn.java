@@ -1,9 +1,6 @@
 
 package dev.jcputney.mjml.component.body;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -14,6 +11,7 @@ import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 /**
  * The column component (&lt;mj-column&gt;). Renders as a table-based column with vertical-align,
@@ -70,84 +68,33 @@ public class MjColumn extends BodyComponent {
     double columnWidth = renderContext.getContainerWidth();
     String widthSpec = renderContext.getColumnWidthSpec();
     String responsiveClass = buildResponsiveClass(widthSpec);
-    boolean hasGutter = hasGutter();
-    boolean hasBorder = hasBorderRadius();
 
     String cssClass = getAttribute("css-class", "");
     String divClass =
       responsiveClass + " mj-outlook-group-fix" + (cssClass.isEmpty() ? "" : " " + escapeAttr(cssClass));
 
     HtmlBuilder html = new HtmlBuilder();
-    html.open("div", attrs("class", divClass, "style", buildOuterStyle()));
+    html.wrap("div", attrs("class", divClass, "style", buildOuterStyle()), () -> {
+      if (hasGutter()) {
+        var outerAttrs = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+        if (hasBorderRadius()) {
+          outerAttrs.put("style", "border-collapse:separate;");
+        }
+        outerAttrs.put("width", "100%");
 
-    if (hasGutter) {
-      html.open(
-        "table",
-        attrs(
-          "border",
-          "0",
-          "cellpadding",
-          "0",
-          "cellspacing",
-          "0",
-          "role",
-          "presentation",
-          "width",
-          "100%")
-          + (hasBorder ? " style=\"border-collapse:separate;\"" : ""));
-      html.open("tbody");
-      html.open("tr");
-      html.open("td", attrs("style", buildGutterTdStyle()));
-      html.open(
-        "table",
-        attrs(
-          "border",
-          "0",
-          "cellpadding",
-          "0",
-          "cellspacing",
-          "0",
-          "role",
-          "presentation",
-          "style",
-          buildInnerTableStyle(),
-          "width",
-          "100%"));
-      html.open("tbody");
-
-      renderContentChildren(html, columnWidth);
-
-      html.close("tbody");
-      html.close("table");
-      html.close("td");
-      html.close("tr");
-      html.close("tbody");
-      html.close("table");
-    } else {
-      html.open(
-        "table",
-        attrs(
-          "border",
-          "0",
-          "cellpadding",
-          "0",
-          "cellspacing",
-          "0",
-          "role",
-          "presentation",
-          "style",
-          buildNoGutterTableStyle(),
-          "width",
-          "100%"));
-      html.open("tbody");
-
-      renderContentChildren(html, columnWidth);
-
-      html.close("tbody");
-      html.close("table");
-    }
-
-    html.close("div");
+        html.wrap("table", attrs(outerAttrs, "style"),
+          () -> html.wrap("tbody",
+            () -> html.wrap("tr",
+              () -> html.wrap("td", attrs("style", buildGutterTdStyle()),
+                () -> html.table(Map.of("style", buildInnerTableStyle(), "width", "100%"),
+                  () -> html.wrap("tbody",
+                    () -> renderContentChildren(html, columnWidth)))))));
+      } else {
+        html.table(Map.of("style", buildStyle(buildNoGutterTableStyle()), "width", "100%"),
+          () -> html.wrap("tbody",
+            () -> renderContentChildren(html, columnWidth)));
+      }
+    });
 
     registerMediaQuery(responsiveClass, widthSpec);
 
@@ -168,11 +115,23 @@ public class MjColumn extends BodyComponent {
     return false;
   }
 
+  /**
+   * Checks if the "border-radius" attribute is set and non-empty for the current component.
+   *
+   * @return true if the "border-radius" attribute has a value; false otherwise
+   */
   private boolean hasBorderRadius() {
     String borderRadius = getAttribute("border-radius", "");
     return !borderRadius.isEmpty();
   }
 
+  /**
+   * Renders the child content of an MJML column by iterating over its children, creating component instances, and
+   * appending rendered HTML to the provided HtmlBuilder.
+   *
+   * @param html        the HtmlBuilder object used to construct the HTML output
+   * @param columnWidth the width of the column in pixels, used to calculate content width
+   */
   private void renderContentChildren(HtmlBuilder html, double columnWidth) {
     CssBoxModel box = getBoxModel();
     double contentWidth = columnWidth - box.horizontalSpacing();
@@ -188,29 +147,37 @@ public class MjColumn extends BodyComponent {
       RenderContext itemContext = childContext.withPosition(i, i == 0, i == children.size() - 1);
       BaseComponent component = registry.createComponent(child, globalContext, itemContext);
       if (component instanceof BodyComponent bodyComponent) {
-        if ("mj-raw".equals(child.getTagName())) {
-          html.rawVerbatim(bodyComponent.render());
-          continue;
-        }
-
-        String align = bodyComponent.getAttribute("align", "");
-        String tdCssClass = bodyComponent.getAttribute("css-class", "");
-        String tdStyle = buildTdStyle(bodyComponent);
-
-        html.open("tr");
-        html.open(
-          "td",
-          attrIf("align", escapeAttr(align))
-            + attrIf("class", escapeAttr(tdCssClass))
-            + attrIf("style", tdStyle));
-        html.rawVerbatim(bodyComponent.render());
-        html.newline();
-        html.close("td");
-        html.close("tr");
+        renderChildComponent(html, child, bodyComponent);
       }
     }
   }
 
+  private void renderChildComponent(HtmlBuilder html, MjmlNode child, BodyComponent bodyComponent) {
+    // mj-raw content passes through without a wrapping tr/td
+    if ("mj-raw".equals(child.getTagName())) {
+      html.rawVerbatim(bodyComponent.render());
+      return;
+    }
+
+    var tdAttrMap = new LinkedHashMap<String, String>();
+    tdAttrMap.put("align", escapeAttr(bodyComponent.getAttribute("align", "")));
+    tdAttrMap.put("class", escapeAttr(bodyComponent.getAttribute("css-class", "")));
+    tdAttrMap.put("style", buildTdStyle(bodyComponent));
+
+    html.wrap("tr",
+      () -> html.wrap("td", attrs(tdAttrMap), () -> {
+        html.rawVerbatim(bodyComponent.render());
+        html.newline();
+      }));
+  }
+
+  /**
+   * Constructs and returns a CSS style string for the outer container of an MJML column. The style includes properties
+   * such as font size, text alignment, direction, display type, vertical alignment, and width. If the column is inside
+   * a group, the width is set based on the column width specification; otherwise, a default width of 100% is used.
+   *
+   * @return a string representing the CSS styles for the outer container
+   */
   private String buildOuterStyle() {
     Map<String, String> styles = new LinkedHashMap<>();
     styles.put("font-size", "0px");
@@ -233,20 +200,14 @@ public class MjColumn extends BodyComponent {
   }
 
   /**
-   * Style for the outer gutter td (when hasGutter=true). Contains: background-color, padding,
-   * vertical-align.
+   * Builds a CSS style string for the gutter `<td>` element in an MJML column.
+   * The style includes padding properties such as `padding`, `padding-bottom`,
+   * `padding-left`, `padding-right`, and `padding-top`.
+   *
+   * @return a string representing the CSS styles for the gutter `<td>` element
    */
   private String buildGutterTdStyle() {
-    Map<String, String> styles = new LinkedHashMap<>();
-    addIfPresent(styles, "background-color");
-    // Border on gutter td
-    addBorderStyles(styles, "border", "border-bottom", "border-left", "border-right", "border-top");
-    addIfPresent(styles, "border-radius");
-    styles.put("vertical-align", getAttribute("vertical-align", "top"));
-    // border-collapse:separate when border is present
-    if (hasBorderRadius()) {
-      styles.put("border-collapse", "separate");
-    }
+    Map<String, String> styles = buildNoGutterTableStyle();
     // Padding on the gutter td
     addIfPresent(styles, "padding");
     addIfPresent(styles, "padding-bottom");
@@ -257,8 +218,12 @@ public class MjColumn extends BodyComponent {
   }
 
   /**
-   * Style for the inner table (when hasGutter=true). Contains: inner-background-color,
-   * inner-border-*, border-radius.
+   * Constructs and returns a CSS style string for the inner table of an MJML column.
+   * The style includes properties such as background color, border styles, and border radius if specified.
+   * If a border radius is applied, the border-collapse property is set to "separate" to accommodate the radius.
+   * The method leverages helper methods to conditionally add styles based on present attributes.
+   *
+   * @return a string representing the CSS styles for the inner table
    */
   private String buildInnerTableStyle() {
     Map<String, String> styles = new LinkedHashMap<>();
@@ -280,10 +245,15 @@ public class MjColumn extends BodyComponent {
   }
 
   /**
-   * Style for the single table (when hasGutter=false). Contains: background-color, border-*,
-   * border-radius, vertical-align.
+   * Builds a CSS style map for a table with no gutter in an MJML column.
+   * The method includes styles for background color, borders, border radius,
+   * and vertical alignment. If a border radius is applied, the style map also
+   * includes the `border-collapse` property set to "separate".
+   * Leverages helper methods to add styles conditionally based on attribute presence.
+   *
+   * @return a map containing the CSS styles for a table with no gutter
    */
-  private String buildNoGutterTableStyle() {
+  private Map<String, String> buildNoGutterTableStyle() {
     Map<String, String> styles = new LinkedHashMap<>();
     addIfPresent(styles, "background-color");
     addBorderStyles(styles, "border", "border-bottom", "border-left", "border-right", "border-top");
@@ -292,9 +262,17 @@ public class MjColumn extends BodyComponent {
     if (hasBorderRadius()) {
       styles.put("border-collapse", "separate");
     }
-    return buildStyle(styles);
+    return styles;
   }
 
+  /**
+   * Constructs a CSS style string for a table cell (`<td>`) in an MJML column based on the attributes of the provided
+   * child component. Styles include background color, font size, padding, and content word-break properties. Individual
+   * padding attributes (top, right, bottom, left) are included if specified.
+   *
+   * @param childComponent the child component from which to retrieve attribute values for constructing the CSS styles
+   * @return a string representing the CSS styles for the `<td>` element
+   */
   private String buildTdStyle(BodyComponent childComponent) {
     Map<String, String> styles = new LinkedHashMap<>();
 

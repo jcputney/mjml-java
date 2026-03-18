@@ -1,8 +1,6 @@
 
 package dev.jcputney.mjml.component.interactive;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
@@ -13,6 +11,7 @@ import dev.jcputney.mjml.util.SocialNetworkRegistry;
 import dev.jcputney.mjml.util.SocialNetworkRegistry.NetworkInfo;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 /**
  * A single social element ({@code <mj-social-element>}). Renders a table containing a social icon
@@ -98,28 +97,15 @@ public class MjSocialElement extends BodyComponent {
   public String renderHorizontal(MjSocial parent) {
     String align = getInheritedAttribute(parent, "align", "left");
 
+    var tableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    tableMap.put("align", align);
+    tableMap.put("style", "float:none;display:inline-table;");
+
     HtmlBuilder html = new HtmlBuilder();
-    html.open(
-      "table",
-      attrs(
-        "align",
-        align,
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        "float:none;display:inline-table;"));
-    html.open("tbody");
-    html.open("tr");
-    appendIconAndTextCells(html, parent);
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
+    html.wrap("table", attrs(tableMap),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr",
+          () -> appendIconAndTextCells(html, parent))));
 
     return html.toString();
   }
@@ -132,51 +118,172 @@ public class MjSocialElement extends BodyComponent {
    */
   public String renderVertical(MjSocial parent) {
     HtmlBuilder html = new HtmlBuilder();
-    html.open("tr");
-    appendIconAndTextCells(html, parent);
-    html.close("tr");
+    html.wrap("tr",
+      () -> appendIconAndTextCells(html, parent));
 
     return html.toString();
   }
 
+  /**
+   * Appends HTML cells containing an icon and text to the provided HtmlBuilder.
+   *
+   * @param html   the HtmlBuilder instance used to construct the HTML content
+   * @param parent the parent MjSocial component for inheriting attributes
+   */
   private void appendIconAndTextCells(HtmlBuilder html, MjSocial parent) {
     String name = getAttribute("name", "");
     NetworkInfo networkInfo = SocialNetworkRegistry.getNetwork(name);
-    boolean isNoShare = name.contains("-noshare");
 
-    // Resolve icon source
+    String src = resolveIconSrc(name);
+    String backgroundColor = resolveBackgroundColor(networkInfo);
+    String href = resolveHref(name, networkInfo);
+    boolean hasHref = !href.isEmpty();
+
+    String target = getAttribute("target", "_blank");
+    String verticalAlign = getAttribute("vertical-align", "middle");
+    String borderRadius = getInheritedAttribute(parent, "border-radius", "3px");
+    String iconSize = getInheritedAttribute(parent, "icon-size", "20px");
+
+    appendIconCell(html, parent, src, backgroundColor, href, hasHref, target,
+      getAttribute("alt", ""), borderRadius, iconSize, verticalAlign);
+
+    String textContent = sanitizeContent(node.getInnerHtml().trim());
+    if (!textContent.isEmpty()) {
+      appendTextCell(html, parent, href, hasHref, target, verticalAlign, textContent);
+    }
+  }
+
+  /**
+   * Resolves the source URL for an icon image based on the provided element name and existing attributes. The method
+   * first checks the "src" attribute for a URL. If this attribute is not set or is empty, it attempts to retrieve a
+   * default URL from the {@code SocialNetworkRegistry} based on the provided name.
+   *
+   * @param name the name of the social element, used to look up a default icon URL if the "src" attribute is not set
+   * @return the resolved icon source URL as a string; returns an empty string if no URL can be resolved
+   */
+  private String resolveIconSrc(String name) {
     String src = getAttribute("src", "");
     if (src.isEmpty() && !name.isEmpty()) {
       src = SocialNetworkRegistry.getIconUrl(name);
     }
+    return src;
+  }
 
-    // Resolve background color (only from explicit attribute or network registry)
-    String backgroundColor = getAttribute("background-color", "");
-    if (backgroundColor.isEmpty() && networkInfo != null) {
-      backgroundColor = networkInfo.backgroundColor();
+  /**
+   * Resolves the background color for the current element. This method first
+   * attempts to retrieve the "background-color" attribute value using {@code getAttribute}.
+   * If the attribute is not set or is empty, it then falls back to the default
+   * background color provided by the {@code NetworkInfo} record, if available.
+   *
+   * @param networkInfo an optional parameter containing the social network's
+   *                    default background color information; may be {@code null}
+   * @return a string containing the resolved background color in CSS format;
+   *         returns an empty string if no background color is explicitly defined
+   *         or available from the {@code NetworkInfo}
+   */
+  private String resolveBackgroundColor(NetworkInfo networkInfo) {
+    String bg = getAttribute("background-color", "");
+    if (bg.isEmpty() && networkInfo != null) {
+      bg = networkInfo.backgroundColor();
     }
+    return bg;
+  }
 
-    // Resolve href with share URL
+  /**
+   * Resolves the hyperlink reference (href) for the social element based on the provided
+   * element name and network information. If the element name does not indicate a "no share"
+   * configuration and valid network information is supplied, the href value is updated using
+   * the network's sharing URL pattern. Finally, the resolved href is sanitized before returning.
+   *
+   * @param name         the name of the social element, determining sharing behavior
+   * @param networkInfo  information about the social network, including sharing URL and defaults;
+   *                     may be {@code null} to indicate no network specifics
+   * @return the resolved and sanitized href string
+   */
+  private String resolveHref(String name, NetworkInfo networkInfo) {
     String href = getAttribute("href", "");
-    if (!href.isEmpty() && !isNoShare && networkInfo != null) {
+    if (!href.isEmpty() && !name.contains("-noshare") && networkInfo != null) {
       String shareUrl = networkInfo.shareUrl();
       if (shareUrl != null && !shareUrl.isEmpty()) {
         href = shareUrl.replace("[[URL]]", href);
       }
     }
-    href = sanitizeHref(href);
+    return sanitizeHref(href);
+  }
 
-    String target = getAttribute("target", "_blank");
-    String alt = getAttribute("alt", "");
-
-    String borderRadius = getInheritedAttribute(parent, "border-radius", "3px");
-    String iconSize = getInheritedAttribute(parent, "icon-size", "20px");
-    String iconPadding = getExplicitAttribute(parent, "icon-padding");
-    String verticalAlign = getAttribute("vertical-align", "middle");
-
+  /**
+   * Appends an icon cell to the provided HTML builder. This method generates a table cell
+   * containing a styled icon, with optional link wrapping, based on the provided attributes.
+   *
+   * @param html           the {@code HtmlBuilder} used to construct the HTML output
+   * @param parent         the parent {@code MjSocial} component, which is used to inherit styles
+   * @param src            the source URL of the icon image
+   * @param backgroundColor the background color of the icon, defined as a CSS color value
+   * @param href           the hyperlink reference to wrap the icon; can be {@code null} or empty if no link is required
+   * @param hasHref        a flag indicating whether the icon should be wrapped in a hyperlink
+   * @param target         the target attribute for the hyperlink, e.g., "_blank"
+   * @param alt            the alt text for the icon image, used for accessibility
+   * @param borderRadius   the CSS border-radius value for rounding the icon's corners
+   * @param iconSize       the size of the icon, defined as a CSS dimension (e.g., "24px")
+   * @param verticalAlign  the vertical alignment of the cell, as a CSS value
+   */
+  private void appendIconCell(HtmlBuilder html, MjSocial parent, String src, String backgroundColor,
+    String href, boolean hasHref, String target, String alt, String borderRadius, String iconSize,
+    String verticalAlign) {
     String iconSizeNum = iconSize.replace("px", "");
+    String iconPadding = getExplicitAttribute(parent, "icon-padding");
 
-    // Icon cell: outer td with padding from cascade
+    // Outer td padding — inherit from parent inner-padding if not explicitly set
+    String outerPadding = resolveOuterPadding(parent);
+    Map<String, String> tdStyles = new LinkedHashMap<>();
+    tdStyles.put("padding", normalizePadding(outerPadding));
+    addIfPresent(tdStyles, "padding-top");
+    addIfPresent(tdStyles, "padding-right");
+    addIfPresent(tdStyles, "padding-bottom");
+    addIfPresent(tdStyles, "padding-left");
+    tdStyles.put("vertical-align", verticalAlign);
+
+    // Inner icon table
+    String innerTableStyle = (backgroundColor.isEmpty() ? "" : "background:" + backgroundColor + ";")
+      + "border-radius:" + borderRadius + ";width:" + iconSize + ";";
+    var iconTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    iconTableMap.put("style", innerTableStyle);
+
+    String iconTdStyle = (iconPadding != null && !iconPadding.isEmpty() ? "padding:" + iconPadding + ";" : "")
+      + "font-size:0;height:" + iconSize + ";vertical-align:" + verticalAlign + ";width:" + iconSize + ";";
+
+    var imgAttrs = new LinkedHashMap<String, String>();
+    imgAttrs.put("alt", escapeAttr(alt));
+    imgAttrs.put("src", escapeAttr(src));
+    imgAttrs.put("style", "border-radius:" + borderRadius + ";display:block;");
+    imgAttrs.put("width", iconSizeNum);
+    String imgAttrStr = attrs(imgAttrs);
+
+    html.wrap("td", attrs("style", buildStyle(tdStyles)),
+      () -> html.wrap("table", attrs(iconTableMap),
+        () -> html.wrap("tbody",
+          () -> html.wrap("tr",
+            () -> html.wrap("td", attrs("style", iconTdStyle), () -> {
+              if (hasHref) {
+                html.wrap("a", attrs("href", escapeHref(href), "target", escapeAttr(target)),
+                  () -> html.selfClose("img", imgAttrStr));
+              } else {
+                html.selfClose("img", imgAttrStr);
+              }
+            })))));
+  }
+
+  /**
+   * Resolves the outer padding for the current element. If the parent {@code MjSocial} component
+   * specifies an inner-padding, and the current element does not specify its own explicit padding,
+   * the parent's inner-padding is used as the outer padding for the current element. Otherwise, the
+   * default or explicitly set padding is used.
+   *
+   * @param parent the parent {@code MjSocial} component, or {@code null} if the current element
+   *               is standalone
+   * @return a string representing the resolved outer padding value
+   */
+  private String resolveOuterPadding(MjSocial parent) {
     String outerPadding = getAttribute("padding", "4px");
     if (parent != null) {
       String parentInnerPadding = parent.getNode().getAttribute("inner-padding");
@@ -187,105 +294,45 @@ public class MjSocialElement extends BodyComponent {
         }
       }
     }
-    Map<String, String> tdStyles = new LinkedHashMap<>();
-    tdStyles.put("padding", normalizePadding(outerPadding));
-    addIfPresent(tdStyles, "padding-top");
-    addIfPresent(tdStyles, "padding-right");
-    addIfPresent(tdStyles, "padding-bottom");
-    addIfPresent(tdStyles, "padding-left");
-    tdStyles.put("vertical-align", verticalAlign);
-    html.open("td", attrs("style", buildStyle(tdStyles)));
+    return outerPadding;
+  }
 
-    // Inner table with icon
-    String innerTableStyle = (backgroundColor.isEmpty() ? "" : "background:" + backgroundColor + ";")
-      + "border-radius:"
-      + borderRadius
-      + ";width:"
-      + iconSize
-      + ";";
-    html.open(
-      "table",
-      attrs(
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        innerTableStyle));
-    html.open("tbody");
-    html.open("tr");
+  /**
+   * Appends a text cell to the provided HTML builder. This method generates a table cell
+   * with appropriate styles and adds the text content, optionally wrapped in a hyperlink
+   * if a valid href is provided.
+   *
+   * @param html          the {@code HtmlBuilder} used to construct the HTML output
+   * @param parent        the parent {@code MjSocial} component, which is used to inherit styles
+   * @param href          the hyperlink reference; can be {@code null} or empty if no link is required
+   * @param hasHref       a flag indicating whether the text content should be wrapped in a hyperlink
+   * @param target        the target attribute for the hyperlink, e.g., "_blank"
+   * @param verticalAlign the vertical alignment of the cell, as a CSS value
+   * @param textContent   the actual text content to display inside the cell
+   */
+  private void appendTextCell(HtmlBuilder html, MjSocial parent, String href, boolean hasHref,
+    String target, String verticalAlign, String textContent) {
+    String textPadding = getInheritedAttribute(parent, "text-padding", "4px 4px 4px 0");
+    String textTdStyle = "vertical-align:" + verticalAlign + ";padding:" + textPadding + ";text-align:left;";
 
-    // Icon td with icon-padding (only if explicitly set)
-    String iconTdStyle = (iconPadding != null && !iconPadding.isEmpty() ? "padding:" + iconPadding + ";" : "")
-      + "font-size:0;height:"
-      + iconSize
-      + ";vertical-align:"
-      + verticalAlign
-      + ";width:"
-      + iconSize
-      + ";";
-    html.open("td", attrs("style", iconTdStyle));
+    String textStyle = buildStyle(orderedMap(
+      "color", getInheritedAttribute(parent, "color", "#000"),
+      "font-size", getInheritedAttribute(parent, "font-size", "13px"),
+      "font-family", getInheritedAttribute(parent, "font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+      "line-height", getInheritedAttribute(parent, "line-height", "1"),
+      "text-decoration", getInheritedAttribute(parent, "text-decoration", "none")));
 
-    boolean hasHref = !href.isEmpty();
-    if (hasHref) {
-      html.open("a", attrs("href", escapeHref(href), "target", escapeAttr(target)));
-    }
-
-    html.rawVerbatim("<img"
-      + attrs("alt", escapeAttr(alt), "src", escapeAttr(src))
-      + " style=\"border-radius:"
-      + borderRadius
-      + ";display:block;\""
-      + " width=\""
-      + iconSizeNum
-      + "\" />\n");
-
-    if (hasHref) {
-      html.close("a");
-    }
-
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-    html.close("td");
-
-    // Text label (from inner HTML content)
-    String textContent = sanitizeContent(node.getInnerHtml().trim());
-    if (!textContent.isEmpty()) {
-      String textPadding = getInheritedAttribute(parent, "text-padding", "4px 4px 4px 0");
-      String color = getInheritedAttribute(parent, "color", "#000");
-      String fontFamily = getInheritedAttribute(parent, "font-family", "Ubuntu, Helvetica, Arial, sans-serif");
-      String fontSize = getInheritedAttribute(parent, "font-size", "13px");
-      String lineHeight = getInheritedAttribute(parent, "line-height", "1");
-      String textDecoration = getInheritedAttribute(parent, "text-decoration", "none");
-
-      String textTdStyle = "vertical-align:" + verticalAlign + ";padding:" + textPadding + ";text-align:left;";
-      html.open("td", attrs("style", textTdStyle));
-
-      String textStyle = buildStyle(orderedMap(
-        "color", color,
-        "font-size", fontSize,
-        "font-family", fontFamily,
-        "line-height", lineHeight,
-        "text-decoration", textDecoration));
-
+    html.wrap("td", attrs("style", textTdStyle), () -> {
       if (hasHref) {
-        html.rawVerbatim("<a"
-          + attrs("href", escapeHref(href), "style", textStyle, "target", escapeAttr(target))
-          + "> "
-          + textContent
-          + " </a>\n");
+        html.openInline("a", attrs("href", escapeHref(href), "style", textStyle, "target", escapeAttr(target)))
+          .text(" " + textContent + " ")
+          .closeInlineLn("a");
       } else {
-        html.rawVerbatim("<span" + attrs("style", textStyle) + "> " + textContent + " </span>\n");
+        html.openInline("span", attrs("style", textStyle))
+          .text(" " + textContent + " ")
+          .closeInlineLn("span");
       }
-
-      html.close("td");
-    }
+    });
   }
 
   /**

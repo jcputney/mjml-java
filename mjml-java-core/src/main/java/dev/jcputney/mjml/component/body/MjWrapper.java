@@ -1,8 +1,6 @@
 
 package dev.jcputney.mjml.component.body;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -15,8 +13,10 @@ import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 /**
  * The wrapper component (&lt;mj-wrapper&gt;). Similar to mj-section but wraps multiple sections
@@ -68,6 +68,14 @@ public class MjWrapper extends AbstractSectionComponent {
     return renderNormal();
   }
 
+  /**
+   * Renders the normal layout of the current component, including background styles and wrapped child components.
+   * <p>
+   * The method determines the background properties (URL and color) and constructs a VML rectangle for rendering the
+   * background if necessary. It also renders the child components wrapped within the appropriate HTML structure.
+   *
+   * @return a {@code String} representing the rendered HTML content of the component with its normal layout.
+   */
   private String renderNormal() {
     String bgUrl = getAttribute("background-url", "");
     String bgColor = getAttribute("background-color");
@@ -78,6 +86,20 @@ public class MjWrapper extends AbstractSectionComponent {
     return renderNormalScaffold(vmlRect, innerContent.toString(), "");
   }
 
+  /**
+   * Renders the full-width layout of the current component, including background styles
+   * and wrapped child components. This method constructs a nested HTML table structure
+   * to ensure full-width rendering, aligned to the container width and styled with the
+   * appropriate background and alignment properties.
+   * <p>
+   * The outer structure wraps the inner content with an HTML table at 100% width. If a
+   * background color is specified, it is applied to the outer structure. The inner table
+   * contains the rendered child components appropriately formatted and styled to fit
+   * within the defined container width.
+   *
+   * @return a {@code String} representing the rendered full-width HTML content of the
+   *         component.
+   */
   private String renderFullWidth() {
     int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
@@ -86,79 +108,60 @@ public class MjWrapper extends AbstractSectionComponent {
     String outerStyle =
       (hasBg ? "background:" + bgColor + ";background-color:" + bgColor + ";" : "") + "width:100%;";
 
+    var outerTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    outerTableMap.put("align", "center");
+    outerTableMap.put("style", outerStyle);
+
+    var innerTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    innerTableMap.put("align", "center");
+    innerTableMap.put("style", "width:100%;");
+
     HtmlBuilder html = new HtmlBuilder();
+    html.wrap("table", attrs(outerTableMap),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr",
+          () -> html.wrap("td", () -> {
+            html.mso(MsoHelper.msoTableOpening(
+              containerWidth,
+              escapeAttr(getCssClass()),
+              hasBg ? escapeAttr(bgColor) : null,
+              MsoHelper.MSO_TD_STYLE));
 
-    html.open(
-      "table",
-      attrs(
-        "align",
-        "center",
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        outerStyle));
-    html.open("tbody");
-    html.open("tr");
-    html.open("td");
+            html.wrap("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"),
+              () -> html.wrap("table", attrs(innerTableMap),
+                () -> html.wrap("tbody",
+                  () -> html.wrap("tr",
+                    () -> html.wrap("td", attrs("style", buildInnerTdStyle()),
+                      () -> renderWrappedChildren(html))))));
 
-    html.rawVerbatim(MsoHelper.conditionalStart()
-      + MsoHelper.msoTableOpening(
-        containerWidth,
-        escapeAttr(getCssClass()),
-        hasBg ? escapeAttr(bgColor) : null,
-        MsoHelper.MSO_TD_STYLE)
-      + MsoHelper.conditionalEnd()
-      + "\n");
-
-    html.open("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"));
-    html.open(
-      "table",
-      attrs(
-        "align",
-        "center",
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        "width:100%;"));
-    html.open("tbody");
-    html.open("tr");
-    html.open("td", attrs("style", buildInnerTdStyle()));
-
-    renderWrappedChildren(html);
-
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-    html.close("div");
-
-    html.raw(MsoHelper.msoConditionalTableClosing());
-
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
+            html.raw(MsoHelper.msoConditionalTableClosing());
+          }))));
 
     return html.toString();
   }
 
+  /**
+   * Renders the child components wrapped within the appropriate HTML structure.
+   * This method applies necessary formatting and layout adjustments, including gap settings
+   * and container width calculations, for rendering the child components.
+   * <p>
+   * If the section has no children, it renders an empty table for fallback purposes.
+   * Otherwise, it iterates over the child nodes, applying special formatting for the first
+   * and last children, and handles gaps between child components when specified.
+   * The method also utilizes context propagation to properly adjust child rendering
+   * based on their position and wrapper-specific properties.
+   *
+   * @param html the {@code HtmlBuilder} instance used to construct the rendered HTML output
+   */
   private void renderWrappedChildren(HtmlBuilder html) {
     List<MjmlNode> sectionChildren = getSectionChildren();
 
     if (sectionChildren.isEmpty()) {
-      html.mso("<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table>");
+      html.mso(
+        () -> html.wrap("table", attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0"),
+          () -> {
+          })
+      );
       return;
     }
 
@@ -183,8 +186,10 @@ public class MjWrapper extends AbstractSectionComponent {
       if (!isFirst && !gap.isEmpty()) {
         int gapPx = CssUnitParser.parsePixels(gap, 0);
         if (gapPx > 0) {
-          html.rawVerbatim(
-            "<div style=\"font-size:0;line-height:" + gapPx + "px;height:" + gapPx + "px;\"> </div>\n");
+          String gapStyle = "font-size:0;line-height:" + gapPx + "px;height:" + gapPx + "px;";
+          html.openInline("div", attrs("style", gapStyle))
+            .text(" ")
+            .closeInlineLn("div");
         }
       }
 
@@ -206,6 +211,13 @@ public class MjWrapper extends AbstractSectionComponent {
     }
   }
 
+  /**
+   * Retrieves the child nodes of the current node that do not have tag names
+   * starting with "#". These nodes represent valid sections within the component.
+   *
+   * @return a list of {@code MjmlNode} objects representing the section children
+   *         of the current node.
+   */
   private List<MjmlNode> getSectionChildren() {
     List<MjmlNode> sections = new ArrayList<>();
     for (MjmlNode child : node.getChildren()) {
@@ -217,6 +229,16 @@ public class MjWrapper extends AbstractSectionComponent {
     return sections;
   }
 
+  /**
+   * Constructs a VML rectangle definition based on the provided width style, background URL,
+   * and background color. The method uses utility functionality to generate the VML representation
+   * with resolved background position and size attributes.
+   *
+   * @param widthStyle the computed width style to be applied to the VML rectangle
+   * @param bgUrl the URL of the background image to be applied to the rectangle
+   * @param bgColor the background color to be applied to the rectangle
+   * @return a String representing the constructed VML rectangle definition
+   */
   private String buildVmlRect(String widthStyle, String bgUrl, String bgColor) {
     return VmlHelper.buildWrapperVmlRect(
       widthStyle, bgUrl, bgColor, resolveBackgroundPosition(), getAttribute("background-size", "auto"));

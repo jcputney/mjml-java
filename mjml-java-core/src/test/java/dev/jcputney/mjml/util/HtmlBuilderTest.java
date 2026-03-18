@@ -99,7 +99,7 @@ class HtmlBuilderTest {
     HtmlBuilder html = new HtmlBuilder();
     html.selfClose("img", attrs("src", "logo.png", "alt", "Logo"));
 
-    assertEquals("<img src=\"logo.png\" alt=\"Logo\">\n", html.toString());
+    assertEquals("<img src=\"logo.png\" alt=\"Logo\" />\n", html.toString());
   }
 
   @Test

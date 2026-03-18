@@ -1,9 +1,6 @@
 
 package dev.jcputney.mjml.component.body;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
@@ -17,6 +14,8 @@ import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 /**
  * Shared base class for {@code <mj-section>} and {@code <mj-wrapper>}. Extracts identical
@@ -238,62 +237,30 @@ public abstract class AbstractSectionComponent extends BodyComponent {
       }
     });
 
-    if (hasBgUrl) {
-      html.open("div", attrs("style", buildBgImageDivStyle()));
-      html.open("div", attrs("style", "line-height:0;font-size:0;"));
-      html.open(
-        "table",
-        attrs(
-          "align",
-          "center",
-          "background",
-          escapeAttr(bgUrl),
-          "border",
-          "0",
-          "cellpadding",
-          "0",
-          "cellspacing",
-          "0",
-          "role",
-          "presentation",
-          "style",
-          buildBgImageTableStyle()));
-    } else {
-      html.open("div", attrIf("class", escapeAttr(outerDivClass)) + attrs("style", buildOuterDivStyle()));
-      html.open(
-        "table",
-        attrs(
-          "align",
-          "center",
-          "border",
-          "0",
-          "cellpadding",
-          "0",
-          "cellspacing",
-          "0",
-          "role",
-          "presentation",
-          "style",
-          buildInnerTableStyle()));
-    }
-
-    // Inner tbody/tr/td — indentation adjusts automatically based on hasBgUrl nesting
-    html.open("tbody");
-    html.open("tr");
-    html.open("td", attrs("style", buildInnerTdStyle()));
-    html.rawVerbatim(innerContent);
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
+    // Shared inner structure: tbody > tr > td > content
+    Runnable tableBody = () -> html.wrap("tbody",
+      () -> html.wrap("tr",
+        () -> html.wrap("td", attrs("style", buildInnerTdStyle()),
+          () -> html.rawVerbatim(innerContent))));
 
     if (hasBgUrl) {
-      html.close("table");
-      html.close("div");
-      html.close("div");
+      var bgTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+      bgTableMap.put("align", "center");
+      bgTableMap.put("background", escapeAttr(bgUrl));
+      bgTableMap.put("style", buildBgImageTableStyle());
+
+      html.wrap("div", attrs("style", buildBgImageDivStyle()),
+        () -> html.wrap("div", attrs("style", "line-height:0;font-size:0;"),
+          () -> html.wrap("table", attrs(bgTableMap), tableBody)));
       html.mso("</v:textbox></v:rect>" + MsoHelper.msoTableClosing());
     } else {
-      html.close("table");
-      html.close("div");
+      var tableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+      tableMap.put("align", "center");
+      tableMap.put("style", buildInnerTableStyle());
+
+      String divAttrs = attrIf("class", escapeAttr(outerDivClass)) + attrs("style", buildOuterDivStyle());
+      html.wrap("div", divAttrs,
+        () -> html.wrap("table", attrs(tableMap), tableBody));
       html.mso(MsoHelper.msoTableClosing());
     }
 

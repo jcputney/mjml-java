@@ -1,8 +1,6 @@
 
 package dev.jcputney.mjml.component.body;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -15,9 +13,11 @@ import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 /**
  * The section component (&lt;mj-section&gt;). Renders a table-based row containing columns with
@@ -53,6 +53,13 @@ public class MjSection extends AbstractSectionComponent {
   }
 
   @Override
+  public double getContentWidth() {
+    double containerWidth = renderContext.getContainerWidth();
+    CssBoxModel box = getBoxModel();
+    return containerWidth - box.paddingLeft() - box.paddingRight() - box.borderLeftWidth() - box.borderRightWidth();
+  }
+
+  @Override
   public String getTagName() {
     return "mj-section";
   }
@@ -74,6 +81,14 @@ public class MjSection extends AbstractSectionComponent {
     return renderNormal();
   }
 
+  /**
+   * Renders the section in its normal layout (non-full-width), using the column-based children and an optional
+   * background. Builds VML markup for background images if a `background-url` is provided, and styles the section with
+   * attributes such as `background-color` and `css-class`. The rendered output includes the inner content and maintains
+   * the defined structure for MSO compatibility.
+   *
+   * @return the complete HTML string for the rendered section in normal layout
+   */
   private String renderNormal() {
     String bgUrl = getAttribute("background-url", "");
     String bgColor = getAttribute("background-color");
@@ -89,33 +104,16 @@ public class MjSection extends AbstractSectionComponent {
    */
   private String renderInsideWrapper() {
     int wrapperInnerWidth = (int) renderContext.getContainerWidth();
+    String tableAttrs = attrs("align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
+      "role", "presentation", "style", "width:100%;");
 
     HtmlBuilder html = new HtmlBuilder();
-    html.open("div", attrs("style", "margin:0px auto;max-width:" + wrapperInnerWidth + "px;"));
-    html.open(
-      "table",
-      attrs(
-        "align",
-        "center",
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        "width:100%;"));
-    html.open("tbody");
-    html.open("tr");
-    html.open("td", attrs("style", buildInnerTdStyle()));
-    html.rawVerbatim(renderColumnChildren());
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-    html.close("div");
+    html.wrap("div", attrs("style", "margin:0px auto;max-width:" + wrapperInnerWidth + "px;"),
+      () -> html.wrap("table", tableAttrs,
+        () -> html.wrap("tbody",
+          () -> html.wrap("tr",
+            () -> html.wrap("td", attrs("style", buildInnerTdStyle()),
+              () -> html.rawVerbatim(renderColumnChildren()))))));
 
     return html.toString();
   }
@@ -125,41 +123,53 @@ public class MjSection extends AbstractSectionComponent {
    * rect, line-height wrapper, and background CSS.
    */
   private String renderFullWidth() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap("table", buildFullWidthOuterAttrs(),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr",
+          () -> html.wrap("td",
+            () -> renderFullWidthContent(html)))));
+
+    return html.toString();
+  }
+
+  /**
+   * Builds the HTML attributes for the outer table of a full-width section. This method constructs a map of attributes,
+   * including alignment, style, and optional background properties, to represent the full-width section. If a
+   * `background-url` is present, it adds VML background support. Otherwise, it applies a background color and ensures
+   * the table spans the full width of the layout.
+   *
+   * @return the assembled string of HTML attributes for the outer table
+   */
+  private String buildFullWidthOuterAttrs() {
+    String bgColor = getAttribute("background-color");
+    boolean hasBg = bgColor != null && !bgColor.isEmpty();
+
+    String backgroundStyles = hasBg ? "background:" + bgColor + ";background-color:" + bgColor + ";" : "";
+    String outerStyle = hasBackgroundUrl() ? buildBgImageTableStyle() : backgroundStyles + "width:100%;";
+
+    var outerTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    outerTableMap.put("align", "center");
+    if (hasBackgroundUrl()) {
+      outerTableMap.put("background", escapeAttr(getAttribute("background-url", "")));
+    }
+    outerTableMap.put("style", outerStyle);
+    return attrs(outerTableMap);
+  }
+
+  /**
+   * Renders the content of a section in full-width layout. It constructs the HTML and VML (for Microsoft Office
+   * support) structure, applying styles such as background color or background image if provided. The method ensures
+   * proper alignment and wrapping, adapting for both standard clients and MSO rendering contexts.
+   *
+   * @param html the {@code HtmlBuilder} instance used to construct the HTML and VML output
+   */
+  private void renderFullWidthContent(HtmlBuilder html) {
     int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
     boolean hasBgUrl = hasBackgroundUrl();
     String bgUrl = getAttribute("background-url", "");
-
-    // Build outer table style
-    String outerStyle;
-    if (hasBgUrl) {
-      outerStyle = buildBgImageTableStyle();
-    } else {
-      outerStyle = (hasBg ? "background:" + bgColor + ";background-color:" + bgColor + ";" : "") + "width:100%;";
-    }
-
-    HtmlBuilder html = new HtmlBuilder();
-
-    // Outer full-width table
-    html.open(
-      "table",
-      attrs("align", "center")
-        + (hasBgUrl ? attrs("background", escapeAttr(bgUrl)) : "")
-        + attrs(
-          "border",
-          "0",
-          "cellpadding",
-          "0",
-          "cellspacing",
-          "0",
-          "role",
-          "presentation",
-          "style",
-          outerStyle));
-    html.open("tbody");
-    html.open("tr");
-    html.open("td");
 
     // MSO conditional + VML
     html.mso(() -> {
@@ -167,64 +177,43 @@ public class MjSection extends AbstractSectionComponent {
         html.rawVerbatim(buildVmlRect("mso-width-percent:1000;", bgUrl, bgColor));
       }
       html.rawVerbatim(MsoHelper.msoTableOpening(
-        containerWidth,
-        escapeAttr(getCssClass()),
-        hasBg ? escapeAttr(bgColor) : null,
-        MsoHelper.MSO_TD_STYLE));
+        containerWidth, escapeAttr(getCssClass()),
+        hasBg ? escapeAttr(bgColor) : null, MsoHelper.MSO_TD_STYLE));
     });
 
-    html.open("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"));
+    // Inner content table
+    var innerTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    innerTableMap.put("align", "center");
+    innerTableMap.put("style", "width:100%;");
 
-    if (hasBgUrl) {
-      html.open("div", attrs("style", "line-height:0;font-size:0;"));
-    }
+    Runnable innerTable = () -> html.wrap("table", attrs(innerTableMap),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr",
+          () -> html.wrap("td", attrs("style", buildInnerTdStyle()),
+            () -> html.rawVerbatim(renderColumnChildren())))));
 
-    html.open(
-      "table",
-      attrs(
-        "align",
-        "center",
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        "width:100%;"));
-    html.open("tbody");
-    html.open("tr");
-    html.open("td", attrs("style", buildInnerTdStyle()));
-
-    html.rawVerbatim(renderColumnChildren());
-
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-
-    if (hasBgUrl) {
-      html.close("div");
-    }
-    html.close("div");
+    html.wrap("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"), () -> {
+      if (hasBgUrl) {
+        html.wrap("div", attrs("style", "line-height:0;font-size:0;"), innerTable);
+      } else {
+        innerTable.run();
+      }
+    });
 
     // Close MSO
-    if (hasBgUrl) {
-      html.mso(MsoHelper.msoTableClosing() + "</v:textbox></v:rect>");
-    } else {
-      html.mso(MsoHelper.msoTableClosing());
-    }
-
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-
-    return html.toString();
+    html.mso(MsoHelper.msoTableClosing() + (hasBgUrl ? "</v:textbox></v:rect>" : ""));
   }
 
+  /**
+   * Builds a VML rectangle markup for rendering background images or colors in Microsoft Office environments. This
+   * method is used to ensure compatibility with MSO rendering by generating the appropriate VML markup based on the
+   * provided attributes.
+   *
+   * @param widthStyle the width style for the VML rectangle
+   * @param bgUrl      the background image URL
+   * @param bgColor    the background color
+   * @return the constructed VML rectangle string
+   */
   private String buildVmlRect(String widthStyle, String bgUrl, String bgColor) {
     return VmlHelper.buildSectionVmlRect(
       widthStyle,
@@ -235,12 +224,26 @@ public class MjSection extends AbstractSectionComponent {
       getAttribute("background-repeat", "repeat"));
   }
 
+  /**
+   * Renders the column-based children of the section, generating the necessary HTML and VML structures to ensure proper
+   * layout and MSO compatibility. It handles the creation of table-based columns, calculating their widths and applying
+   * styles to maintain responsive design while supporting custom CSS classes and alignment attributes.
+   * <p>
+   * If no columns exist, it produces an empty table structure. For each column, it constructs the appropriate HTML and
+   * styles, taking into account whether the column is a group. The method ensures that columns are rendered seamlessly
+   * for both standard clients and Microsoft Office environments by including conditional MSO markup.
+   *
+   * @return the rendered HTML string representing the section's column-based children
+   */
   private String renderColumnChildren() {
     HtmlBuilder html = new HtmlBuilder();
     List<MjmlNode> columns = getColumnChildren();
 
     if (columns.isEmpty()) {
-      html.mso("<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table>");
+      html.mso(() -> html.wrap("table",
+        attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0"),
+        () -> html.wrap("tr", () -> {
+        })));
       return html.toString();
     }
 
@@ -289,15 +292,15 @@ public class MjSection extends AbstractSectionComponent {
     return html.toString();
   }
 
+  /**
+   * Retrieves the child nodes of the current section that are categorized as column elements. This method filters the
+   * children of the section based on predefined column tags and returns only those that match, preserving the
+   * structural hierarchy of the MJML components.
+   *
+   * @return a list of {@code MjmlNode} objects representing the column-type children of the section
+   */
   private List<MjmlNode> getColumnChildren() {
     return getChildrenByTags(COLUMN_TAGS);
-  }
-
-  @Override
-  public double getContentWidth() {
-    double containerWidth = renderContext.getContainerWidth();
-    CssBoxModel box = getBoxModel();
-    return containerWidth - box.paddingLeft() - box.paddingRight() - box.borderLeftWidth() - box.borderRightWidth();
   }
 
   @Override

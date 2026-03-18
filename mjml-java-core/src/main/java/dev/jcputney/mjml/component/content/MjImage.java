@@ -1,9 +1,6 @@
 
 package dev.jcputney.mjml.component.content;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
@@ -11,6 +8,8 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+import static dev.jcputney.mjml.util.HtmlBuilder.unsortedAttrs;
 
 /**
  * The image component (&lt;mj-image&gt;). Renders a responsive image that goes full-width on
@@ -66,8 +65,84 @@ public class MjImage extends BodyComponent {
     // MJML always adds fluid-on-mobile responsive styles when images are present
     globalContext.styles().setFluidOnMobileUsed(true);
 
-    // Image style: border, border-radius (if set), display, outline, text-decoration,
-    // height, width, font-size
+    String href = sanitizeHref(getAttribute("href", ""));
+
+    boolean fluidOnMobile = "true".equals(getAttribute("fluid-on-mobile", ""));
+    String fluidClass = fluidOnMobile ? "mj-full-width-mobile" : "";
+
+    String tableStyle = buildStyle(orderedMap("border-collapse", "collapse", "border-spacing", "0px"));
+
+    var tableAttrMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    if (!fluidClass.isEmpty()) {
+      tableAttrMap.put("class", fluidClass);
+    }
+    tableAttrMap.put("style", tableStyle);
+    String tableAttrs = attrs(tableAttrMap, "class");
+
+    var tdAttrMap = new LinkedHashMap<String, String>();
+    if (!fluidClass.isEmpty()) {
+      tdAttrMap.put("class", fluidClass);
+    }
+    tdAttrMap.put("style", "width:" + widthPx + "px;");
+    String tdAttrs = attrs(tdAttrMap, "class");
+
+    HtmlBuilder html = new HtmlBuilder(24);
+    html.wrap("table", tableAttrs,
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr",
+          () -> html.wrap("td", tdAttrs, () -> {
+            String imgAttrStr = buildImageTagAttributes(widthPx);
+            if (!href.isEmpty()) {
+              var anchorAttrMap = new LinkedHashMap<String, String>();
+              anchorAttrMap.put("href", escapeHref(href));
+              anchorAttrMap.put("rel", escapeAttr(getAttribute("rel", "")));
+              anchorAttrMap.put("target", escapeAttr(getAttribute("target", "_blank")));
+              anchorAttrMap.put("title", escapeAttr(getAttribute("title", "")));
+              html.wrap("a", attrs(anchorAttrMap),
+                () -> html.selfClose("img", imgAttrStr));
+            } else {
+              html.selfClose("img", imgAttrStr);
+            }
+          }))));
+
+    return html.toString();
+  }
+
+  /**
+   * Builds a string of image tag attributes with values resolved, processed, and sorted alphabetically, placing the
+   * "height" attribute at the end. The resulting attributes are ready for interpolation into an HTML `<img>` tag.
+   * <p>
+   * The method uses various helper methods to escape attribute values, resolve default attributes, and construct inline
+   * styles for the image component.
+   *
+   * @param widthPx the width of the image in pixels; used to explicitly set the "width" attribute
+   * @return a space-separated string of image tag attributes, including "alt", "src", "srcset", "sizes", "style",
+   * "title", "usemap", "width", and "height"
+   */
+  private String buildImageTagAttributes(int widthPx) {
+    // Build <img> attrs — sorted alphabetically, height trailing
+    String srcset = getAttribute("srcset", "");
+    var imgAttrMap = new LinkedHashMap<String, String>();
+    imgAttrMap.put("alt", escapeAttr(getAttribute("alt", "")));
+    imgAttrMap.put("src", escapeAttr(getAttribute("src", "")));
+    imgAttrMap.put("srcset", srcset.isEmpty() ? "" : escapeAttr(srcset.replace(", ", ",\n")));
+    imgAttrMap.put("sizes", escapeAttr(getAttribute("sizes", "")));
+    imgAttrMap.put("style", buildStyle(buildImageStyles()));
+    imgAttrMap.put("title", escapeAttr(getAttribute("title", "")));
+    imgAttrMap.put("usemap", escapeAttr(getAttribute("usemap", "")));
+    imgAttrMap.put("width", String.valueOf(widthPx));
+    imgAttrMap.put("height", escapeAttr(getAttribute("height", "auto")));
+    return unsortedAttrs(imgAttrMap);
+  }
+
+  /**
+   * Builds a map of CSS styles for an image component, using default values or resolving attributes as needed. Styles
+   * include properties such as border, border-radius, display, outline, text-decoration, height, width, and font-size.
+   *
+   * @return a map containing CSS style rules for the image component
+   */
+  private Map<String, String> buildImageStyles() {
+    // Image inline style
     Map<String, String> imgStyleMap = new LinkedHashMap<>();
     imgStyleMap.put("border", getAttribute("border", "0"));
     addIfPresent(imgStyleMap, "border-radius");
@@ -77,71 +152,7 @@ public class MjImage extends BodyComponent {
     imgStyleMap.put("height", getAttribute("height", "auto"));
     imgStyleMap.put("width", "100%");
     imgStyleMap.put("font-size", "13px");
-    String imgStyle = buildStyle(imgStyleMap);
-
-    // Build <img> tag as a string (self-closing, used inline)
-    String srcset = getAttribute("srcset", "");
-    String formattedSrcset = srcset.isEmpty() ? "" : escapeAttr(srcset.replace(", ", ",\n"));
-    String sizes = getAttribute("sizes", "");
-    String title = getAttribute("title", "");
-    String usemap = getAttribute("usemap", "");
-
-    String imgTag = "<img"
-      + attrs("alt", escapeAttr(getAttribute("alt", "")))
-      + attrs("src", escapeAttr(getAttribute("src", "")))
-      + attrIf("srcset", formattedSrcset)
-      + attrIf("sizes", escapeAttr(sizes))
-      + attrs("style", imgStyle)
-      + attrIf("title", escapeAttr(title))
-      + attrIf("usemap", escapeAttr(usemap))
-      + attrs("width", String.valueOf(widthPx))
-      + attrs("height", escapeAttr(getAttribute("height", "auto")))
-      + " />";
-
-    String href = sanitizeHref(getAttribute("href", ""));
-
-    boolean fluidOnMobile = "true".equals(getAttribute("fluid-on-mobile", ""));
-    String fluidClass = fluidOnMobile ? "mj-full-width-mobile" : "";
-
-    String tableStyle = buildStyle(orderedMap(
-      "border-collapse", "collapse",
-      "border-spacing", "0px"));
-
-    HtmlBuilder html = new HtmlBuilder(24);
-
-    html.open(
-      "table",
-      attrs(
-        "border", "0",
-        "cellpadding", "0",
-        "cellspacing", "0",
-        "role", "presentation",
-        "style", tableStyle)
-        + attrIf("class", fluidClass));
-    html.open("tbody");
-    html.open("tr");
-    html.open("td", attrs("style", "width:" + widthPx + "px;") + attrIf("class", fluidClass));
-
-    if (!href.isEmpty()) {
-      String rel = getAttribute("rel", "");
-      html.open(
-        "a",
-        attrs("href", escapeHref(href))
-          + attrIf("rel", escapeAttr(rel))
-          + attrs("target", escapeAttr(getAttribute("target", "_blank")))
-          + attrIf("title", escapeAttr(title)));
-      html.raw(imgTag);
-      html.close("a");
-    } else {
-      html.raw(imgTag);
-    }
-
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-
-    return html.toString();
+    return imgStyleMap;
   }
 
   /**
