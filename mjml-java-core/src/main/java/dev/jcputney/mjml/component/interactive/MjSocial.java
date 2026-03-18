@@ -9,7 +9,6 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.HtmlBuilder;
-import dev.jcputney.mjml.util.MsoHelper;
 import java.util.List;
 import java.util.Map;
 
@@ -92,8 +91,16 @@ public class MjSocial extends BodyComponent {
             html.rawVerbatim(
                 "<table"
                     + attrs(
-                        "align", align, "border", "0", "cellpadding", "0", "cellspacing", "0",
-                        "role", "presentation")
+                        "align",
+                        align,
+                        "border",
+                        "0",
+                        "cellpadding",
+                        "0",
+                        "cellspacing",
+                        "0",
+                        "role",
+                        "presentation")
                     + " ><tr><td>"));
 
     for (int i = 0; i < elements.size(); i++) {

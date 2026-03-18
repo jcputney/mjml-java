@@ -115,8 +115,7 @@ public class MjNavbar extends BodyComponent {
           html.rawVerbatim(
               "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>");
           if (!linkPaddings.isEmpty()) {
-            html.rawVerbatim(
-                "<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >");
+            html.rawVerbatim("<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >");
           }
         });
 
@@ -124,8 +123,7 @@ public class MjNavbar extends BodyComponent {
       html.rawVerbatim(renderedLinks.get(i) + "\n");
 
       if (i < renderedLinks.size() - 1) {
-        html.mso(
-            "</td><td style=\"padding:" + linkPaddings.get(i + 1) + ";\" class=\"\" >");
+        html.mso("</td><td style=\"padding:" + linkPaddings.get(i + 1) + ";\" class=\"\" >");
       }
     }
 

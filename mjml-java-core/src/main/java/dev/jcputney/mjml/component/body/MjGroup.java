@@ -11,7 +11,6 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.ColumnWidthCalculator;
 import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
-import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,9 +76,7 @@ public class MjGroup extends BodyComponent {
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
       String msoTdOpen =
-          "<td style=\"vertical-align:top;width:"
-              + CssUnitParser.formatInt(widths[i])
-              + "px;\" >";
+          "<td style=\"vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;\" >";
 
       if (i == 0) {
         html.mso(
