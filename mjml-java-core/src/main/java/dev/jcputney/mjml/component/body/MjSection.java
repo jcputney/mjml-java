@@ -252,7 +252,9 @@ public class MjSection extends AbstractSectionComponent {
 
     if (columns.isEmpty()) {
       html.raw(
-          "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table><![endif]-->");
+          MsoHelper.conditionalStart()
+              + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table>"
+              + MsoHelper.conditionalEnd());
       return html.toString();
     }
 
@@ -261,7 +263,8 @@ public class MjSection extends AbstractSectionComponent {
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
 
     html.rawVerbatim(
-        "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        MsoHelper.conditionalStart()
+            + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
@@ -282,7 +285,7 @@ public class MjSection extends AbstractSectionComponent {
               + escapeAttr(msoColClass)
               + "\" style=\""
               + msoStyle
-              + "\" ><![endif]-->\n");
+              + "\" >" + MsoHelper.conditionalEnd() + "\n");
 
       RenderContext colContext =
           renderContext
@@ -294,9 +297,9 @@ public class MjSection extends AbstractSectionComponent {
         html.rawVerbatim(bodyComponent.render());
       }
 
-      html.rawVerbatim("<!--[if mso | IE]></td>");
+      html.rawVerbatim(MsoHelper.conditionalStart() + "</td>");
       if (i == columns.size() - 1) {
-        html.rawVerbatim("</tr></table><![endif]-->\n");
+        html.rawVerbatim("</tr></table>" + MsoHelper.conditionalEnd() + "\n");
       }
     }
 

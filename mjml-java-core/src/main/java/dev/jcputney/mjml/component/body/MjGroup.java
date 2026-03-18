@@ -11,6 +11,7 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.ColumnWidthCalculator;
 import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
+import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,8 @@ public class MjGroup extends BodyComponent {
 
     // MSO table open
     html.rawVerbatim(
-        "<!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
+        MsoHelper.conditionalStart()
+            + "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
 
     List<MjmlNode> columns = getColumnChildren();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, groupWidth, false);
@@ -83,7 +85,7 @@ public class MjGroup extends BodyComponent {
       html.rawVerbatim(
           "<td style=\"vertical-align:top;width:"
               + CssUnitParser.formatInt(widths[i])
-              + "px;\" ><![endif]-->\n");
+              + "px;\" >" + MsoHelper.conditionalEnd() + "\n");
 
       RenderContext colContext =
           renderContext
@@ -96,9 +98,9 @@ public class MjGroup extends BodyComponent {
         html.rawVerbatim(bodyComponent.render());
       }
 
-      html.rawVerbatim("<!--[if mso | IE]></td>");
+      html.rawVerbatim(MsoHelper.conditionalStart() + "</td>");
       if (i == columns.size() - 1) {
-        html.rawVerbatim("</tr></table><![endif]-->\n");
+        html.rawVerbatim("</tr></table>" + MsoHelper.conditionalEnd() + "\n");
       }
     }
 

@@ -166,7 +166,9 @@ public class MjWrapper extends AbstractSectionComponent {
 
     if (sectionChildren.isEmpty()) {
       html.raw(
-          "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table><![endif]-->");
+          MsoHelper.conditionalStart()
+              + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table>"
+              + MsoHelper.conditionalEnd());
       return;
     }
 
@@ -216,7 +218,10 @@ public class MjWrapper extends AbstractSectionComponent {
       if (!isLast) {
         html.raw(MsoHelper.msoWrapperTransition(containerWidth, innerWidth));
       } else {
-        html.raw("<!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->");
+        html.raw(
+            MsoHelper.conditionalStart()
+                + "</td></tr></table></td></tr></table>"
+                + MsoHelper.conditionalEnd());
       }
     }
   }

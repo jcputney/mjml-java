@@ -10,6 +10,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.render.DefaultFontRegistry;
 import dev.jcputney.mjml.util.HtmlBuilder;
+import dev.jcputney.mjml.util.MsoHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -110,12 +111,12 @@ public class MjNavbar extends BodyComponent {
 
     // MSO table wrapper around all links
     String msoOpen =
-        "<!--[if mso | IE]>"
+        MsoHelper.conditionalStart()
             + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>";
     if (!linkPaddings.isEmpty()) {
       msoOpen += "<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >";
     }
-    msoOpen += "<![endif]-->";
+    msoOpen += MsoHelper.conditionalEnd();
     html.raw(msoOpen);
 
     for (int i = 0; i < renderedLinks.size(); i++) {
@@ -129,7 +130,7 @@ public class MjNavbar extends BodyComponent {
       }
     }
 
-    html.raw("<!--[if mso | IE]></td></tr></table><![endif]-->");
+    html.raw(MsoHelper.msoConditionalTableClosing());
     html.rawVerbatim("</div>\n");
 
     return html.toString();

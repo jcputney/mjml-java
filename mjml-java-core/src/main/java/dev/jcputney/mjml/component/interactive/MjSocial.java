@@ -9,6 +9,7 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.HtmlBuilder;
+import dev.jcputney.mjml.util.MsoHelper;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,8 @@ public class MjSocial extends BodyComponent {
 
   private void renderHorizontal(HtmlBuilder html, List<MjmlNode> elements, String align) {
     html.raw(
-        "<!--[if mso | IE]><table"
+        MsoHelper.conditionalStart()
+            + "<table"
             + attrs(
                 "align",
                 align,
@@ -99,7 +101,8 @@ public class MjSocial extends BodyComponent {
                 "0",
                 "role",
                 "presentation")
-            + " ><tr><td><![endif]-->");
+            + " ><tr><td>"
+            + MsoHelper.conditionalEnd());
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);
@@ -110,11 +113,11 @@ public class MjSocial extends BodyComponent {
       }
 
       if (i < elements.size() - 1) {
-        html.raw("<!--[if mso | IE]></td><td><![endif]-->");
+        html.raw(MsoHelper.conditionalStart() + "</td><td>" + MsoHelper.conditionalEnd());
       }
     }
 
-    html.raw("<!--[if mso | IE]></td></tr></table><![endif]-->");
+    html.raw(MsoHelper.msoConditionalTableClosing());
   }
 
   private void renderVertical(HtmlBuilder html, List<MjmlNode> elements, String align) {
