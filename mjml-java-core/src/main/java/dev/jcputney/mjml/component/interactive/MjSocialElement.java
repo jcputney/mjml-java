@@ -1,10 +1,13 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.SocialNetworkRegistry;
 import dev.jcputney.mjml.util.SocialNetworkRegistry.NetworkInfo;
 import java.util.LinkedHashMap;
@@ -96,23 +99,22 @@ public class MjSocialElement extends BodyComponent {
    * @return the rendered HTML string for this social element in horizontal layout
    */
   public String renderHorizontal(MjSocial parent) {
-    StringBuilder sb = new StringBuilder();
     String align = getInheritedAttribute(parent, "align", "left");
 
-    sb.append("<table align=\"")
-        .append(align)
-        .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"")
-        .append(" style=\"float:none;display:inline-table;\">\n");
-    sb.append("<tbody>\n");
-    sb.append("<tr>\n");
+    HtmlBuilder html = new HtmlBuilder();
+    html.open(
+        "table",
+        attrs(
+            "align", align, "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "float:none;display:inline-table;"));
+    html.open("tbody");
+    html.open("tr");
+    appendIconAndTextCells(html, parent);
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
-    appendIconAndTextCells(sb, parent);
-
-    sb.append("</tr>\n");
-    sb.append("</tbody>\n");
-    sb.append("</table>\n");
-
-    return sb.toString();
+    return html.toString();
   }
 
   /**
@@ -122,16 +124,15 @@ public class MjSocialElement extends BodyComponent {
    * @return the rendered HTML string for this social element in vertical layout
    */
   public String renderVertical(MjSocial parent) {
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder();
+    html.open("tr");
+    appendIconAndTextCells(html, parent);
+    html.close("tr");
 
-    sb.append("<tr>\n");
-    appendIconAndTextCells(sb, parent);
-    sb.append("</tr>\n");
-
-    return sb.toString();
+    return html.toString();
   }
 
-  private void appendIconAndTextCells(StringBuilder sb, MjSocial parent) {
+  private void appendIconAndTextCells(HtmlBuilder html, MjSocial parent) {
     String name = getAttribute("name", "");
     NetworkInfo networkInfo = SocialNetworkRegistry.getNetwork(name);
     boolean isNoShare = name.contains("-noshare");
@@ -163,19 +164,16 @@ public class MjSocialElement extends BodyComponent {
 
     String borderRadius = getInheritedAttribute(parent, "border-radius", "3px");
     String iconSize = getInheritedAttribute(parent, "icon-size", "20px");
-    // icon-padding is only included in style if explicitly set on element or parent
     String iconPadding = getExplicitAttribute(parent, "icon-padding");
     String verticalAlign = getAttribute("vertical-align", "middle");
 
     String iconSizeNum = iconSize.replace("px", "");
 
     // Icon cell: outer td with padding from cascade
-    // MJML converts parent mj-social inner-padding to child padding
     String outerPadding = getAttribute("padding", "4px");
     if (parent != null) {
       String parentInnerPadding = parent.getNode().getAttribute("inner-padding");
       if (parentInnerPadding != null && !parentInnerPadding.isEmpty()) {
-        // Only override if child doesn't have explicit padding
         String childExplicit = node.getAttribute("padding");
         if (childExplicit == null || childExplicit.isEmpty()) {
           outerPadding = parentInnerPadding;
@@ -189,53 +187,60 @@ public class MjSocialElement extends BodyComponent {
     addIfPresent(tdStyles, "padding-bottom");
     addIfPresent(tdStyles, "padding-left");
     tdStyles.put("vertical-align", verticalAlign);
-    sb.append("<td style=\"").append(buildStyle(tdStyles)).append("\">\n");
+    html.open("td", attrs("style", buildStyle(tdStyles)));
 
-    sb.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-    sb.append(" style=\"");
-    if (!backgroundColor.isEmpty()) {
-      sb.append("background:").append(backgroundColor).append(";");
-    }
-    sb.append("border-radius:")
-        .append(borderRadius)
-        .append(";width:")
-        .append(iconSize)
-        .append(";\">\n");
-    sb.append("<tbody>\n");
-    sb.append("<tr>\n");
+    // Inner table with icon
+    String innerTableStyle =
+        (backgroundColor.isEmpty() ? "" : "background:" + backgroundColor + ";")
+            + "border-radius:"
+            + borderRadius
+            + ";width:"
+            + iconSize
+            + ";";
+    html.open(
+        "table",
+        attrs(
+            "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", innerTableStyle));
+    html.open("tbody");
+    html.open("tr");
 
     // Icon td with icon-padding (only if explicitly set)
-    sb.append("<td style=\"");
-    if (iconPadding != null && !iconPadding.isEmpty()) {
-      sb.append("padding:").append(iconPadding).append(";");
-    }
-    sb.append("font-size:0;");
-    sb.append("height:").append(iconSize).append(";");
-    sb.append("vertical-align:").append(verticalAlign).append(";");
-    sb.append("width:").append(iconSize).append(";\">\n");
+    String iconTdStyle =
+        (iconPadding != null && !iconPadding.isEmpty() ? "padding:" + iconPadding + ";" : "")
+            + "font-size:0;height:"
+            + iconSize
+            + ";vertical-align:"
+            + verticalAlign
+            + ";width:"
+            + iconSize
+            + ";";
+    html.open("td", attrs("style", iconTdStyle));
 
-    // Icon image with link
     boolean hasHref = !href.isEmpty();
     if (hasHref) {
-      sb.append("<a href=\"").append(escapeHref(href)).append("\"");
-      sb.append(" target=\"").append(escapeAttr(target)).append("\">\n");
+      html.open("a", attrs("href", escapeHref(href), "target", escapeAttr(target)));
     }
 
-    sb.append("<img alt=\"").append(escapeAttr(alt)).append("\"");
-    sb.append(" src=\"").append(escapeAttr(src)).append("\"");
-    sb.append(" style=\"border-radius:").append(borderRadius).append(";display:block;\"");
-    sb.append(" width=\"").append(iconSizeNum).append("\"");
-    sb.append(" />\n");
+    html.rawVerbatim(
+        "<img"
+            + attrs("alt", escapeAttr(alt), "src", escapeAttr(src))
+            + " style=\"border-radius:"
+            + borderRadius
+            + ";display:block;\""
+            + " width=\""
+            + iconSizeNum
+            + "\" />\n");
 
     if (hasHref) {
-      sb.append("</a>\n");
+      html.close("a");
     }
 
-    sb.append("</td>\n");
-    sb.append("</tr>\n");
-    sb.append("</tbody>\n");
-    sb.append("</table>\n");
-    sb.append("</td>\n");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
+    html.close("td");
 
     // Text label (from inner HTML content)
     String textContent = sanitizeContent(node.getInnerHtml().trim());
@@ -248,32 +253,32 @@ public class MjSocialElement extends BodyComponent {
       String lineHeight = getInheritedAttribute(parent, "line-height", "1");
       String textDecoration = getInheritedAttribute(parent, "text-decoration", "none");
 
-      sb.append("<td style=\"vertical-align:")
-          .append(verticalAlign)
-          .append(";padding:")
-          .append(textPadding)
-          .append(";text-align:left;\">\n");
+      String textTdStyle =
+          "vertical-align:" + verticalAlign + ";padding:" + textPadding + ";text-align:left;";
+      html.open("td", attrs("style", textTdStyle));
 
-      Map<String, String> textStyles = new LinkedHashMap<>();
-      textStyles.put("color", color);
-      textStyles.put("font-size", fontSize);
-      textStyles.put("font-family", fontFamily);
-      textStyles.put("line-height", lineHeight);
-      textStyles.put("text-decoration", textDecoration);
+      String textStyle =
+          buildStyle(
+              orderedMap(
+                  "color", color,
+                  "font-size", fontSize,
+                  "font-family", fontFamily,
+                  "line-height", lineHeight,
+                  "text-decoration", textDecoration));
 
       if (hasHref) {
-        sb.append("<a href=\"").append(escapeHref(href)).append("\"");
-        sb.append(" style=\"").append(buildStyle(textStyles)).append("\"");
-        sb.append(" target=\"").append(escapeAttr(target)).append("\">");
-        sb.append(" ").append(textContent).append(" ");
-        sb.append("</a>\n");
+        html.rawVerbatim(
+            "<a"
+                + attrs("href", escapeHref(href), "style", textStyle, "target", escapeAttr(target))
+                + "> "
+                + textContent
+                + " </a>\n");
       } else {
-        sb.append("<span style=\"").append(buildStyle(textStyles)).append("\">");
-        sb.append(" ").append(textContent).append(" ");
-        sb.append("</span>\n");
+        html.rawVerbatim(
+            "<span" + attrs("style", textStyle) + "> " + textContent + " </span>\n");
       }
 
-      sb.append("</td>\n");
+      html.close("td");
     }
   }
 

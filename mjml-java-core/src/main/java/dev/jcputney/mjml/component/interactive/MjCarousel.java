@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -7,6 +9,7 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.List;
 import java.util.Map;
 
@@ -94,70 +97,62 @@ public class MjCarousel extends BodyComponent {
             buildCarouselCss(
                 carouselId, count, iconWidthNum, tbHoverBorderColor, tbSelectedBorderColor));
 
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder();
 
-    // --- Start non-MSO conditional ---
-    sb.append("<!--[if !mso]><!-->\n");
-    sb.append("<div class=\"mj-carousel\">");
+    html.rawVerbatim("<!--[if !mso]><!-->\n");
+    html.rawVerbatim("<div class=\"mj-carousel\">");
 
-    renderRadioInputs(sb, carouselId, count);
+    renderRadioInputs(html, carouselId, count);
 
-    sb.append("\n");
+    html.rawVerbatim("\n");
 
-    // Content div
-    sb.append("  <div class=\"mj-carousel-content ")
-        .append(carouselId)
-        .append(
-            "-content\" style=\"display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;\">");
+    html.rawVerbatim(
+        "  <div class=\"mj-carousel-content "
+            + carouselId
+            + "-content\" style=\"display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;\">");
 
     if (showThumbnails) {
-      renderThumbnails(sb, images, carouselId, count);
+      renderThumbnails(html, images, carouselId, count);
     }
 
     renderMainTable(
-        sb,
-        images,
-        carouselId,
-        count,
-        iconWidthNum,
-        leftIcon,
-        rightIcon,
-        borderRadius,
+        html, images, carouselId, count, iconWidthNum, leftIcon, rightIcon, borderRadius,
         containerWidth);
 
-    sb.append("  </div>\n");
-    sb.append("</div>");
-    sb.append("<!--<![endif]-->\n");
+    html.rawVerbatim("  </div>\n");
+    html.rawVerbatim("</div>");
+    html.rawVerbatim("<!--<![endif]-->\n");
 
-    renderMsoFallback(sb, images, borderRadius, containerWidth);
+    renderMsoFallback(html, images, borderRadius, containerWidth);
 
-    return sb.toString();
+    return html.toString();
   }
 
   /** Renders the hidden radio inputs that track carousel state. */
-  private void renderRadioInputs(StringBuilder sb, String carouselId, int count) {
+  private void renderRadioInputs(HtmlBuilder html, String carouselId, int count) {
     for (int i = 1; i <= count; i++) {
-      sb.append("<input class=\"mj-carousel-radio ")
-          .append(carouselId)
-          .append("-radio ")
-          .append(carouselId)
-          .append("-radio-")
-          .append(i)
-          .append("\"");
-      if (i == 1) {
-        sb.append(" checked=\"checked\"");
-      }
-      sb.append(" type=\"radio\"");
-      sb.append(" name=\"mj-carousel-radio-").append(hexId).append("\"");
-      sb.append(" id=\"").append(carouselId).append("-radio-").append(i).append("\"");
-      sb.append(" style=\"display:none;mso-hide:all;\"");
-      sb.append(" />");
+      String radioClass =
+          "mj-carousel-radio " + carouselId + "-radio " + carouselId + "-radio-" + i;
+      html.rawVerbatim(
+          "<input"
+              + attrs("class", radioClass)
+              + (i == 1 ? " checked=\"checked\"" : "")
+              + " type=\"radio\""
+              + " name=\"mj-carousel-radio-"
+              + hexId
+              + "\""
+              + " id=\""
+              + carouselId
+              + "-radio-"
+              + i
+              + "\""
+              + " style=\"display:none;mso-hide:all;\" />");
     }
   }
 
   /** Renders the thumbnail strip with labeled anchor elements. */
   private void renderThumbnails(
-      StringBuilder sb, List<MjmlNode> images, String carouselId, int count) {
+      HtmlBuilder html, List<MjmlNode> images, String carouselId, int count) {
     String tbBorder = getAttribute("tb-border", "0");
     String tbBorderRadius = getAttribute("tb-border-radius", "0");
     String tbWidth = getAttribute("tb-width", "");
@@ -174,39 +169,45 @@ public class MjCarousel extends BodyComponent {
         alt = "";
       }
 
-      sb.append("<a style=\"border:")
-          .append(tbBorder)
-          .append(";border-radius:")
-          .append(tbBorderRadius)
-          .append(";display:inline-block;overflow:hidden;width:")
-          .append(tbWidthInt > 0 ? tbWidthInt + "px" : tbWidth)
-          .append(";\"");
-      sb.append(" href=\"#").append(i).append("\"");
-      sb.append(" target=\"_blank\"");
-      sb.append(" class=\"mj-carousel-thumbnail ")
-          .append(carouselId)
-          .append("-thumbnail ")
-          .append(carouselId)
-          .append("-thumbnail-")
-          .append(i)
-          .append(" \">");
-      sb.append("<label for=\"").append(carouselId).append("-radio-").append(i).append("\">");
-      sb.append("<img style=\"display:block;width:100%;height:auto;\"");
-      sb.append(" src=\"").append(escapeAttr(thumbSrc)).append("\"");
-      sb.append(" alt=\"").append(escapeAttr(alt)).append("\"");
-      sb.append(" width=\"")
-          .append(tbWidthInt > 0 ? tbWidthInt : tbWidth.replace("px", ""))
-          .append("\"");
-      sb.append(" />");
-      sb.append("</label>");
-      sb.append("</a>");
+      String tbStyle =
+          "border:"
+              + tbBorder
+              + ";border-radius:"
+              + tbBorderRadius
+              + ";display:inline-block;overflow:hidden;width:"
+              + (tbWidthInt > 0 ? tbWidthInt + "px" : tbWidth)
+              + ";";
+      String tbClass =
+          "mj-carousel-thumbnail "
+              + carouselId
+              + "-thumbnail "
+              + carouselId
+              + "-thumbnail-"
+              + i
+              + " ";
+      String imgWidth = String.valueOf(tbWidthInt > 0 ? tbWidthInt : tbWidth.replace("px", ""));
+
+      html.rawVerbatim(
+          "<a"
+              + attrs("style", tbStyle, "href", "#" + i, "target", "_blank", "class", tbClass)
+              + ">"
+              + "<label for=\""
+              + carouselId
+              + "-radio-"
+              + i
+              + "\">"
+              + "<img style=\"display:block;width:100%;height:auto;\""
+              + attrs("src", escapeAttr(thumbSrc), "alt", escapeAttr(alt), "width", imgWidth)
+              + " />"
+              + "</label>"
+              + "</a>");
     }
-    sb.append("\n");
+    html.rawVerbatim("\n");
   }
 
   /** Renders the main carousel table with previous/next icon columns and image cells. */
   private void renderMainTable(
-      StringBuilder sb,
+      HtmlBuilder html,
       List<MjmlNode> images,
       String carouselId,
       int count,
@@ -215,20 +216,19 @@ public class MjCarousel extends BodyComponent {
       String rightIcon,
       String borderRadius,
       int containerWidth) {
-    sb.append(
-        "    <table style=\"caption-side:top;display:table-caption;table-layout:fixed;width:100%;\"");
-    sb.append(" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"");
-    sb.append(" role=\"presentation\" class=\"mj-carousel-main\">\n");
-    sb.append("      <tbody>\n");
-    sb.append("        <tr>\n");
+    html.rawVerbatim(
+        "    <table style=\"caption-side:top;display:table-caption;table-layout:fixed;width:100%;\""
+            + " border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\""
+            + " role=\"presentation\" class=\"mj-carousel-main\">\n"
+            + "      <tbody>\n"
+            + "        <tr>\n");
 
-    // Previous icons cell
     renderIconCell(
-        sb, carouselId, count, iconWidthNum, leftIcon, "previous", "mj-carousel-previous-icons");
+        html, carouselId, count, iconWidthNum, leftIcon, "previous",
+        "mj-carousel-previous-icons");
 
-    // Images cell
-    sb.append("          <td style=\"padding:0px;\">\n");
-    sb.append("            <div class=\"mj-carousel-images\">\n");
+    html.rawVerbatim("          <td style=\"padding:0px;\">\n");
+    html.rawVerbatim("            <div class=\"mj-carousel-images\">\n");
     for (int i = 1; i <= count; i++) {
       MjmlNode imgNode = images.get(i - 1);
       RenderContext childContext = renderContext.withPosition(i - 1, i == 1, i == count);
@@ -236,67 +236,68 @@ public class MjCarousel extends BodyComponent {
 
       String imageHtml = renderCarouselImage(component, borderRadius, containerWidth);
 
-      sb.append("              <div class=\"mj-carousel-image mj-carousel-image-")
-          .append(i)
-          .append(" \"");
-      if (i == 1) {
-        sb.append(" style=\"\">");
-      } else {
-        sb.append(" style=\"display:none;mso-hide:all;\">");
-      }
-      sb.append(imageHtml);
-      sb.append("</div>\n");
+      String divStyle = (i == 1) ? "" : "display:none;mso-hide:all;";
+      html.rawVerbatim(
+          "              <div class=\"mj-carousel-image mj-carousel-image-"
+              + i
+              + " \" style=\""
+              + divStyle
+              + "\">"
+              + imageHtml
+              + "</div>\n");
     }
-    sb.append("            </div>\n");
-    sb.append("          </td>\n");
+    html.rawVerbatim("            </div>\n");
+    html.rawVerbatim("          </td>\n");
 
-    // Next icons cell
     renderIconCell(
-        sb, carouselId, count, iconWidthNum, rightIcon, "next", "mj-carousel-next-icons");
+        html, carouselId, count, iconWidthNum, rightIcon, "next", "mj-carousel-next-icons");
 
-    sb.append("        </tr>\n");
-    sb.append("      </tbody>\n");
-    sb.append("    </table>\n");
+    html.rawVerbatim("        </tr>\n      </tbody>\n    </table>\n");
   }
 
   /** Renders a previous or next icon cell with labeled navigation images. */
   private void renderIconCell(
-      StringBuilder sb,
+      HtmlBuilder html,
       String carouselId,
       int count,
       String iconWidthNum,
       String iconSrc,
       String direction,
       String wrapperClass) {
-    sb.append("          <td class=\"")
-        .append(carouselId)
-        .append("-icons-cell\" style=\"font-size:0px;display:none;mso-hide:all;padding:0px;\">\n");
-    sb.append("            <div class=\"")
-        .append(wrapperClass)
-        .append("\" style=\"display:none;mso-hide:all;\">");
+    html.rawVerbatim(
+        "          <td class=\""
+            + carouselId
+            + "-icons-cell\" style=\"font-size:0px;display:none;mso-hide:all;padding:0px;\">\n");
+    html.rawVerbatim(
+        "            <div class=\"" + wrapperClass + "\" style=\"display:none;mso-hide:all;\">");
     for (int i = 1; i <= count; i++) {
-      sb.append("<label for=\"").append(carouselId).append("-radio-").append(i).append("\"");
-      sb.append(" class=\"mj-carousel-")
-          .append(direction)
-          .append(" mj-carousel-")
-          .append(direction)
-          .append("-")
-          .append(i)
-          .append("\">");
-      sb.append("<img src=\"").append(escapeAttr(iconSrc)).append("\"");
-      sb.append(" alt=\"").append(direction).append("\"");
-      sb.append(" style=\"display:block;width:").append(iconWidthNum).append("px;height:auto;\"");
-      sb.append(" width=\"").append(iconWidthNum).append("\"");
-      sb.append(" />");
-      sb.append("</label>");
+      String labelClass =
+          "mj-carousel-" + direction + " mj-carousel-" + direction + "-" + i;
+      html.rawVerbatim(
+          "<label for=\""
+              + carouselId
+              + "-radio-"
+              + i
+              + "\" class=\""
+              + labelClass
+              + "\">"
+              + "<img"
+              + attrs("src", escapeAttr(iconSrc), "alt", direction)
+              + " style=\"display:block;width:"
+              + iconWidthNum
+              + "px;height:auto;\""
+              + " width=\""
+              + iconWidthNum
+              + "\" />"
+              + "</label>");
     }
-    sb.append("</div>\n");
-    sb.append("          </td>\n");
+    html.rawVerbatim("</div>\n");
+    html.rawVerbatim("          </td>\n");
   }
 
   /** Renders the MSO/Outlook fallback showing only the first image. */
   private void renderMsoFallback(
-      StringBuilder sb, List<MjmlNode> images, String borderRadius, int containerWidth) {
+      HtmlBuilder html, List<MjmlNode> images, String borderRadius, int containerWidth) {
     int count = images.size();
     MjmlNode firstImgNode = images.get(0);
     RenderContext firstContext = renderContext.withPosition(0, true, count == 1);
@@ -305,9 +306,10 @@ public class MjCarousel extends BodyComponent {
 
     String firstImageHtml = renderCarouselImage(firstComponent, borderRadius, containerWidth);
 
-    sb.append("<!--[if mso]><div class=\"mj-carousel-image mj-carousel-image-1 \" style=\"\" >");
-    sb.append(firstImageHtml);
-    sb.append("</div><![endif]-->");
+    html.rawVerbatim(
+        "<!--[if mso]><div class=\"mj-carousel-image mj-carousel-image-1 \" style=\"\" >"
+            + firstImageHtml
+            + "</div><![endif]-->");
   }
 
   /** Renders a single carousel image from its component. */

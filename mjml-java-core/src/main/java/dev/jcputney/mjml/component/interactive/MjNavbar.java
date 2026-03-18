@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -7,6 +9,7 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.render.DefaultFontRegistry;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,55 +92,50 @@ public class MjNavbar extends BodyComponent {
       }
     }
 
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder();
     String uniqueId = renderContext.nextUniqueId("navbar");
 
     if (hasHamburger) {
-      // Checkbox input for hamburger toggle (non-MSO only)
-      sb.append("<!--[if !mso]><!-->");
-      sb.append("<input type=\"checkbox\" id=\"")
-          .append(uniqueId)
-          .append("\" class=\"mj-menu-checkbox\"")
-          .append(" style=\"display:none !important; max-height:0; visibility:hidden;\"")
-          .append(" />");
-      sb.append("<!--<![endif]-->\n");
-
-      // Menu trigger div
-      renderHamburgerTrigger(sb, uniqueId);
+      html.rawVerbatim(
+          "<!--[if !mso]><!-->"
+              + "<input"
+              + attrs("type", "checkbox", "id", uniqueId, "class", "mj-menu-checkbox")
+              + " style=\"display:none !important; max-height:0; visibility:hidden;\" />"
+              + "<!--<![endif]-->\n");
+      renderHamburgerTrigger(html, uniqueId);
     }
 
-    // Inline links container
-    sb.append("<div class=\"mj-inline-links\" style=\"\">\n");
+    // Inline links container — style="" must be present even when empty
+    html.rawVerbatim("<div class=\"mj-inline-links\" style=\"\">\n");
 
     // MSO table wrapper around all links
-    sb.append("<!--[if mso | IE]>");
-    sb.append(
-        "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>");
+    String msoOpen =
+        "<!--[if mso | IE]>"
+            + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>";
     if (!linkPaddings.isEmpty()) {
-      sb.append("<td style=\"padding:").append(linkPaddings.get(0)).append(";\" class=\"\" >");
+      msoOpen += "<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >";
     }
-    sb.append("<![endif]-->\n");
+    msoOpen += "<![endif]-->";
+    html.raw(msoOpen);
 
-    // Render links with MSO td separators between them
     for (int i = 0; i < renderedLinks.size(); i++) {
-      sb.append(renderedLinks.get(i)).append("\n");
+      html.rawVerbatim(renderedLinks.get(i) + "\n");
 
       if (i < renderedLinks.size() - 1) {
-        // MSO separator between adjacent links
-        sb.append("<!--[if mso | IE]></td><td style=\"padding:")
-            .append(linkPaddings.get(i + 1))
-            .append(";\" class=\"\" ><![endif]-->\n");
+        html.raw(
+            "<!--[if mso | IE]></td><td style=\"padding:"
+                + linkPaddings.get(i + 1)
+                + ";\" class=\"\" ><![endif]-->");
       }
     }
 
-    // MSO table close
-    sb.append("<!--[if mso | IE]></td></tr></table><![endif]-->\n");
-    sb.append("</div>\n");
+    html.raw("<!--[if mso | IE]></td></tr></table><![endif]-->");
+    html.rawVerbatim("</div>\n");
 
-    return sb.toString();
+    return html.toString();
   }
 
-  private void renderHamburgerTrigger(StringBuilder sb, String uniqueId) {
+  private void renderHamburgerTrigger(HtmlBuilder html, String uniqueId) {
     String icoColor = getAttribute("ico-color", "000000");
     String icoFontFamily = getAttribute("ico-font-family", "Ubuntu, Helvetica, Arial, sans-serif");
     String icoFontSize = getAttribute("ico-font-size", "30px");
@@ -146,65 +144,53 @@ public class MjNavbar extends BodyComponent {
     String icoTextTransform = getAttribute("ico-text-transform", "uppercase");
     String icoAlign = getAttribute("ico-align", "center");
 
-    // Ensure color has exactly one # prefix
     String colorValue = icoColor.startsWith("#") ? icoColor : "#" + icoColor;
 
-    sb.append("<div class=\"mj-menu-trigger\" style=\"");
-    sb.append(
+    String triggerStyle =
         buildStyle(
             orderedMap(
                 "display", "none",
                 "max-height", "0px",
                 "max-width", "0px",
                 "font-size", "0px",
-                "overflow", "hidden")));
-    sb.append("\">\n");
+                "overflow", "hidden"));
+    html.open("div", attrs("class", "mj-menu-trigger", "style", triggerStyle));
 
-    // Label with mj-menu-label class
-    sb.append("<label for=\"").append(uniqueId).append("\" class=\"mj-menu-label\" style=\"");
-    sb.append(
+    String labelStyle =
         buildStyle(
             orderedMap(
-                "display",
-                "block",
-                "cursor",
-                "pointer",
-                "mso-hide",
-                "all",
-                "-moz-user-select",
-                "none",
-                "user-select",
-                "none",
-                "color",
-                colorValue,
-                "font-size",
-                icoFontSize,
-                "font-family",
-                icoFontFamily,
-                "text-transform",
-                icoTextTransform,
-                "text-decoration",
-                "none",
-                "line-height",
-                icoLineHeight,
-                "padding",
-                icoPadding)));
-    sb.append("\" align=\"").append(icoAlign).append("\">\n");
+                "display", "block",
+                "cursor", "pointer",
+                "mso-hide", "all",
+                "-moz-user-select", "none",
+                "user-select", "none",
+                "color", colorValue,
+                "font-size", icoFontSize,
+                "font-family", icoFontFamily,
+                "text-transform", icoTextTransform,
+                "text-decoration", "none",
+                "line-height", icoLineHeight,
+                "padding", icoPadding));
+    html.open(
+        "label",
+        attrs("for", uniqueId, "class", "mj-menu-label", "style", labelStyle)
+            + " align=\""
+            + icoAlign
+            + "\"");
 
-    // Open icon (hamburger) — from ico-open attribute
-    // Re-encode non-ASCII chars as HTML entities (XML parser decodes them)
     String icoOpen = encodeNonAscii(getAttribute("ico-open", "&#9776;"));
-    sb.append("<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> ")
-        .append(icoOpen)
-        .append(" </span>\n");
-    // Close icon (X) — from ico-close attribute
+    html.rawVerbatim(
+        "<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> "
+            + icoOpen
+            + " </span>\n");
     String icoClose = encodeNonAscii(getAttribute("ico-close", "&#8855;"));
-    sb.append("<span class=\"mj-menu-icon-close\" style=\"display:none;mso-hide:all;\"> ")
-        .append(icoClose)
-        .append(" </span>\n");
+    html.rawVerbatim(
+        "<span class=\"mj-menu-icon-close\" style=\"display:none;mso-hide:all;\"> "
+            + icoClose
+            + " </span>\n");
 
-    sb.append("</label>\n");
-    sb.append("</div>\n");
+    html.close("label");
+    html.close("div");
   }
 
   private String buildHamburgerCss() {

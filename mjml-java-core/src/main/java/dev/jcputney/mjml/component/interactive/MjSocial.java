@@ -1,11 +1,14 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.List;
 import java.util.Map;
 
@@ -71,57 +74,59 @@ public class MjSocial extends BodyComponent {
       return "";
     }
 
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder();
 
     if ("horizontal".equals(mode)) {
-      renderHorizontal(sb, elements, align);
+      renderHorizontal(html, elements, align);
     } else {
-      renderVertical(sb, elements, align);
+      renderVertical(html, elements, align);
     }
 
-    return sb.toString();
+    return html.toString();
   }
 
-  private void renderHorizontal(StringBuilder sb, List<MjmlNode> elements, String align) {
-    // MSO opening
-    sb.append("<!--[if mso | IE]><table align=\"")
-        .append(align)
-        .append(
-            "\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr><td><![endif]-->\n");
+  private void renderHorizontal(HtmlBuilder html, List<MjmlNode> elements, String align) {
+    html.raw(
+        "<!--[if mso | IE]><table"
+            + attrs(
+                "align", align, "border", "0", "cellpadding", "0", "cellspacing", "0",
+                "role", "presentation")
+            + " ><tr><td><![endif]-->");
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);
       RenderContext childContext = renderContext.withPosition(i, i == 0, i == elements.size() - 1);
       BaseComponent component = registry.createComponent(elem, globalContext, childContext);
       if (component instanceof MjSocialElement socialElement) {
-        sb.append(socialElement.renderHorizontal(this));
+        html.rawVerbatim(socialElement.renderHorizontal(this));
       }
 
-      // MSO separator between elements
       if (i < elements.size() - 1) {
-        sb.append("<!--[if mso | IE]></td><td><![endif]-->\n");
+        html.raw("<!--[if mso | IE]></td><td><![endif]-->");
       }
     }
 
-    // MSO closing
-    sb.append("<!--[if mso | IE]></td></tr></table><![endif]-->\n");
+    html.raw("<!--[if mso | IE]></td></tr></table><![endif]-->");
   }
 
-  private void renderVertical(StringBuilder sb, List<MjmlNode> elements, String align) {
-    sb.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"")
-        .append(" style=\"margin:0px;\">\n");
-    sb.append("<tbody>\n");
+  private void renderVertical(HtmlBuilder html, List<MjmlNode> elements, String align) {
+    html.open(
+        "table",
+        attrs(
+            "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "margin:0px;"));
+    html.open("tbody");
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);
       RenderContext childContext = renderContext.withPosition(i, i == 0, i == elements.size() - 1);
       BaseComponent component = registry.createComponent(elem, globalContext, childContext);
       if (component instanceof MjSocialElement socialElement) {
-        sb.append(socialElement.renderVertical(this));
+        html.rawVerbatim(socialElement.renderVertical(this));
       }
     }
 
-    sb.append("</tbody>\n");
-    sb.append("</table>\n");
+    html.close("tbody");
+    html.close("table");
   }
 }
