@@ -101,14 +101,6 @@ public class MjAccordion extends BodyComponent {
 
   private final ComponentRegistry registry;
 
-  /**
-   * Creates a new MjAccordion component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   * @param registry the component registry for creating child components
-   */
   public MjAccordion(
       MjmlNode node,
       GlobalContext globalContext,

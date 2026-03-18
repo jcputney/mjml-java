@@ -21,13 +21,6 @@ public class MjStyle extends HeadComponent {
   private static final Pattern STYLE_CLOSE_TAG =
       Pattern.compile("</style", Pattern.CASE_INSENSITIVE);
 
-  /**
-   * Creates a new MjStyle component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjStyle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

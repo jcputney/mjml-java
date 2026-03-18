@@ -8,13 +8,6 @@ import dev.jcputney.mjml.parser.MjmlNode;
 /** Sets the document title from mj-title content. */
 public class MjTitle extends HeadComponent {
 
-  /**
-   * Creates a new MjTitle component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjTitle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

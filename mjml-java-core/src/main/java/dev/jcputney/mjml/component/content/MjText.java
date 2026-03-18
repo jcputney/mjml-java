@@ -47,13 +47,6 @@ public class MjText extends BodyComponent {
   /** Matches whitespace sequences containing at least one newline. */
   private static final Pattern NEWLINE_WHITESPACE = Pattern.compile("\\s*\\n\\s*");
 
-  /**
-   * Creates a new MjText component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

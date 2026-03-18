@@ -39,13 +39,6 @@ public class MjImage extends BodyComponent {
           Map.entry("sizes", ""),
           Map.entry("usemap", ""));
 
-  /**
-   * Creates a new MjImage component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjImage(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

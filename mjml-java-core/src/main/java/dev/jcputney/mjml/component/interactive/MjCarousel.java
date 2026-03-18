@@ -47,14 +47,6 @@ public class MjCarousel extends BodyComponent {
   private final ComponentRegistry registry;
   private final String hexId;
 
-  /**
-   * Creates a new MjCarousel component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   * @param registry the component registry for creating child components
-   */
   public MjCarousel(
       MjmlNode node,
       GlobalContext globalContext,

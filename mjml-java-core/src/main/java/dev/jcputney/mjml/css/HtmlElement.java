@@ -35,12 +35,6 @@ public final class HtmlElement {
   private int styleAttrStart = -1; // position of style="
   private int styleAttrEnd = -1; // position after closing "
 
-  /**
-   * Creates a new HTML element with the given tag name and attributes.
-   *
-   * @param tagName the tag name (will be lowercased)
-   * @param attributes the element attributes
-   */
   public HtmlElement(String tagName, Map<String, String> attributes) {
     this.tagName = tagName.toLowerCase();
     this.attributes = new LinkedHashMap<>(attributes);

@@ -48,13 +48,6 @@ public class MjButton extends BodyComponent {
           Map.entry("vertical-align", "middle"),
           Map.entry("width", ""));
 
-  /**
-   * Creates a new MjButton component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjButton(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

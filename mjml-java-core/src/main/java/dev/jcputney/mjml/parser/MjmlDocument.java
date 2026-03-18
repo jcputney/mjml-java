@@ -9,11 +9,6 @@ package dev.jcputney.mjml.parser;
  */
 public record MjmlDocument(MjmlNode root) {
 
-  /**
-   * Creates a new MJML document with the given root node.
-   *
-   * @param root the root {@code <mjml>} node of the document
-   */
   public MjmlDocument {}
 
   /**

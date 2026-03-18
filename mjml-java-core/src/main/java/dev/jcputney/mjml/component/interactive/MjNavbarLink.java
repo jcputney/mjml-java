@@ -33,13 +33,6 @@ public class MjNavbarLink extends BodyComponent {
           Map.entry("text-decoration", "none"),
           Map.entry("text-transform", "uppercase"));
 
-  /**
-   * Creates a new MjNavbarLink component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjNavbarLink(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

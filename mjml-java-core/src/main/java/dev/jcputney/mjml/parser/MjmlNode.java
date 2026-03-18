@@ -22,11 +22,6 @@ public class MjmlNode {
   private String textContent;
   private MjmlNode parent;
 
-  /**
-   * Creates a new MJML node with the given tag name and empty attributes, children, and text.
-   *
-   * @param tagName the tag name for this node (e.g., "mj-body", "mj-section")
-   */
   public MjmlNode(String tagName) {
     this.tagName = tagName;
     this.attributes = new LinkedHashMap<>();

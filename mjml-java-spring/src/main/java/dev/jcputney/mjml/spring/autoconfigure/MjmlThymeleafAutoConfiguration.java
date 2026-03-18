@@ -21,7 +21,6 @@ import org.thymeleaf.TemplateEngine;
     matchIfMissing = true)
 public class MjmlThymeleafAutoConfiguration {
 
-  /** Creates a new {@code MjmlThymeleafAutoConfiguration} instance. */
   public MjmlThymeleafAutoConfiguration() {}
 
   /**

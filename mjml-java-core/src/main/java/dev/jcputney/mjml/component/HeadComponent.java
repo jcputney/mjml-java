@@ -11,13 +11,6 @@ import java.util.Map;
  */
 public abstract non-sealed class HeadComponent extends BaseComponent {
 
-  /**
-   * Creates a new head component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the document-wide context gathered during head processing
-   * @param renderContext the current rendering context (container width, position, etc.)
-   */
   protected HeadComponent(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

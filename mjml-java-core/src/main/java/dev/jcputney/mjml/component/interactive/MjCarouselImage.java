@@ -38,13 +38,6 @@ public class MjCarouselImage extends BodyComponent {
           Map.entry("title", ""),
           Map.entry("thumbnails-src", ""));
 
-  /**
-   * Creates a new MjCarouselImage component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjCarouselImage(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

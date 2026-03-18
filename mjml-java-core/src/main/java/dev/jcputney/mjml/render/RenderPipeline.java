@@ -95,11 +95,6 @@ public final class RenderPipeline {
   private final ComponentRegistry registry;
   private final FontScanner fontScanner;
 
-  /**
-   * Creates a new render pipeline for the given configuration.
-   *
-   * @param configuration the MJML configuration controlling rendering behavior
-   */
   public RenderPipeline(MjmlConfiguration configuration) {
     this.configuration = configuration;
     this.registry = getOrCreateRegistry(configuration);

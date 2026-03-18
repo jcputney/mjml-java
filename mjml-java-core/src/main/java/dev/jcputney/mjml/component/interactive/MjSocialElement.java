@@ -51,13 +51,6 @@ public class MjSocialElement extends BodyComponent {
           Map.entry("text-padding", "4px 4px 4px 0"),
           Map.entry("vertical-align", "middle"));
 
-  /**
-   * Creates a new MjSocialElement component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjSocialElement(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

@@ -44,14 +44,6 @@ public class MjSection extends AbstractSectionComponent {
           Map.entry("text-padding", "4px 4px 4px 0"));
   private static final Set<String> COLUMN_TAGS = Set.of("mj-column", "mj-group");
 
-  /**
-   * Creates a new MjSection component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   * @param registry the component registry for resolving child components
-   */
   public MjSection(
       MjmlNode node,
       GlobalContext globalContext,

@@ -28,13 +28,6 @@ public class MjAccordionText extends BodyComponent {
           Map.entry("padding-right", ""),
           Map.entry("padding-top", ""));
 
-  /**
-   * Creates a new MjAccordionText component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjAccordionText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

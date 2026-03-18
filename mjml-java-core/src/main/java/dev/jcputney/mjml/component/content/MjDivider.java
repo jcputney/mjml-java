@@ -23,13 +23,6 @@ public class MjDivider extends BodyComponent {
           Map.entry("padding", "10px 25px"),
           Map.entry("width", "100%"));
 
-  /**
-   * Creates a new MjDivider component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjDivider(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

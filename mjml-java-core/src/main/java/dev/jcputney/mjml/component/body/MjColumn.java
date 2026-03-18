@@ -45,14 +45,6 @@ public class MjColumn extends BodyComponent {
   };
   private final ComponentRegistry registry;
 
-  /**
-   * Creates a new MjColumn component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   * @param registry the component registry for creating child components
-   */
   public MjColumn(
       MjmlNode node,
       GlobalContext globalContext,

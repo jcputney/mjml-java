@@ -22,13 +22,6 @@ public class MjAccordionTitle extends BodyComponent {
           Map.entry("font-weight", ""),
           Map.entry("padding", "16px"));
 
-  /**
-   * Creates a new MjAccordionTitle component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjAccordionTitle(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

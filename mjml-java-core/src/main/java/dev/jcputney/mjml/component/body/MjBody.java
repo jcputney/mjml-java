@@ -18,14 +18,6 @@ public class MjBody extends BodyComponent {
 
   private final ComponentRegistry registry;
 
-  /**
-   * Creates a new MjBody component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   * @param registry the component registry for creating child components
-   */
   public MjBody(
       MjmlNode node,
       GlobalContext globalContext,

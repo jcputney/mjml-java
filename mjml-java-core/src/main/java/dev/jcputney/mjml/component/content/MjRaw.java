@@ -20,13 +20,6 @@ public class MjRaw extends BodyComponent {
 
   private static final Map<String, String> DEFAULTS = Map.of("position", "");
 
-  /**
-   * Creates a new MjRaw component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjRaw(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

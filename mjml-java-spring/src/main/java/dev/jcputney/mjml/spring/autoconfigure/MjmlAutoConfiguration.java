@@ -22,7 +22,6 @@ import org.springframework.core.io.ResourceLoader;
 @ConditionalOnClass(MjmlRenderer.class)
 public class MjmlAutoConfiguration {
 
-  /** Creates a new {@code MjmlAutoConfiguration} instance. */
   public MjmlAutoConfiguration() {}
 
   /**

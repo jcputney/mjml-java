@@ -29,13 +29,6 @@ public class MjTable extends BodyComponent {
           Map.entry("table-layout", "auto"),
           Map.entry("width", "100%"));
 
-  /**
-   * Creates a new MjTable component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjTable(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

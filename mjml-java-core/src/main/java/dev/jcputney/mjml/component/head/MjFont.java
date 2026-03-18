@@ -11,13 +11,6 @@ public class MjFont extends HeadComponent {
 
   private static final Logger LOG = Logger.getLogger(MjFont.class.getName());
 
-  /**
-   * Creates a new MjFont component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjFont(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }

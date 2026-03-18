@@ -18,13 +18,6 @@ public class MjSpacer extends BodyComponent {
           Map.entry("padding", ""),
           Map.entry("vertical-align", ""));
 
-  /**
-   * Creates a new MjSpacer component.
-   *
-   * @param node the parsed MJML node for this component
-   * @param globalContext the global rendering context
-   * @param renderContext the current render context
-   */
   public MjSpacer(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
     super(node, globalContext, renderContext);
   }
