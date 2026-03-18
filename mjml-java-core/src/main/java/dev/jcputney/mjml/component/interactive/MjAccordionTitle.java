@@ -1,10 +1,13 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -38,8 +41,6 @@ public class MjAccordionTitle extends BodyComponent {
 
   @Override
   public String render() {
-    StringBuilder sb = new StringBuilder();
-
     String backgroundColor = getAttribute("background-color", "");
     String color = getAttribute("color", "");
     String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
@@ -66,29 +67,8 @@ public class MjAccordionTitle extends BodyComponent {
         sanitizeContent(
             CssUnitParser.WHITESPACE.matcher(node.getInnerHtml().trim()).replaceAll(" "));
 
-    sb.append("<table cellspacing=\"0\" cellpadding=\"0\" style=\"");
-    sb.append(buildStyle(orderedMap("width", "100%", "border-bottom", border)));
-    sb.append("\">\n");
-    sb.append("<tbody>\n");
-    sb.append("<tr>\n");
-
-    // Icon on the left if icon-position is "left"
-    if ("left".equals(iconPosition)) {
-      renderIcon(
-          sb,
-          iconAlign,
-          backgroundColor,
-          iconWidth,
-          iconHeight,
-          iconUnwrappedUrl,
-          iconUnwrappedAlt,
-          iconWrappedUrl,
-          iconWrappedAlt);
-    }
-
-    // Title cell - note: width:100% is the first property
-    sb.append("<td style=\"");
-    sb.append(
+    String tableStyle = buildStyle(orderedMap("width", "100%", "border-bottom", border));
+    String tdStyle =
         buildStyle(
             orderedMap(
                 "width", "100%",
@@ -96,34 +76,38 @@ public class MjAccordionTitle extends BodyComponent {
                 "color", color,
                 "font-size", fontSize,
                 "font-family", fontFamily,
-                "padding", padding)));
-    sb.append("\">");
-    sb.append(" ").append(content).append(" ");
-    sb.append("</td>\n");
+                "padding", padding));
 
-    // Icon on the right if icon-position is "right" (default)
-    if (!"left".equals(iconPosition)) {
+    HtmlBuilder html = new HtmlBuilder();
+    html.open("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle));
+    html.open("tbody");
+    html.open("tr");
+
+    if ("left".equals(iconPosition)) {
       renderIcon(
-          sb,
-          iconAlign,
-          backgroundColor,
-          iconWidth,
-          iconHeight,
-          iconUnwrappedUrl,
-          iconUnwrappedAlt,
-          iconWrappedUrl,
-          iconWrappedAlt);
+          html, iconAlign, backgroundColor, iconWidth, iconHeight,
+          iconUnwrappedUrl, iconUnwrappedAlt, iconWrappedUrl, iconWrappedAlt);
     }
 
-    sb.append("</tr>\n");
-    sb.append("</tbody>\n");
-    sb.append("</table>\n");
+    html.openInline("td", attrs("style", tdStyle));
+    html.text(" " + content + " ");
+    html.closeInlineLn("td");
 
-    return sb.toString();
+    if (!"left".equals(iconPosition)) {
+      renderIcon(
+          html, iconAlign, backgroundColor, iconWidth, iconHeight,
+          iconUnwrappedUrl, iconUnwrappedAlt, iconWrappedUrl, iconWrappedAlt);
+    }
+
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
+
+    return html.toString();
   }
 
   private void renderIcon(
-      StringBuilder sb,
+      HtmlBuilder html,
       String align,
       String backgroundColor,
       String width,
@@ -133,45 +117,29 @@ public class MjAccordionTitle extends BodyComponent {
       String wrappedUrl,
       String wrappedAlt) {
 
-    // Icon td is wrapped in MSO conditional
-    sb.append("<!--[if !mso | IE]><!-->\n");
-    sb.append("<td class=\"mj-accordion-ico\" style=\"");
-    sb.append(
+    String iconTdStyle =
         buildStyle(
-            orderedMap(
-                "padding", "16px",
-                "background", backgroundColor,
-                "vertical-align", align)));
-    sb.append("\">");
+            orderedMap("padding", "16px", "background", backgroundColor, "vertical-align", align));
+    String imgStyle =
+        buildStyle(orderedMap("display", "none", "width", width, "height", height));
 
-    // "more" image (shown when collapsed): uses WRAPPED URL, wrapped alt
-    sb.append("<img src=\"").append(escapeAttr(wrappedUrl)).append("\"");
-    sb.append(" alt=\"").append(escapeAttr(wrappedAlt)).append("\"");
-    sb.append(" class=\"mj-accordion-more\"");
-    sb.append(" style=\"");
-    sb.append(
-        buildStyle(
-            orderedMap(
-                "display", "none",
-                "width", width,
-                "height", height)));
-    sb.append("\" />");
-
-    // "less" image (shown when expanded): uses UNWRAPPED URL, unwrapped alt
-    sb.append("<img src=\"").append(escapeAttr(unwrappedUrl)).append("\"");
-    sb.append(" alt=\"").append(escapeAttr(unwrappedAlt)).append("\"");
-    sb.append(" class=\"mj-accordion-less\"");
-    sb.append(" style=\"");
-    sb.append(
-        buildStyle(
-            orderedMap(
-                "display", "none",
-                "width", width,
-                "height", height)));
-    sb.append("\" />");
-
-    sb.append("</td>");
-    sb.append("<!--<![endif]-->\n");
+    html.rawVerbatim("<!--[if !mso | IE]><!-->\n");
+    html.rawVerbatim(
+        "<td class=\"mj-accordion-ico\""
+            + attrs("style", iconTdStyle)
+            + ">"
+            + "<img"
+            + attrs("src", escapeAttr(wrappedUrl), "alt", escapeAttr(wrappedAlt))
+            + " class=\"mj-accordion-more\""
+            + attrs("style", imgStyle)
+            + " />"
+            + "<img"
+            + attrs("src", escapeAttr(unwrappedUrl), "alt", escapeAttr(unwrappedAlt))
+            + " class=\"mj-accordion-less\""
+            + attrs("style", imgStyle)
+            + " />"
+            + "</td>"
+            + "<!--<![endif]-->\n");
   }
 
   private String resolveAncestorAttr(String name, String fallback) {

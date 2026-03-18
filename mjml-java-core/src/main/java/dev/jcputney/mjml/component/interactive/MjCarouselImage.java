@@ -1,9 +1,13 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -67,37 +71,30 @@ public class MjCarouselImage extends BodyComponent {
     String href = sanitizeHref(getAttribute("href", ""));
     String target = getAttribute("target", "_blank");
 
-    StringBuilder img = new StringBuilder();
-    img.append("<img");
-    if (!title.isEmpty()) {
-      img.append(" title=\"").append(escapeAttr(title)).append("\"");
-    }
-    img.append(" src=\"").append(escapeAttr(src)).append("\"");
-    img.append(" alt=\"").append(escapeAttr(alt)).append("\"");
-    img.append(" style=\"");
-    if (!borderRadius.isEmpty()) {
-      img.append("border-radius:").append(borderRadius).append(";");
-    }
-    img.append("display:block;width:").append(width).append("px;max-width:100%;height:auto;\"");
-    img.append(" width=\"").append(width).append("\"");
-    img.append(" border=\"0\"");
-    img.append(" />");
+    // Build inline style for the image
+    String imgStyle =
+        (borderRadius.isEmpty() ? "" : "border-radius:" + borderRadius + ";")
+            + "display:block;width:"
+            + width
+            + "px;max-width:100%;height:auto;";
+
+    String imgTag =
+        "<img"
+            + attrIf("title", escapeAttr(title))
+            + attrs("src", escapeAttr(src), "alt", escapeAttr(alt), "style", imgStyle)
+            + attrs("width", String.valueOf(width))
+            + attrs("border", "0")
+            + " />";
 
     if (!href.isEmpty()) {
-      String sb =
-          "<a href=\""
-              + escapeHref(href)
-              + "\""
-              + " target=\""
-              + escapeAttr(target)
-              + "\""
-              + ">"
-              + img
-              + "</a>";
-      return sb;
+      HtmlBuilder html = new HtmlBuilder();
+      html.openInline("a", attrs("href", escapeHref(href), "target", escapeAttr(target)))
+          .text(imgTag)
+          .closeInline("a");
+      return html.toString();
     }
 
-    return img.toString();
+    return imgTag;
   }
 
   @Override

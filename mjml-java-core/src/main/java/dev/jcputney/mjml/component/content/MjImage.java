@@ -1,9 +1,13 @@
 package dev.jcputney.mjml.component.content;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -75,89 +79,72 @@ public class MjImage extends BodyComponent {
     imgStyleMap.put("font-size", "13px");
     String imgStyle = buildStyle(imgStyleMap);
 
-    // Build <img> tag
-    StringBuilder img = new StringBuilder();
-    img.append("<img");
-    img.append(" alt=\"").append(escapeAttr(getAttribute("alt", ""))).append("\"");
-    img.append(" src=\"").append(escapeAttr(getAttribute("src", ""))).append("\"");
-
+    // Build <img> tag as a string (self-closing, used inline)
     String srcset = getAttribute("srcset", "");
-    if (!srcset.isEmpty()) {
-      // MJML formats srcset with newlines after each comma
-      String formattedSrcset = srcset.replace(", ", ",\n");
-      img.append(" srcset=\"").append(escapeAttr(formattedSrcset)).append("\"");
-    }
-
+    String formattedSrcset = srcset.isEmpty() ? "" : escapeAttr(srcset.replace(", ", ",\n"));
     String sizes = getAttribute("sizes", "");
-    if (!sizes.isEmpty()) {
-      img.append(" sizes=\"").append(escapeAttr(sizes)).append("\"");
-    }
-
-    img.append(" style=\"").append(imgStyle).append("\"");
-
     String title = getAttribute("title", "");
-    if (!title.isEmpty()) {
-      img.append(" title=\"").append(escapeAttr(title)).append("\"");
-    }
-
     String usemap = getAttribute("usemap", "");
-    if (!usemap.isEmpty()) {
-      img.append(" usemap=\"").append(escapeAttr(usemap)).append("\"");
-    }
 
-    img.append(" width=\"").append(widthPx).append("\"");
-    img.append(" height=\"").append(escapeAttr(getAttribute("height", "auto"))).append("\"");
-    img.append(" />");
+    String imgTag =
+        "<img"
+            + attrs("alt", escapeAttr(getAttribute("alt", "")))
+            + attrs("src", escapeAttr(getAttribute("src", "")))
+            + attrIf("srcset", formattedSrcset)
+            + attrIf("sizes", escapeAttr(sizes))
+            + attrs("style", imgStyle)
+            + attrIf("title", escapeAttr(title))
+            + attrIf("usemap", escapeAttr(usemap))
+            + attrs("width", String.valueOf(widthPx))
+            + attrs("height", escapeAttr(getAttribute("height", "auto")))
+            + " />";
 
     String href = sanitizeHref(getAttribute("href", ""));
 
     boolean fluidOnMobile = "true".equals(getAttribute("fluid-on-mobile", ""));
+    String fluidClass = fluidOnMobile ? "mj-full-width-mobile" : "";
 
-    StringBuilder sb = new StringBuilder();
-    sb.append(
-        "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-    sb.append(" style=\"")
-        .append(
-            buildStyle(
-                orderedMap(
-                    "border-collapse", "collapse",
-                    "border-spacing", "0px")))
-        .append("\"");
-    if (fluidOnMobile) {
-      sb.append(" class=\"mj-full-width-mobile\"");
-    }
-    sb.append(">\n");
-    sb.append("                          <tbody>\n");
-    sb.append("                            <tr>\n");
-    sb.append("                              <td style=\"width:").append(widthPx).append("px;\"");
-    if (fluidOnMobile) {
-      sb.append(" class=\"mj-full-width-mobile\"");
-    }
-    sb.append(">\n");
+    String tableStyle =
+        buildStyle(
+            orderedMap(
+                "border-collapse", "collapse",
+                "border-spacing", "0px"));
+
+    HtmlBuilder html = new HtmlBuilder(24);
+
+    html.open(
+        "table",
+        attrs(
+                "border", "0",
+                "cellpadding", "0",
+                "cellspacing", "0",
+                "role", "presentation",
+                "style", tableStyle)
+            + attrIf("class", fluidClass));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td", attrs("style", "width:" + widthPx + "px;") + attrIf("class", fluidClass));
 
     if (!href.isEmpty()) {
-      sb.append("                                <a href=\"").append(escapeHref(href)).append("\"");
       String rel = getAttribute("rel", "");
-      if (!rel.isEmpty()) {
-        sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
-      }
-      sb.append(" target=\"").append(escapeAttr(getAttribute("target", "_blank"))).append("\"");
-      if (!title.isEmpty()) {
-        sb.append(" title=\"").append(escapeAttr(title)).append("\"");
-      }
-      sb.append(">\n");
-      sb.append("                                  ").append(img).append("\n");
-      sb.append("                                </a>\n");
+      html.open(
+          "a",
+          attrs("href", escapeHref(href))
+              + attrIf("rel", escapeAttr(rel))
+              + attrs("target", escapeAttr(getAttribute("target", "_blank")))
+              + attrIf("title", escapeAttr(title)));
+      html.raw(imgTag);
+      html.close("a");
     } else {
-      sb.append("                                ").append(img).append("\n");
+      html.raw(imgTag);
     }
 
-    sb.append("                              </td>\n");
-    sb.append("                            </tr>\n");
-    sb.append("                          </tbody>\n");
-    sb.append("                        </table>");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
-    return sb.toString();
+    return html.toString();
   }
 
   /**

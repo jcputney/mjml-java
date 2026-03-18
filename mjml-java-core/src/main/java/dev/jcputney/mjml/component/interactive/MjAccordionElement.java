@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -7,6 +9,7 @@ import dev.jcputney.mjml.context.AttributeResolver;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -55,46 +58,44 @@ public class MjAccordionElement extends BodyComponent {
 
   @Override
   public String render() {
-    StringBuilder sb = new StringBuilder();
-
     String fontFamily = resolveAttr("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
+    String labelStyle = buildStyle(orderedMap("font-size", "13px", "font-family", fontFamily));
+
+    HtmlBuilder html = new HtmlBuilder();
 
     // Each accordion element is a <tr><td> wrapping a <label>
-    sb.append("<tr>\n");
-    sb.append("<td style=\"padding:0px;\">\n");
+    html.open("tr");
+    html.open("td", attrs("style", "padding:0px;"));
 
     // Label with class
-    sb.append("<label class=\"mj-accordion-element\"");
-    sb.append(" style=\"");
-    sb.append(buildStyle(orderedMap("font-size", "13px", "font-family", fontFamily)));
-    sb.append("\">\n");
+    html.open("label", attrs("class", "mj-accordion-element", "style", labelStyle));
 
     // Hidden checkbox wrapped in MSO conditional
-    sb.append("<!--[if !mso | IE]><!-->");
-    sb.append(
+    html.rawVerbatim("<!--[if !mso | IE]><!-->");
+    html.rawVerbatim(
         "<input class=\"mj-accordion-checkbox\" type=\"checkbox\" style=\"display:none;\" />");
-    sb.append("<!--<![endif]-->\n");
+    html.rawVerbatim("<!--<![endif]-->\n");
 
     // Wrapper div containing title and content
-    sb.append("<div>\n");
+    html.open("div");
 
     // Title child
-    sb.append("<div class=\"mj-accordion-title\">\n");
-    renderTitleChild(sb);
-    sb.append("</div>\n");
+    html.open("div", attrs("class", "mj-accordion-title"));
+    renderTitleChild(html);
+    html.close("div");
 
     // Content child
-    sb.append("<div class=\"mj-accordion-content\">\n");
-    renderTextChild(sb);
-    sb.append("</div>\n");
+    html.open("div", attrs("class", "mj-accordion-content"));
+    renderTextChild(html);
+    html.close("div");
 
-    sb.append("</div>\n");
+    html.close("div");
 
-    sb.append("</label>\n");
-    sb.append("</td>\n");
-    sb.append("</tr>\n");
+    html.close("label");
+    html.close("td");
+    html.close("tr");
 
-    return sb.toString();
+    return html.toString();
   }
 
   /**
@@ -119,24 +120,24 @@ public class MjAccordionElement extends BodyComponent {
     return fallback;
   }
 
-  private void renderTitleChild(StringBuilder sb) {
+  private void renderTitleChild(HtmlBuilder html) {
     MjmlNode titleNode = node.getFirstChildByTag("mj-accordion-title");
     if (titleNode != null) {
       RenderContext childContext = renderContext.withPosition(0, true, true);
       BaseComponent component = registry.createComponent(titleNode, globalContext, childContext);
       if (component instanceof BodyComponent bodyComponent) {
-        sb.append(bodyComponent.render());
+        html.rawVerbatim(bodyComponent.render());
       }
     }
   }
 
-  private void renderTextChild(StringBuilder sb) {
+  private void renderTextChild(HtmlBuilder html) {
     MjmlNode textNode = node.getFirstChildByTag("mj-accordion-text");
     if (textNode != null) {
       RenderContext childContext = renderContext.withPosition(1, false, true);
       BaseComponent component = registry.createComponent(textNode, globalContext, childContext);
       if (component instanceof BodyComponent bodyComponent) {
-        sb.append(bodyComponent.render());
+        html.rawVerbatim(bodyComponent.render());
       }
     }
   }

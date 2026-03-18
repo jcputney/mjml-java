@@ -1,9 +1,13 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -72,23 +76,22 @@ public class MjNavbarLink extends BodyComponent {
     anchorStyles.put("text-transform", getAttribute("text-transform", "uppercase"));
     anchorStyles.put("padding", padding);
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("<a class=\"mj-link\" href=\"").append(escapeHref(href)).append("\"");
     String rel = getAttribute("rel", "");
-    if (!rel.isEmpty()) {
-      sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
-    }
     String target = getAttribute("target", "");
     if (target.isEmpty()) {
       target = "_blank";
     }
-    sb.append(" target=\"").append(escapeAttr(target)).append("\"");
-    sb.append(" style=\"").append(buildStyle(anchorStyles)).append("\">");
-    // Space before and after text content, matching official MJML output
-    sb.append(" ").append(sanitizeContent(node.getInnerHtml().trim())).append(" ");
-    sb.append("</a>");
 
-    return sb.toString();
+    HtmlBuilder html = new HtmlBuilder();
+    html.openInline(
+        "a",
+        attrs("class", "mj-link", "href", escapeHref(href))
+            + attrIf("rel", escapeAttr(rel))
+            + attrs("target", escapeAttr(target), "style", buildStyle(anchorStyles)));
+    html.text(" " + sanitizeContent(node.getInnerHtml().trim()) + " ");
+    html.closeInline("a");
+
+    return html.toString();
   }
 
   /**

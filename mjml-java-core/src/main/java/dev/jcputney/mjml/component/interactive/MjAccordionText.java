@@ -1,10 +1,13 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -44,8 +47,6 @@ public class MjAccordionText extends BodyComponent {
 
   @Override
   public String render() {
-    StringBuilder sb = new StringBuilder();
-
     String backgroundColor = getAttribute("background-color", "");
     String color = getAttribute("color", "#000000");
     String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
@@ -61,15 +62,8 @@ public class MjAccordionText extends BodyComponent {
         sanitizeContent(
             CssUnitParser.WHITESPACE.matcher(node.getInnerHtml().trim()).replaceAll(" "));
 
-    sb.append("<table cellspacing=\"0\" cellpadding=\"0\" style=\"");
-    sb.append(buildStyle(orderedMap("width", "100%", "border-bottom", border)));
-    sb.append("\">\n");
-    sb.append("<tbody>\n");
-    sb.append("<tr>\n");
-
-    // TD style uses "background:" (short form), not "background-color:"
-    sb.append("<td style=\"");
-    sb.append(
+    String tableStyle = buildStyle(orderedMap("width", "100%", "border-bottom", border));
+    String tdStyle =
         buildStyle(
             orderedMap(
                 "background", backgroundColor,
@@ -77,16 +71,20 @@ public class MjAccordionText extends BodyComponent {
                 "font-family", fontFamily,
                 "line-height", lineHeight,
                 "color", color,
-                "padding", padding)));
-    sb.append("\">");
-    sb.append(" ").append(content).append(" ");
-    sb.append("</td>\n");
+                "padding", padding));
 
-    sb.append("</tr>\n");
-    sb.append("</tbody>\n");
-    sb.append("</table>\n");
+    HtmlBuilder html = new HtmlBuilder();
+    html.open("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle));
+    html.open("tbody");
+    html.open("tr");
+    html.openInline("td", attrs("style", tdStyle));
+    html.text(" " + content + " ");
+    html.closeInlineLn("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
-    return sb.toString();
+    return html.toString();
   }
 
   private String resolveAncestorAttr(String name, String fallback) {

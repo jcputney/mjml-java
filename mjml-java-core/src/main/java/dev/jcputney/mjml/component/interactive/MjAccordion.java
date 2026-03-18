@@ -1,10 +1,13 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -125,30 +128,35 @@ public class MjAccordion extends BodyComponent {
     // Inject accordion CSS into global styles (only once, even with multiple accordions)
     globalContext.styles().addStyleOnce("mj-accordion", ACCORDION_CSS);
 
-    StringBuilder sb = new StringBuilder();
-
     String border = getAttribute("border", "2px solid black");
     String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
 
-    sb.append("<table cellspacing=\"0\" cellpadding=\"0\" class=\"mj-accordion\"");
-    sb.append(" style=\"");
-    sb.append(
+    String tableStyle =
         buildStyle(
             orderedMap(
                 "width", "100%",
                 "border-collapse", "collapse",
                 "border", border,
                 "border-bottom", "none",
-                "font-family", fontFamily)));
-    sb.append("\">\n");
-    sb.append("<tbody>\n");
+                "font-family", fontFamily));
+
+    HtmlBuilder html = new HtmlBuilder();
+
+    html.open(
+        "table",
+        attrs(
+            "cellspacing", "0",
+            "cellpadding", "0",
+            "class", "mj-accordion",
+            "style", tableStyle));
+    html.open("tbody");
 
     // Render accordion element children
-    sb.append(renderChildren(registry));
+    html.rawVerbatim(renderChildren(registry));
 
-    sb.append("</tbody>\n");
-    sb.append("</table>\n");
+    html.close("tbody");
+    html.close("table");
 
-    return sb.toString();
+    return html.toString();
   }
 }

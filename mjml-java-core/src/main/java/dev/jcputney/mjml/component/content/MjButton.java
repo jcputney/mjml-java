@@ -1,12 +1,15 @@
 package dev.jcputney.mjml.component.content;
 
 import static dev.jcputney.mjml.util.CssUnitParser.WHITESPACE;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -66,14 +69,10 @@ public class MjButton extends BodyComponent {
   public String render() {
     String backgroundColor = getAttribute("background-color", "#414141");
     String borderRadius = getAttribute("border-radius", "3px");
-    // MJML renders <p> when no href is provided, <a> when href is present.
-    // Use cascaded attribute (includes mj-class, mj-all, etc.) — not just raw node attribute.
     String href = sanitizeHref(getAttribute("href", ""));
     boolean hasHref = !href.isEmpty();
     String innerPadding = getAttribute("inner-padding", "10px 25px");
     String verticalAlign = getAttribute("vertical-align", "middle");
-    // Build TD style: border, border-radius, cursor:auto, font-style (if italic),
-    // mso-padding-alt, background
     Map<String, String> tdStyles = new LinkedHashMap<>();
     tdStyles.put("border", getAttribute("border", "none"));
     addBorderStyles(tdStyles, "border-bottom", "border-left", "border-right", "border-top");
@@ -85,12 +84,9 @@ public class MjButton extends BodyComponent {
 
     String innerTableStyle = buildStyle(tdStyles);
 
-    // Build anchor style
     Map<String, String> anchorStyles = new LinkedHashMap<>();
     anchorStyles.put("display", "inline-block");
 
-    // If width is set as a pixel value, calculate inner width (width - horizontal inner-padding)
-    // Percentage widths do not add a width style to the anchor
     String widthAttr = getAttribute("width", "");
     if (!widthAttr.isEmpty() && !widthAttr.endsWith("%")) {
       double totalWidth = parseWidth(widthAttr);
@@ -116,7 +112,6 @@ public class MjButton extends BodyComponent {
 
     String anchorStyle = buildStyle(anchorStyles);
 
-    // Outer table style
     Map<String, String> outerTableStyles = new LinkedHashMap<>();
     outerTableStyles.put("border-collapse", "separate");
     if (!widthAttr.isEmpty()) {
@@ -124,42 +119,27 @@ public class MjButton extends BodyComponent {
     }
     outerTableStyles.put("line-height", "100%");
 
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder(24);
 
-    sb.append(
-        "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-    sb.append(" style=\"").append(buildStyle(outerTableStyles)).append("\">\n");
-    sb.append("                          <tbody>\n");
-    sb.append("                            <tr>\n");
-    sb.append("                              <td align=\"center\"");
-    sb.append(" bgcolor=\"").append(escapeAttr(backgroundColor)).append("\"");
-    sb.append(" role=\"presentation\"");
-    sb.append(" style=\"").append(innerTableStyle).append("\"");
-    sb.append(" valign=\"").append(escapeAttr(verticalAlign)).append("\">\n");
+    html.open("table", attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation", "style", buildStyle(outerTableStyles)));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td", attrs("align", "center", "bgcolor", escapeAttr(backgroundColor), "role", "presentation", "style", innerTableStyle, "valign", escapeAttr(verticalAlign)));
 
     String buttonContent = WHITESPACE.matcher(node.getInnerHtml()).replaceAll(" ").trim();
     if (hasHref) {
-      sb.append("                                <a href=\"").append(escapeHref(href)).append("\"");
       String rel = getAttribute("rel", "");
-      if (!rel.isEmpty()) {
-        sb.append(" rel=\"").append(escapeAttr(rel)).append("\"");
-      }
-      sb.append(" style=\"").append(anchorStyle).append("\"");
-      sb.append(" target=\"").append(escapeAttr(getAttribute("target", "_blank"))).append("\">");
-      sb.append(" ").append(sanitizeContent(buttonContent)).append(" ");
-      sb.append("</a>\n");
+      html.openInline("a", attrs("href", escapeHref(href)) + attrIf("rel", escapeAttr(rel)) + attrs("style", anchorStyle, "target", escapeAttr(getAttribute("target", "_blank")))).text(" " + sanitizeContent(buttonContent) + " ").closeInlineLn("a");
     } else {
-      sb.append("                                <p style=\"").append(anchorStyle).append("\">");
-      sb.append(" ").append(sanitizeContent(buttonContent)).append(" ");
-      sb.append("</p>\n");
+      html.openInline("p", attrs("style", anchorStyle)).text(" " + sanitizeContent(buttonContent) + " ").closeInlineLn("p");
     }
 
-    sb.append("                              </td>\n");
-    sb.append("                            </tr>\n");
-    sb.append("                          </tbody>\n");
-    sb.append("                        </table>");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
-    return sb.toString();
+    return html.toString();
   }
 
   private double calculateHorizontalPadding(String padding) {

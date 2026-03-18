@@ -1,10 +1,13 @@
 package dev.jcputney.mjml.component.content;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -143,19 +146,18 @@ public class MjText extends BodyComponent {
 
   @Override
   public String render() {
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("                        <div style=\"").append(buildTextStyle()).append("\">");
+    HtmlBuilder html = new HtmlBuilder();
     String content = sanitizeContent(getContent());
-    sb.append(content);
-    // Add newline before closing div if content has block elements or ends with newline
+
+    html.openInline("div", attrs("style", buildTextStyle()));
+    html.text(content);
     if (content.endsWith("\n")) {
-      sb.append("                        </div>");
+      html.rawVerbatim("</div>");
     } else {
-      sb.append("</div>");
+      html.closeInline("div");
     }
 
-    return sb.toString();
+    return html.toString();
   }
 
   private String buildTextStyle() {

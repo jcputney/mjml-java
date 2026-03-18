@@ -1,9 +1,12 @@
 package dev.jcputney.mjml.component.content;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -56,25 +59,18 @@ public class MjTable extends BodyComponent {
                 "width", getAttribute("width", "100%"),
                 "border", getAttribute("border", "none")));
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("<table")
-        .append(" cellpadding=\"")
-        .append(escapeAttr(getAttribute("cellpadding", "0")))
-        .append("\"")
-        .append(" cellspacing=\"")
-        .append(escapeAttr(getAttribute("cellspacing", "0")))
-        .append("\"")
-        .append(" width=\"")
-        .append(escapeAttr(getAttribute("width", "100%")))
-        .append("\"")
-        .append(" border=\"0\"")
-        .append(" style=\"")
-        .append(tableStyle)
-        .append("\"")
-        .append(">\n")
-        .append(sanitizeContent(node.getInnerHtml()))
-        .append("</table>\n");
+    HtmlBuilder html = new HtmlBuilder();
+    html.open(
+        "table",
+        attrs(
+            "cellpadding", escapeAttr(getAttribute("cellpadding", "0")),
+            "cellspacing", escapeAttr(getAttribute("cellspacing", "0")),
+            "width", escapeAttr(getAttribute("width", "100%")),
+            "border", "0",
+            "style", tableStyle));
+    html.rawVerbatim(sanitizeContent(node.getInnerHtml()));
+    html.close("table");
 
-    return sb.toString();
+    return html.toString();
   }
 }

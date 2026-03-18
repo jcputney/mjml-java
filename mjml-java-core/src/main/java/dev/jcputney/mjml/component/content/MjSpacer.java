@@ -1,9 +1,12 @@
 package dev.jcputney.mjml.component.content;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -42,6 +45,8 @@ public class MjSpacer extends BodyComponent {
                 "height", height,
                 "line-height", height));
 
-    return "                        <div style=\"" + style + "\">&#8202;</div>";
+    HtmlBuilder html = new HtmlBuilder();
+    html.openInline("div", attrs("style", style)).text("&#8202;").closeInline("div");
+    return html.toString();
   }
 }

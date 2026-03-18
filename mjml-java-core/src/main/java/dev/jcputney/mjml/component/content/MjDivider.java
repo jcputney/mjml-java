@@ -1,10 +1,13 @@
 package dev.jcputney.mjml.component.content;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -78,34 +81,30 @@ public class MjDivider extends BodyComponent {
                 "margin", margin,
                 "width", width));
 
-    // Standard divider <p> FIRST
-    StringBuilder sb = new StringBuilder();
-    sb.append("                        <p style=\"").append(dividerStyle).append("\">\n");
-    sb.append("                        </p>\n");
+    HtmlBuilder html = new HtmlBuilder();
 
-    // MSO conditional AFTER
-    sb.append("                        <!--[if mso | IE]><table align=\"")
-        .append(align)
-        .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"")
-        .append(" style=\"")
-        .append(
-            buildStyle(
-                orderedMap(
-                    "border-top",
-                    borderTop,
-                    "font-size",
-                    "1px",
-                    "margin",
-                    margin,
-                    "width",
-                    msoWidth + "px")))
-        .append("\"")
-        .append(" role=\"presentation\" width=\"")
-        .append(msoWidth)
-        .append("px\"")
-        .append(" ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n")
-        .append("</td></tr></table><![endif]-->");
+    // Standard divider <p>
+    html.open("p", attrs("style", dividerStyle));
+    html.close("p");
 
-    return sb.toString();
+    // MSO conditional table
+    String msoStyle =
+        buildStyle(
+            orderedMap(
+                "border-top", borderTop,
+                "font-size", "1px",
+                "margin", margin,
+                "width", msoWidth + "px"));
+    html.rawVerbatim(
+        "<!--[if mso | IE]><table"
+            + attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0")
+            + " style=\""
+            + msoStyle
+            + "\" role=\"presentation\" width=\""
+            + msoWidth
+            + "px\" ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n"
+            + "</td></tr></table><![endif]-->");
+
+    return html.toString();
   }
 }
