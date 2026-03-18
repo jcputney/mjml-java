@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.body;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,18 +11,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-group component rendering. */
 class MjGroupTest {
 
-    private String render(String mjml) {
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertFalse(html.isEmpty());
-        return html;
-    }
+  private String render(String mjml) {
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertFalse(html.isEmpty());
+    return html;
+  }
 
-    @Test
-    void outlookGroupFixClassPresent() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void outlookGroupFixClassPresent() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -38,16 +39,16 @@ class MjGroupTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("mj-outlook-group-fix"), "Should contain mj-outlook-group-fix class on group div");
-        assertTrue(html.contains("Col 1"), "Should render first column content");
-        assertTrue(html.contains("Col 2"), "Should render second column content");
-    }
+    assertTrue(html.contains("mj-outlook-group-fix"), "Should contain mj-outlook-group-fix class on group div");
+    assertTrue(html.contains("Col 1"), "Should render first column content");
+    assertTrue(html.contains("Col 2"), "Should render second column content");
+  }
 
-    @Test
-    void groupWidthDistribution() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void groupWidthDistribution() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -64,16 +65,16 @@ class MjGroupTest {
         </mjml>
         """);
 
-        assertTrue(
-                html.contains("width:50%") || html.contains("width: 50%"),
-                "Each column in a two-column group should get 50% width");
-    }
+    assertTrue(
+      html.contains("width:50%") || html.contains("width: 50%"),
+      "Each column in a two-column group should get 50% width");
+  }
 
-    @Test
-    void directionAttributeApplied() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void directionAttributeApplied() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -90,6 +91,6 @@ class MjGroupTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("direction:rtl"), "Should apply rtl direction to the group");
-    }
+    assertTrue(html.contains("direction:rtl"), "Should apply rtl direction to the group");
+  }
 }

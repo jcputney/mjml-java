@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.spring.autoconfigure;
 
 import dev.jcputney.mjml.spring.MjmlService;
@@ -18,18 +19,19 @@ import org.thymeleaf.TemplateEngine;
 @ConditionalOnProperty(name = "spring.mjml.thymeleaf-enabled", havingValue = "true", matchIfMissing = true)
 public class MjmlThymeleafAutoConfiguration {
 
-    public MjmlThymeleafAutoConfiguration() {}
+  public MjmlThymeleafAutoConfiguration() {
+  }
 
-    /**
-     * Auto-configures {@link ThymeleafMjmlService} when Thymeleaf is available.
-     *
-     * @param templateEngine the Thymeleaf template engine
-     * @param mjmlService the MJML rendering service
-     * @return the configured Thymeleaf MJML service
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public ThymeleafMjmlService thymeleafMjmlService(TemplateEngine templateEngine, MjmlService mjmlService) {
-        return new ThymeleafMjmlService(templateEngine, mjmlService);
-    }
+  /**
+   * Auto-configures {@link ThymeleafMjmlService} when Thymeleaf is available.
+   *
+   * @param templateEngine the Thymeleaf template engine
+   * @param mjmlService    the MJML rendering service
+   * @return the configured Thymeleaf MJML service
+   */
+  @Bean
+  @ConditionalOnMissingBean
+  public ThymeleafMjmlService thymeleafMjmlService(TemplateEngine templateEngine, MjmlService mjmlService) {
+    return new ThymeleafMjmlService(templateEngine, mjmlService);
+  }
 }

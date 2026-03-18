@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.head;
 
 import dev.jcputney.mjml.component.HeadComponent;
@@ -11,17 +12,17 @@ import dev.jcputney.mjml.parser.MjmlNode;
  */
 public class MjHead extends HeadComponent {
 
-    public MjHead(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-        super(node, globalContext, renderContext);
-    }
+  public MjHead(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+    super(node, globalContext, renderContext);
+  }
 
-    @Override
-    public String getTagName() {
-        return "mj-head";
-    }
+  @Override
+  public String getTagName() {
+    return "mj-head";
+  }
 
-    @Override
-    public void process() {
-        // Children are processed individually by the pipeline
-    }
+  @Override
+  public void process() {
+    // Children are processed individually by the pipeline
+  }
 }

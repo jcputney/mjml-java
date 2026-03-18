@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.content;
 
 import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
@@ -16,86 +17,86 @@ import java.util.Map;
  */
 public class MjDivider extends BodyComponent {
 
-    private static final Map<String, String> DEFAULTS = Map.ofEntries(
-            Map.entry("align", "center"),
-            Map.entry("border-color", "#000000"),
-            Map.entry("border-style", "solid"),
-            Map.entry("border-width", "4px"),
-            Map.entry("container-background-color", ""),
-            Map.entry("padding", "10px 25px"),
-            Map.entry("width", "100%"));
+  private static final Map<String, String> DEFAULTS = Map.ofEntries(
+    Map.entry("align", "center"),
+    Map.entry("border-color", "#000000"),
+    Map.entry("border-style", "solid"),
+    Map.entry("border-width", "4px"),
+    Map.entry("container-background-color", ""),
+    Map.entry("padding", "10px 25px"),
+    Map.entry("width", "100%"));
 
-    public MjDivider(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-        super(node, globalContext, renderContext);
+  public MjDivider(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+    super(node, globalContext, renderContext);
+  }
+
+  @Override
+  public String getTagName() {
+    return "mj-divider";
+  }
+
+  @Override
+  public Map<String, String> getDefaultAttributes() {
+    return DEFAULTS;
+  }
+
+  @Override
+  public String render() {
+    String borderColor = getAttribute("border-color", "#000000");
+    String borderStyle = getAttribute("border-style", "solid");
+    String borderWidth = getAttribute("border-width", "4px");
+    String width = getAttribute("width", "100%");
+
+    // Border-top: style width color (not width style color)
+    String borderTop = borderStyle + " " + borderWidth + " " + borderColor;
+
+    // Compute actual pixel width for MSO table
+    // Use individual padding overrides if present, falling back to shorthand parsing
+    double containerWidth = renderContext.getContainerWidth();
+    double paddingLeft = resolveShorthandSide("padding", "padding-left", 3);
+    double paddingRight = resolveShorthandSide("padding", "padding-right", 1);
+    double availableWidth = containerWidth - paddingLeft - paddingRight;
+    int msoWidth;
+    if (width.endsWith("%")) {
+      double pct = CssUnitParser.parsePx(width.replace("%", ""), 100.0);
+      msoWidth = (int) (availableWidth * pct / 100.0);
+    } else {
+      msoWidth = (int) parseWidth(width);
     }
 
-    @Override
-    public String getTagName() {
-        return "mj-divider";
-    }
+    // Compute margin based on alignment
+    String align = getAttribute("align", "center");
+    String margin =
+      switch (align) {
+        case "left" -> "0px";
+        case "right" -> "0px 0px 0px auto";
+        default -> "0px auto"; // center
+      };
 
-    @Override
-    public Map<String, String> getDefaultAttributes() {
-        return DEFAULTS;
-    }
+    String dividerStyle = buildStyle(orderedMap(
+      "border-top", borderTop,
+      "font-size", "1px",
+      "margin", margin,
+      "width", width));
 
-    @Override
-    public String render() {
-        String borderColor = getAttribute("border-color", "#000000");
-        String borderStyle = getAttribute("border-style", "solid");
-        String borderWidth = getAttribute("border-width", "4px");
-        String width = getAttribute("width", "100%");
+    HtmlBuilder html = new HtmlBuilder();
 
-        // Border-top: style width color (not width style color)
-        String borderTop = borderStyle + " " + borderWidth + " " + borderColor;
+    // Standard divider <p>
+    html.open("p", attrs("style", dividerStyle));
+    html.close("p");
 
-        // Compute actual pixel width for MSO table
-        // Use individual padding overrides if present, falling back to shorthand parsing
-        double containerWidth = renderContext.getContainerWidth();
-        double paddingLeft = resolveShorthandSide("padding", "padding-left", 3);
-        double paddingRight = resolveShorthandSide("padding", "padding-right", 1);
-        double availableWidth = containerWidth - paddingLeft - paddingRight;
-        int msoWidth;
-        if (width.endsWith("%")) {
-            double pct = CssUnitParser.parsePx(width.replace("%", ""), 100.0);
-            msoWidth = (int) (availableWidth * pct / 100.0);
-        } else {
-            msoWidth = (int) parseWidth(width);
-        }
+    // MSO conditional table
+    String msoStyle = buildStyle(
+      orderedMap("border-top", borderTop, "font-size", "1px", "margin", margin, "width", msoWidth + "px"));
+    html.rawVerbatim("<!--[if mso | IE]><table"
+      + attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0")
+      + " style=\""
+      + msoStyle
+      + "\" role=\"presentation\" width=\""
+      + msoWidth
+      + "px\" ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n"
+      + "</td></tr></table><![endif]-->");
 
-        // Compute margin based on alignment
-        String align = getAttribute("align", "center");
-        String margin =
-                switch (align) {
-                    case "left" -> "0px";
-                    case "right" -> "0px 0px 0px auto";
-                    default -> "0px auto"; // center
-                };
-
-        String dividerStyle = buildStyle(orderedMap(
-                "border-top", borderTop,
-                "font-size", "1px",
-                "margin", margin,
-                "width", width));
-
-        HtmlBuilder html = new HtmlBuilder();
-
-        // Standard divider <p>
-        html.open("p", attrs("style", dividerStyle));
-        html.close("p");
-
-        // MSO conditional table
-        String msoStyle = buildStyle(
-                orderedMap("border-top", borderTop, "font-size", "1px", "margin", margin, "width", msoWidth + "px"));
-        html.rawVerbatim("<!--[if mso | IE]><table"
-                + attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0")
-                + " style=\""
-                + msoStyle
-                + "\" role=\"presentation\" width=\""
-                + msoWidth
-                + "px\" ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n"
-                + "</td></tr></table><![endif]-->");
-
-        return html.toString();
-    }
+    return html.toString();
+  }
 }

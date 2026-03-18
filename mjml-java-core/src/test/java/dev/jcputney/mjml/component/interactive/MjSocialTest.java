@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.interactive;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,18 +11,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-social and mj-social-element component rendering. */
 class MjSocialTest {
 
-    private String render(String mjml) {
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertFalse(html.isEmpty());
-        return html;
-    }
+  private String render(String mjml) {
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertFalse(html.isEmpty());
+    return html;
+  }
 
-    @Test
-    void knownNetworkFacebook() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void knownNetworkFacebook() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -35,16 +36,16 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("Facebook"), "Should render Facebook link text");
-        assertTrue(html.contains("<img"), "Should render a social icon image");
-        assertTrue(html.contains("facebook"), "Should reference facebook in the output");
-    }
+    assertTrue(html.contains("Facebook"), "Should render Facebook link text");
+    assertTrue(html.contains("<img"), "Should render a social icon image");
+    assertTrue(html.contains("facebook"), "Should reference facebook in the output");
+  }
 
-    @Test
-    void knownNetworkTwitter() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void knownNetworkTwitter() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -58,15 +59,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("Twitter"), "Should render Twitter link text");
-        assertTrue(html.contains("<img"), "Should render a social icon image");
-    }
+    assertTrue(html.contains("Twitter"), "Should render Twitter link text");
+    assertTrue(html.contains("<img"), "Should render a social icon image");
+  }
 
-    @Test
-    void customIconSrc() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void customIconSrc() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -80,15 +81,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("custom-icon.png"), "Should use the custom icon src");
-        assertTrue(html.contains("Custom"), "Should render custom link text");
-    }
+    assertTrue(html.contains("custom-icon.png"), "Should use the custom icon src");
+    assertTrue(html.contains("Custom"), "Should render custom link text");
+  }
 
-    @Test
-    void verticalModeLayout() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void verticalModeLayout() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -103,15 +104,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("FB"), "Should render first social element text");
-        assertTrue(html.contains("TW"), "Should render second social element text");
-    }
+    assertTrue(html.contains("FB"), "Should render first social element text");
+    assertTrue(html.contains("TW"), "Should render second social element text");
+  }
 
-    @Test
-    void verticalModeLayoutProducesRows() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void verticalModeLayoutProducesRows() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -126,18 +127,18 @@ class MjSocialTest {
         </mjml>
         """);
 
-        // In vertical mode, each element renders as a <tr> rather than an inline table
-        assertTrue(html.contains("FB"), "Should render first social element text");
-        assertTrue(html.contains("TW"), "Should render second social element text");
-        // Vertical mode should NOT use inline-table
-        assertFalse(html.contains("display:inline-table"), "Vertical mode should not use inline-table display");
-    }
+    // In vertical mode, each element renders as a <tr> rather than an inline table
+    assertTrue(html.contains("FB"), "Should render first social element text");
+    assertTrue(html.contains("TW"), "Should render second social element text");
+    // Vertical mode should NOT use inline-table
+    assertFalse(html.contains("display:inline-table"), "Vertical mode should not use inline-table display");
+  }
 
-    @Test
-    void noHrefRenderingUsesSpanNotAnchor() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void noHrefRenderingUsesSpanNotAnchor() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -151,16 +152,16 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("No link"), "Should render text content");
-        // Without href, the text should be in a <span> not an <a>
-        assertTrue(html.contains("<span style="), "No-href social element should use <span> for text, not <a>");
-    }
+    assertTrue(html.contains("No link"), "Should render text content");
+    // Without href, the text should be in a <span> not an <a>
+    assertTrue(html.contains("<span style="), "No-href social element should use <span> for text, not <a>");
+  }
 
-    @Test
-    void customIconWithNoName() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void customIconWithNoName() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -174,15 +175,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("icon.png"), "Should use the custom src attribute directly");
-        assertTrue(html.contains("Custom"), "Should render custom text label");
-    }
+    assertTrue(html.contains("icon.png"), "Should use the custom src attribute directly");
+    assertTrue(html.contains("Custom"), "Should render custom text label");
+  }
 
-    @Test
-    void iconSizeOverride() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void iconSizeOverride() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -196,15 +197,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("width:40px"), "Should use custom icon-size in width style");
-        assertTrue(html.contains("width=\"40\""), "Should use custom icon-size as img width attribute");
-    }
+    assertTrue(html.contains("width:40px"), "Should use custom icon-size in width style");
+    assertTrue(html.contains("width=\"40\""), "Should use custom icon-size as img width attribute");
+  }
 
-    @Test
-    void zeroPaddingRendersCorrectly() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void zeroPaddingRendersCorrectly() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -218,15 +219,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("padding:0px"), "Should respect zero padding");
-        assertTrue(html.contains("FB"), "Should render text content");
-    }
+    assertTrue(html.contains("padding:0px"), "Should respect zero padding");
+    assertTrue(html.contains("FB"), "Should render text content");
+  }
 
-    @Test
-    void parentInnerPaddingOverridesChildDefault() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void parentInnerPaddingOverridesChildDefault() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -240,14 +241,14 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("padding:8px 12px"), "Should use parent's inner-padding override");
-    }
+    assertTrue(html.contains("padding:8px 12px"), "Should use parent's inner-padding override");
+  }
 
-    @Test
-    void noshareVariantDoesNotApplyShareUrl() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void noshareVariantDoesNotApplyShareUrl() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -261,15 +262,15 @@ class MjSocialTest {
         </mjml>
         """);
 
-        // -noshare should prevent share URL substitution, keeping the original href
-        assertTrue(html.contains("facebook.com/mypage"), "Noshare variant should preserve the original href");
-    }
+    // -noshare should prevent share URL substitution, keeping the original href
+    assertTrue(html.contains("facebook.com/mypage"), "Noshare variant should preserve the original href");
+  }
 
-    @Test
-    void multipleNetworks() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void multipleNetworks() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -285,8 +286,8 @@ class MjSocialTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("FB"), "Should render Facebook element");
-        assertTrue(html.contains("TW"), "Should render Twitter element");
-        assertTrue(html.contains("G+"), "Should render Google element");
-    }
+    assertTrue(html.contains("FB"), "Should render Facebook element");
+    assertTrue(html.contains("TW"), "Should render Twitter element");
+    assertTrue(html.contains("G+"), "Should render Google element");
+  }
 }

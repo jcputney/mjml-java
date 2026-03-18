@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml;
 
 import java.io.IOException;
@@ -18,51 +19,51 @@ import java.nio.file.Path;
  */
 public final class FileSystemIncludeResolver implements IncludeResolver {
 
-    private final Path baseDir;
-    private final Path baseRealDir;
+  private final Path baseDir;
+  private final Path baseRealDir;
 
-    /**
-     * Creates a resolver that resolves paths relative to the given base directory.
-     *
-     * @param baseDir the base directory for relative include paths
-     */
-    public FileSystemIncludeResolver(Path baseDir) {
-        this.baseDir = baseDir.toAbsolutePath().normalize();
-        try {
-            this.baseRealDir = this.baseDir.toRealPath();
-        } catch (IOException e) {
-            throw new IllegalArgumentException(
-                    "Base directory does not exist or is not accessible: " + this.baseDir, e);
-        }
+  /**
+   * Creates a resolver that resolves paths relative to the given base directory.
+   *
+   * @param baseDir the base directory for relative include paths
+   */
+  public FileSystemIncludeResolver(Path baseDir) {
+    this.baseDir = baseDir.toAbsolutePath().normalize();
+    try {
+      this.baseRealDir = this.baseDir.toRealPath();
+    } catch (IOException e) {
+      throw new IllegalArgumentException(
+        "Base directory does not exist or is not accessible: " + this.baseDir, e);
+    }
+  }
+
+  @Override
+  public String resolve(String path, ResolverContext context) {
+    if (path == null || path.isBlank()) {
+      throw new MjmlIncludeException("Include path cannot be empty");
     }
 
-    @Override
-    public String resolve(String path, ResolverContext context) {
-        if (path == null || path.isBlank()) {
-            throw new MjmlIncludeException("Include path cannot be empty");
-        }
+    Path resolved = baseDir.resolve(path).normalize();
 
-        Path resolved = baseDir.resolve(path).normalize();
-
-        // Security: prevent path traversal outside base directory
-        if (!resolved.startsWith(baseDir)) {
-            throw new MjmlIncludeException("Include path escapes base directory");
-        }
-
-        if (!Files.exists(resolved)) {
-            throw new MjmlIncludeException("Include file not found: " + path);
-        }
-
-        try {
-            Path resolvedReal = resolved.toRealPath();
-            if (!resolvedReal.startsWith(baseRealDir)) {
-                throw new MjmlIncludeException("Include path escapes base directory");
-            }
-            return Files.readString(resolvedReal);
-        } catch (NoSuchFileException e) {
-            throw new MjmlIncludeException("Include file not found: " + path, e);
-        } catch (IOException e) {
-            throw new MjmlIncludeException("Failed to read include file: " + path, e);
-        }
+    // Security: prevent path traversal outside base directory
+    if (!resolved.startsWith(baseDir)) {
+      throw new MjmlIncludeException("Include path escapes base directory");
     }
+
+    if (!Files.exists(resolved)) {
+      throw new MjmlIncludeException("Include file not found: " + path);
+    }
+
+    try {
+      Path resolvedReal = resolved.toRealPath();
+      if (!resolvedReal.startsWith(baseRealDir)) {
+        throw new MjmlIncludeException("Include path escapes base directory");
+      }
+      return Files.readString(resolvedReal);
+    } catch (NoSuchFileException e) {
+      throw new MjmlIncludeException("Include file not found: " + path, e);
+    } catch (IOException e) {
+      throw new MjmlIncludeException("Failed to read include file: " + path, e);
+    }
+  }
 }

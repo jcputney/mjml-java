@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.render;
 
 import dev.jcputney.mjml.MjmlConfiguration;
@@ -19,55 +20,55 @@ import java.util.logging.Logger;
  */
 final class FontScanner {
 
-    private static final Logger LOG = Logger.getLogger(FontScanner.class.getName());
+  private static final Logger LOG = Logger.getLogger(FontScanner.class.getName());
 
-    private final ComponentRegistry registry;
-    private final RenderContext dummyContext;
-    private final GlobalContext dummyGlobalContext;
-    private final Map<String, Map<String, String>> defaultsCache = new ConcurrentHashMap<>();
+  private final ComponentRegistry registry;
+  private final RenderContext dummyContext;
+  private final GlobalContext dummyGlobalContext;
+  private final Map<String, Map<String, String>> defaultsCache = new ConcurrentHashMap<>();
 
-    FontScanner(MjmlConfiguration configuration, ComponentRegistry registry) {
-        this.registry = registry;
-        this.dummyContext = new RenderContext(MjmlConfiguration.DEFAULT_CONTAINER_WIDTH);
-        this.dummyGlobalContext = new GlobalContext(configuration);
+  FontScanner(MjmlConfiguration configuration, ComponentRegistry registry) {
+    this.registry = registry;
+    this.dummyContext = new RenderContext(MjmlConfiguration.DEFAULT_CONTAINER_WIDTH);
+    this.dummyGlobalContext = new GlobalContext(configuration);
+  }
+
+  /**
+   * Scans the body of the document for font-family attributes and registers any default fonts
+   * found.
+   */
+  void registerDefaultFonts(MjmlDocument document, GlobalContext globalContext) {
+    MjmlNode body = document.getBody();
+    if (body == null) {
+      return;
     }
+    Set<String> registeredNames = DefaultFontRegistry.buildRegisteredNameSet(globalContext);
+    scanFontsRecursive(body, globalContext, registeredNames);
+  }
 
-    /**
-     * Scans the body of the document for font-family attributes and registers any default fonts
-     * found.
-     */
-    void registerDefaultFonts(MjmlDocument document, GlobalContext globalContext) {
-        MjmlNode body = document.getBody();
-        if (body == null) {
-            return;
-        }
-        Set<String> registeredNames = DefaultFontRegistry.buildRegisteredNameSet(globalContext);
-        scanFontsRecursive(body, globalContext, registeredNames);
+  private void scanFontsRecursive(MjmlNode node, GlobalContext globalContext, Set<String> registeredNames) {
+    String tagName = node.getTagName();
+    if (tagName != null && !tagName.startsWith("#")) {
+      Map<String, String> defaults = getComponentDefaults(tagName);
+      String fontFamily = AttributeResolver.resolve(node, "font-family", globalContext, defaults);
+      if (fontFamily != null && !fontFamily.isEmpty()) {
+        DefaultFontRegistry.registerUsedFonts(fontFamily, globalContext, registeredNames);
+      }
     }
+    for (MjmlNode child : node.getChildren()) {
+      scanFontsRecursive(child, globalContext, registeredNames);
+    }
+  }
 
-    private void scanFontsRecursive(MjmlNode node, GlobalContext globalContext, Set<String> registeredNames) {
-        String tagName = node.getTagName();
-        if (tagName != null && !tagName.startsWith("#")) {
-            Map<String, String> defaults = getComponentDefaults(tagName);
-            String fontFamily = AttributeResolver.resolve(node, "font-family", globalContext, defaults);
-            if (fontFamily != null && !fontFamily.isEmpty()) {
-                DefaultFontRegistry.registerUsedFonts(fontFamily, globalContext, registeredNames);
-            }
-        }
-        for (MjmlNode child : node.getChildren()) {
-            scanFontsRecursive(child, globalContext, registeredNames);
-        }
-    }
-
-    private Map<String, String> getComponentDefaults(String tagName) {
-        return defaultsCache.computeIfAbsent(tagName, tag -> {
-            try {
-                BaseComponent component = registry.createComponent(new MjmlNode(tag), dummyGlobalContext, dummyContext);
-                return component != null ? component.getDefaultAttributes() : Map.of();
-            } catch (Exception e) {
-                LOG.warning(() -> "Could not get defaults for tag <" + tag + ">: " + e.getMessage());
-                return Map.of();
-            }
-        });
-    }
+  private Map<String, String> getComponentDefaults(String tagName) {
+    return defaultsCache.computeIfAbsent(tagName, tag -> {
+      try {
+        BaseComponent component = registry.createComponent(new MjmlNode(tag), dummyGlobalContext, dummyContext);
+        return component != null ? component.getDefaultAttributes() : Map.of();
+      } catch (Exception e) {
+        LOG.warning(() -> "Could not get defaults for tag <" + tag + ">: " + e.getMessage());
+        return Map.of();
+      }
+    });
+  }
 }

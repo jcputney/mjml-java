@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,34 +17,34 @@ import org.junit.jupiter.api.Test;
  */
 class MjmlParserThreadSafetyTest {
 
-    @Test
-    void concurrentParseDoesNotCorrupt() throws Exception {
-        String mjml =
-                "<mjml><mj-body><mj-section><mj-column><mj-text>hello</mj-text></mj-column></mj-section></mj-body></mjml>";
+  @Test
+  void concurrentParseDoesNotCorrupt() throws Exception {
+    String mjml =
+      "<mjml><mj-body><mj-section><mj-column><mj-text>hello</mj-text></mj-column></mj-section></mj-body></mjml>";
 
-        int threadCount = 8;
-        int iterationsPerThread = 50;
-        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+    int threadCount = 8;
+    int iterationsPerThread = 50;
+    ExecutorService pool = Executors.newFixedThreadPool(threadCount);
 
-        List<Callable<Void>> tasks = new ArrayList<>();
-        for (int i = 0; i < threadCount; i++) {
-            tasks.add(() -> {
-                for (int j = 0; j < iterationsPerThread; j++) {
-                    MjmlDocument doc = MjmlParser.parse(mjml);
-                    assertNotNull(doc);
-                    assertNotNull(doc.root());
-                    assertEquals("mjml", doc.root().getTagName());
-                }
-                return null;
-            });
+    List<Callable<Void>> tasks = new ArrayList<>();
+    for (int i = 0; i < threadCount; i++) {
+      tasks.add(() -> {
+        for (int j = 0; j < iterationsPerThread; j++) {
+          MjmlDocument doc = MjmlParser.parse(mjml);
+          assertNotNull(doc);
+          assertNotNull(doc.root());
+          assertEquals("mjml", doc.root().getTagName());
         }
-
-        List<Future<Void>> futures = pool.invokeAll(tasks);
-        pool.shutdown();
-
-        for (Future<Void> f : futures) {
-            // get() will throw if the task threw
-            f.get();
-        }
+        return null;
+      });
     }
+
+    List<Future<Void>> futures = pool.invokeAll(tasks);
+    pool.shutdown();
+
+    for (Future<Void> f : futures) {
+      // get() will throw if the task threw
+      f.get();
+    }
+  }
 }

@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml;
 
 /**
@@ -12,16 +13,16 @@ package dev.jcputney.mjml;
 @FunctionalInterface
 public interface IncludeResolver {
 
-    /**
-     * Resolves the given path to its content.
-     *
-     * <p><strong>Security note:</strong> Implementations should validate paths to prevent directory
-     * traversal attacks (e.g., paths containing "../" sequences).
-     *
-     * @param path the include path from the mj-include element
-     * @param context metadata about the include chain (including path, type, depth)
-     * @return the resolved content string
-     * @throws MjmlException if the path cannot be resolved
-     */
-    String resolve(String path, ResolverContext context);
+  /**
+   * Resolves the given path to its content.
+   *
+   * <p><strong>Security note:</strong> Implementations should validate paths to prevent directory
+   * traversal attacks (e.g., paths containing "../" sequences).
+   *
+   * @param path    the include path from the mj-include element
+   * @param context metadata about the include chain (including path, type, depth)
+   * @return the resolved content string
+   * @throws MjmlException if the path cannot be resolved
+   */
+  String resolve(String path, ResolverContext context);
 }

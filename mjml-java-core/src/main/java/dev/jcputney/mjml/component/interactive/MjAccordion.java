@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.interactive;
 
 import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
@@ -17,139 +18,139 @@ import java.util.Map;
  */
 public class MjAccordion extends BodyComponent {
 
-    static final Map<String, String> DEFAULTS = Map.ofEntries(
-            Map.entry("border", "2px solid black"),
-            Map.entry("container-background-color", ""),
-            Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-            Map.entry("icon-align", "middle"),
-            Map.entry("icon-color", "#000000"),
-            Map.entry("icon-height", "32px"),
-            Map.entry("icon-position", "right"),
-            Map.entry("icon-unwrapped-alt", "-"),
-            Map.entry("icon-unwrapped-url", "https://i.imgur.com/w4uTygT.png"),
-            Map.entry("icon-width", "32px"),
-            Map.entry("icon-wrapped-alt", "+"),
-            Map.entry("icon-wrapped-url", "https://i.imgur.com/bIXv1bk.png"),
-            Map.entry("padding", "10px 25px"));
+  static final Map<String, String> DEFAULTS = Map.ofEntries(
+    Map.entry("border", "2px solid black"),
+    Map.entry("container-background-color", ""),
+    Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+    Map.entry("icon-align", "middle"),
+    Map.entry("icon-color", "#000000"),
+    Map.entry("icon-height", "32px"),
+    Map.entry("icon-position", "right"),
+    Map.entry("icon-unwrapped-alt", "-"),
+    Map.entry("icon-unwrapped-url", "https://i.imgur.com/w4uTygT.png"),
+    Map.entry("icon-width", "32px"),
+    Map.entry("icon-wrapped-alt", "+"),
+    Map.entry("icon-wrapped-url", "https://i.imgur.com/bIXv1bk.png"),
+    Map.entry("padding", "10px 25px"));
 
-    private static final String ACCORDION_CSS = """
-      noinput.mj-accordion-checkbox {
-        display: block !important;
-      }
+  private static final String ACCORDION_CSS = """
+    noinput.mj-accordion-checkbox {
+      display: block !important;
+    }
 
-      @media yahoo,
-      only screen and (min-width:0) {
-        .mj-accordion-element {
-          display: block;
-        }
-
-        input.mj-accordion-checkbox,
-        .mj-accordion-less {
-          display: none !important;
-        }
-
-        input.mj-accordion-checkbox+* .mj-accordion-title {
-          cursor: pointer;
-          touch-action: manipulation;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          user-select: none;
-        }
-
-        input.mj-accordion-checkbox+* .mj-accordion-content {
-          overflow: hidden;
-          display: none;
-        }
-
-        input.mj-accordion-checkbox+* .mj-accordion-more {
-          display: block !important;
-        }
-
-        input.mj-accordion-checkbox:checked+* .mj-accordion-content {
-          display: block;
-        }
-
-        input.mj-accordion-checkbox:checked+* .mj-accordion-more {
-          display: none !important;
-        }
-
-        input.mj-accordion-checkbox:checked+* .mj-accordion-less {
-          display: block !important;
-        }
-      }
-
-      .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-title {
-        cursor: auto;
-        touch-action: auto;
-        -webkit-user-select: auto;
-        -moz-user-select: auto;
-        user-select: auto;
-      }
-
-      .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-content {
-        overflow: hidden;
+    @media yahoo,
+    only screen and (min-width:0) {
+      .mj-accordion-element {
         display: block;
       }
 
-      .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-ico {
+      input.mj-accordion-checkbox,
+      .mj-accordion-less {
+        display: none !important;
+      }
+
+      input.mj-accordion-checkbox+* .mj-accordion-title {
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      input.mj-accordion-checkbox+* .mj-accordion-content {
+        overflow: hidden;
         display: none;
       }
 
-      @goodbye {
-        @gmail
+      input.mj-accordion-checkbox+* .mj-accordion-more {
+        display: block !important;
       }
-      """;
 
-    private final ComponentRegistry registry;
+      input.mj-accordion-checkbox:checked+* .mj-accordion-content {
+        display: block;
+      }
 
-    public MjAccordion(
-            MjmlNode node, GlobalContext globalContext, RenderContext renderContext, ComponentRegistry registry) {
-        super(node, globalContext, renderContext);
-        this.registry = registry;
+      input.mj-accordion-checkbox:checked+* .mj-accordion-more {
+        display: none !important;
+      }
+
+      input.mj-accordion-checkbox:checked+* .mj-accordion-less {
+        display: block !important;
+      }
     }
 
-    @Override
-    public String getTagName() {
-        return "mj-accordion";
+    .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-title {
+      cursor: auto;
+      touch-action: auto;
+      -webkit-user-select: auto;
+      -moz-user-select: auto;
+      user-select: auto;
     }
 
-    @Override
-    public Map<String, String> getDefaultAttributes() {
-        return DEFAULTS;
+    .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-content {
+      overflow: hidden;
+      display: block;
     }
 
-    @Override
-    public String render() {
-        // Inject accordion CSS into global styles (only once, even with multiple accordions)
-        globalContext.styles().addStyleOnce("mj-accordion", ACCORDION_CSS);
-
-        String border = getAttribute("border", "2px solid black");
-        String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
-
-        String tableStyle = buildStyle(orderedMap(
-                "width", "100%",
-                "border-collapse", "collapse",
-                "border", border,
-                "border-bottom", "none",
-                "font-family", fontFamily));
-
-        HtmlBuilder html = new HtmlBuilder();
-
-        html.open(
-                "table",
-                attrs(
-                        "cellspacing", "0",
-                        "cellpadding", "0",
-                        "class", "mj-accordion",
-                        "style", tableStyle));
-        html.open("tbody");
-
-        // Render accordion element children
-        html.rawVerbatim(renderChildren(registry));
-
-        html.close("tbody");
-        html.close("table");
-
-        return html.toString();
+    .moz-text-html input.mj-accordion-checkbox+* .mj-accordion-ico {
+      display: none;
     }
+
+    @goodbye {
+      @gmail
+    }
+    """;
+
+  private final ComponentRegistry registry;
+
+  public MjAccordion(
+    MjmlNode node, GlobalContext globalContext, RenderContext renderContext, ComponentRegistry registry) {
+    super(node, globalContext, renderContext);
+    this.registry = registry;
+  }
+
+  @Override
+  public String getTagName() {
+    return "mj-accordion";
+  }
+
+  @Override
+  public Map<String, String> getDefaultAttributes() {
+    return DEFAULTS;
+  }
+
+  @Override
+  public String render() {
+    // Inject accordion CSS into global styles (only once, even with multiple accordions)
+    globalContext.styles().addStyleOnce("mj-accordion", ACCORDION_CSS);
+
+    String border = getAttribute("border", "2px solid black");
+    String fontFamily = getAttribute("font-family", "Ubuntu, Helvetica, Arial, sans-serif");
+
+    String tableStyle = buildStyle(orderedMap(
+      "width", "100%",
+      "border-collapse", "collapse",
+      "border", border,
+      "border-bottom", "none",
+      "font-family", fontFamily));
+
+    HtmlBuilder html = new HtmlBuilder();
+
+    html.open(
+      "table",
+      attrs(
+        "cellspacing", "0",
+        "cellpadding", "0",
+        "class", "mj-accordion",
+        "style", tableStyle));
+    html.open("tbody");
+
+    // Render accordion element children
+    html.rawVerbatim(renderChildren(registry));
+
+    html.close("tbody");
+    html.close("table");
+
+    return html.toString();
+  }
 }

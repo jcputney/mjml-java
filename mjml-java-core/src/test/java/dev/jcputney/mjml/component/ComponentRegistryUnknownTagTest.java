@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,11 +13,11 @@ import org.junit.jupiter.api.Test;
  */
 class ComponentRegistryUnknownTagTest {
 
-    @Test
-    void unknownTagIsSkippedGracefully() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void unknownTagIsSkippedGracefully() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -29,19 +30,19 @@ class ComponentRegistryUnknownTagTest {
         </mjml>
         """;
 
-        // Should not throw — unknown tags are skipped with a warning
-        MjmlRenderResult result = MjmlRenderer.render(mjml);
-        assertNotNull(result);
-        assertTrue(
-                result.html().contains("This should still render"),
-                "Known tags should still render even when unknown tags are present");
-    }
+    // Should not throw — unknown tags are skipped with a warning
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
+    assertNotNull(result);
+    assertTrue(
+      result.html().contains("This should still render"),
+      "Known tags should still render even when unknown tags are present");
+  }
 
-    @Test
-    void unknownTagInHeadIsSkippedGracefully() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void unknownTagInHeadIsSkippedGracefully() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-unknown-head>something</mj-unknown-head>
@@ -57,8 +58,8 @@ class ComponentRegistryUnknownTagTest {
         </mjml>
         """;
 
-        MjmlRenderResult result = MjmlRenderer.render(mjml);
-        assertNotNull(result);
-        assertEquals("My Title", result.title());
-    }
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
+    assertNotNull(result);
+    assertEquals("My Title", result.title());
+  }
 }

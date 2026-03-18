@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component;
 
 import dev.jcputney.mjml.context.GlobalContext;
@@ -18,15 +19,15 @@ import dev.jcputney.mjml.parser.MjmlNode;
 @FunctionalInterface
 public interface ContainerComponentFactory {
 
-    /**
-     * Creates a container component instance from the given parsed node.
-     *
-     * @param node the parsed MJML node for the component
-     * @param globalContext the document-wide context gathered during head processing
-     * @param renderContext the current rendering context (container width, position, etc.)
-     * @param registry the component registry used to create and render child components
-     * @return the created container component instance
-     */
-    BaseComponent create(
-            MjmlNode node, GlobalContext globalContext, RenderContext renderContext, ComponentRegistry registry);
+  /**
+   * Creates a container component instance from the given parsed node.
+   *
+   * @param node          the parsed MJML node for the component
+   * @param globalContext the document-wide context gathered during head processing
+   * @param renderContext the current rendering context (container width, position, etc.)
+   * @param registry      the component registry used to create and render child components
+   * @return the created container component instance
+   */
+  BaseComponent create(
+    MjmlNode node, GlobalContext globalContext, RenderContext renderContext, ComponentRegistry registry);
 }

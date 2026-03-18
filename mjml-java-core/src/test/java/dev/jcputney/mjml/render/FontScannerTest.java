@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.render;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,20 +12,20 @@ import org.junit.jupiter.api.Test;
  */
 class FontScannerTest {
 
-    private String render(String mjml) {
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertFalse(html.isEmpty());
-        return html;
-    }
+  private String render(String mjml) {
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertFalse(html.isEmpty());
+    return html;
+  }
 
-    @Test
-    void registersDefaultFontForMjText() {
-        // mj-text has default font-family "Ubuntu, Helvetica, Arial, sans-serif"
-        // which includes "Ubuntu" - a known default font
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void registersDefaultFontForMjText() {
+    // mj-text has default font-family "Ubuntu, Helvetica, Arial, sans-serif"
+    // which includes "Ubuntu" - a known default font
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -36,19 +37,19 @@ class FontScannerTest {
         </mjml>
         """);
 
-        // The default font "Ubuntu" from mj-text defaults should be auto-registered
-        // and appear as a Google Fonts link/import in the output
-        assertTrue(
-                html.contains("fonts.googleapis.com") && html.contains("Ubuntu"),
-                "Should auto-register the Ubuntu font from mj-text defaults");
-    }
+    // The default font "Ubuntu" from mj-text defaults should be auto-registered
+    // and appear as a Google Fonts link/import in the output
+    assertTrue(
+      html.contains("fonts.googleapis.com") && html.contains("Ubuntu"),
+      "Should auto-register the Ubuntu font from mj-text defaults");
+  }
 
-    @Test
-    void handlesNullBodyGracefully() {
-        // A document with only a head and no body should not crash the font scanner
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void handlesNullBodyGracefully() {
+    // A document with only a head and no body should not crash the font scanner
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-title>No body</mj-title>
@@ -56,15 +57,15 @@ class FontScannerTest {
         </mjml>
         """);
 
-        assertNotNull(html, "Should render without error even with no body");
-    }
+    assertNotNull(html, "Should render without error even with no body");
+  }
 
-    @Test
-    void resolvesExplicitFontFamilyAttribute() {
-        // An explicit font-family attribute containing a known font should trigger registration
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void resolvesExplicitFontFamilyAttribute() {
+    // An explicit font-family attribute containing a known font should trigger registration
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -76,18 +77,18 @@ class FontScannerTest {
         </mjml>
         """);
 
-        assertTrue(
-                html.contains("fonts.googleapis.com") && html.contains("Open+Sans"),
-                "Should register Open Sans when used in font-family attribute");
-    }
+    assertTrue(
+      html.contains("fonts.googleapis.com") && html.contains("Open+Sans"),
+      "Should register Open Sans when used in font-family attribute");
+  }
 
-    @Test
-    void handlesUnknownTagWithoutCrashing() {
-        // If there's an unknown tag in the tree, the FontScanner should handle it gracefully
-        // (the registry.createComponent returns null for unknown tags)
-        assertDoesNotThrow(() -> render(
-                // language=MJML
-                """
+  @Test
+  void handlesUnknownTagWithoutCrashing() {
+    // If there's an unknown tag in the tree, the FontScanner should handle it gracefully
+    // (the registry.createComponent returns null for unknown tags)
+    assertDoesNotThrow(() -> render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -98,16 +99,16 @@ class FontScannerTest {
           </mj-body>
         </mjml>
         """));
-    }
+  }
 
-    @Test
-    void skipsHashTagNames() {
-        // #text and #comment nodes should be skipped by the scanner
-        // This is tested indirectly - if they weren't skipped, we'd get errors
-        // trying to create components for "#text" tags
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void skipsHashTagNames() {
+    // #text and #comment nodes should be skipped by the scanner
+    // This is tested indirectly - if they weren't skipped, we'd get errors
+    // trying to create components for "#text" tags
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <!-- a comment -->
@@ -120,16 +121,16 @@ class FontScannerTest {
         </mjml>
         """);
 
-        assertNotNull(html, "Should render successfully with comment nodes present");
-    }
+    assertNotNull(html, "Should render successfully with comment nodes present");
+  }
 
-    @Test
-    void cachingDoesNotAffectResults() {
-        // Rendering the same template twice should produce the same font registration
-        // (tests that the defaultsCache works correctly)
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void cachingDoesNotAffectResults() {
+    // Rendering the same template twice should produce the same font registration
+    // (tests that the defaultsCache works correctly)
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -141,11 +142,11 @@ class FontScannerTest {
         </mjml>
         """;
 
-        String html1 = render(mjml);
-        String html2 = render(mjml);
+    String html1 = render(mjml);
+    String html2 = render(mjml);
 
-        boolean hasLato1 = html1.contains("Lato");
-        boolean hasLato2 = html2.contains("Lato");
-        assertEquals(hasLato1, hasLato2, "Both renders should produce the same font registration result");
-    }
+    boolean hasLato1 = html1.contains("Lato");
+    boolean hasLato2 = html2.contains("Lato");
+    assertEquals(hasLato1, hasLato2, "Both renders should produce the same font registration result");
+  }
 }

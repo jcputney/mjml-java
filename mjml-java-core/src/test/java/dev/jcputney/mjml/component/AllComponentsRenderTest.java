@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,20 +14,20 @@ import org.junit.jupiter.api.Test;
  */
 class AllComponentsRenderTest {
 
-    private String render(String mjml) {
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertFalse(html.isEmpty());
-        return html;
-    }
+  private String render(String mjml) {
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertFalse(html.isEmpty());
+    return html;
+  }
 
-    // --- Content Components ---
+  // --- Content Components ---
 
-    @Test
-    void rendersImage() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersImage() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -37,15 +38,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("img.jpg"), "Should contain image src");
-        assertTrue(html.contains("alt=\"Test\""), "Should contain alt text");
-    }
+    assertTrue(html.contains("img.jpg"), "Should contain image src");
+    assertTrue(html.contains("alt=\"Test\""), "Should contain alt text");
+  }
 
-    @Test
-    void rendersImageWithHref() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersImageWithHref() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -56,15 +57,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("<a href=\"https://example.com\""), "Should wrap in anchor");
-        assertTrue(html.contains("<img"), "Should contain img tag");
-    }
+    assertTrue(html.contains("<a href=\"https://example.com\""), "Should wrap in anchor");
+    assertTrue(html.contains("<img"), "Should contain img tag");
+  }
 
-    @Test
-    void rendersButton() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersButton() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -75,16 +76,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Click Me"), "Should contain button text");
-        assertTrue(html.contains("https://example.com"), "Should contain href");
-        assertTrue(html.contains("#414141"), "Should have default background color");
-    }
+    assertTrue(html.contains("Click Me"), "Should contain button text");
+    assertTrue(html.contains("https://example.com"), "Should contain href");
+    assertTrue(html.contains("#414141"), "Should have default background color");
+  }
 
-    @Test
-    void rendersButtonWithCustomStyle() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersButtonWithCustomStyle() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -95,16 +96,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("#ff0000"), "Should contain custom bg color");
-        assertTrue(html.contains("10px"), "Should contain border radius");
-        assertTrue(html.contains("Buy Now"), "Should contain button text");
-    }
+    assertTrue(html.contains("#ff0000"), "Should contain custom bg color");
+    assertTrue(html.contains("10px"), "Should contain border radius");
+    assertTrue(html.contains("Buy Now"), "Should contain button text");
+  }
 
-    @Test
-    void rendersDivider() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersDivider() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -115,15 +116,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("#ff0000"), "Should contain border color");
-        assertTrue(html.contains("2px"), "Should contain border width");
-    }
+    assertTrue(html.contains("#ff0000"), "Should contain border color");
+    assertTrue(html.contains("2px"), "Should contain border width");
+  }
 
-    @Test
-    void rendersSpacer() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersSpacer() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -134,14 +135,14 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("50px"), "Should contain spacer height");
-    }
+    assertTrue(html.contains("50px"), "Should contain spacer height");
+  }
 
-    @Test
-    void rendersTable() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersTable() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -155,15 +156,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("<th>Name</th>"), "Should contain table header");
-        assertTrue(html.contains("<td>A</td>"), "Should contain table data");
-    }
+    assertTrue(html.contains("<th>Name</th>"), "Should contain table header");
+    assertTrue(html.contains("<td>A</td>"), "Should contain table data");
+  }
 
-    @Test
-    void rendersRaw() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersRaw() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -174,17 +175,17 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("class=\"custom\""), "Should pass through raw HTML");
-        assertTrue(html.contains("Raw HTML"), "Should contain raw content");
-    }
+    assertTrue(html.contains("class=\"custom\""), "Should pass through raw HTML");
+    assertTrue(html.contains("Raw HTML"), "Should contain raw content");
+  }
 
-    // --- Layout Components ---
+  // --- Layout Components ---
 
-    @Test
-    void rendersMultipleColumns() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersMultipleColumns() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -195,16 +196,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Col 1"));
-        assertTrue(html.contains("Col 2"));
-        assertTrue(html.contains("Col 3"));
-    }
+    assertTrue(html.contains("Col 1"));
+    assertTrue(html.contains("Col 2"));
+    assertTrue(html.contains("Col 3"));
+  }
 
-    @Test
-    void rendersGroup() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersGroup() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -216,16 +217,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Grouped A"));
-        assertTrue(html.contains("Grouped B"));
-        assertTrue(html.contains("mj-outlook-group-fix"));
-    }
+    assertTrue(html.contains("Grouped A"));
+    assertTrue(html.contains("Grouped B"));
+    assertTrue(html.contains("mj-outlook-group-fix"));
+  }
 
-    @Test
-    void rendersWrapper() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersWrapper() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-wrapper background-color="#f0f0f0">
@@ -236,15 +237,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Inside wrapper"));
-        assertTrue(html.contains("#f0f0f0"), "Should contain wrapper background");
-    }
+    assertTrue(html.contains("Inside wrapper"));
+    assertTrue(html.contains("#f0f0f0"), "Should contain wrapper background");
+  }
 
-    @Test
-    void rendersFullWidthSection() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersFullWidthSection() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section full-width="full-width" background-color="#ff0000">
@@ -253,17 +254,17 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Full width"));
-        assertTrue(html.contains("width:100%"), "Should have full-width style");
-    }
+    assertTrue(html.contains("Full width"));
+    assertTrue(html.contains("width:100%"), "Should have full-width style");
+  }
 
-    // --- Interactive Components ---
+  // --- Interactive Components ---
 
-    @Test
-    void rendersHero() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersHero() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-hero mode="fixed-height" background-height="469px" background-url="https://example.com/hero.jpg" background-color="#2f2f2f" padding="100px 0px">
@@ -273,15 +274,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Hero Title"));
-        assertTrue(html.contains("hero.jpg"), "Should contain background URL");
-    }
+    assertTrue(html.contains("Hero Title"));
+    assertTrue(html.contains("hero.jpg"), "Should contain background URL");
+  }
 
-    @Test
-    void rendersAccordion() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersAccordion() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -301,17 +302,17 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Question 1"));
-        assertTrue(html.contains("Answer 1"));
-        assertTrue(html.contains("Question 2"));
-        assertTrue(html.contains("checkbox"), "Should use checkbox hack");
-    }
+    assertTrue(html.contains("Question 1"));
+    assertTrue(html.contains("Answer 1"));
+    assertTrue(html.contains("Question 2"));
+    assertTrue(html.contains("checkbox"), "Should use checkbox hack");
+  }
 
-    @Test
-    void rendersNavbar() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersNavbar() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -326,16 +327,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("/home"), "Should contain Home link");
-        assertTrue(html.contains("About"));
-        assertTrue(html.contains("Contact"));
-    }
+    assertTrue(html.contains("/home"), "Should contain Home link");
+    assertTrue(html.contains("About"));
+    assertTrue(html.contains("Contact"));
+  }
 
-    @Test
-    void rendersSocial() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersSocial() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -349,16 +350,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("facebook.com/me"), "Should contain Facebook href");
-        assertTrue(html.contains("twitter.com/me"), "Should contain Twitter href");
-        assertTrue(html.contains("Facebook"), "Should contain Facebook label");
-    }
+    assertTrue(html.contains("facebook.com/me"), "Should contain Facebook href");
+    assertTrue(html.contains("twitter.com/me"), "Should contain Twitter href");
+    assertTrue(html.contains("Facebook"), "Should contain Facebook label");
+  }
 
-    @Test
-    void rendersCarousel() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersCarousel() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -372,18 +373,18 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("1.jpg"), "Should contain first image");
-        assertTrue(html.contains("2.jpg"), "Should contain second image");
-        assertTrue(html.contains("radio"), "Should use radio button state machine");
-    }
+    assertTrue(html.contains("1.jpg"), "Should contain first image");
+    assertTrue(html.contains("2.jpg"), "Should contain second image");
+    assertTrue(html.contains("radio"), "Should use radio button state machine");
+  }
 
-    // --- Head Components ---
+  // --- Head Components ---
 
-    @Test
-    void rendersWithAttributeDefaults() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersWithAttributeDefaults() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -400,15 +401,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("#333333"), "Should use mj-text default color");
-        assertTrue(html.contains("16px"), "Should use mj-text default font-size");
-    }
+    assertTrue(html.contains("#333333"), "Should use mj-text default color");
+    assertTrue(html.contains("16px"), "Should use mj-text default font-size");
+  }
 
-    @Test
-    void rendersWithMjClass() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersWithMjClass() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -425,15 +426,15 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Classed text"));
-        // Class attributes should be resolved via cascade
-    }
+    assertTrue(html.contains("Classed text"));
+    // Class attributes should be resolved via cascade
+  }
 
-    @Test
-    void rendersWithCustomBreakpoint() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersWithCustomBreakpoint() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-breakpoint width="320px" />
@@ -445,14 +446,14 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("320px"), "Should use custom breakpoint");
-    }
+    assertTrue(html.contains("320px"), "Should use custom breakpoint");
+  }
 
-    @Test
-    void rendersBodyWithCustomWidth() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersBodyWithCustomWidth() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body width="500px">
             <mj-section>
@@ -461,30 +462,30 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("500px"), "Should use custom body width");
-    }
+    assertTrue(html.contains("500px"), "Should use custom body width");
+  }
 
-    // --- Edge Cases ---
+  // --- Edge Cases ---
 
-    @Test
-    void rendersEmptyBody() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersEmptyBody() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("<!doctype html>"));
-        assertTrue(html.contains("</html>"));
-    }
+    assertTrue(html.contains("<!doctype html>"));
+    assertTrue(html.contains("</html>"));
+  }
 
-    @Test
-    void rendersBodyWithNoHead() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersBodyWithNoHead() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -493,14 +494,14 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("No head"));
-    }
+    assertTrue(html.contains("No head"));
+  }
 
-    @Test
-    void rendersMultipleSections() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersMultipleSections() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section background-color="#ff0000">
@@ -515,19 +516,19 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("Section 1"));
-        assertTrue(html.contains("Section 2"));
-        assertTrue(html.contains("Section 3"));
-        assertTrue(html.contains("#ff0000"));
-        assertTrue(html.contains("#00ff00"));
-        assertTrue(html.contains("#0000ff"));
-    }
+    assertTrue(html.contains("Section 1"));
+    assertTrue(html.contains("Section 2"));
+    assertTrue(html.contains("Section 3"));
+    assertTrue(html.contains("#ff0000"));
+    assertTrue(html.contains("#00ff00"));
+    assertTrue(html.contains("#0000ff"));
+  }
 
-    @Test
-    void rendersTextWithHtmlContent() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersTextWithHtmlContent() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -542,16 +543,16 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        assertTrue(html.contains("<h1>Title</h1>"), "Should preserve h1 tag");
-        assertTrue(html.contains("<b>bold</b>"), "Should preserve bold tag");
-        assertTrue(html.contains("<em>italic</em>"), "Should preserve em tag");
-    }
+    assertTrue(html.contains("<h1>Title</h1>"), "Should preserve h1 tag");
+    assertTrue(html.contains("<b>bold</b>"), "Should preserve bold tag");
+    assertTrue(html.contains("<em>italic</em>"), "Should preserve em tag");
+  }
 
-    @Test
-    void rendersWithInlineStyle() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void rendersWithInlineStyle() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style inline="inline">
@@ -565,7 +566,7 @@ class AllComponentsRenderTest {
           </mj-body>
         </mjml>
         """);
-        // The inline style should be collected for CSS inlining (Phase 5)
-        assertNotNull(html);
-    }
+    // The inline style should be collected for CSS inlining (Phase 5)
+    assertNotNull(html);
+  }
 }

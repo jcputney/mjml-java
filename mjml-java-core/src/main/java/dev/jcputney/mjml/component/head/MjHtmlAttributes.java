@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.head;
 
 import dev.jcputney.mjml.component.HeadComponent;
@@ -14,35 +15,35 @@ import java.util.Map;
  */
 public class MjHtmlAttributes extends HeadComponent {
 
-    public MjHtmlAttributes(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-        super(node, globalContext, renderContext);
-    }
+  public MjHtmlAttributes(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+    super(node, globalContext, renderContext);
+  }
 
-    @Override
-    public String getTagName() {
-        return "mj-html-attributes";
-    }
+  @Override
+  public String getTagName() {
+    return "mj-html-attributes";
+  }
 
-    @Override
-    public void process() {
-        for (MjmlNode selector : node.getChildrenByTag("mj-selector")) {
-            String path = selector.getAttribute("path");
-            if (path == null || path.isEmpty()) {
-                continue;
-            }
+  @Override
+  public void process() {
+    for (MjmlNode selector : node.getChildrenByTag("mj-selector")) {
+      String path = selector.getAttribute("path");
+      if (path == null || path.isEmpty()) {
+        continue;
+      }
 
-            Map<String, String> attrs = new LinkedHashMap<>();
-            for (MjmlNode attr : selector.getChildrenByTag("mj-html-attribute")) {
-                String name = attr.getAttribute("name");
-                String value = attr.getInnerHtml().trim();
-                if (name != null && !name.isEmpty()) {
-                    attrs.put(name, value);
-                }
-            }
-
-            if (!attrs.isEmpty()) {
-                globalContext.attributes().setHtmlAttributes(path, attrs);
-            }
+      Map<String, String> attrs = new LinkedHashMap<>();
+      for (MjmlNode attr : selector.getChildrenByTag("mj-html-attribute")) {
+        String name = attr.getAttribute("name");
+        String value = attr.getInnerHtml().trim();
+        if (name != null && !name.isEmpty()) {
+          attrs.put(name, value);
         }
+      }
+
+      if (!attrs.isEmpty()) {
+        globalContext.attributes().setHtmlAttributes(path, attrs);
+      }
     }
+  }
 }

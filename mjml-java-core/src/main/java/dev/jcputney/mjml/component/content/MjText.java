@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.content;
 
 import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
@@ -19,200 +20,200 @@ import java.util.regex.Pattern;
  */
 public class MjText extends BodyComponent {
 
-    private static final Map<String, String> DEFAULTS = Map.ofEntries(
-            Map.entry("align", "left"),
-            Map.entry("color", "#000000"),
-            Map.entry("container-background-color", ""),
-            Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
-            Map.entry("font-size", "13px"),
-            Map.entry("font-style", ""),
-            Map.entry("font-weight", ""),
-            Map.entry("height", ""),
-            Map.entry("letter-spacing", ""),
-            Map.entry("line-height", "1"),
-            Map.entry("padding", "10px 25px"),
-            Map.entry("padding-bottom", ""),
-            Map.entry("padding-left", ""),
-            Map.entry("padding-right", ""),
-            Map.entry("padding-top", ""),
-            Map.entry("text-decoration", ""),
-            Map.entry("text-transform", ""));
+  private static final Map<String, String> DEFAULTS = Map.ofEntries(
+    Map.entry("align", "left"),
+    Map.entry("color", "#000000"),
+    Map.entry("container-background-color", ""),
+    Map.entry("font-family", "Ubuntu, Helvetica, Arial, sans-serif"),
+    Map.entry("font-size", "13px"),
+    Map.entry("font-style", ""),
+    Map.entry("font-weight", ""),
+    Map.entry("height", ""),
+    Map.entry("letter-spacing", ""),
+    Map.entry("line-height", "1"),
+    Map.entry("padding", "10px 25px"),
+    Map.entry("padding-bottom", ""),
+    Map.entry("padding-left", ""),
+    Map.entry("padding-right", ""),
+    Map.entry("padding-top", ""),
+    Map.entry("text-decoration", ""),
+    Map.entry("text-transform", ""));
 
-    private static final Set<String> BLOCK_ELEMENTS =
-            Set.of("ul", "ol", "p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "table", "pre");
+  private static final Set<String> BLOCK_ELEMENTS =
+    Set.of("ul", "ol", "p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "table", "pre");
 
-    private static final Pattern BLOCK_ELEMENT_PATTERN =
-            Pattern.compile("<(" + String.join("|", BLOCK_ELEMENTS) + ")[\\s>/]", Pattern.CASE_INSENSITIVE);
+  private static final Pattern BLOCK_ELEMENT_PATTERN =
+    Pattern.compile("<(" + String.join("|", BLOCK_ELEMENTS) + ")[\\s>/]", Pattern.CASE_INSENSITIVE);
 
-    /** Matches whitespace sequences containing at least one newline. */
-    private static final Pattern NEWLINE_WHITESPACE = Pattern.compile("\\s*\\n\\s*");
+  /** Matches whitespace sequences containing at least one newline. */
+  private static final Pattern NEWLINE_WHITESPACE = Pattern.compile("\\s*\\n\\s*");
 
-    public MjText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-        super(node, globalContext, renderContext);
-    }
+  public MjText(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+    super(node, globalContext, renderContext);
+  }
 
-    /**
-     * Collapses whitespace in text runs (outside of HTML tags) but preserves newlines between
-     * block-level element boundaries.
-     */
-    private static String collapseInlineWhitespace(String html) {
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
+  /**
+   * Collapses whitespace in text runs (outside of HTML tags) but preserves newlines between
+   * block-level element boundaries.
+   */
+  private static String collapseInlineWhitespace(String html) {
+    StringBuilder sb = new StringBuilder();
+    int i = 0;
 
-        while (i < html.length()) {
-            if (html.charAt(i) == '<') {
-                // Inside a tag — copy verbatim until >
-                int end = html.indexOf('>', i);
-                if (end < 0) {
-                    sb.append(html.substring(i));
-                    break;
-                }
-                String tag = html.substring(i, end + 1);
-                // Normalize multi-line tag whitespace (e.g., attributes split across lines)
-                tag = normalizeTagWhitespace(tag);
-
-                sb.append(tag);
-                i = end + 1;
-            } else {
-                // In a text run — find the next tag or end
-                int next = html.indexOf('<', i);
-                if (next < 0) {
-                    next = html.length();
-                }
-                String textRun = html.substring(i, next);
-                String collapsed = CssUnitParser.WHITESPACE.matcher(textRun).replaceAll(" ");
-                if (collapsed.trim().isEmpty() && textRun.contains("\n")) {
-                    // Whitespace-only text run containing newlines — preserve one newline
-                    // (matches MJML/cheerio behavior of preserving original whitespace structure)
-                    sb.append("\n");
-                } else {
-                    sb.append(collapsed);
-                }
-                i = next;
-            }
+    while (i < html.length()) {
+      if (html.charAt(i) == '<') {
+        // Inside a tag — copy verbatim until >
+        int end = html.indexOf('>', i);
+        if (end < 0) {
+          sb.append(html.substring(i));
+          break;
         }
-        return sb.toString();
-    }
+        String tag = html.substring(i, end + 1);
+        // Normalize multi-line tag whitespace (e.g., attributes split across lines)
+        tag = normalizeTagWhitespace(tag);
 
-    /**
-     * Normalizes whitespace inside an HTML tag that spans multiple lines. Collapses
-     * newline-containing whitespace to a single space and removes trailing space before {@code >}.
-     */
-    private static String normalizeTagWhitespace(String tag) {
-        if (!tag.contains("\n")) {
-            return tag;
+        sb.append(tag);
+        i = end + 1;
+      } else {
+        // In a text run — find the next tag or end
+        int next = html.indexOf('<', i);
+        if (next < 0) {
+          next = html.length();
         }
-        String normalized = NEWLINE_WHITESPACE.matcher(tag).replaceAll(" ");
-        // Remove space before closing > at end of tag (but not before />)
-        if (normalized.endsWith(" >")) {
-            normalized = normalized.substring(0, normalized.length() - 2) + ">";
-        }
-        return normalized;
-    }
-
-    private static String extractTagName(String s) {
-        // Extract tag name from after < or </
-        int end = 0;
-        while (end < s.length()) {
-            char c = s.charAt(end);
-            if (c == ' ' || c == '>' || c == '/' || c == '\t' || c == '\n') {
-                break;
-            }
-            end++;
-        }
-        return s.substring(0, end);
-    }
-
-    private static boolean containsBlockElements(String html) {
-        return BLOCK_ELEMENT_PATTERN.matcher(html).find();
-    }
-
-    private static boolean isBlockElement(String tag) {
-        return BLOCK_ELEMENTS.contains(tag) || "li".equals(tag) || "br".equals(tag);
-    }
-
-    @Override
-    public String getTagName() {
-        return "mj-text";
-    }
-
-    @Override
-    public Map<String, String> getDefaultAttributes() {
-        return DEFAULTS;
-    }
-
-    @Override
-    public String render() {
-        HtmlBuilder html = new HtmlBuilder();
-        String content = sanitizeContent(getContent());
-
-        html.openInline("div", attrs("style", buildTextStyle()));
-        html.text(content);
-        if (content.endsWith("\n")) {
-            html.rawVerbatim("</div>");
+        String textRun = html.substring(i, next);
+        String collapsed = CssUnitParser.WHITESPACE.matcher(textRun).replaceAll(" ");
+        if (collapsed.trim().isEmpty() && textRun.contains("\n")) {
+          // Whitespace-only text run containing newlines — preserve one newline
+          // (matches MJML/cheerio behavior of preserving original whitespace structure)
+          sb.append("\n");
         } else {
-            html.closeInline("div");
+          sb.append(collapsed);
         }
+        i = next;
+      }
+    }
+    return sb.toString();
+  }
 
-        return html.toString();
+  /**
+   * Normalizes whitespace inside an HTML tag that spans multiple lines. Collapses
+   * newline-containing whitespace to a single space and removes trailing space before {@code >}.
+   */
+  private static String normalizeTagWhitespace(String tag) {
+    if (!tag.contains("\n")) {
+      return tag;
+    }
+    String normalized = NEWLINE_WHITESPACE.matcher(tag).replaceAll(" ");
+    // Remove space before closing > at end of tag (but not before />)
+    if (normalized.endsWith(" >")) {
+      normalized = normalized.substring(0, normalized.length() - 2) + ">";
+    }
+    return normalized;
+  }
+
+  private static String extractTagName(String s) {
+    // Extract tag name from after < or </
+    int end = 0;
+    while (end < s.length()) {
+      char c = s.charAt(end);
+      if (c == ' ' || c == '>' || c == '/' || c == '\t' || c == '\n') {
+        break;
+      }
+      end++;
+    }
+    return s.substring(0, end);
+  }
+
+  private static boolean containsBlockElements(String html) {
+    return BLOCK_ELEMENT_PATTERN.matcher(html).find();
+  }
+
+  private static boolean isBlockElement(String tag) {
+    return BLOCK_ELEMENTS.contains(tag) || "li".equals(tag) || "br".equals(tag);
+  }
+
+  @Override
+  public String getTagName() {
+    return "mj-text";
+  }
+
+  @Override
+  public Map<String, String> getDefaultAttributes() {
+    return DEFAULTS;
+  }
+
+  @Override
+  public String render() {
+    HtmlBuilder html = new HtmlBuilder();
+    String content = sanitizeContent(getContent());
+
+    html.openInline("div", attrs("style", buildTextStyle()));
+    html.text(content);
+    if (content.endsWith("\n")) {
+      html.rawVerbatim("</div>");
+    } else {
+      html.closeInline("div");
     }
 
-    private String buildTextStyle() {
-        Map<String, String> styles = new LinkedHashMap<>();
-        styles.put("font-family", getAttribute("font-family"));
-        styles.put("font-size", getAttribute("font-size"));
-        styles.put("font-style", getAttribute("font-style", ""));
-        styles.put("font-weight", getAttribute("font-weight", ""));
-        styles.put("letter-spacing", getAttribute("letter-spacing", ""));
-        styles.put("line-height", getAttribute("line-height"));
-        styles.put("text-align", getAttribute("align"));
-        styles.put("text-decoration", getAttribute("text-decoration", ""));
-        styles.put("text-transform", getAttribute("text-transform", ""));
-        styles.put("color", getAttribute("color"));
+    return html.toString();
+  }
 
-        addIfPresent(styles, "height");
+  private String buildTextStyle() {
+    Map<String, String> styles = new LinkedHashMap<>();
+    styles.put("font-family", getAttribute("font-family"));
+    styles.put("font-size", getAttribute("font-size"));
+    styles.put("font-style", getAttribute("font-style", ""));
+    styles.put("font-weight", getAttribute("font-weight", ""));
+    styles.put("letter-spacing", getAttribute("letter-spacing", ""));
+    styles.put("line-height", getAttribute("line-height"));
+    styles.put("text-align", getAttribute("align"));
+    styles.put("text-decoration", getAttribute("text-decoration", ""));
+    styles.put("text-transform", getAttribute("text-transform", ""));
+    styles.put("color", getAttribute("color"));
 
-        return buildStyle(styles);
+    addIfPresent(styles, "height");
+
+    return buildStyle(styles);
+  }
+
+  /**
+   * Gets the inner HTML content of the text element. MJML passes through HTML content as-is. We
+   * collapse whitespace in text runs (between/outside HTML tags) while preserving structure between
+   * block-level elements.
+   */
+  private String getContent() {
+    String content = node.getInnerHtml();
+
+    String trimmed = content.trim();
+    if (trimmed.isEmpty()) {
+      return "";
     }
 
-    /**
-     * Gets the inner HTML content of the text element. MJML passes through HTML content as-is. We
-     * collapse whitespace in text runs (between/outside HTML tags) while preserving structure between
-     * block-level elements.
-     */
-    private String getContent() {
-        String content = node.getInnerHtml();
-
-        String trimmed = content.trim();
-        if (trimmed.isEmpty()) {
-            return "";
-        }
-
-        // If content contains no HTML tags at all, collapse all whitespace
-        if (!trimmed.contains("<")) {
-            return CssUnitParser.WHITESPACE.matcher(content).replaceAll(" ").trim();
-        }
-
-        // Has block elements: collapse whitespace within text runs but preserve
-        // newlines between block-level tags
-        if (containsBlockElements(trimmed)) {
-            String processed = collapseInlineWhitespace(trimmed);
-            // Add leading newline only when content starts with a block element.
-            // When content starts with text (e.g., "You are... <p>...</p>"),
-            // MJML puts the text directly after the containing <div>.
-            boolean startsWithBlock = processed.length() > 0 && processed.charAt(0) == '<';
-            return (startsWithBlock ? "\n" : "") + processed + "\n";
-        }
-
-        // Has inline HTML (e.g., <br/>, <a>, <span>) but no block elements.
-        // Collapse whitespace but preserve newlines after br-like tags
-        String result = collapseInlineWhitespace(trimmed);
-        // Add trailing newline only when content has block-like breaks (e.g., <br/>)
-        // that already introduced newlines — so </div> goes on its own line.
-        // Pure inline content (e.g., <a>) should NOT get a trailing newline.
-        if (result.contains("\n")) {
-            return result + "\n";
-        }
-        return result;
+    // If content contains no HTML tags at all, collapse all whitespace
+    if (!trimmed.contains("<")) {
+      return CssUnitParser.WHITESPACE.matcher(content).replaceAll(" ").trim();
     }
+
+    // Has block elements: collapse whitespace within text runs but preserve
+    // newlines between block-level tags
+    if (containsBlockElements(trimmed)) {
+      String processed = collapseInlineWhitespace(trimmed);
+      // Add leading newline only when content starts with a block element.
+      // When content starts with text (e.g., "You are... <p>...</p>"),
+      // MJML puts the text directly after the containing <div>.
+      boolean startsWithBlock = processed.length() > 0 && processed.charAt(0) == '<';
+      return (startsWithBlock ? "\n" : "") + processed + "\n";
+    }
+
+    // Has inline HTML (e.g., <br/>, <a>, <span>) but no block elements.
+    // Collapse whitespace but preserve newlines after br-like tags
+    String result = collapseInlineWhitespace(trimmed);
+    // Add trailing newline only when content has block-like breaks (e.g., <br/>)
+    // that already introduced newlines — so </div> goes on its own line.
+    // Pure inline content (e.g., <a>) should NOT get a trailing newline.
+    if (result.contains("\n")) {
+      return result + "\n";
+    }
+    return result;
+  }
 }

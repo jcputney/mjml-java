@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.content;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,13 +13,13 @@ import org.junit.jupiter.api.Test;
  */
 class MjTextBlockElementTest {
 
-    @Test
-    void paramTagDoesNotTriggerBlockDetection() {
-        // <param> contains "p" but is NOT a block element — should NOT
-        // get block-level whitespace treatment
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void paramTagDoesNotTriggerBlockDetection() {
+    // <param> contains "p" but is NOT a block element — should NOT
+    // get block-level whitespace treatment
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -30,18 +31,18 @@ class MjTextBlockElementTest {
         </mjml>
         """;
 
-        MjmlRenderResult result = MjmlRenderer.render(mjml);
-        String html = result.html();
-        // The content should be treated as inline, not block
-        // Block treatment adds newlines around content; inline doesn't
-        assertTrue(html.contains("inline content"), "Content with <param> should still render");
-    }
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
+    String html = result.html();
+    // The content should be treated as inline, not block
+    // Block treatment adds newlines around content; inline doesn't
+    assertTrue(html.contains("inline content"), "Content with <param> should still render");
+  }
 
-    @Test
-    void actualParagraphTagTriggerBlockDetection() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void actualParagraphTagTriggerBlockDetection() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -53,17 +54,17 @@ class MjTextBlockElementTest {
         </mjml>
         """;
 
-        MjmlRenderResult result = MjmlRenderer.render(mjml);
-        String html = result.html();
-        assertTrue(html.contains("<p>paragraph content</p>"), "Block element <p> should be preserved");
-    }
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
+    String html = result.html();
+    assertTrue(html.contains("<p>paragraph content</p>"), "Block element <p> should be preserved");
+  }
 
-    @Test
-    void pictureTagDoesNotTriggerBlockDetection() {
-        // <picture> starts with "p" but is not a block element
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void pictureTagDoesNotTriggerBlockDetection() {
+    // <picture> starts with "p" but is not a block element
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -75,18 +76,18 @@ class MjTextBlockElementTest {
         </mjml>
         """;
 
-        MjmlRenderResult result = MjmlRenderer.render(mjml);
-        assertNotNull(result);
-        assertTrue(result.html().contains("text"), "Content with <picture> should still render");
-    }
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
+    assertNotNull(result);
+    assertTrue(result.html().contains("text"), "Content with <picture> should still render");
+  }
 
-    @Test
-    void objectTagDoesNotTriggerBlockDetection() {
-        // <object> starts with "o" — would previously match "<ol" check if substring was "<o"
-        // but the actual check is "<ol" so this is fine. Testing for completeness.
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void objectTagDoesNotTriggerBlockDetection() {
+    // <object> starts with "o" — would previously match "<ol" check if substring was "<o"
+    // but the actual check is "<ol" so this is fine. Testing for completeness.
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -98,7 +99,7 @@ class MjTextBlockElementTest {
         </mjml>
         """;
 
-        MjmlRenderResult result = MjmlRenderer.render(mjml);
-        assertNotNull(result);
-    }
+    MjmlRenderResult result = MjmlRenderer.render(mjml);
+    assertNotNull(result);
+  }
 }

@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.spring;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 class MjmlServiceTest {
 
-    private static final String SIMPLE_MJML =
-            // language=MJML
-            """
+  private static final String SIMPLE_MJML =
+    // language=MJML
+    """
       <mjml>
         <mj-head>
           <mj-title>Test</mj-title>
@@ -26,40 +27,40 @@ class MjmlServiceTest {
       </mjml>
       """;
 
-    private final MjmlService service = new MjmlService(MjmlConfiguration.defaults());
+  private final MjmlService service = new MjmlService(MjmlConfiguration.defaults());
 
-    @Test
-    void renderReturnsHtml() {
-        String html = service.render(SIMPLE_MJML);
+  @Test
+  void renderReturnsHtml() {
+    String html = service.render(SIMPLE_MJML);
 
-        assertThat(html).contains("<!doctype html>");
-        assertThat(html).contains("Hello");
-    }
+    assertThat(html).contains("<!doctype html>");
+    assertThat(html).contains("Hello");
+  }
 
-    @Test
-    void renderResultReturnsFullResult() {
-        MjmlRenderResult result = service.renderResult(SIMPLE_MJML);
+  @Test
+  void renderResultReturnsFullResult() {
+    MjmlRenderResult result = service.renderResult(SIMPLE_MJML);
 
-        assertThat(result.html()).contains("<!doctype html>");
-        assertThat(result.title()).isEqualTo("Test");
-        assertThat(result.previewText()).isEqualTo("Preview");
-    }
+    assertThat(result.html()).contains("<!doctype html>");
+    assertThat(result.title()).isEqualTo("Test");
+    assertThat(result.previewText()).isEqualTo("Preview");
+  }
 
-    @Test
-    void getConfigurationReturnsConfig() {
-        MjmlConfiguration config = MjmlConfiguration.builder().language("en").build();
-        MjmlService svc = new MjmlService(config);
+  @Test
+  void getConfigurationReturnsConfig() {
+    MjmlConfiguration config = MjmlConfiguration.builder().language("en").build();
+    MjmlService svc = new MjmlService(config);
 
-        assertThat(svc.getConfiguration()).isSameAs(config);
-        assertThat(svc.getConfiguration().getLanguage()).isEqualTo("en");
-    }
+    assertThat(svc.getConfiguration()).isSameAs(config);
+    assertThat(svc.getConfiguration().getLanguage()).isEqualTo("en");
+  }
 
-    @Test
-    void renderUsesConfiguredLanguage() {
-        MjmlConfiguration config = MjmlConfiguration.builder().language("fr").build();
-        MjmlService svc = new MjmlService(config);
+  @Test
+  void renderUsesConfiguredLanguage() {
+    MjmlConfiguration config = MjmlConfiguration.builder().language("fr").build();
+    MjmlService svc = new MjmlService(config);
 
-        String html = svc.render(SIMPLE_MJML);
-        assertThat(html).contains("lang=\"fr\"");
-    }
+    String html = svc.render(SIMPLE_MJML);
+    assertThat(html).contains("lang=\"fr\"");
+  }
 }

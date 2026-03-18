@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.css;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,13 +12,13 @@ import org.junit.jupiter.api.Test;
  */
 class CssShorthandCalcTest {
 
-    // -- CSS Shorthand properties in inline styles --
+  // -- CSS Shorthand properties in inline styles --
 
-    @Test
-    void marginShorthandInlineStyle() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void marginShorthandInlineStyle() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style inline="inline">
@@ -34,18 +35,18 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("Margin test"));
-        // Inline CSS should expand or pass through the shorthand
-        assertTrue(html.contains("margin"), "Margin shorthand should be present in output");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("Margin test"));
+    // Inline CSS should expand or pass through the shorthand
+    assertTrue(html.contains("margin"), "Margin shorthand should be present in output");
+  }
 
-    @Test
-    void paddingShorthandInStyles() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void paddingShorthandInStyles() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style>
@@ -62,16 +63,16 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("padding: 5px 10px"), "Padding shorthand should be preserved in style block");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("padding: 5px 10px"), "Padding shorthand should be preserved in style block");
+  }
 
-    @Test
-    void borderShorthandInStyles() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void borderShorthandInStyles() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style>
@@ -88,18 +89,18 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("border: 2px solid #333"), "Border shorthand should be preserved in style block");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("border: 2px solid #333"), "Border shorthand should be preserved in style block");
+  }
 
-    // -- calc() expressions --
+  // -- calc() expressions --
 
-    @Test
-    void calcExpressionInStyleBlock() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void calcExpressionInStyleBlock() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style>
@@ -116,16 +117,16 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("calc(100% - 20px)"), "calc() expression should be preserved in style block");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("calc(100% - 20px)"), "calc() expression should be preserved in style block");
+  }
 
-    @Test
-    void calcExpressionInInlineStyle() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void calcExpressionInInlineStyle() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style inline="inline">
@@ -142,17 +143,17 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        // calc() should pass through even in inlined styles
-        assertTrue(html.contains("calc(600px - 40px)"), "calc() expression should be preserved when inlined");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    // calc() should pass through even in inlined styles
+    assertTrue(html.contains("calc(600px - 40px)"), "calc() expression should be preserved when inlined");
+  }
 
-    @Test
-    void nestedCalcExpression() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void nestedCalcExpression() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style>
@@ -169,18 +170,18 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("calc(100% - calc(20px + 10px))"), "Nested calc() should be preserved in style block");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("calc(100% - calc(20px + 10px))"), "Nested calc() should be preserved in style block");
+  }
 
-    // -- Component-level padding shorthand --
+  // -- Component-level padding shorthand --
 
-    @Test
-    void sectionPaddingShorthandAttribute() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void sectionPaddingShorthandAttribute() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section padding="10px 20px 30px 40px">
@@ -192,18 +193,18 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("Section padding"), "Content should render with section padding shorthand");
-        // The padding should appear in the rendered styles
-        assertTrue(html.contains("padding"), "Padding values should appear in the output");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("Section padding"), "Content should render with section padding shorthand");
+    // The padding should appear in the rendered styles
+    assertTrue(html.contains("padding"), "Padding values should appear in the output");
+  }
 
-    @Test
-    void textPaddingShorthandAttribute() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void textPaddingShorthandAttribute() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-body>
             <mj-section>
@@ -215,18 +216,18 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("Text padding shorthand"));
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("Text padding shorthand"));
+  }
 
-    // -- CSS variables and custom properties --
+  // -- CSS variables and custom properties --
 
-    @Test
-    void cssVariablesInStyleBlock() {
-        String mjml =
-                // language=MJML
-                """
+  @Test
+  void cssVariablesInStyleBlock() {
+    String mjml =
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-style>
@@ -244,9 +245,9 @@ class CssShorthandCalcTest {
         </mjml>
         """;
 
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertTrue(html.contains("--brand-color"), "CSS custom properties should be preserved");
-        assertTrue(html.contains("var(--brand-color)"), "var() function should be preserved");
-    }
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertTrue(html.contains("--brand-color"), "CSS custom properties should be preserved");
+    assertTrue(html.contains("var(--brand-color)"), "var() function should be preserved");
+  }
 }

@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.css;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,228 +21,228 @@ import org.junit.jupiter.api.Test;
 
 class CssSelectorParserTest {
 
-    @Test
-    void parsesTypeSelector() {
-        CssSelector sel = CssSelectorParser.parse("div");
-        assertInstanceOf(TypeSelector.class, sel);
-        assertEquals("div", ((TypeSelector) sel).tagName());
-    }
+  @Test
+  void parsesTypeSelector() {
+    CssSelector sel = CssSelectorParser.parse("div");
+    assertInstanceOf(TypeSelector.class, sel);
+    assertEquals("div", ((TypeSelector) sel).tagName());
+  }
 
-    @Test
-    void parsesUniversalSelector() {
-        CssSelector sel = CssSelectorParser.parse("*");
-        assertInstanceOf(UniversalSelector.class, sel);
-    }
+  @Test
+  void parsesUniversalSelector() {
+    CssSelector sel = CssSelectorParser.parse("*");
+    assertInstanceOf(UniversalSelector.class, sel);
+  }
 
-    @Test
-    void parsesClassSelector() {
-        CssSelector sel = CssSelectorParser.parse(".red");
-        assertInstanceOf(ClassSelector.class, sel);
-        assertEquals("red", ((ClassSelector) sel).className());
-    }
+  @Test
+  void parsesClassSelector() {
+    CssSelector sel = CssSelectorParser.parse(".red");
+    assertInstanceOf(ClassSelector.class, sel);
+    assertEquals("red", ((ClassSelector) sel).className());
+  }
 
-    @Test
-    void parsesIdSelector() {
-        CssSelector sel = CssSelectorParser.parse("#main");
-        assertInstanceOf(IdSelector.class, sel);
-        assertEquals("main", ((IdSelector) sel).id());
-    }
+  @Test
+  void parsesIdSelector() {
+    CssSelector sel = CssSelectorParser.parse("#main");
+    assertInstanceOf(IdSelector.class, sel);
+    assertEquals("main", ((IdSelector) sel).id());
+  }
 
-    @Test
-    void parsesCompoundSelector() {
-        CssSelector sel = CssSelectorParser.parse("div.red#main");
-        assertInstanceOf(CompoundSelector.class, sel);
-        CompoundSelector compound = (CompoundSelector) sel;
-        assertEquals(3, compound.parts().size());
-    }
+  @Test
+  void parsesCompoundSelector() {
+    CssSelector sel = CssSelectorParser.parse("div.red#main");
+    assertInstanceOf(CompoundSelector.class, sel);
+    CompoundSelector compound = (CompoundSelector) sel;
+    assertEquals(3, compound.parts().size());
+  }
 
-    @Test
-    void parsesDescendantCombinator() {
-        CssSelector sel = CssSelectorParser.parse("div p");
-        assertInstanceOf(ComplexSelector.class, sel);
-        ComplexSelector complex = (ComplexSelector) sel;
-        assertEquals(Combinator.DESCENDANT, complex.combinator());
-    }
+  @Test
+  void parsesDescendantCombinator() {
+    CssSelector sel = CssSelectorParser.parse("div p");
+    assertInstanceOf(ComplexSelector.class, sel);
+    ComplexSelector complex = (ComplexSelector) sel;
+    assertEquals(Combinator.DESCENDANT, complex.combinator());
+  }
 
-    @Test
-    void parsesChildCombinator() {
-        CssSelector sel = CssSelectorParser.parse("div > p");
-        assertInstanceOf(ComplexSelector.class, sel);
-        ComplexSelector complex = (ComplexSelector) sel;
-        assertEquals(Combinator.CHILD, complex.combinator());
-    }
+  @Test
+  void parsesChildCombinator() {
+    CssSelector sel = CssSelectorParser.parse("div > p");
+    assertInstanceOf(ComplexSelector.class, sel);
+    ComplexSelector complex = (ComplexSelector) sel;
+    assertEquals(Combinator.CHILD, complex.combinator());
+  }
 
-    @Test
-    void parsesAdjacentSiblingCombinator() {
-        CssSelector sel = CssSelectorParser.parse("h1 + p");
-        assertInstanceOf(ComplexSelector.class, sel);
-        assertEquals(Combinator.ADJACENT_SIBLING, ((ComplexSelector) sel).combinator());
-    }
+  @Test
+  void parsesAdjacentSiblingCombinator() {
+    CssSelector sel = CssSelectorParser.parse("h1 + p");
+    assertInstanceOf(ComplexSelector.class, sel);
+    assertEquals(Combinator.ADJACENT_SIBLING, ((ComplexSelector) sel).combinator());
+  }
 
-    @Test
-    void parsesGeneralSiblingCombinator() {
-        CssSelector sel = CssSelectorParser.parse("h1 ~ p");
-        assertInstanceOf(ComplexSelector.class, sel);
-        assertEquals(Combinator.GENERAL_SIBLING, ((ComplexSelector) sel).combinator());
-    }
+  @Test
+  void parsesGeneralSiblingCombinator() {
+    CssSelector sel = CssSelectorParser.parse("h1 ~ p");
+    assertInstanceOf(ComplexSelector.class, sel);
+    assertEquals(Combinator.GENERAL_SIBLING, ((ComplexSelector) sel).combinator());
+  }
 
-    @Test
-    void parsesSelectorList() {
-        CssSelector sel = CssSelectorParser.parse("h1, h2, h3");
-        assertInstanceOf(SelectorList.class, sel);
-        assertEquals(3, ((SelectorList) sel).selectors().size());
-    }
+  @Test
+  void parsesSelectorList() {
+    CssSelector sel = CssSelectorParser.parse("h1, h2, h3");
+    assertInstanceOf(SelectorList.class, sel);
+    assertEquals(3, ((SelectorList) sel).selectors().size());
+  }
 
-    @Test
-    void parsesAttributeExistenceSelector() {
-        CssSelector sel = CssSelectorParser.parse("[href]");
-        assertInstanceOf(AttributeSelector.class, sel);
-        AttributeSelector attr = (AttributeSelector) sel;
-        assertEquals("href", attr.attribute());
-        assertNull(attr.operator());
-    }
+  @Test
+  void parsesAttributeExistenceSelector() {
+    CssSelector sel = CssSelectorParser.parse("[href]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    AttributeSelector attr = (AttributeSelector) sel;
+    assertEquals("href", attr.attribute());
+    assertNull(attr.operator());
+  }
 
-    @Test
-    void parsesAttributeEqualSelector() {
-        CssSelector sel = CssSelectorParser.parse("[type=\"text\"]");
-        assertInstanceOf(AttributeSelector.class, sel);
-        AttributeSelector attr = (AttributeSelector) sel;
-        assertEquals("type", attr.attribute());
-        assertEquals("=", attr.operator());
-        assertEquals("text", attr.value());
-    }
+  @Test
+  void parsesAttributeEqualSelector() {
+    CssSelector sel = CssSelectorParser.parse("[type=\"text\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    AttributeSelector attr = (AttributeSelector) sel;
+    assertEquals("type", attr.attribute());
+    assertEquals("=", attr.operator());
+    assertEquals("text", attr.value());
+  }
 
-    @Test
-    void parsesAttributeContainsSelector() {
-        CssSelector sel = CssSelectorParser.parse("[class*=\"col\"]");
-        assertInstanceOf(AttributeSelector.class, sel);
-        assertEquals("*=", ((AttributeSelector) sel).operator());
-    }
+  @Test
+  void parsesAttributeContainsSelector() {
+    CssSelector sel = CssSelectorParser.parse("[class*=\"col\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    assertEquals("*=", ((AttributeSelector) sel).operator());
+  }
 
-    @Test
-    void parsesPseudoClass() {
-        CssSelector sel = CssSelectorParser.parse("a:hover");
-        assertInstanceOf(CompoundSelector.class, sel);
-        CompoundSelector compound = (CompoundSelector) sel;
-        assertEquals(2, compound.parts().size());
-        assertInstanceOf(PseudoClassSelector.class, compound.parts().get(1));
-        assertEquals("hover", ((PseudoClassSelector) compound.parts().get(1)).name());
-    }
+  @Test
+  void parsesPseudoClass() {
+    CssSelector sel = CssSelectorParser.parse("a:hover");
+    assertInstanceOf(CompoundSelector.class, sel);
+    CompoundSelector compound = (CompoundSelector) sel;
+    assertEquals(2, compound.parts().size());
+    assertInstanceOf(PseudoClassSelector.class, compound.parts().get(1));
+    assertEquals("hover", ((PseudoClassSelector) compound.parts().get(1)).name());
+  }
 
-    @Test
-    void parsesPseudoElement() {
-        CssSelector sel = CssSelectorParser.parse("p::before");
-        assertInstanceOf(CompoundSelector.class, sel);
-        CompoundSelector compound = (CompoundSelector) sel;
-        assertInstanceOf(PseudoElementSelector.class, compound.parts().get(1));
-    }
+  @Test
+  void parsesPseudoElement() {
+    CssSelector sel = CssSelectorParser.parse("p::before");
+    assertInstanceOf(CompoundSelector.class, sel);
+    CompoundSelector compound = (CompoundSelector) sel;
+    assertInstanceOf(PseudoElementSelector.class, compound.parts().get(1));
+  }
 
-    @Test
-    void parsesComplexChain() {
-        // "div.container > table td.content"
-        CssSelector sel = CssSelectorParser.parse("div.container > table td.content");
-        assertNotNull(sel);
-        // Should be: (div.container > table) td.content (descendant between table and td)
-        assertInstanceOf(ComplexSelector.class, sel);
-    }
+  @Test
+  void parsesComplexChain() {
+    // "div.container > table td.content"
+    CssSelector sel = CssSelectorParser.parse("div.container > table td.content");
+    assertNotNull(sel);
+    // Should be: (div.container > table) td.content (descendant between table and td)
+    assertInstanceOf(ComplexSelector.class, sel);
+  }
 
-    @Test
-    void returnsNullForEmpty() {
-        assertNull(CssSelectorParser.parse(""));
-        assertNull(CssSelectorParser.parse(null));
-        assertNull(CssSelectorParser.parse("   "));
-    }
+  @Test
+  void returnsNullForEmpty() {
+    assertNull(CssSelectorParser.parse(""));
+    assertNull(CssSelectorParser.parse(null));
+    assertNull(CssSelectorParser.parse("   "));
+  }
 
-    @Test
-    void parsesUniversalInCompoundSelector() {
-        // *.class should parse as compound with universal + class
-        CssSelector sel = CssSelectorParser.parse("*.red");
-        assertInstanceOf(CompoundSelector.class, sel);
-        CompoundSelector compound = (CompoundSelector) sel;
-        assertEquals(2, compound.parts().size());
-        assertInstanceOf(UniversalSelector.class, compound.parts().get(0));
-        assertInstanceOf(ClassSelector.class, compound.parts().get(1));
-        assertEquals("red", ((ClassSelector) compound.parts().get(1)).className());
-        // Specificity: * contributes (0,0,0), .red contributes (0,1,0) = (0,1,0)
-        assertEquals(new CssSpecificity(0, 1, 0), sel.specificity());
-    }
+  @Test
+  void parsesUniversalInCompoundSelector() {
+    // *.class should parse as compound with universal + class
+    CssSelector sel = CssSelectorParser.parse("*.red");
+    assertInstanceOf(CompoundSelector.class, sel);
+    CompoundSelector compound = (CompoundSelector) sel;
+    assertEquals(2, compound.parts().size());
+    assertInstanceOf(UniversalSelector.class, compound.parts().get(0));
+    assertInstanceOf(ClassSelector.class, compound.parts().get(1));
+    assertEquals("red", ((ClassSelector) compound.parts().get(1)).className());
+    // Specificity: * contributes (0,0,0), .red contributes (0,1,0) = (0,1,0)
+    assertEquals(new CssSpecificity(0, 1, 0), sel.specificity());
+  }
 
-    @Test
-    void parsesAttributeStartsWithOperator() {
-        CssSelector sel = CssSelectorParser.parse("[href^=\"https\"]");
-        assertInstanceOf(AttributeSelector.class, sel);
-        AttributeSelector attr = (AttributeSelector) sel;
-        assertEquals("href", attr.attribute());
-        assertEquals("^=", attr.operator());
-        assertEquals("https", attr.value());
-    }
+  @Test
+  void parsesAttributeStartsWithOperator() {
+    CssSelector sel = CssSelectorParser.parse("[href^=\"https\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    AttributeSelector attr = (AttributeSelector) sel;
+    assertEquals("href", attr.attribute());
+    assertEquals("^=", attr.operator());
+    assertEquals("https", attr.value());
+  }
 
-    @Test
-    void parsesAttributeEndsWithOperator() {
-        CssSelector sel = CssSelectorParser.parse("[src$=\".png\"]");
-        assertInstanceOf(AttributeSelector.class, sel);
-        AttributeSelector attr = (AttributeSelector) sel;
-        assertEquals("src", attr.attribute());
-        assertEquals("$=", attr.operator());
-        assertEquals(".png", attr.value());
-    }
+  @Test
+  void parsesAttributeEndsWithOperator() {
+    CssSelector sel = CssSelectorParser.parse("[src$=\".png\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    AttributeSelector attr = (AttributeSelector) sel;
+    assertEquals("src", attr.attribute());
+    assertEquals("$=", attr.operator());
+    assertEquals(".png", attr.value());
+  }
 
-    @Test
-    void parsesAttributeContainsOperator() {
-        CssSelector sel = CssSelectorParser.parse("[class*=\"col\"]");
-        assertInstanceOf(AttributeSelector.class, sel);
-        assertEquals("*=", ((AttributeSelector) sel).operator());
-        assertEquals("col", ((AttributeSelector) sel).value());
-    }
+  @Test
+  void parsesAttributeContainsOperator() {
+    CssSelector sel = CssSelectorParser.parse("[class*=\"col\"]");
+    assertInstanceOf(AttributeSelector.class, sel);
+    assertEquals("*=", ((AttributeSelector) sel).operator());
+    assertEquals("col", ((AttributeSelector) sel).value());
+  }
 
-    @Test
-    void parsesMultipleCombinatorChain() {
-        // "div > ul li > a" should parse as nested complex selectors
-        CssSelector sel = CssSelectorParser.parse("div > ul li > a");
-        assertNotNull(sel);
-        assertInstanceOf(ComplexSelector.class, sel);
-        // The rightmost combinator should be CHILD (> a)
-        ComplexSelector outermost = (ComplexSelector) sel;
-        assertEquals(Combinator.CHILD, outermost.combinator());
-        assertInstanceOf(TypeSelector.class, outermost.right());
-        assertEquals("a", ((TypeSelector) outermost.right()).tagName());
-    }
+  @Test
+  void parsesMultipleCombinatorChain() {
+    // "div > ul li > a" should parse as nested complex selectors
+    CssSelector sel = CssSelectorParser.parse("div > ul li > a");
+    assertNotNull(sel);
+    assertInstanceOf(ComplexSelector.class, sel);
+    // The rightmost combinator should be CHILD (> a)
+    ComplexSelector outermost = (ComplexSelector) sel;
+    assertEquals(Combinator.CHILD, outermost.combinator());
+    assertInstanceOf(TypeSelector.class, outermost.right());
+    assertEquals("a", ((TypeSelector) outermost.right()).tagName());
+  }
 
-    @Test
-    void parsesThreeCombinatorChain() {
-        // "body > main p span" = ((body > main) p) span
-        CssSelector sel = CssSelectorParser.parse("body > main p span");
-        assertNotNull(sel);
-        assertInstanceOf(ComplexSelector.class, sel);
-        // Specificity: 4 types = (0,0,4)
-        assertEquals(new CssSpecificity(0, 0, 4), sel.specificity());
-    }
+  @Test
+  void parsesThreeCombinatorChain() {
+    // "body > main p span" = ((body > main) p) span
+    CssSelector sel = CssSelectorParser.parse("body > main p span");
+    assertNotNull(sel);
+    assertInstanceOf(ComplexSelector.class, sel);
+    // Specificity: 4 types = (0,0,4)
+    assertEquals(new CssSpecificity(0, 0, 4), sel.specificity());
+  }
 
-    @Test
-    void specificityCounts() {
-        // Type: (0,0,1)
-        assertEquals(new CssSpecificity(0, 0, 1), CssSelectorParser.parse("div").specificity());
+  @Test
+  void specificityCounts() {
+    // Type: (0,0,1)
+    assertEquals(new CssSpecificity(0, 0, 1), CssSelectorParser.parse("div").specificity());
 
-        // Class: (0,1,0)
-        assertEquals(
-                new CssSpecificity(0, 1, 0), CssSelectorParser.parse(".red").specificity());
+    // Class: (0,1,0)
+    assertEquals(
+      new CssSpecificity(0, 1, 0), CssSelectorParser.parse(".red").specificity());
 
-        // ID: (1,0,0)
-        assertEquals(
-                new CssSpecificity(1, 0, 0), CssSelectorParser.parse("#main").specificity());
+    // ID: (1,0,0)
+    assertEquals(
+      new CssSpecificity(1, 0, 0), CssSelectorParser.parse("#main").specificity());
 
-        // Compound: div.red#main = (1,1,1)
-        assertEquals(
-                new CssSpecificity(1, 1, 1),
-                CssSelectorParser.parse("div.red#main").specificity());
+    // Compound: div.red#main = (1,1,1)
+    assertEquals(
+      new CssSpecificity(1, 1, 1),
+      CssSelectorParser.parse("div.red#main").specificity());
 
-        // Complex: div p = (0,0,2)
-        assertEquals(
-                new CssSpecificity(0, 0, 2), CssSelectorParser.parse("div p").specificity());
+    // Complex: div p = (0,0,2)
+    assertEquals(
+      new CssSpecificity(0, 0, 2), CssSelectorParser.parse("div p").specificity());
 
-        // Complex: #nav .item a = (1,1,1)
-        assertEquals(
-                new CssSpecificity(1, 1, 1),
-                CssSelectorParser.parse("#nav .item a").specificity());
-    }
+    // Complex: #nav .item a = (1,1,1)
+    assertEquals(
+      new CssSpecificity(1, 1, 1),
+      CssSelectorParser.parse("#nav .item a").specificity());
+  }
 }

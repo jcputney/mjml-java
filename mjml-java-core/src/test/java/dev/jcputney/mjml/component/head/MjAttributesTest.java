@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component.head;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,18 +11,18 @@ import org.junit.jupiter.api.Test;
 /** Tests for the mj-attributes component rendering. */
 class MjAttributesTest {
 
-    private String render(String mjml) {
-        String html = MjmlRenderer.render(mjml).html();
-        assertNotNull(html);
-        assertFalse(html.isEmpty());
-        return html;
-    }
+  private String render(String mjml) {
+    String html = MjmlRenderer.render(mjml).html();
+    assertNotNull(html);
+    assertFalse(html.isEmpty());
+    return html;
+  }
 
-    @Test
-    void mjAllAppliesToAllComponents() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void mjAllAppliesToAllComponents() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -38,14 +39,14 @@ class MjAttributesTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("Helvetica"), "mj-all font-family should be applied to text content");
-    }
+    assertTrue(html.contains("Helvetica"), "mj-all font-family should be applied to text content");
+  }
 
-    @Test
-    void mjClassAppliedWhenReferenced() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void mjClassAppliedWhenReferenced() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -62,14 +63,14 @@ class MjAttributesTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("#ff0000"), "mj-class color should be applied to the text component");
-    }
+    assertTrue(html.contains("#ff0000"), "mj-class color should be applied to the text component");
+  }
 
-    @Test
-    void tagSpecificDefaults() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void tagSpecificDefaults() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -86,14 +87,14 @@ class MjAttributesTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("18px"), "Tag-specific default font-size should be applied");
-    }
+    assertTrue(html.contains("18px"), "Tag-specific default font-size should be applied");
+  }
 
-    @Test
-    void inlineOverridesClass() {
-        String html = render(
-                // language=MJML
-                """
+  @Test
+  void inlineOverridesClass() {
+    String html = render(
+      // language=MJML
+      """
         <mjml>
           <mj-head>
             <mj-attributes>
@@ -110,6 +111,6 @@ class MjAttributesTest {
         </mjml>
         """);
 
-        assertTrue(html.contains("#00ff00"), "Inline color should override mj-class color");
-    }
+    assertTrue(html.contains("#00ff00"), "Inline color should override mj-class color");
+  }
 }

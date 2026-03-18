@@ -1,3 +1,4 @@
+
 package dev.jcputney.mjml.component;
 
 import dev.jcputney.mjml.context.GlobalContext;
@@ -11,18 +12,18 @@ import java.util.Map;
  */
 public abstract non-sealed class HeadComponent extends BaseComponent {
 
-    protected HeadComponent(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
-        super(node, globalContext, renderContext);
-    }
+  protected HeadComponent(MjmlNode node, GlobalContext globalContext, RenderContext renderContext) {
+    super(node, globalContext, renderContext);
+  }
 
-    /**
-     * Processes this head component, updating the global context with extracted metadata (fonts,
-     * styles, attributes, etc.).
-     */
-    public abstract void process();
+  /**
+   * Processes this head component, updating the global context with extracted metadata (fonts,
+   * styles, attributes, etc.).
+   */
+  public abstract void process();
 
-    @Override
-    public Map<String, String> getDefaultAttributes() {
-        return Map.of();
-    }
+  @Override
+  public Map<String, String> getDefaultAttributes() {
+    return Map.of();
+  }
 }
