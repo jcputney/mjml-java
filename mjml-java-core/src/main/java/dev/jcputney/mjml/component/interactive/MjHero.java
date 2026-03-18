@@ -155,14 +155,16 @@ public class MjHero extends BodyComponent {
     HtmlBuilder html = new HtmlBuilder();
 
     // MSO wrapper with v:image
-    html.rawVerbatim(
-        "<!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:"
-            + containerWidth
-            + "px;\" width=\""
-            + containerWidth
-            + "\" ><tr><td style=\"line-height:0;font-size:0;mso-line-height-rule:exactly;\">");
-    appendVmlImage(html, backgroundUrl, vImageHeight, containerWidth);
-    html.rawVerbatim("<![endif]-->\n");
+    html.mso(
+        () -> {
+          html.rawVerbatim(
+              "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:"
+                  + containerWidth
+                  + "px;\" width=\""
+                  + containerWidth
+                  + "\" ><tr><td style=\"line-height:0;font-size:0;mso-line-height-rule:exactly;\">");
+          appendVmlImage(html, backgroundUrl, vImageHeight, containerWidth);
+        });
 
     html.open("div", attrs("style", "margin:0 auto;max-width:" + containerWidth + "px;"));
     html.open(
@@ -195,12 +197,14 @@ public class MjHero extends BodyComponent {
         innerHeight);
 
     // MSO inner table — style="" must be present
-    html.rawVerbatim(
-        "<!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:"
-            + containerWidth
-            + "px;\" width=\""
-            + containerWidth
-            + "\" ><tr><td style=\"\"><![endif]-->\n");
+    html.mso(
+        () ->
+            html.rawVerbatim(
+                // language=HTML
+                """
+            <table border="0" cellpadding="0" cellspacing="0" style="width:%dpx;" width="%d" ><tr><td style="">
+            """
+                    .formatted(containerWidth, containerWidth)));
 
     appendHeroContent(html);
 
@@ -278,9 +282,8 @@ public class MjHero extends BodyComponent {
   }
 
   private void appendHeroContent(HtmlBuilder html) {
-    html.open("div", attrs("class", "mj-hero-content", "style", "margin:0px auto;"));
-    html.open(
-        "table",
+    String divAttrs = attrs("class", "mj-hero-content", "style", "margin:0px auto;");
+    String tableAttrs =
         attrs(
             "border",
             "0",
@@ -291,35 +294,35 @@ public class MjHero extends BodyComponent {
             "role",
             "presentation",
             "style",
-            "width:100%;margin:0px;"));
-    html.open("tbody");
-    html.open("tr");
-    // style="" must always be present on this td
-    html.rawVerbatim("<td style=\"\">\n");
-    html.indent();
-    html.open(
-        "table",
-        attrs(
-            "border",
-            "0",
-            "cellpadding",
-            "0",
-            "cellspacing",
-            "0",
-            "role",
-            "presentation",
-            "style",
-            "width:100%;margin:0px;"));
-    html.open("tbody");
-    html.rawVerbatim(renderChildrenAsRows());
-    html.close("tbody");
-    html.close("table");
-    html.outdent();
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
-    html.close("div");
+            "width:100%;margin:0px;");
+
+    html.wrap(
+        "div",
+        divAttrs,
+        () ->
+            html.wrap(
+                "table",
+                tableAttrs,
+                () ->
+                    html.wrap(
+                        "tbody",
+                        () ->
+                            html.wrap(
+                                "tr",
+                                () ->
+                                    html.wrap(
+                                        "td",
+                                        attrs("style", ""),
+                                        () ->
+                                            html.wrap(
+                                                "table",
+                                                tableAttrs,
+                                                () ->
+                                                    html.wrap(
+                                                        "tbody",
+                                                        () ->
+                                                            html.rawVerbatim(
+                                                                renderChildrenAsRows()))))))));
   }
 
   private String renderChildrenAsRows() {

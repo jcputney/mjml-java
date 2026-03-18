@@ -193,6 +193,48 @@ public final class HtmlBuilder {
     return this;
   }
 
+  /**
+   * Opens a tag, executes the block, and closes the tag — guaranteeing matched open/close. Manages
+   * indentation: increments depth before the block and decrements after, just like paired {@link
+   * #open}/{@link #close} calls.
+   *
+   * @param tag the HTML tag name
+   * @param block the block that produces the tag's inner content
+   */
+  public HtmlBuilder wrap(String tag, Runnable block) {
+    appendIndent();
+    sb.append('<').append(tag).append(">\n");
+    depth += INDENT_SIZE;
+    block.run();
+    depth = Math.max(0, depth - INDENT_SIZE);
+    appendIndent();
+    sb.append("</").append(tag).append(">\n");
+    return this;
+  }
+
+  /**
+   * Opens a tag with attributes, executes the block, and closes the tag. Manages indentation like
+   * {@link #wrap(String, Runnable)}.
+   *
+   * @param tag the HTML tag name
+   * @param attrs the attribute string (from {@link #attrs})
+   * @param block the block that produces the tag's inner content
+   */
+  public HtmlBuilder wrap(String tag, String attrs, Runnable block) {
+    appendIndent();
+    sb.append('<').append(tag);
+    if (attrs != null && !attrs.isEmpty()) {
+      sb.append(attrs);
+    }
+    sb.append(">\n");
+    depth += INDENT_SIZE;
+    block.run();
+    depth = Math.max(0, depth - INDENT_SIZE);
+    appendIndent();
+    sb.append("</").append(tag).append(">\n");
+    return this;
+  }
+
   /** Appends a newline character. */
   public HtmlBuilder newline() {
     sb.append('\n');

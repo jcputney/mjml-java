@@ -263,4 +263,59 @@ class HtmlBuilderTest {
         "<!--[if mso | IE]><table role=\"presentation\" border=\"0\"></table><![endif]-->\n",
         html.toString());
   }
+
+  @Test
+  void wrapProducesMatchedTagsWithIndentation() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap("div", () -> html.line("content"));
+
+    assertEquals("<div>\n  content\n</div>\n", html.toString());
+  }
+
+  @Test
+  void wrapWithAttrsProducesMatchedTagsWithIndentation() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap("td", attrs("style", "padding:10px;"), () -> html.line("cell"));
+
+    assertEquals("<td style=\"padding:10px;\">\n  cell\n</td>\n", html.toString());
+  }
+
+  @Test
+  void wrapNestsCorrectly() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap("table", () -> html.wrap("tbody", () -> html.wrap("tr", () -> html.line("row"))));
+
+    String expected =
+        "<table>\n"
+            + "  <tbody>\n"
+            + "    <tr>\n"
+            + "      row\n"
+            + "    </tr>\n"
+            + "  </tbody>\n"
+            + "</table>\n";
+    assertEquals(expected, html.toString());
+  }
+
+  @Test
+  void wrapGuaranteesMatchedCloseTag() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap(
+        "div",
+        attrs("class", "outer"),
+        () -> {
+          html.wrap("p", () -> html.line("hello"));
+          html.wrap("p", () -> html.line("world"));
+        });
+
+    String expected =
+        "<div class=\"outer\">\n"
+            + "  <p>\n"
+            + "    hello\n"
+            + "  </p>\n"
+            + "  <p>\n"
+            + "    world\n"
+            + "  </p>\n"
+            + "</div>\n";
+    assertEquals(expected, html.toString());
+  }
 }

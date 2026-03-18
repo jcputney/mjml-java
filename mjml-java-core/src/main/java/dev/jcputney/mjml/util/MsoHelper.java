@@ -98,18 +98,14 @@ public final class MsoHelper {
    * @return the MSO conditional opening markup
    */
   public static String msoWrapperNestedOpening(int containerWidth, int innerWidth) {
-    return "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\""
-        + " cellspacing=\"0\"><tr><td class=\"\" width=\""
-        + containerWidth
-        + "px\" >"
-        + "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\""
-        + " class=\"\" role=\"presentation\" style=\"width:"
-        + innerWidth
-        + "px;\" width=\""
-        + innerWidth
-        + "\" >"
-        + "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">"
-        + "<![endif]-->";
+    return """
+        <!--[if mso | IE]>
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" width="%dpx" >
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:%dpx;" width="%d" >
+        <tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+        <![endif]-->
+        """
+        .formatted(containerWidth, innerWidth, innerWidth);
   }
 
   /**
@@ -122,16 +118,14 @@ public final class MsoHelper {
    * @return the MSO conditional transition markup
    */
   public static String msoWrapperTransition(int containerWidth, int innerWidth) {
-    return "<!--[if mso | IE]></td></tr></table></td></tr><tr><td class=\"\" width=\""
-        + containerWidth
-        + "px\" >"
-        + "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\""
-        + " class=\"\" role=\"presentation\" style=\"width:"
-        + innerWidth
-        + "px;\" width=\""
-        + innerWidth
-        + "\" >"
-        + "<tr><td style=\"line-height:0px;font-size:0px;mso-line-height-rule:exactly;\">"
-        + "<![endif]-->";
+    // language=HTML
+    return """
+        <!--[if mso | IE]>
+        </td></tr></table></td></tr><tr><td class="" width="%dpx" >
+        <table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:%dpx;" width="%d" >
+        <tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+        <![endif]-->
+        """
+        .formatted(containerWidth, innerWidth, innerWidth);
   }
 }
