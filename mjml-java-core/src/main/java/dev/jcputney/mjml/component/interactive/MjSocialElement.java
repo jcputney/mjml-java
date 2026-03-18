@@ -105,8 +105,18 @@ public class MjSocialElement extends BodyComponent {
     html.open(
         "table",
         attrs(
-            "align", align, "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "float:none;display:inline-table;"));
+            "align",
+            align,
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "float:none;display:inline-table;"));
     html.open("tbody");
     html.open("tr");
     appendIconAndTextCells(html, parent);
@@ -200,8 +210,16 @@ public class MjSocialElement extends BodyComponent {
     html.open(
         "table",
         attrs(
-            "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", innerTableStyle));
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            innerTableStyle));
     html.open("tbody");
     html.open("tr");
 
@@ -274,8 +292,7 @@ public class MjSocialElement extends BodyComponent {
                 + textContent
                 + " </a>\n");
       } else {
-        html.rawVerbatim(
-            "<span" + attrs("style", textStyle) + "> " + textContent + " </span>\n");
+        html.rawVerbatim("<span" + attrs("style", textStyle) + "> " + textContent + " </span>\n");
       }
 
       html.close("td");

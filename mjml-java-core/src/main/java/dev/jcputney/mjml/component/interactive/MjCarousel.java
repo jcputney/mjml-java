@@ -116,7 +116,14 @@ public class MjCarousel extends BodyComponent {
     }
 
     renderMainTable(
-        html, images, carouselId, count, iconWidthNum, leftIcon, rightIcon, borderRadius,
+        html,
+        images,
+        carouselId,
+        count,
+        iconWidthNum,
+        leftIcon,
+        rightIcon,
+        borderRadius,
         containerWidth);
 
     html.rawVerbatim("  </div>\n");
@@ -224,8 +231,7 @@ public class MjCarousel extends BodyComponent {
             + "        <tr>\n");
 
     renderIconCell(
-        html, carouselId, count, iconWidthNum, leftIcon, "previous",
-        "mj-carousel-previous-icons");
+        html, carouselId, count, iconWidthNum, leftIcon, "previous", "mj-carousel-previous-icons");
 
     html.rawVerbatim("          <td style=\"padding:0px;\">\n");
     html.rawVerbatim("            <div class=\"mj-carousel-images\">\n");
@@ -271,8 +277,7 @@ public class MjCarousel extends BodyComponent {
     html.rawVerbatim(
         "            <div class=\"" + wrapperClass + "\" style=\"display:none;mso-hide:all;\">");
     for (int i = 1; i <= count; i++) {
-      String labelClass =
-          "mj-carousel-" + direction + " mj-carousel-" + direction + "-" + i;
+      String labelClass = "mj-carousel-" + direction + " mj-carousel-" + direction + "-" + i;
       html.rawVerbatim(
           "<label for=\""
               + carouselId

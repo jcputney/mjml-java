@@ -89,8 +89,16 @@ public class MjSocial extends BodyComponent {
     html.raw(
         "<!--[if mso | IE]><table"
             + attrs(
-                "align", align, "border", "0", "cellpadding", "0", "cellspacing", "0",
-                "role", "presentation")
+                "align",
+                align,
+                "border",
+                "0",
+                "cellpadding",
+                "0",
+                "cellspacing",
+                "0",
+                "role",
+                "presentation")
             + " ><tr><td><![endif]-->");
 
     for (int i = 0; i < elements.size(); i++) {
@@ -113,8 +121,16 @@ public class MjSocial extends BodyComponent {
     html.open(
         "table",
         attrs(
-            "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "margin:0px;"));
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "margin:0px;"));
     html.open("tbody");
 
     for (int i = 0; i < elements.size(); i++) {

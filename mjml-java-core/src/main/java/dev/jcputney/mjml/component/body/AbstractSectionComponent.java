@@ -248,19 +248,39 @@ public abstract class AbstractSectionComponent extends BodyComponent {
       html.open(
           "table",
           attrs(
-              "align", "center", "background", escapeAttr(bgUrl),
-              "border", "0", "cellpadding", "0", "cellspacing", "0",
-              "role", "presentation", "style", buildBgImageTableStyle()));
+              "align",
+              "center",
+              "background",
+              escapeAttr(bgUrl),
+              "border",
+              "0",
+              "cellpadding",
+              "0",
+              "cellspacing",
+              "0",
+              "role",
+              "presentation",
+              "style",
+              buildBgImageTableStyle()));
     } else {
       html.rawVerbatim("<![endif]-->\n");
       html.open(
-          "div",
-          attrIf("class", escapeAttr(outerDivClass)) + attrs("style", buildOuterDivStyle()));
+          "div", attrIf("class", escapeAttr(outerDivClass)) + attrs("style", buildOuterDivStyle()));
       html.open(
           "table",
           attrs(
-              "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
-              "role", "presentation", "style", buildInnerTableStyle()));
+              "align",
+              "center",
+              "border",
+              "0",
+              "cellpadding",
+              "0",
+              "cellspacing",
+              "0",
+              "role",
+              "presentation",
+              "style",
+              buildInnerTableStyle()));
     }
 
     // Inner tbody/tr/td — indentation adjusts automatically based on hasBgUrl nesting

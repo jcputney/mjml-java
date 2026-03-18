@@ -62,8 +62,10 @@ public class MjGroup extends BodyComponent {
     html.open(
         "div",
         attrs(
-            "class", responsiveClass + " mj-outlook-group-fix",
-            "style", buildOuterStyle(direction)));
+            "class",
+            responsiveClass + " mj-outlook-group-fix",
+            "style",
+            buildOuterStyle(direction)));
 
     registerMediaQuery(responsiveClass, widthSpec);
 

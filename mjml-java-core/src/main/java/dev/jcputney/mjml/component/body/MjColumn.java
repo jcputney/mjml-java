@@ -88,16 +88,36 @@ public class MjColumn extends BodyComponent {
     if (hasGutter) {
       html.open(
           "table",
-          attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
-              "role", "presentation", "width", "100%")
+          attrs(
+                  "border",
+                  "0",
+                  "cellpadding",
+                  "0",
+                  "cellspacing",
+                  "0",
+                  "role",
+                  "presentation",
+                  "width",
+                  "100%")
               + (hasBorder ? " style=\"border-collapse:separate;\"" : ""));
       html.open("tbody");
       html.open("tr");
       html.open("td", attrs("style", buildGutterTdStyle()));
       html.open(
           "table",
-          attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
-              "role", "presentation", "style", buildInnerTableStyle(), "width", "100%"));
+          attrs(
+              "border",
+              "0",
+              "cellpadding",
+              "0",
+              "cellspacing",
+              "0",
+              "role",
+              "presentation",
+              "style",
+              buildInnerTableStyle(),
+              "width",
+              "100%"));
       html.open("tbody");
 
       renderContentChildren(html, columnWidth);
@@ -111,8 +131,19 @@ public class MjColumn extends BodyComponent {
     } else {
       html.open(
           "table",
-          attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
-              "role", "presentation", "style", buildNoGutterTableStyle(), "width", "100%"));
+          attrs(
+              "border",
+              "0",
+              "cellpadding",
+              "0",
+              "cellspacing",
+              "0",
+              "role",
+              "presentation",
+              "style",
+              buildNoGutterTableStyle(),
+              "width",
+              "100%"));
       html.open("tbody");
 
       renderContentChildren(html, columnWidth);

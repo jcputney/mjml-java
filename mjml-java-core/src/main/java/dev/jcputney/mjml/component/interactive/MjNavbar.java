@@ -159,18 +159,30 @@ public class MjNavbar extends BodyComponent {
     String labelStyle =
         buildStyle(
             orderedMap(
-                "display", "block",
-                "cursor", "pointer",
-                "mso-hide", "all",
-                "-moz-user-select", "none",
-                "user-select", "none",
-                "color", colorValue,
-                "font-size", icoFontSize,
-                "font-family", icoFontFamily,
-                "text-transform", icoTextTransform,
-                "text-decoration", "none",
-                "line-height", icoLineHeight,
-                "padding", icoPadding));
+                "display",
+                "block",
+                "cursor",
+                "pointer",
+                "mso-hide",
+                "all",
+                "-moz-user-select",
+                "none",
+                "user-select",
+                "none",
+                "color",
+                colorValue,
+                "font-size",
+                icoFontSize,
+                "font-family",
+                icoFontFamily,
+                "text-transform",
+                icoTextTransform,
+                "text-decoration",
+                "none",
+                "line-height",
+                icoLineHeight,
+                "padding",
+                icoPadding));
     html.open(
         "label",
         attrs("for", uniqueId, "class", "mj-menu-label", "style", labelStyle)
@@ -180,9 +192,7 @@ public class MjNavbar extends BodyComponent {
 
     String icoOpen = encodeNonAscii(getAttribute("ico-open", "&#9776;"));
     html.rawVerbatim(
-        "<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> "
-            + icoOpen
-            + " </span>\n");
+        "<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> " + icoOpen + " </span>\n");
     String icoClose = encodeNonAscii(getAttribute("ico-close", "&#8855;"));
     html.rawVerbatim(
         "<span class=\"mj-menu-icon-close\" style=\"display:none;mso-hide:all;\"> "

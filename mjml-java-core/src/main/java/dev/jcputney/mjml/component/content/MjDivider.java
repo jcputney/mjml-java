@@ -91,10 +91,14 @@ public class MjDivider extends BodyComponent {
     String msoStyle =
         buildStyle(
             orderedMap(
-                "border-top", borderTop,
-                "font-size", "1px",
-                "margin", margin,
-                "width", msoWidth + "px"));
+                "border-top",
+                borderTop,
+                "font-size",
+                "1px",
+                "margin",
+                margin,
+                "width",
+                msoWidth + "px"));
     html.rawVerbatim(
         "<!--[if mso | IE]><table"
             + attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0")

@@ -168,8 +168,16 @@ public class MjHero extends BodyComponent {
     html.open(
         "table",
         attrs(
-            "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "width:100%;"));
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "width:100%;"));
     html.open("tbody");
     html.open("tr", attrs("style", "vertical-align:top;"));
 
@@ -178,7 +186,12 @@ public class MjHero extends BodyComponent {
     }
 
     appendContentTd(
-        html, backgroundUrl, backgroundColor, backgroundPosition, padding, verticalAlign,
+        html,
+        backgroundUrl,
+        backgroundColor,
+        backgroundPosition,
+        padding,
+        verticalAlign,
         innerHeight);
 
     // MSO inner table — style="" must be present
@@ -269,8 +282,16 @@ public class MjHero extends BodyComponent {
     html.open(
         "table",
         attrs(
-            "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "width:100%;margin:0px;"));
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "width:100%;margin:0px;"));
     html.open("tbody");
     html.open("tr");
     // style="" must always be present on this td
@@ -279,8 +300,16 @@ public class MjHero extends BodyComponent {
     html.open(
         "table",
         attrs(
-            "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "width:100%;margin:0px;"));
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "width:100%;margin:0px;"));
     html.open("tbody");
     html.rawVerbatim(renderChildrenAsRows());
     html.close("tbody");

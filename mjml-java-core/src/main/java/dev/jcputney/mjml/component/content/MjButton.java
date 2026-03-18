@@ -121,17 +121,50 @@ public class MjButton extends BodyComponent {
 
     HtmlBuilder html = new HtmlBuilder(24);
 
-    html.open("table", attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation", "style", buildStyle(outerTableStyles)));
+    html.open(
+        "table",
+        attrs(
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            buildStyle(outerTableStyles)));
     html.open("tbody");
     html.open("tr");
-    html.open("td", attrs("align", "center", "bgcolor", escapeAttr(backgroundColor), "role", "presentation", "style", innerTableStyle, "valign", escapeAttr(verticalAlign)));
+    html.open(
+        "td",
+        attrs(
+            "align",
+            "center",
+            "bgcolor",
+            escapeAttr(backgroundColor),
+            "role",
+            "presentation",
+            "style",
+            innerTableStyle,
+            "valign",
+            escapeAttr(verticalAlign)));
 
     String buttonContent = WHITESPACE.matcher(node.getInnerHtml()).replaceAll(" ").trim();
     if (hasHref) {
       String rel = getAttribute("rel", "");
-      html.openInline("a", attrs("href", escapeHref(href)) + attrIf("rel", escapeAttr(rel)) + attrs("style", anchorStyle, "target", escapeAttr(getAttribute("target", "_blank")))).text(" " + sanitizeContent(buttonContent) + " ").closeInlineLn("a");
+      html.openInline(
+              "a",
+              attrs("href", escapeHref(href))
+                  + attrIf("rel", escapeAttr(rel))
+                  + attrs(
+                      "style", anchorStyle, "target", escapeAttr(getAttribute("target", "_blank"))))
+          .text(" " + sanitizeContent(buttonContent) + " ")
+          .closeInlineLn("a");
     } else {
-      html.openInline("p", attrs("style", anchorStyle)).text(" " + sanitizeContent(buttonContent) + " ").closeInlineLn("p");
+      html.openInline("p", attrs("style", anchorStyle))
+          .text(" " + sanitizeContent(buttonContent) + " ")
+          .closeInlineLn("p");
     }
 
     html.close("td");

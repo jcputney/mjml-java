@@ -97,8 +97,18 @@ public class MjWrapper extends AbstractSectionComponent {
     html.open(
         "table",
         attrs(
-            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", outerStyle));
+            "align",
+            "center",
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            outerStyle));
     html.open("tbody");
     html.open("tr");
     html.open("td");
@@ -117,8 +127,18 @@ public class MjWrapper extends AbstractSectionComponent {
     html.open(
         "table",
         attrs(
-            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "width:100%;"));
+            "align",
+            "center",
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "width:100%;"));
     html.open("tbody");
     html.open("tr");
     html.open("td", attrs("style", buildInnerTdStyle()));
@@ -196,8 +216,7 @@ public class MjWrapper extends AbstractSectionComponent {
       if (!isLast) {
         html.raw(MsoHelper.msoWrapperTransition(containerWidth, innerWidth));
       } else {
-        html.raw(
-            "<!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->");
+        html.raw("<!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->");
       }
     }
   }

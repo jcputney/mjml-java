@@ -100,8 +100,18 @@ public class MjSection extends AbstractSectionComponent {
     html.open(
         "table",
         attrs(
-            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "width:100%;"));
+            "align",
+            "center",
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "width:100%;"));
     html.open("tbody");
     html.open("tr");
     html.open("td", attrs("style", buildInnerTdStyle()));
@@ -144,8 +154,16 @@ public class MjSection extends AbstractSectionComponent {
         attrs("align", "center")
             + (hasBgUrl ? attrs("background", escapeAttr(bgUrl)) : "")
             + attrs(
-                "border", "0", "cellpadding", "0", "cellspacing", "0",
-                "role", "presentation", "style", outerStyle));
+                "border",
+                "0",
+                "cellpadding",
+                "0",
+                "cellspacing",
+                "0",
+                "role",
+                "presentation",
+                "style",
+                outerStyle));
     html.open("tbody");
     html.open("tr");
     html.open("td");
@@ -171,8 +189,18 @@ public class MjSection extends AbstractSectionComponent {
     html.open(
         "table",
         attrs(
-            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
-            "role", "presentation", "style", "width:100%;"));
+            "align",
+            "center",
+            "border",
+            "0",
+            "cellpadding",
+            "0",
+            "cellspacing",
+            "0",
+            "role",
+            "presentation",
+            "style",
+            "width:100%;"));
     html.open("tbody");
     html.open("tr");
     html.open("td", attrs("style", buildInnerTdStyle()));

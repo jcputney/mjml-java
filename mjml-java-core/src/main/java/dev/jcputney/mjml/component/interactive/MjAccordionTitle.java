@@ -85,8 +85,15 @@ public class MjAccordionTitle extends BodyComponent {
 
     if ("left".equals(iconPosition)) {
       renderIcon(
-          html, iconAlign, backgroundColor, iconWidth, iconHeight,
-          iconUnwrappedUrl, iconUnwrappedAlt, iconWrappedUrl, iconWrappedAlt);
+          html,
+          iconAlign,
+          backgroundColor,
+          iconWidth,
+          iconHeight,
+          iconUnwrappedUrl,
+          iconUnwrappedAlt,
+          iconWrappedUrl,
+          iconWrappedAlt);
     }
 
     html.openInline("td", attrs("style", tdStyle));
@@ -95,8 +102,15 @@ public class MjAccordionTitle extends BodyComponent {
 
     if (!"left".equals(iconPosition)) {
       renderIcon(
-          html, iconAlign, backgroundColor, iconWidth, iconHeight,
-          iconUnwrappedUrl, iconUnwrappedAlt, iconWrappedUrl, iconWrappedAlt);
+          html,
+          iconAlign,
+          backgroundColor,
+          iconWidth,
+          iconHeight,
+          iconUnwrappedUrl,
+          iconUnwrappedAlt,
+          iconWrappedUrl,
+          iconWrappedAlt);
     }
 
     html.close("tr");
@@ -120,8 +134,7 @@ public class MjAccordionTitle extends BodyComponent {
     String iconTdStyle =
         buildStyle(
             orderedMap("padding", "16px", "background", backgroundColor, "vertical-align", align));
-    String imgStyle =
-        buildStyle(orderedMap("display", "none", "width", width, "height", height));
+    String imgStyle = buildStyle(orderedMap("display", "none", "width", width, "height", height));
 
     html.rawVerbatim("<!--[if !mso | IE]><!-->\n");
     html.rawVerbatim(
