@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.body;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -9,6 +11,7 @@ import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.render.VmlHelper;
 import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,88 +78,75 @@ public class MjWrapper extends AbstractSectionComponent {
         hasBackgroundUrl()
             ? buildVmlRect(globalContext.metadata().getContainerWidth() + "px", bgUrl, bgColor)
             : "";
-    StringBuilder innerContent = new StringBuilder();
+    HtmlBuilder innerContent = new HtmlBuilder();
     renderWrappedChildren(innerContent);
     return renderNormalScaffold(vmlRect, innerContent.toString(), "");
   }
 
   private String renderFullWidth() {
-    StringBuilder sb = new StringBuilder();
     int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
 
-    // Full-width outer HTML table (real table, not MSO conditional)
-    sb.append(
-        "    <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"");
-    if (hasBg) {
-      sb.append("background:")
-          .append(bgColor)
-          .append(";background-color:")
-          .append(bgColor)
-          .append(";");
-    }
-    sb.append("width:100%;\">\n");
-    sb.append("      <tbody>\n");
-    sb.append("        <tr>\n");
-    sb.append("          <td>\n");
+    String outerStyle =
+        (hasBg ? "background:" + bgColor + ";background-color:" + bgColor + ";" : "")
+            + "width:100%;";
 
-    // MSO inner table for width constraint
-    sb.append("            ")
-        .append(MsoHelper.conditionalStart())
-        .append(
-            MsoHelper.msoTableOpening(
+    HtmlBuilder html = new HtmlBuilder();
+
+    html.open(
+        "table",
+        attrs(
+            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", outerStyle));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td");
+
+    html.rawVerbatim(
+        MsoHelper.conditionalStart()
+            + MsoHelper.msoTableOpening(
                 containerWidth,
                 escapeAttr(getCssClass()),
                 hasBg ? escapeAttr(bgColor) : null,
-                MsoHelper.MSO_TD_STYLE))
-        .append(MsoHelper.conditionalEnd())
-        .append("\n");
+                MsoHelper.MSO_TD_STYLE)
+            + MsoHelper.conditionalEnd()
+            + "\n");
 
-    // Inner wrapper div with max-width
-    sb.append("            <div style=\"margin:0px auto;max-width:")
-        .append(containerWidth)
-        .append("px;\">\n");
+    html.open("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"));
+    html.open(
+        "table",
+        attrs(
+            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "width:100%;"));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td", attrs("style", buildInnerTdStyle()));
 
-    // Inner table (NO background — background is on the outer table)
-    sb.append(
-        "              <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
-    sb.append("                <tbody>\n");
-    sb.append("                  <tr>\n");
+    renderWrappedChildren(html);
 
-    // Inner td with padding
-    sb.append("                    <td style=\"").append(buildInnerTdStyle()).append("\">\n");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
+    html.close("div");
 
-    renderWrappedChildren(sb);
+    html.raw(MsoHelper.msoConditionalTableClosing());
 
-    sb.append("                    </td>\n");
-    sb.append("                  </tr>\n");
-    sb.append("                </tbody>\n");
-    sb.append("              </table>\n");
-    sb.append("            </div>\n");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
-    // Close MSO inner table
-    sb.append("            ").append(MsoHelper.msoConditionalTableClosing()).append("\n");
-
-    sb.append("          </td>\n");
-    sb.append("        </tr>\n");
-    sb.append("      </tbody>\n");
-    sb.append("    </table>\n");
-
-    return sb.toString();
+    return html.toString();
   }
 
-  /**
-   * Renders child sections inside the wrapper. Each child gets its own MSO table wrapper pair, with
-   * tr/td transitions between them.
-   */
-  private void renderWrappedChildren(StringBuilder sb) {
+  private void renderWrappedChildren(HtmlBuilder html) {
     List<MjmlNode> sectionChildren = getSectionChildren();
 
     if (sectionChildren.isEmpty()) {
-      // Empty wrapper emits an empty MSO table
-      sb.append(
-          "              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table><![endif]-->\n");
+      html.raw(
+          "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table><![endif]-->");
       return;
     }
 
@@ -176,27 +166,22 @@ public class MjWrapper extends AbstractSectionComponent {
       boolean isLast = (i == sectionChildren.size() - 1);
 
       if (isFirst) {
-        // Open first MSO wrapper: table > tr > td (container width) > inner table (inner width) >
-        // tr > td
-        sb.append("              ")
-            .append(MsoHelper.msoWrapperNestedOpening(containerWidth, innerWidth))
-            .append("\n");
+        html.raw(MsoHelper.msoWrapperNestedOpening(containerWidth, innerWidth));
       }
 
-      // Insert gap spacer between adjacent children (not before the first)
       String gap = getAttribute("gap", "");
       if (!isFirst && !gap.isEmpty()) {
         int gapPx = CssUnitParser.parsePixels(gap, 0);
         if (gapPx > 0) {
-          sb.append("              <div style=\"font-size:0;line-height:")
-              .append(gapPx)
-              .append("px;height:")
-              .append(gapPx)
-              .append("px;\"> </div>\n");
+          html.rawVerbatim(
+              "<div style=\"font-size:0;line-height:"
+                  + gapPx
+                  + "px;height:"
+                  + gapPx
+                  + "px;\"> </div>\n");
         }
       }
 
-      // Render child section in "inside wrapper" mode
       RenderContext childContext =
           renderContext
               .withWidth(innerWidth)
@@ -205,19 +190,14 @@ public class MjWrapper extends AbstractSectionComponent {
 
       BaseComponent component = registry.createComponent(child, globalContext, childContext);
       if (component instanceof BodyComponent bodyComponent) {
-        sb.append(bodyComponent.render());
+        html.rawVerbatim(bodyComponent.render());
       }
 
       if (!isLast) {
-        // MSO transition between children: close inner table, close td, new tr > td (container
-        // width), new inner table (inner width)
-        sb.append("              ")
-            .append(MsoHelper.msoWrapperTransition(containerWidth, innerWidth))
-            .append("\n");
+        html.raw(MsoHelper.msoWrapperTransition(containerWidth, innerWidth));
       } else {
-        // Close last MSO wrapper: close inner table, close td, close tr, close outer table
-        sb.append(
-            "              <!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->\n");
+        html.raw(
+            "<!--[if mso | IE]></td></tr></table></td></tr></table><![endif]-->");
       }
     }
   }

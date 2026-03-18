@@ -196,7 +196,7 @@ public final class HtmlBuilder {
    * HTML attributes that must always be emitted even when their value is empty. {@code alt=""} is
    * required for accessibility on {@code <img>} tags.
    */
-  private static final Set<String> ALWAYS_EMIT = Set.of("alt");
+  private static final Set<String> ALWAYS_EMIT = Set.of("alt", "style");
 
   /**
    * Builds an attribute string from key/value pairs. Null or empty values cause the attribute to be

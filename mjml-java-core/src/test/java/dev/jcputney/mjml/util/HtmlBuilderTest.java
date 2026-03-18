@@ -135,9 +135,9 @@ class HtmlBuilderTest {
   }
 
   @Test
-  void attrsAlwaysEmitsAltEvenWhenEmpty() {
-    String result = attrs("alt", "", "class", "");
-    assertEquals(" alt=\"\"", result);
+  void attrsAlwaysEmitsAltAndStyleEvenWhenEmpty() {
+    String result = attrs("alt", "", "class", "", "style", "");
+    assertEquals(" alt=\"\" style=\"\"", result);
   }
 
   @Test

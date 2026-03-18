@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.body;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -8,6 +10,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.ColumnWidthCalculator;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,30 +52,25 @@ public class MjGroup extends BodyComponent {
 
   @Override
   public String render() {
-    StringBuilder sb = new StringBuilder();
     double groupWidth = renderContext.getContainerWidth();
     String direction = getAttribute("direction", "ltr");
 
-    // Build responsive class from the column width spec set by the parent section
     String widthSpec = renderContext.getColumnWidthSpec();
     String responsiveClass = buildResponsiveClass(widthSpec);
 
-    // Outer div with responsive class
-    sb.append("              <div class=\"")
-        .append(responsiveClass)
-        .append(" mj-outlook-group-fix\"");
-    sb.append(" style=\"").append(buildOuterStyle(direction)).append("\"");
-    sb.append(">\n");
+    HtmlBuilder html = new HtmlBuilder();
+    html.open(
+        "div",
+        attrs(
+            "class", responsiveClass + " mj-outlook-group-fix",
+            "style", buildOuterStyle(direction)));
 
-    // Register group's responsive media query BEFORE rendering children,
-    // matching MJML's ordering (group registers before its child columns)
     registerMediaQuery(responsiveClass, widthSpec);
 
     // MSO table open
-    sb.append(
-        "                <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
+    html.rawVerbatim(
+        "<!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
 
-    // Render column children
     List<MjmlNode> columns = getColumnChildren();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, groupWidth, false);
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
@@ -80,14 +78,11 @@ public class MjGroup extends BodyComponent {
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
 
-      // MSO column td
-      sb.append("<td style=\"vertical-align:top;width:")
-          .append(CssUnitParser.formatInt(widths[i]))
-          .append("px;\" >");
+      html.rawVerbatim(
+          "<td style=\"vertical-align:top;width:"
+              + CssUnitParser.formatInt(widths[i])
+              + "px;\" ><![endif]-->\n");
 
-      sb.append("<![endif]-->\n");
-
-      // Column context with proper width spec for responsive class
       RenderContext colContext =
           renderContext
               .withColumnWidth(widths[i], widthSpecs[i])
@@ -96,19 +91,18 @@ public class MjGroup extends BodyComponent {
 
       BaseComponent component = registry.createComponent(col, globalContext, colContext);
       if (component instanceof BodyComponent bodyComponent) {
-        sb.append(bodyComponent.render());
+        html.rawVerbatim(bodyComponent.render());
       }
 
-      sb.append("                <!--[if mso | IE]></td>");
-
+      html.rawVerbatim("<!--[if mso | IE]></td>");
       if (i == columns.size() - 1) {
-        sb.append("</tr></table><![endif]-->\n");
+        html.rawVerbatim("</tr></table><![endif]-->\n");
       }
     }
 
-    sb.append("              </div>\n");
+    html.close("div");
 
-    return sb.toString();
+    return html.toString();
   }
 
   private String buildOuterStyle(String direction) {

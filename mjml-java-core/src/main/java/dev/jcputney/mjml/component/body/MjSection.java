@@ -1,5 +1,7 @@
 package dev.jcputney.mjml.component.body;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -10,6 +12,7 @@ import dev.jcputney.mjml.render.VmlHelper;
 import dev.jcputney.mjml.util.ColumnWidthCalculator;
 import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.List;
 import java.util.Map;
@@ -90,33 +93,26 @@ public class MjSection extends AbstractSectionComponent {
    * -> columns.
    */
   private String renderInsideWrapper() {
-    StringBuilder sb = new StringBuilder();
     int wrapperInnerWidth = (int) renderContext.getContainerWidth();
 
-    // Simple div with max-width (no background — wrapper provides it)
-    sb.append("              <div style=\"margin:0px auto;max-width:")
-        .append(wrapperInnerWidth)
-        .append("px;\">\n");
+    HtmlBuilder html = new HtmlBuilder();
+    html.open("div", attrs("style", "margin:0px auto;max-width:" + wrapperInnerWidth + "px;"));
+    html.open(
+        "table",
+        attrs(
+            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "width:100%;"));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td", attrs("style", buildInnerTdStyle()));
+    html.rawVerbatim(renderColumnChildren());
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
+    html.close("div");
 
-    // Inner table (no background)
-    sb.append(
-        "                <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
-    sb.append("                  <tbody>\n");
-    sb.append("                    <tr>\n");
-
-    // Inner td with this section's own padding
-    sb.append("                      <td style=\"").append(buildInnerTdStyle()).append("\">\n");
-
-    // Render column children
-    sb.append(renderColumnChildren());
-
-    sb.append("                      </td>\n");
-    sb.append("                    </tr>\n");
-    sb.append("                  </tbody>\n");
-    sb.append("                </table>\n");
-    sb.append("              </div>\n");
-
-    return sb.toString();
+    return html.toString();
   }
 
   /**
@@ -124,98 +120,92 @@ public class MjSection extends AbstractSectionComponent {
    * rect, line-height wrapper, and background CSS.
    */
   private String renderFullWidth() {
-    StringBuilder sb = new StringBuilder();
     int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
     boolean hasBgUrl = hasBackgroundUrl();
     String bgUrl = getAttribute("background-url", "");
 
-    // Outer full-width table (real HTML, not MSO conditional)
-    sb.append("    <table align=\"center\" ");
+    // Build outer table style
+    String outerStyle;
     if (hasBgUrl) {
-      sb.append("background=\"").append(escapeAttr(bgUrl)).append("\" ");
-    }
-    sb.append("border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"");
-    if (hasBgUrl) {
-      sb.append(buildBgImageTableStyle());
+      outerStyle = buildBgImageTableStyle();
     } else {
-      if (hasBg) {
-        sb.append("background:")
-            .append(bgColor)
-            .append(";background-color:")
-            .append(bgColor)
-            .append(";");
-      }
-      sb.append("width:100%;");
+      outerStyle =
+          (hasBg ? "background:" + bgColor + ";background-color:" + bgColor + ";" : "")
+              + "width:100%;";
     }
-    sb.append("\">\n");
-    sb.append("      <tbody>\n");
-    sb.append("        <tr>\n");
-    sb.append("          <td>\n");
 
-    // MSO: VML rect (if bg image) + inner table
-    sb.append("            ").append(MsoHelper.conditionalStart());
-    if (hasBgUrl) {
-      sb.append(buildVmlRect("mso-width-percent:1000;", bgUrl, bgColor));
-    }
-    sb.append(
-            MsoHelper.msoTableOpening(
+    HtmlBuilder html = new HtmlBuilder();
+
+    // Outer full-width table
+    html.open(
+        "table",
+        attrs("align", "center")
+            + (hasBgUrl ? attrs("background", escapeAttr(bgUrl)) : "")
+            + attrs(
+                "border", "0", "cellpadding", "0", "cellspacing", "0",
+                "role", "presentation", "style", outerStyle));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td");
+
+    // MSO conditional + VML
+    html.rawVerbatim(
+        MsoHelper.conditionalStart()
+            + (hasBgUrl ? buildVmlRect("mso-width-percent:1000;", bgUrl, bgColor) : "")
+            + MsoHelper.msoTableOpening(
                 containerWidth,
                 escapeAttr(getCssClass()),
                 hasBg ? escapeAttr(bgColor) : null,
-                MsoHelper.MSO_TD_STYLE))
-        .append(MsoHelper.conditionalEnd())
-        .append("\n");
+                MsoHelper.MSO_TD_STYLE)
+            + MsoHelper.conditionalEnd()
+            + "\n");
 
-    // Inner div with max-width
-    sb.append("            <div style=\"margin:0px auto;max-width:")
-        .append(containerWidth)
-        .append("px;\">\n");
+    html.open("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"));
 
     if (hasBgUrl) {
-      sb.append("              <div style=\"line-height:0;font-size:0;\">\n");
+      html.open("div", attrs("style", "line-height:0;font-size:0;"));
     }
 
-    // Inner table
-    String innerIndent = hasBgUrl ? "                " : "              ";
-    sb.append(innerIndent)
-        .append(
-            "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
-    sb.append(innerIndent).append("  <tbody>\n");
-    sb.append(innerIndent).append("    <tr>\n");
-    sb.append(innerIndent).append("      <td style=\"").append(buildInnerTdStyle()).append("\">\n");
+    html.open(
+        "table",
+        attrs(
+            "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "width:100%;"));
+    html.open("tbody");
+    html.open("tr");
+    html.open("td", attrs("style", buildInnerTdStyle()));
 
-    sb.append(renderColumnChildren());
+    html.rawVerbatim(renderColumnChildren());
 
-    sb.append(innerIndent).append("      </td>\n");
-    sb.append(innerIndent).append("    </tr>\n");
-    sb.append(innerIndent).append("  </tbody>\n");
-    sb.append(innerIndent).append("</table>\n");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
     if (hasBgUrl) {
-      sb.append("              </div>\n");
+      html.close("div");
     }
-    sb.append("            </div>\n");
+    html.close("div");
 
     // Close MSO
     if (hasBgUrl) {
-      sb.append("            ")
-          .append(MsoHelper.conditionalStart())
-          .append(MsoHelper.msoTableClosing())
-          .append("</v:textbox></v:rect>")
-          .append(MsoHelper.conditionalEnd())
-          .append("\n");
+      html.raw(
+          MsoHelper.conditionalStart()
+              + MsoHelper.msoTableClosing()
+              + "</v:textbox></v:rect>"
+              + MsoHelper.conditionalEnd());
     } else {
-      sb.append("            ").append(MsoHelper.msoConditionalTableClosing()).append("\n");
+      html.raw(MsoHelper.msoConditionalTableClosing());
     }
 
-    sb.append("          </td>\n");
-    sb.append("        </tr>\n");
-    sb.append("      </tbody>\n");
-    sb.append("    </table>\n");
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
 
-    return sb.toString();
+    return html.toString();
   }
 
   private String buildVmlRect(String widthStyle, String bgUrl, String bgColor) {
@@ -229,40 +219,42 @@ public class MjSection extends AbstractSectionComponent {
   }
 
   private String renderColumnChildren() {
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder();
     List<MjmlNode> columns = getColumnChildren();
 
     if (columns.isEmpty()) {
-      // Even with no columns, MJML emits an empty MSO table
-      sb.append(
-          "              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table><![endif]-->\n");
-      return sb.toString();
+      html.raw(
+          "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table><![endif]-->");
+      return html.toString();
     }
 
-    // Calculate column widths (pixel and percentage)
     double contentWidth = getContentWidth();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, contentWidth, true);
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
 
-    // MSO column table: one table wrapping ALL columns
-    sb.append(
-        "              <!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+    html.rawVerbatim(
+        "<!--[if mso | IE]><table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
       boolean isGroup = "mj-group".equals(col.getTagName());
 
-      // MSO column td — use column's css-class with -outlook suffix
       String colCssClass = col.getAttribute("css-class", "");
       String msoColClass = colCssClass.isEmpty() ? "" : colCssClass + "-outlook";
-      sb.append("<td class=\"").append(escapeAttr(msoColClass)).append("\" style=\"");
-      if (!isGroup) {
-        String verticalAlign = col.getAttribute("vertical-align", "top");
-        sb.append("vertical-align:").append(escapeAttr(verticalAlign)).append(";");
-      }
-      sb.append("width:").append(CssUnitParser.formatPxWidth(widths[i])).append("px;\" >");
+      String msoStyle =
+          (!isGroup
+                  ? "vertical-align:" + escapeAttr(col.getAttribute("vertical-align", "top")) + ";"
+                  : "")
+              + "width:"
+              + CssUnitParser.formatPxWidth(widths[i])
+              + "px;";
 
-      sb.append("<![endif]-->\n");
+      html.rawVerbatim(
+          "<td class=\""
+              + escapeAttr(msoColClass)
+              + "\" style=\""
+              + msoStyle
+              + "\" ><![endif]-->\n");
 
       RenderContext colContext =
           renderContext
@@ -271,18 +263,16 @@ public class MjSection extends AbstractSectionComponent {
 
       BaseComponent component = registry.createComponent(col, globalContext, colContext);
       if (component instanceof BodyComponent bodyComponent) {
-        sb.append(bodyComponent.render());
+        html.rawVerbatim(bodyComponent.render());
       }
 
-      sb.append("              <!--[if mso | IE]></td>");
-
-      // If this is the last column, close the MSO table
+      html.rawVerbatim("<!--[if mso | IE]></td>");
       if (i == columns.size() - 1) {
-        sb.append("</tr></table><![endif]-->\n");
+        html.rawVerbatim("</tr></table><![endif]-->\n");
       }
     }
 
-    return sb.toString();
+    return html.toString();
   }
 
   private List<MjmlNode> getColumnChildren() {

@@ -1,11 +1,15 @@
 package dev.jcputney.mjml.component.body;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.Map;
 
 /**
@@ -51,65 +55,46 @@ public class MjBody extends BodyComponent {
       globalContext.metadata().setBodyBackgroundColor(bgColor);
     }
 
-    StringBuilder sb = new StringBuilder();
-
-    // Wrapper div with ARIA attributes
     String lang = globalContext.getConfiguration().getLanguage();
     if (lang == null || lang.isEmpty()) {
       lang = "und";
     }
 
-    sb.append("  <div");
-
-    // aria-label from mj-title if set
     String title = globalContext.metadata().getTitle();
-    if (title != null && !title.isEmpty()) {
-      sb.append(" aria-label=\"").append(escapeAttr(title)).append("\"");
-    }
-
-    sb.append(" aria-roledescription=\"email\"");
-
-    // class attribute before style (matches MJML ordering)
     String cssClass = getAttribute("css-class", "");
-    if (!cssClass.isEmpty()) {
-      sb.append(" class=\"").append(escapeAttr(cssClass)).append("\"");
-    }
+    String style = bgColor.isEmpty() ? "" : "background-color:" + escapeAttr(bgColor) + ";";
 
-    // style attribute (always emit, even if empty)
-    String style = "";
-    if (!bgColor.isEmpty()) {
-      style = "background-color:" + escapeAttr(bgColor) + ";";
-    }
-    sb.append(" style=\"").append(style).append("\"");
+    HtmlBuilder html = new HtmlBuilder();
+    // style="" must always be present even when empty
+    html.open(
+        "div",
+        attrIf("aria-label", title != null && !title.isEmpty() ? escapeAttr(title) : null)
+            + attrs("aria-roledescription", "email")
+            + attrIf("class", escapeAttr(cssClass))
+            + " style=\""
+            + style
+            + "\""
+            + attrs("role", "article", "lang", escapeAttr(lang), "dir", "auto"));
 
-    sb.append(" role=\"article\"");
-    sb.append(" lang=\"").append(escapeAttr(lang)).append("\"");
-    sb.append(" dir=\"auto\"");
-    sb.append(">\n");
-
-    // Render children with the body's container width
     RenderContext bodyContext = new RenderContext(containerWidth);
     var children = node.getChildren();
     for (int i = 0; i < children.size(); i++) {
       MjmlNode child = children.get(i);
       if (child.getTagName().startsWith("#")) {
-        // Check if it's a comment node (#comment) and output it
         if ("#comment".equals(child.getTagName())) {
-          sb.append("    <!-- ")
-              .append(child.getTextContent().trim().replace("--", ""))
-              .append(" -->\n");
+          html.line("<!-- " + child.getTextContent().trim().replace("--", "") + " -->");
         }
         continue;
       }
       RenderContext childContext = bodyContext.withPosition(i, i == 0, i == children.size() - 1);
       BaseComponent component = registry.createComponent(child, globalContext, childContext);
       if (component instanceof BodyComponent bodyComponent) {
-        sb.append(bodyComponent.render());
+        html.rawVerbatim(bodyComponent.render());
       }
     }
 
-    sb.append("  </div>\n");
+    html.close("div");
 
-    return sb.toString();
+    return html.toString();
   }
 }

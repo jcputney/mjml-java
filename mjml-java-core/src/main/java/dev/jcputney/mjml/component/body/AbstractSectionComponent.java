@@ -1,5 +1,8 @@
 package dev.jcputney.mjml.component.body;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
@@ -9,6 +12,7 @@ import dev.jcputney.mjml.util.BackgroundCssHelper;
 import dev.jcputney.mjml.util.BackgroundPositionHelper;
 import dev.jcputney.mjml.util.CssBoxModel;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -219,73 +223,71 @@ public abstract class AbstractSectionComponent extends BodyComponent {
    * @return the rendered HTML scaffold string
    */
   protected String renderNormalScaffold(String vmlRect, String innerContent, String outerDivClass) {
-    StringBuilder sb = new StringBuilder();
     int containerWidth = globalContext.metadata().getContainerWidth();
     String bgColor = getAttribute("background-color");
     boolean hasBg = bgColor != null && !bgColor.isEmpty();
     boolean hasBgUrl = hasBackgroundUrl();
     String bgUrl = getAttribute("background-url", "");
 
+    HtmlBuilder html = new HtmlBuilder();
+
     // MSO wrapper table
-    sb.append("    ")
-        .append(MsoHelper.conditionalStart())
-        .append(
-            MsoHelper.msoTableOpening(
+    html.rawVerbatim(
+        MsoHelper.conditionalStart()
+            + MsoHelper.msoTableOpening(
                 containerWidth,
                 escapeAttr(getCssClass()),
                 hasBg ? escapeAttr(bgColor) : null,
                 MsoHelper.MSO_TD_STYLE));
 
     if (hasBgUrl) {
-      sb.append(vmlRect);
-      sb.append("<![endif]-->\n");
-      sb.append("    <div style=\"").append(buildBgImageDivStyle()).append("\">\n");
-      sb.append("      <div style=\"line-height:0;font-size:0;\">\n");
-      sb.append("        <table align=\"center\" background=\"")
-          .append(escapeAttr(bgUrl))
-          .append("\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-      sb.append(" style=\"").append(buildBgImageTableStyle()).append("\"");
-      sb.append(">\n");
+      html.rawVerbatim(vmlRect);
+      html.rawVerbatim("<![endif]-->\n");
+      html.open("div", attrs("style", buildBgImageDivStyle()));
+      html.open("div", attrs("style", "line-height:0;font-size:0;"));
+      html.open(
+          "table",
+          attrs(
+              "align", "center", "background", escapeAttr(bgUrl),
+              "border", "0", "cellpadding", "0", "cellspacing", "0",
+              "role", "presentation", "style", buildBgImageTableStyle()));
     } else {
-      sb.append("<![endif]-->\n");
-      sb.append("    <div");
-      if (!outerDivClass.isEmpty()) {
-        sb.append(" class=\"").append(escapeAttr(outerDivClass)).append("\"");
-      }
-      sb.append(" style=\"").append(buildOuterDivStyle()).append("\"");
-      sb.append(">\n");
-      sb.append(
-          "      <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-      sb.append(" style=\"").append(buildInnerTableStyle()).append("\"");
-      sb.append(">\n");
+      html.rawVerbatim("<![endif]-->\n");
+      html.open(
+          "div",
+          attrIf("class", escapeAttr(outerDivClass)) + attrs("style", buildOuterDivStyle()));
+      html.open(
+          "table",
+          attrs(
+              "align", "center", "border", "0", "cellpadding", "0", "cellspacing", "0",
+              "role", "presentation", "style", buildInnerTableStyle()));
     }
 
-    String indent = hasBgUrl ? "          " : "        ";
-    sb.append(indent).append("<tbody>\n");
-    sb.append(indent).append("  <tr>\n");
-    sb.append(indent).append("    <td style=\"").append(buildInnerTdStyle()).append("\">\n");
-    sb.append(innerContent);
-    sb.append(indent).append("    </td>\n");
-    sb.append(indent).append("  </tr>\n");
-    sb.append(indent).append("</tbody>\n");
+    // Inner tbody/tr/td — indentation adjusts automatically based on hasBgUrl nesting
+    html.open("tbody");
+    html.open("tr");
+    html.open("td", attrs("style", buildInnerTdStyle()));
+    html.rawVerbatim(innerContent);
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
 
     if (hasBgUrl) {
-      sb.append("        </table>\n");
-      sb.append("      </div>\n");
-      sb.append("    </div>\n");
-      sb.append("    ")
-          .append(MsoHelper.conditionalStart())
-          .append("</v:textbox></v:rect>")
-          .append(MsoHelper.msoTableClosing())
-          .append(MsoHelper.conditionalEnd())
-          .append("\n");
+      html.close("table");
+      html.close("div");
+      html.close("div");
+      html.raw(
+          MsoHelper.conditionalStart()
+              + "</v:textbox></v:rect>"
+              + MsoHelper.msoTableClosing()
+              + MsoHelper.conditionalEnd());
     } else {
-      sb.append("      </table>\n");
-      sb.append("    </div>\n");
-      sb.append("    ").append(MsoHelper.msoConditionalTableClosing()).append("\n");
+      html.close("table");
+      html.close("div");
+      html.raw(MsoHelper.msoConditionalTableClosing());
     }
 
-    return sb.toString();
+    return html.toString();
   }
 
   /**

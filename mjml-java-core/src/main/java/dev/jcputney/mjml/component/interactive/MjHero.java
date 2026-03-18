@@ -1,5 +1,8 @@
 package dev.jcputney.mjml.component.interactive;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
 import dev.jcputney.mjml.context.GlobalContext;
@@ -7,6 +10,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssEscaper;
 import dev.jcputney.mjml.util.CssUnitParser;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -141,8 +145,6 @@ public class MjHero extends BodyComponent {
    * @param spacerPaddingPct if non-null, adds spacer tds with this padding-bottom %
    */
   private String renderHero(String vImageHeight, int innerHeight, String spacerPaddingPct) {
-    StringBuilder sb = new StringBuilder();
-
     String backgroundColor = getAttribute("background-color", "#ffffff");
     String backgroundUrl = getAttribute("background-url", "");
     String backgroundPosition = getAttribute("background-position", "center center");
@@ -150,111 +152,93 @@ public class MjHero extends BodyComponent {
     String padding = getAttribute("padding", "0px");
     int containerWidth = globalContext.metadata().getContainerWidth();
 
+    HtmlBuilder html = new HtmlBuilder();
+
     // MSO wrapper with v:image
-    sb.append(
-            "    <!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:")
-        .append(containerWidth)
-        .append("px;\" width=\"")
-        .append(containerWidth)
-        .append("\" ><tr><td style=\"line-height:0;font-size:0;mso-line-height-rule:exactly;\">");
-    appendVmlImage(sb, backgroundUrl, vImageHeight, containerWidth);
-    sb.append("<![endif]-->\n");
+    html.rawVerbatim(
+        "<!--[if mso | IE]><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:"
+            + containerWidth
+            + "px;\" width=\""
+            + containerWidth
+            + "\" ><tr><td style=\"line-height:0;font-size:0;mso-line-height-rule:exactly;\">");
+    appendVmlImage(html, backgroundUrl, vImageHeight, containerWidth);
+    html.rawVerbatim("<![endif]-->\n");
 
-    // Outer div
-    sb.append("    <div style=\"margin:0 auto;max-width:")
-        .append(containerWidth)
-        .append("px;\">\n");
+    html.open("div", attrs("style", "margin:0 auto;max-width:" + containerWidth + "px;"));
+    html.open(
+        "table",
+        attrs(
+            "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "width:100%;"));
+    html.open("tbody");
+    html.open("tr", attrs("style", "vertical-align:top;"));
 
-    // Table with vertical-align row
-    sb.append(
-        "      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;\">\n");
-    sb.append("        <tbody>\n");
-    sb.append("          <tr style=\"vertical-align:top;\">\n");
-
-    // Spacer td before content (fluid mode only)
     if (spacerPaddingPct != null) {
-      appendSpacerTd(sb, spacerPaddingPct);
+      appendSpacerTd(html, spacerPaddingPct);
     }
 
-    // Main content td with background
     appendContentTd(
-        sb,
-        backgroundUrl,
-        backgroundColor,
-        backgroundPosition,
-        padding,
-        verticalAlign,
+        html, backgroundUrl, backgroundColor, backgroundPosition, padding, verticalAlign,
         innerHeight);
 
-    // MSO inner table for content
-    sb.append(
-            "              <!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:")
-        .append(containerWidth)
-        .append("px;\" width=\"")
-        .append(containerWidth)
-        .append("\" ><tr><td style=\"\"><![endif]-->\n");
+    // MSO inner table — style="" must be present
+    html.rawVerbatim(
+        "<!--[if mso | IE]><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:"
+            + containerWidth
+            + "px;\" width=\""
+            + containerWidth
+            + "\" ><tr><td style=\"\"><![endif]-->\n");
 
-    // Hero content wrapper + children
-    appendHeroContent(sb);
+    appendHeroContent(html);
 
-    // Close MSO inner table
-    sb.append("              ").append(MsoHelper.msoConditionalTableClosing()).append("\n");
+    html.raw(MsoHelper.msoConditionalTableClosing());
 
-    sb.append("            </td>\n");
+    html.close("td");
 
-    // Spacer td after content (fluid mode only)
     if (spacerPaddingPct != null) {
-      appendSpacerTd(sb, spacerPaddingPct);
+      appendSpacerTd(html, spacerPaddingPct);
     }
 
-    sb.append("          </tr>\n");
-    sb.append("        </tbody>\n");
-    sb.append("      </table>\n");
-    sb.append("    </div>\n");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
+    html.close("div");
 
-    // Close MSO outer table
-    sb.append("    ").append(MsoHelper.msoConditionalTableClosing()).append("\n");
+    html.raw(MsoHelper.msoConditionalTableClosing());
 
-    return sb.toString();
+    return html.toString();
   }
 
-  /** Appends the VML v:image element for Outlook, if a background URL is set. */
   private void appendVmlImage(
-      StringBuilder sb, String backgroundUrl, String vImageHeight, int containerWidth) {
+      HtmlBuilder html, String backgroundUrl, String vImageHeight, int containerWidth) {
     if (!backgroundUrl.isEmpty()) {
-      sb.append("<v:image style=\"border:0;");
-      if (!vImageHeight.isEmpty()) {
-        sb.append("height:").append(escapeAttr(vImageHeight)).append(";");
-      }
-      sb.append("mso-position-horizontal:center;position:absolute;top:0;width:")
-          .append(containerWidth)
-          .append("px;z-index:-3;\" src=\"")
-          .append(escapeAttr(backgroundUrl))
-          .append("\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
+      String heightStyle = vImageHeight.isEmpty() ? "" : "height:" + escapeAttr(vImageHeight) + ";";
+      html.rawVerbatim(
+          "<v:image style=\"border:0;"
+              + heightStyle
+              + "mso-position-horizontal:center;position:absolute;top:0;width:"
+              + containerWidth
+              + "px;z-index:-3;\" src=\""
+              + escapeAttr(backgroundUrl)
+              + "\" xmlns:v=\"urn:schemas-microsoft-com:vml\" />");
     }
   }
 
-  /** Appends a spacer td used in fluid mode for aspect-ratio padding. */
-  private void appendSpacerTd(StringBuilder sb, String paddingPct) {
-    sb.append("            <td style=\"width:0.01%;padding-bottom:")
-        .append(paddingPct)
-        .append("%;mso-padding-bottom-alt:0;\" />\n");
+  private void appendSpacerTd(HtmlBuilder html, String paddingPct) {
+    html.rawVerbatim(
+        "<td style=\"width:0.01%;padding-bottom:"
+            + paddingPct
+            + "%;mso-padding-bottom-alt:0;\" />\n");
   }
 
-  /** Appends the main content td with background styles and optional height. */
   private void appendContentTd(
-      StringBuilder sb,
+      HtmlBuilder html,
       String backgroundUrl,
       String backgroundColor,
       String backgroundPosition,
       String padding,
       String verticalAlign,
       int innerHeight) {
-    sb.append("            <td");
-    if (!backgroundUrl.isEmpty()) {
-      sb.append(" background=\"").append(escapeAttr(backgroundUrl)).append("\"");
-    }
-    sb.append(" style=\"");
     Map<String, String> tdStyles = new LinkedHashMap<>();
     tdStyles.put(
         "background", buildBackgroundValue(backgroundUrl, backgroundColor, backgroundPosition));
@@ -267,46 +251,56 @@ public class MjHero extends BodyComponent {
     if (innerHeight > 0) {
       tdStyles.put("height", innerHeight + "px");
     }
-    sb.append(buildStyle(tdStyles)).append("\"");
-    if (innerHeight > 0) {
-      sb.append(" height=\"").append(innerHeight).append("\"");
-    }
-    sb.append(">\n");
+
+    // open() would add indent+newline; we need to stay in the builder's flow
+    html.rawVerbatim(
+        "<td"
+            + attrIf("background", !backgroundUrl.isEmpty() ? escapeAttr(backgroundUrl) : null)
+            + " style=\""
+            + buildStyle(tdStyles)
+            + "\""
+            + (innerHeight > 0 ? " height=\"" + innerHeight + "\"" : "")
+            + ">\n");
+    html.indent(); // track depth for children
   }
 
-  /** Appends the hero content wrapper div and child component rows. */
-  private void appendHeroContent(StringBuilder sb) {
-    sb.append("              <div class=\"mj-hero-content\" style=\"margin:0px auto;\">\n");
-    sb.append(
-        "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;margin:0px;\">\n");
-    sb.append("                  <tbody>\n");
-    sb.append("                    <tr>\n");
-    sb.append("                      <td style=\"\">\n");
-    sb.append(
-        "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:100%;margin:0px;\">\n");
-    sb.append("                          <tbody>\n");
-    sb.append(renderChildrenAsRows());
-    sb.append("                          </tbody>\n");
-    sb.append("                        </table>\n");
-    sb.append("                      </td>\n");
-    sb.append("                    </tr>\n");
-    sb.append("                  </tbody>\n");
-    sb.append("                </table>\n");
-    sb.append("              </div>\n");
+  private void appendHeroContent(HtmlBuilder html) {
+    html.open("div", attrs("class", "mj-hero-content", "style", "margin:0px auto;"));
+    html.open(
+        "table",
+        attrs(
+            "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "width:100%;margin:0px;"));
+    html.open("tbody");
+    html.open("tr");
+    // style="" must always be present on this td
+    html.rawVerbatim("<td style=\"\">\n");
+    html.indent();
+    html.open(
+        "table",
+        attrs(
+            "border", "0", "cellpadding", "0", "cellspacing", "0",
+            "role", "presentation", "style", "width:100%;margin:0px;"));
+    html.open("tbody");
+    html.rawVerbatim(renderChildrenAsRows());
+    html.close("tbody");
+    html.close("table");
+    html.outdent();
+    html.close("td");
+    html.close("tr");
+    html.close("tbody");
+    html.close("table");
+    html.close("div");
   }
 
-  /** Renders each child component inside its own table row with padding. */
   private String renderChildrenAsRows() {
-    StringBuilder sb = new StringBuilder();
+    HtmlBuilder html = new HtmlBuilder();
 
     for (MjmlNode child : node.getChildren()) {
       if (child.getTagName().startsWith("#")) {
         continue;
       }
 
-      sb.append("                          <tr>\n");
-
-      // Get the child's padding attribute
       String childPadding = child.getAttribute("padding");
       if (childPadding == null || childPadding.isEmpty()) {
         childPadding = "10px 25px";
@@ -317,27 +311,26 @@ public class MjHero extends BodyComponent {
         align = "center";
       }
 
-      sb.append("                            <td align=\"")
-          .append(escapeAttr(align))
-          .append("\" style=\"font-size:0px;padding:")
-          .append(escapeAttr(childPadding))
-          .append(";word-break:break-word;\">\n");
+      String tdStyle =
+          "font-size:0px;padding:" + escapeAttr(childPadding) + ";word-break:break-word;";
 
-      // Render the child component
+      html.open("tr");
+      html.open("td", attrs("align", escapeAttr(align), "style", tdStyle));
+
       var component = registry.createComponent(child, globalContext, renderContext);
       if (component instanceof BodyComponent bodyComponent) {
         String rendered = bodyComponent.render();
-        sb.append(rendered);
+        html.rawVerbatim(rendered);
         if (!rendered.endsWith("\n")) {
-          sb.append("\n");
+          html.newline();
         }
       }
 
-      sb.append("                            </td>\n");
-      sb.append("                          </tr>\n");
+      html.close("td");
+      html.close("tr");
     }
 
-    return sb.toString();
+    return html.toString();
   }
 
   private String buildBackgroundValue(String url, String color, String position) {

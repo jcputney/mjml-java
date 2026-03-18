@@ -1,5 +1,8 @@
 package dev.jcputney.mjml.component.body;
 
+import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -7,6 +10,7 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssBoxModel;
+import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -66,75 +70,62 @@ public class MjColumn extends BodyComponent {
 
   @Override
   public String render() {
-    StringBuilder sb = new StringBuilder();
     double columnWidth = renderContext.getContainerWidth();
-
-    // Get the column width specification from the parent section
     String widthSpec = renderContext.getColumnWidthSpec();
     String responsiveClass = buildResponsiveClass(widthSpec);
-
-    // hasGutter: true when any padding attribute is set (triggers nested table structure)
     boolean hasGutter = hasGutter();
-
-    // Outer div with responsive class + mj-outlook-group-fix + optional css-class
-    String cssClass = getAttribute("css-class", "");
-    sb.append("              <div class=\"")
-        .append(responsiveClass)
-        .append(" mj-outlook-group-fix");
-    if (!cssClass.isEmpty()) {
-      sb.append(" ").append(escapeAttr(cssClass));
-    }
-    sb.append("\"");
-    sb.append(" style=\"").append(buildOuterStyle()).append("\"");
-    sb.append(">\n");
-
     boolean hasBorder = hasBorderRadius();
 
+    String cssClass = getAttribute("css-class", "");
+    String divClass =
+        responsiveClass
+            + " mj-outlook-group-fix"
+            + (cssClass.isEmpty() ? "" : " " + escapeAttr(cssClass));
+
+    HtmlBuilder html = new HtmlBuilder();
+    html.open("div", attrs("class", divClass, "style", buildOuterStyle()));
+
     if (hasGutter) {
-      // Nested structure: outer table -> td (with padding/background) -> inner table -> content
-      sb.append(
-          "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" width=\"100%\"");
-      if (hasBorder) {
-        sb.append(" style=\"border-collapse:separate;\"");
-      }
-      sb.append(">\n");
-      sb.append("                  <tbody>\n");
-      sb.append("                    <tr>\n");
-      sb.append("                      <td style=\"").append(buildGutterTdStyle()).append("\">\n");
-      sb.append(
-          "                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-      sb.append(" style=\"").append(buildInnerTableStyle()).append("\"");
-      sb.append(" width=\"100%\">\n");
-      sb.append("                          <tbody>\n");
+      html.open(
+          "table",
+          attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
+              "role", "presentation", "width", "100%")
+              + (hasBorder ? " style=\"border-collapse:separate;\"" : ""));
+      html.open("tbody");
+      html.open("tr");
+      html.open("td", attrs("style", buildGutterTdStyle()));
+      html.open(
+          "table",
+          attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
+              "role", "presentation", "style", buildInnerTableStyle(), "width", "100%"));
+      html.open("tbody");
 
-      renderContentChildren(sb, columnWidth, true);
+      renderContentChildren(html, columnWidth);
 
-      sb.append("                          </tbody>\n");
-      sb.append("                        </table>\n");
-      sb.append("                      </td>\n");
-      sb.append("                    </tr>\n");
-      sb.append("                  </tbody>\n");
-      sb.append("                </table>\n");
+      html.close("tbody");
+      html.close("table");
+      html.close("td");
+      html.close("tr");
+      html.close("tbody");
+      html.close("table");
     } else {
-      // Simple structure: single table -> content
-      sb.append(
-          "                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\"");
-      sb.append(" style=\"").append(buildNoGutterTableStyle()).append("\"");
-      sb.append(" width=\"100%\">\n");
-      sb.append("                  <tbody>\n");
+      html.open(
+          "table",
+          attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
+              "role", "presentation", "style", buildNoGutterTableStyle(), "width", "100%"));
+      html.open("tbody");
 
-      renderContentChildren(sb, columnWidth, false);
+      renderContentChildren(html, columnWidth);
 
-      sb.append("                  </tbody>\n");
-      sb.append("                </table>\n");
+      html.close("tbody");
+      html.close("table");
     }
 
-    sb.append("              </div>\n");
+    html.close("div");
 
-    // Add responsive media query for this column
     registerMediaQuery(responsiveClass, widthSpec);
 
-    return sb.toString();
+    return html.toString();
   }
 
   /**
@@ -156,14 +147,10 @@ public class MjColumn extends BodyComponent {
     return !borderRadius.isEmpty();
   }
 
-  private void renderContentChildren(StringBuilder sb, double columnWidth, boolean nested) {
+  private void renderContentChildren(HtmlBuilder html, double columnWidth) {
     CssBoxModel box = getBoxModel();
     double contentWidth = columnWidth - box.horizontalSpacing();
     RenderContext childContext = renderContext.withWidth(contentWidth);
-
-    // Indentation depends on nesting level
-    String trIndent = nested ? "                            " : "                    ";
-    String tdIndent = nested ? "                              " : "                      ";
 
     var children = node.getChildren();
     for (int i = 0; i < children.size(); i++) {
@@ -175,29 +162,25 @@ public class MjColumn extends BodyComponent {
       RenderContext itemContext = childContext.withPosition(i, i == 0, i == children.size() - 1);
       BaseComponent component = registry.createComponent(child, globalContext, itemContext);
       if (component instanceof BodyComponent bodyComponent) {
-        // mj-raw is a pass-through — render directly without tr/td wrapper
         if ("mj-raw".equals(child.getTagName())) {
-          sb.append(bodyComponent.render());
+          html.rawVerbatim(bodyComponent.render());
           continue;
         }
-        sb.append(trIndent).append("<tr>\n");
-        sb.append(tdIndent).append("<td");
+
         String align = bodyComponent.getAttribute("align", "");
-        if (!align.isEmpty()) {
-          sb.append(" align=\"").append(escapeAttr(align)).append("\"");
-        }
         String tdCssClass = bodyComponent.getAttribute("css-class", "");
-        if (!tdCssClass.isEmpty()) {
-          sb.append(" class=\"").append(escapeAttr(tdCssClass)).append("\"");
-        }
         String tdStyle = buildTdStyle(bodyComponent);
-        if (!tdStyle.isEmpty()) {
-          sb.append(" style=\"").append(tdStyle).append("\"");
-        }
-        sb.append(">\n");
-        sb.append(bodyComponent.render());
-        sb.append("\n").append(tdIndent).append("</td>\n");
-        sb.append(trIndent).append("</tr>\n");
+
+        html.open("tr");
+        html.open(
+            "td",
+            attrIf("align", escapeAttr(align))
+                + attrIf("class", escapeAttr(tdCssClass))
+                + attrIf("style", tdStyle));
+        html.rawVerbatim(bodyComponent.render());
+        html.newline();
+        html.close("td");
+        html.close("tr");
       }
     }
   }
