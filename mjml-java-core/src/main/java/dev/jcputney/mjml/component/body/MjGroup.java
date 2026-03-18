@@ -70,22 +70,24 @@ public class MjGroup extends BodyComponent {
 
     registerMediaQuery(responsiveClass, widthSpec);
 
-    // MSO table open
-    html.rawVerbatim(
-        MsoHelper.conditionalStart()
-            + "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>");
-
     List<MjmlNode> columns = getColumnChildren();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, groupWidth, false);
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
 
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
-
-      html.rawVerbatim(
+      String msoTdOpen =
           "<td style=\"vertical-align:top;width:"
               + CssUnitParser.formatInt(widths[i])
-              + "px;\" >" + MsoHelper.conditionalEnd() + "\n");
+              + "px;\" >";
+
+      if (i == 0) {
+        html.mso(
+            "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>"
+                + msoTdOpen);
+      } else {
+        html.mso("</td>" + msoTdOpen);
+      }
 
       RenderContext colContext =
           renderContext
@@ -97,11 +99,10 @@ public class MjGroup extends BodyComponent {
       if (component instanceof BodyComponent bodyComponent) {
         html.rawVerbatim(bodyComponent.render());
       }
+    }
 
-      html.rawVerbatim(MsoHelper.conditionalStart() + "</td>");
-      if (i == columns.size() - 1) {
-        html.rawVerbatim("</tr></table>" + MsoHelper.conditionalEnd() + "\n");
-      }
+    if (!columns.isEmpty()) {
+      html.mso("</td></tr></table>");
     }
 
     html.close("div");

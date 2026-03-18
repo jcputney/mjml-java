@@ -169,16 +169,18 @@ public class MjSection extends AbstractSectionComponent {
     html.open("td");
 
     // MSO conditional + VML
-    html.rawVerbatim(
-        MsoHelper.conditionalStart()
-            + (hasBgUrl ? buildVmlRect("mso-width-percent:1000;", bgUrl, bgColor) : "")
-            + MsoHelper.msoTableOpening(
-                containerWidth,
-                escapeAttr(getCssClass()),
-                hasBg ? escapeAttr(bgColor) : null,
-                MsoHelper.MSO_TD_STYLE)
-            + MsoHelper.conditionalEnd()
-            + "\n");
+    html.mso(
+        () -> {
+          if (hasBgUrl) {
+            html.rawVerbatim(buildVmlRect("mso-width-percent:1000;", bgUrl, bgColor));
+          }
+          html.rawVerbatim(
+              MsoHelper.msoTableOpening(
+                  containerWidth,
+                  escapeAttr(getCssClass()),
+                  hasBg ? escapeAttr(bgColor) : null,
+                  MsoHelper.MSO_TD_STYLE));
+        });
 
     html.open("div", attrs("style", "margin:0px auto;max-width:" + containerWidth + "px;"));
 
@@ -219,13 +221,9 @@ public class MjSection extends AbstractSectionComponent {
 
     // Close MSO
     if (hasBgUrl) {
-      html.raw(
-          MsoHelper.conditionalStart()
-              + MsoHelper.msoTableClosing()
-              + "</v:textbox></v:rect>"
-              + MsoHelper.conditionalEnd());
+      html.mso(MsoHelper.msoTableClosing() + "</v:textbox></v:rect>");
     } else {
-      html.raw(MsoHelper.msoConditionalTableClosing());
+      html.mso(MsoHelper.msoTableClosing());
     }
 
     html.close("td");
@@ -251,20 +249,14 @@ public class MjSection extends AbstractSectionComponent {
     List<MjmlNode> columns = getColumnChildren();
 
     if (columns.isEmpty()) {
-      html.raw(
-          MsoHelper.conditionalStart()
-              + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table>"
-              + MsoHelper.conditionalEnd());
+      html.mso(
+          "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table>");
       return html.toString();
     }
 
     double contentWidth = getContentWidth();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, contentWidth, true);
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
-
-    html.rawVerbatim(
-        MsoHelper.conditionalStart()
-            + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
@@ -280,12 +272,18 @@ public class MjSection extends AbstractSectionComponent {
               + CssUnitParser.formatPxWidth(widths[i])
               + "px;";
 
-      html.rawVerbatim(
-          "<td class=\""
-              + escapeAttr(msoColClass)
-              + "\" style=\""
-              + msoStyle
-              + "\" >" + MsoHelper.conditionalEnd() + "\n");
+      String msoTdOpen =
+          "<td class=\"" + escapeAttr(msoColClass) + "\" style=\"" + msoStyle + "\" >";
+
+      // MSO: open table (first) or close-prev + open-next (subsequent)
+      if (i == 0) {
+        html.mso(
+            "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>"
+                + msoTdOpen);
+      } else {
+        // Close previous td + open this td in one conditional (no split)
+        html.mso("</td>" + msoTdOpen);
+      }
 
       RenderContext colContext =
           renderContext
@@ -296,11 +294,11 @@ public class MjSection extends AbstractSectionComponent {
       if (component instanceof BodyComponent bodyComponent) {
         html.rawVerbatim(bodyComponent.render());
       }
+    }
 
-      html.rawVerbatim(MsoHelper.conditionalStart() + "</td>");
-      if (i == columns.size() - 1) {
-        html.rawVerbatim("</tr></table>" + MsoHelper.conditionalEnd() + "\n");
-      }
+    // Close last td + table after the loop
+    if (!columns.isEmpty()) {
+      html.mso("</td></tr></table>");
     }
 
     return html.toString();

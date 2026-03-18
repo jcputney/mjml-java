@@ -87,22 +87,14 @@ public class MjSocial extends BodyComponent {
   }
 
   private void renderHorizontal(HtmlBuilder html, List<MjmlNode> elements, String align) {
-    html.raw(
-        MsoHelper.conditionalStart()
-            + "<table"
-            + attrs(
-                "align",
-                align,
-                "border",
-                "0",
-                "cellpadding",
-                "0",
-                "cellspacing",
-                "0",
-                "role",
-                "presentation")
-            + " ><tr><td>"
-            + MsoHelper.conditionalEnd());
+    html.mso(
+        () ->
+            html.rawVerbatim(
+                "<table"
+                    + attrs(
+                        "align", align, "border", "0", "cellpadding", "0", "cellspacing", "0",
+                        "role", "presentation")
+                    + " ><tr><td>"));
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);
@@ -113,11 +105,11 @@ public class MjSocial extends BodyComponent {
       }
 
       if (i < elements.size() - 1) {
-        html.raw(MsoHelper.conditionalStart() + "</td><td>" + MsoHelper.conditionalEnd());
+        html.mso("</td><td>");
       }
     }
 
-    html.raw(MsoHelper.msoConditionalTableClosing());
+    html.mso("</td></tr></table>");
   }
 
   private void renderVertical(HtmlBuilder html, List<MjmlNode> elements, String align) {

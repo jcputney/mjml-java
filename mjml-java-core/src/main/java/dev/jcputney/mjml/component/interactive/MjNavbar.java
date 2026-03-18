@@ -110,27 +110,26 @@ public class MjNavbar extends BodyComponent {
     html.rawVerbatim("<div class=\"mj-inline-links\" style=\"\">\n");
 
     // MSO table wrapper around all links
-    String msoOpen =
-        MsoHelper.conditionalStart()
-            + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>";
-    if (!linkPaddings.isEmpty()) {
-      msoOpen += "<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >";
-    }
-    msoOpen += MsoHelper.conditionalEnd();
-    html.raw(msoOpen);
+    html.mso(
+        () -> {
+          html.rawVerbatim(
+              "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>");
+          if (!linkPaddings.isEmpty()) {
+            html.rawVerbatim(
+                "<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >");
+          }
+        });
 
     for (int i = 0; i < renderedLinks.size(); i++) {
       html.rawVerbatim(renderedLinks.get(i) + "\n");
 
       if (i < renderedLinks.size() - 1) {
-        html.raw(
-            "<!--[if mso | IE]></td><td style=\"padding:"
-                + linkPaddings.get(i + 1)
-                + ";\" class=\"\" ><![endif]-->");
+        html.mso(
+            "</td><td style=\"padding:" + linkPaddings.get(i + 1) + ";\" class=\"\" >");
       }
     }
 
-    html.raw(MsoHelper.msoConditionalTableClosing());
+    html.mso(MsoHelper.msoTableClosing());
     html.rawVerbatim("</div>\n");
 
     return html.toString();

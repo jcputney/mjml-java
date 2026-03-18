@@ -234,4 +234,33 @@ class HtmlBuilderTest {
 
     assertEquals("<div>\n  hello\n</div>\n", result);
   }
+
+  @Test
+  void msoStringWrapsInConditionalComments() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.mso("</td></tr></table>");
+
+    assertEquals("<!--[if mso | IE]></td></tr></table><![endif]-->\n", html.toString());
+  }
+
+  @Test
+  void msoBlockWrapsBuilderOutput() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.mso(() -> html.rawVerbatim("<table><tr><td>"));
+
+    assertEquals("<!--[if mso | IE]><table><tr><td><![endif]-->\n", html.toString());
+  }
+
+  @Test
+  void msoBlockWithStructuredContent() {
+    HtmlBuilder html = new HtmlBuilder();
+    html.mso(
+        () ->
+            html.rawVerbatim(
+                "<table" + attrs("role", "presentation", "border", "0") + "></table>"));
+
+    assertEquals(
+        "<!--[if mso | IE]><table role=\"presentation\" border=\"0\"></table><![endif]-->\n",
+        html.toString());
+  }
 }

@@ -102,6 +102,8 @@ class GoldenFileTest {
         .replaceAll("[ \\t]+", " ")
         .replaceAll(" *\\n *", "\n")
         .replaceAll("\\n{2,}", "\n")
+        // Collapse whitespace between tags so indentation changes are invisible
+        .replaceAll(">\\s+<", "><")
         // Normalize dynamic IDs: hex (MJML golden) or deterministic (our output)
         .replaceAll("id=\"[0-9a-f]{6,20}\"", "id=\"DYNAMIC_ID\"")
         .replaceAll("id=\"(?:carousel|navbar)-\\d+\"", "id=\"DYNAMIC_ID\"")

@@ -163,6 +163,36 @@ public final class HtmlBuilder {
     return this;
   }
 
+  // --- MSO conditional helpers ---
+
+  private static final String MSO_START = "<!--[if mso | IE]>";
+  private static final String MSO_END = "<![endif]-->";
+
+  /**
+   * Wraps the output of a builder block in MSO conditional comments. Everything written by the
+   * block appears between {@code <!--[if mso | IE]>} and {@code <![endif]-->}, followed by a
+   * newline.
+   */
+  public HtmlBuilder mso(Runnable block) {
+    sb.append(MSO_START);
+    block.run();
+    sb.append(MSO_END).append('\n');
+    return this;
+  }
+
+  /**
+   * Wraps a string in MSO conditional comments followed by a newline. Shorthand for simple MSO
+   * content that doesn't need builder calls.
+   */
+  public HtmlBuilder mso(String content) {
+    sb.append(MSO_START);
+    if (content != null) {
+      sb.append(content);
+    }
+    sb.append(MSO_END).append('\n');
+    return this;
+  }
+
   /** Appends a newline character. */
   public HtmlBuilder newline() {
     sb.append('\n');

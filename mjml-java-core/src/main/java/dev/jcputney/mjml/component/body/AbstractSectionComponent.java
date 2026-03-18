@@ -232,17 +232,20 @@ public abstract class AbstractSectionComponent extends BodyComponent {
     HtmlBuilder html = new HtmlBuilder();
 
     // MSO wrapper table
-    html.rawVerbatim(
-        MsoHelper.conditionalStart()
-            + MsoHelper.msoTableOpening(
-                containerWidth,
-                escapeAttr(getCssClass()),
-                hasBg ? escapeAttr(bgColor) : null,
-                MsoHelper.MSO_TD_STYLE));
+    html.mso(
+        () -> {
+          html.rawVerbatim(
+              MsoHelper.msoTableOpening(
+                  containerWidth,
+                  escapeAttr(getCssClass()),
+                  hasBg ? escapeAttr(bgColor) : null,
+                  MsoHelper.MSO_TD_STYLE));
+          if (hasBgUrl) {
+            html.rawVerbatim(vmlRect);
+          }
+        });
 
     if (hasBgUrl) {
-      html.rawVerbatim(vmlRect);
-      html.rawVerbatim("<![endif]-->\n");
       html.open("div", attrs("style", buildBgImageDivStyle()));
       html.open("div", attrs("style", "line-height:0;font-size:0;"));
       html.open(
@@ -263,7 +266,6 @@ public abstract class AbstractSectionComponent extends BodyComponent {
               "style",
               buildBgImageTableStyle()));
     } else {
-      html.rawVerbatim("<![endif]-->\n");
       html.open(
           "div", attrIf("class", escapeAttr(outerDivClass)) + attrs("style", buildOuterDivStyle()));
       html.open(
@@ -296,15 +298,11 @@ public abstract class AbstractSectionComponent extends BodyComponent {
       html.close("table");
       html.close("div");
       html.close("div");
-      html.raw(
-          MsoHelper.conditionalStart()
-              + "</v:textbox></v:rect>"
-              + MsoHelper.msoTableClosing()
-              + MsoHelper.conditionalEnd());
+      html.mso("</v:textbox></v:rect>" + MsoHelper.msoTableClosing());
     } else {
       html.close("table");
       html.close("div");
-      html.raw(MsoHelper.msoConditionalTableClosing());
+      html.mso(MsoHelper.msoTableClosing());
     }
 
     return html.toString();

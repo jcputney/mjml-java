@@ -165,10 +165,8 @@ public class MjWrapper extends AbstractSectionComponent {
     List<MjmlNode> sectionChildren = getSectionChildren();
 
     if (sectionChildren.isEmpty()) {
-      html.raw(
-          MsoHelper.conditionalStart()
-              + "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table>"
-              + MsoHelper.conditionalEnd());
+      html.mso(
+          "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"></table>");
       return;
     }
 
@@ -218,10 +216,7 @@ public class MjWrapper extends AbstractSectionComponent {
       if (!isLast) {
         html.raw(MsoHelper.msoWrapperTransition(containerWidth, innerWidth));
       } else {
-        html.raw(
-            MsoHelper.conditionalStart()
-                + "</td></tr></table></td></tr></table>"
-                + MsoHelper.conditionalEnd());
+        html.mso("</td></tr></table></td></tr></table>");
       }
     }
   }
