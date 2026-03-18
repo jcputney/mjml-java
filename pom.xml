@@ -126,6 +126,7 @@
                 <configuration>
                     <legacyMode>true</legacyMode>
                     <failOnError>true</failOnError>
+                    <additionalOptions>-Xdoclint:-missing</additionalOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -149,29 +150,70 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>${version.plugin.spotless}</version>
-                <configuration>
-                    <java>
-                        <googleJavaFormat>
-                            <version>${version.google-java-format}</version>
-                        </googleJavaFormat>
-                    </java>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
     <profiles>
+        <profile>
+            <!-- GJF 1.29+ requires JDK 21+ internal APIs; use latest on 21+ -->
+            <id>spotless-jdk21</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <version>${version.plugin.spotless}</version>
+                        <configuration>
+                            <java>
+                                <googleJavaFormat>
+                                    <version>${version.google-java-format}</version>
+                                </googleJavaFormat>
+                            </java>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- GJF 1.28.0 is the last version that runs on JDK 17-20 -->
+            <id>spotless-jdk17</id>
+            <activation>
+                <jdk>[17,21)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <version>${version.plugin.spotless}</version>
+                        <configuration>
+                            <java>
+                                <googleJavaFormat>
+                                    <version>1.28.0</version>
+                                </googleJavaFormat>
+                            </java>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>sign</id>
             <build>
