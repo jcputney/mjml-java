@@ -93,36 +93,32 @@ public class MjNavbar extends BodyComponent {
     String uniqueId = renderContext.nextUniqueId("navbar");
 
     if (hasHamburger) {
-      html.notMso(() ->
-        html.selfClose("input",
-          attrs("type", "checkbox", "id", uniqueId, "class", "mj-menu-checkbox",
-            "style", "display:none !important; max-height:0; visibility:hidden;")));
+      html.notMso(() -> html.selfClose("input",
+        attrs("type", "checkbox", "id", uniqueId, "class", "mj-menu-checkbox",
+          "style", "display:none !important; max-height:0; visibility:hidden;")));
       renderHamburgerTrigger(html, uniqueId);
     }
 
-    // Inline links container — style="" must be present even when empty
-    html.open("div", attrs("class", "mj-inline-links", "style", ""));
+    html.wrap("div", attrs("class", "mj-inline-links", "style", ""), () -> {
+      html.mso(() -> {
+        html.open("table",
+          attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0", "align", "center"));
+        html.open("tr");
+        if (!linkPaddings.isEmpty()) {
+          html.open("td", attrs("style", "padding:" + linkPaddings.get(0) + ";") + " class=\"\" ");
+        }
+      });
 
-    // MSO table wrapper around all links
-    html.mso(() -> {
-      html.open("table",
-        attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0", "align", "center"));
-      html.open("tr");
-      if (!linkPaddings.isEmpty()) {
-        html.open("td", attrs("style", "padding:" + linkPaddings.get(0) + ";") + " class=\"\" ");
+      for (int i = 0; i < renderedLinks.size(); i++) {
+        html.rawVerbatim(renderedLinks.get(i) + "\n");
+
+        if (i < renderedLinks.size() - 1) {
+          html.mso("</td><td style=\"padding:" + linkPaddings.get(i + 1) + ";\" class=\"\" >");
+        }
       }
+
+      html.mso(MsoHelper.msoTableClosing());
     });
-
-    for (int i = 0; i < renderedLinks.size(); i++) {
-      html.rawVerbatim(renderedLinks.get(i) + "\n");
-
-      if (i < renderedLinks.size() - 1) {
-        html.mso("</td><td style=\"padding:" + linkPaddings.get(i + 1) + ";\" class=\"\" >");
-      }
-    }
-
-    html.mso(MsoHelper.msoTableClosing());
-    html.close("div");
 
     return html.toString();
   }
@@ -144,48 +140,27 @@ public class MjNavbar extends BodyComponent {
       "max-width", "0px",
       "font-size", "0px",
       "overflow", "hidden"));
-    html.open("div", attrs("class", "mj-menu-trigger", "style", triggerStyle));
-
     String labelStyle = buildStyle(orderedMap(
-      "display",
-      "block",
-      "cursor",
-      "pointer",
-      "mso-hide",
-      "all",
-      "-moz-user-select",
-      "none",
-      "user-select",
-      "none",
-      "color",
-      colorValue,
-      "font-size",
-      icoFontSize,
-      "font-family",
-      icoFontFamily,
-      "text-transform",
-      icoTextTransform,
-      "text-decoration",
-      "none",
-      "line-height",
-      icoLineHeight,
-      "padding",
-      icoPadding));
-    html.open(
-      "label",
-      attrs("for", uniqueId, "class", "mj-menu-label", "style", labelStyle) + " align=\"" + icoAlign + "\"");
+      "display", "block", "cursor", "pointer", "mso-hide", "all",
+      "-moz-user-select", "none", "user-select", "none",
+      "color", colorValue, "font-size", icoFontSize,
+      "font-family", icoFontFamily, "text-transform", icoTextTransform,
+      "text-decoration", "none", "line-height", icoLineHeight, "padding", icoPadding));
 
     String icoOpen = encodeNonAscii(getAttribute("ico-open", "&#9776;"));
-    html.openInline("span", attrs("class", "mj-menu-icon-open", "style", "mso-hide:all;"))
-      .text(" " + icoOpen + " ")
-      .closeInlineLn("span");
     String icoClose = encodeNonAscii(getAttribute("ico-close", "&#8855;"));
-    html.openInline("span", attrs("class", "mj-menu-icon-close", "style", "display:none;mso-hide:all;"))
-      .text(" " + icoClose + " ")
-      .closeInlineLn("span");
 
-    html.close("label");
-    html.close("div");
+    html.wrap("div", attrs("class", "mj-menu-trigger", "style", triggerStyle),
+      () -> html.wrap("label",
+        attrs("for", uniqueId, "class", "mj-menu-label", "style", labelStyle) + " align=\"" + icoAlign + "\"",
+        () -> {
+          html.openInline("span", attrs("class", "mj-menu-icon-open", "style", "mso-hide:all;"))
+            .text(" " + icoOpen + " ")
+            .closeInlineLn("span");
+          html.openInline("span", attrs("class", "mj-menu-icon-close", "style", "display:none;mso-hide:all;"))
+            .text(" " + icoClose + " ")
+            .closeInlineLn("span");
+        }));
   }
 
   private String buildHamburgerCss() {

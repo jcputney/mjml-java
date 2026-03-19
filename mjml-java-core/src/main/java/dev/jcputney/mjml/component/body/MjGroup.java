@@ -55,46 +55,45 @@ public class MjGroup extends BodyComponent {
     String widthSpec = renderContext.getColumnWidthSpec();
     String responsiveClass = buildResponsiveClass(widthSpec);
 
-    HtmlBuilder html = new HtmlBuilder();
-    html.open(
-      "div", attrs("class", responsiveClass + " mj-outlook-group-fix", "style", buildOuterStyle(direction)));
-
     registerMediaQuery(responsiveClass, widthSpec);
 
     List<MjmlNode> columns = getColumnChildren();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, groupWidth, false);
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
 
-    for (int i = 0; i < columns.size(); i++) {
-      MjmlNode col = columns.get(i);
-      String msoTdStyle = "vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;";
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap("div", attrs("class", responsiveClass + " mj-outlook-group-fix", "style", buildOuterStyle(direction)),
+      () -> {
+        for (int i = 0; i < columns.size(); i++) {
+          MjmlNode col = columns.get(i);
+          String msoTdStyle = "vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;";
 
-      if (i == 0) {
-        html.mso(() -> {
-          html.open("table", attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation") + " ");
-          html.open("tr");
-          html.open("td", attrs("style", msoTdStyle) + " ");
-        });
-      } else {
-        html.mso("</td><td style=\"" + msoTdStyle + "\" >");
-      }
+          if (i == 0) {
+            html.mso(() -> {
+              html.open("table",
+                attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation") + " ");
+              html.open("tr");
+              html.open("td", attrs("style", msoTdStyle) + " ");
+            });
+          } else {
+            html.mso("</td><td style=\"" + msoTdStyle + "\" >");
+          }
 
-      RenderContext colContext = renderContext
-        .withColumnWidth(widths[i], widthSpecs[i])
-        .withPosition(i, i == 0, i == columns.size() - 1)
-        .withInsideGroup(true);
+          RenderContext colContext = renderContext
+            .withColumnWidth(widths[i], widthSpecs[i])
+            .withPosition(i, i == 0, i == columns.size() - 1)
+            .withInsideGroup(true);
 
-      BaseComponent component = registry.createComponent(col, globalContext, colContext);
-      if (component instanceof BodyComponent bodyComponent) {
-        html.rawVerbatim(bodyComponent.render());
-      }
-    }
+          BaseComponent component = registry.createComponent(col, globalContext, colContext);
+          if (component instanceof BodyComponent bodyComponent) {
+            html.rawVerbatim(bodyComponent.render());
+          }
+        }
 
-    if (!columns.isEmpty()) {
-      html.mso("</td></tr></table>");
-    }
-
-    html.close("div");
+        if (!columns.isEmpty()) {
+          html.mso("</td></tr></table>");
+        }
+      });
 
     return html.toString();
   }

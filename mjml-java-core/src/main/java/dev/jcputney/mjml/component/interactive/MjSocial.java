@@ -84,7 +84,8 @@ public class MjSocial extends BodyComponent {
 
   private void renderHorizontal(HtmlBuilder html, List<MjmlNode> elements, String align) {
     html.mso(() -> {
-      html.open("table", attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation") + " ");
+      html.open("table", attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0", "role",
+        "presentation") + " ");
       html.open("tr");
       html.open("td");
     });
@@ -106,31 +107,17 @@ public class MjSocial extends BodyComponent {
   }
 
   private void renderVertical(HtmlBuilder html, List<MjmlNode> elements, String align) {
-    html.open(
-      "table",
-      attrs(
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        "margin:0px;"));
-    html.open("tbody");
-
-    for (int i = 0; i < elements.size(); i++) {
-      MjmlNode elem = elements.get(i);
-      RenderContext childContext = renderContext.withPosition(i, i == 0, i == elements.size() - 1);
-      BaseComponent component = registry.createComponent(elem, globalContext, childContext);
-      if (component instanceof MjSocialElement socialElement) {
-        html.rawVerbatim(socialElement.renderVertical(this));
-      }
-    }
-
-    html.close("tbody");
-    html.close("table");
+    html.wrap("table",
+      attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation", "style", "margin:0px;"),
+      () -> html.wrap("tbody", () -> {
+        for (int i = 0; i < elements.size(); i++) {
+          MjmlNode elem = elements.get(i);
+          RenderContext childContext = renderContext.withPosition(i, i == 0, i == elements.size() - 1);
+          BaseComponent component = registry.createComponent(elem, globalContext, childContext);
+          if (component instanceof MjSocialElement socialElement) {
+            html.rawVerbatim(socialElement.renderVertical(this));
+          }
+        }
+      }));
   }
 }

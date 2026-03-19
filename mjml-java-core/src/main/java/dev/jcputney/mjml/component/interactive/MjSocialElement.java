@@ -195,9 +195,9 @@ public class MjSocialElement extends BodyComponent {
    * configuration and valid network information is supplied, the href value is updated using
    * the network's sharing URL pattern. Finally, the resolved href is sanitized before returning.
    *
-   * @param name         the name of the social element, determining sharing behavior
-   * @param networkInfo  information about the social network, including sharing URL and defaults;
-   *                     may be {@code null} to indicate no network specifics
+   * @param name        the name of the social element, determining sharing behavior
+   * @param networkInfo information about the social network, including sharing URL and defaults;
+   *                    may be {@code null} to indicate no network specifics
    * @return the resolved and sanitized href string
    */
   private String resolveHref(String name, NetworkInfo networkInfo) {
@@ -215,17 +215,18 @@ public class MjSocialElement extends BodyComponent {
    * Appends an icon cell to the provided HTML builder. This method generates a table cell
    * containing a styled icon, with optional link wrapping, based on the provided attributes.
    *
-   * @param html           the {@code HtmlBuilder} used to construct the HTML output
-   * @param parent         the parent {@code MjSocial} component, which is used to inherit styles
-   * @param src            the source URL of the icon image
+   * @param html            the {@code HtmlBuilder} used to construct the HTML output
+   * @param parent          the parent {@code MjSocial} component, which is used to inherit styles
+   * @param src             the source URL of the icon image
    * @param backgroundColor the background color of the icon, defined as a CSS color value
-   * @param href           the hyperlink reference to wrap the icon; can be {@code null} or empty if no link is required
-   * @param hasHref        a flag indicating whether the icon should be wrapped in a hyperlink
-   * @param target         the target attribute for the hyperlink, e.g., "_blank"
-   * @param alt            the alt text for the icon image, used for accessibility
-   * @param borderRadius   the CSS border-radius value for rounding the icon's corners
-   * @param iconSize       the size of the icon, defined as a CSS dimension (e.g., "24px")
-   * @param verticalAlign  the vertical alignment of the cell, as a CSS value
+   * @param href            the hyperlink reference to wrap the icon; can be {@code null} or empty if no link is
+   *                        required
+   * @param hasHref         a flag indicating whether the icon should be wrapped in a hyperlink
+   * @param target          the target attribute for the hyperlink, e.g., "_blank"
+   * @param alt             the alt text for the icon image, used for accessibility
+   * @param borderRadius    the CSS border-radius value for rounding the icon's corners
+   * @param iconSize        the size of the icon, defined as a CSS dimension (e.g., "24px")
+   * @param verticalAlign   the vertical alignment of the cell, as a CSS value
    */
   private void appendIconCell(HtmlBuilder html, MjSocial parent, String src, String backgroundColor,
     String href, boolean hasHref, String target, String alt, String borderRadius, String iconSize,

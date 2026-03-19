@@ -178,11 +178,12 @@ public class MjHero extends BodyComponent {
     appendContentTd(html, backgroundUrl, backgroundColor, backgroundPosition, padding, verticalAlign, innerHeight);
 
     // MSO inner table — style="" must be present
-    html.mso(() -> html.rawVerbatim(
-      // language=HTML
-      """
-        <table border="0" cellpadding="0" cellspacing="0" style="width:%dpx;" width="%d" ><tr><td style="">
-        """.formatted(containerWidth, containerWidth)));
+    html.mso(() -> {
+      html.open("table", attrs("border", "0", "cellpadding", "0", "cellspacing", "0",
+        "style", "width:" + containerWidth + "px;", "width", String.valueOf(containerWidth)) + " ");
+      html.open("tr");
+      html.open("td", attrs("style", ""));
+    });
 
     appendHeroContent(html);
 
@@ -270,32 +271,25 @@ public class MjHero extends BodyComponent {
         continue;
       }
 
-      String childPadding = child.getAttribute("padding");
-      if (childPadding == null || childPadding.isEmpty()) {
-        childPadding = "10px 25px";
-      }
+      String rawPadding = child.getAttribute("padding");
+      String childPadding = (rawPadding == null || rawPadding.isEmpty()) ? "10px 25px" : rawPadding;
 
-      String align = child.getAttribute("align");
-      if (align == null || align.isEmpty()) {
-        align = "center";
-      }
+      String rawAlign = child.getAttribute("align");
+      String align = (rawAlign == null || rawAlign.isEmpty()) ? "center" : rawAlign;
 
       String tdStyle = "font-size:0px;padding:" + escapeAttr(childPadding) + ";word-break:break-word;";
 
-      html.open("tr");
-      html.open("td", attrs("align", escapeAttr(align), "style", tdStyle));
-
-      var component = registry.createComponent(child, globalContext, renderContext);
-      if (component instanceof BodyComponent bodyComponent) {
-        String rendered = bodyComponent.render();
-        html.rawVerbatim(rendered);
-        if (!rendered.endsWith("\n")) {
-          html.newline();
-        }
-      }
-
-      html.close("td");
-      html.close("tr");
+      html.wrap("tr",
+        () -> html.wrap("td", attrs("align", escapeAttr(align), "style", tdStyle), () -> {
+          var component = registry.createComponent(child, globalContext, renderContext);
+          if (component instanceof BodyComponent bodyComponent) {
+            String rendered = bodyComponent.render();
+            html.rawVerbatim(rendered);
+            if (!rendered.endsWith("\n")) {
+              html.newline();
+            }
+          }
+        }));
     }
 
     return html.toString();

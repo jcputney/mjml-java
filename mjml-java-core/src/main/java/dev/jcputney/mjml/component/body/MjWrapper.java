@@ -160,8 +160,7 @@ public class MjWrapper extends AbstractSectionComponent {
       html.mso(
         () -> html.wrap("table", attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0"),
           () -> {
-          })
-      );
+          }));
       return;
     }
 
@@ -235,8 +234,8 @@ public class MjWrapper extends AbstractSectionComponent {
    * with resolved background position and size attributes.
    *
    * @param widthStyle the computed width style to be applied to the VML rectangle
-   * @param bgUrl the URL of the background image to be applied to the rectangle
-   * @param bgColor the background color to be applied to the rectangle
+   * @param bgUrl      the URL of the background image to be applied to the rectangle
+   * @param bgColor    the background color to be applied to the rectangle
    * @return a String representing the constructed VML rectangle definition
    */
   private String buildVmlRect(String widthStyle, String bgUrl, String bgColor) {

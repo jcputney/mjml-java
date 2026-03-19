@@ -62,9 +62,8 @@ public class MjAccordionElement extends BodyComponent {
       () -> html.wrap("td", attrs("style", "padding:0px;"),
         () -> html.wrap("label", attrs("class", "mj-accordion-element", "style", labelStyle), () -> {
           // Hidden checkbox — only rendered in non-MSO/IE clients
-          html.notMsoIE(() ->
-            html.selfClose("input",
-              attrs("class", "mj-accordion-checkbox", "type", "checkbox", "style", "display:none;")));
+          html.notMsoIE(() -> html.selfClose("input",
+            attrs("class", "mj-accordion-checkbox", "type", "checkbox", "style", "display:none;")));
 
           html.wrap("div", () -> {
             html.wrap("div", attrs("class", "mj-accordion-title"),

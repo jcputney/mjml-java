@@ -117,7 +117,7 @@ public class MjImage extends BodyComponent {
    *
    * @param widthPx the width of the image in pixels; used to explicitly set the "width" attribute
    * @return a space-separated string of image tag attributes, including "alt", "src", "srcset", "sizes", "style",
-   * "title", "usemap", "width", and "height"
+   *         "title", "usemap", "width", and "height"
    */
   private String buildImageTagAttributes(int widthPx) {
     // Build <img> attrs — sorted alphabetically, height trailing

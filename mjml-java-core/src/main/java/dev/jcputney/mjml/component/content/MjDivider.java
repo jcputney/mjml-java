@@ -83,9 +83,8 @@ public class MjDivider extends BodyComponent {
 
     HtmlBuilder html = new HtmlBuilder();
 
-    // Standard divider <p>
-    html.open("p", attrs("style", dividerStyle));
-    html.close("p");
+    html.wrap("p", attrs("style", dividerStyle), () -> {
+    });
 
     // MSO conditional table
     String msoStyle = buildStyle(
@@ -102,11 +101,7 @@ public class MjDivider extends BodyComponent {
       () -> html.table(unsortedAttrs(msoTableAttrs) + " ",
         () -> html.wrap("tr",
           () -> html.wrap("td", attrs("style", "height:0;line-height:0;"),
-            () -> html.text(" &nbsp;\n")
-          )
-        )
-      )
-    );
+            () -> html.text(" &nbsp;\n")))));
 
     return html.toString();
   }

@@ -110,15 +110,14 @@ public class MjAccordionTitle extends BodyComponent {
       buildStyle(orderedMap("padding", "16px", "background", backgroundColor, "vertical-align", align));
     String imgStyle = buildStyle(orderedMap("display", "none", "width", width, "height", height));
 
-    html.notMsoIE(() ->
-      html.wrap("td", attrs("class", "mj-accordion-ico", "style", iconTdStyle), () -> {
-        html.selfClose("img",
-          attrs("src", escapeAttr(wrappedUrl), "alt", escapeAttr(wrappedAlt),
-            "class", "mj-accordion-more", "style", imgStyle));
-        html.selfClose("img",
-          attrs("src", escapeAttr(unwrappedUrl), "alt", escapeAttr(unwrappedAlt),
-            "class", "mj-accordion-less", "style", imgStyle));
-      }));
+    html.notMsoIE(() -> html.wrap("td", attrs("class", "mj-accordion-ico", "style", iconTdStyle), () -> {
+      html.selfClose("img",
+        attrs("src", escapeAttr(wrappedUrl), "alt", escapeAttr(wrappedAlt),
+          "class", "mj-accordion-more", "style", imgStyle));
+      html.selfClose("img",
+        attrs("src", escapeAttr(unwrappedUrl), "alt", escapeAttr(unwrappedAlt),
+          "class", "mj-accordion-less", "style", imgStyle));
+    }));
   }
 
   private String resolveAncestorAttr(String name, String fallback) {

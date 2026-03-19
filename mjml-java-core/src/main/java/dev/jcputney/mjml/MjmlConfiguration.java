@@ -332,8 +332,7 @@ public final class MjmlConfiguration {
     /**
      * Registers a custom container component factory for the given tag name. Container components
      * receive a {@link dev.jcputney.mjml.component.ComponentRegistry} as a fourth argument,
-     * allowing them to instantiate and render child MJML components via {@link
-     * dev.jcputney.mjml.component.BodyComponent#renderChildren(dev.jcputney.mjml.component.ComponentRegistry)}.
+     * allowing them to instantiate and render child MJML components.
      *
      * <p>Container component registrations are applied after standard custom components, so they
      * can override both built-in and previously registered tags.

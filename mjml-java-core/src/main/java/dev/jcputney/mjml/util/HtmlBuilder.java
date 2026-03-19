@@ -266,7 +266,7 @@ public final class HtmlBuilder {
    * @param attributes a map of attribute names and their values; keys represent attribute names and values represent
    *                   attribute values
    * @return a space-separated string of unsorted attributes in the format {@code key1="value1" key2="value2"}. An empty
-   * string is returned if the input map is null or empty.
+   *         string is returned if the input map is null or empty.
    */
   public static String unsortedAttrs(Map<String, String> attributes) {
     if (attributes == null || attributes.isEmpty()) {

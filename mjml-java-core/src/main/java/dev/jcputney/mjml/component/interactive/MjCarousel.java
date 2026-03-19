@@ -1,8 +1,6 @@
 
 package dev.jcputney.mjml.component.interactive;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
-
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.component.ComponentRegistry;
@@ -11,8 +9,11 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+import static dev.jcputney.mjml.util.HtmlBuilder.unsortedAttrs;
 
 /**
  * The carousel component ({@code <mj-carousel>}). Uses CSS radio buttons to implement a pure-CSS
@@ -50,6 +51,13 @@ public class MjCarousel extends BodyComponent {
   private final ComponentRegistry registry;
   private final String hexId;
 
+  // Render-scoped state — set once at the start of render(), used by all helper methods
+  private String carouselId;
+  private List<MjmlNode> images;
+  private int count;
+  private String borderRadius;
+  private int containerWidth;
+
   public MjCarousel(
     MjmlNode node, GlobalContext globalContext, RenderContext renderContext, ComponentRegistry registry) {
     super(node, globalContext, renderContext);
@@ -69,81 +77,68 @@ public class MjCarousel extends BodyComponent {
 
   @Override
   public String render() {
-    List<MjmlNode> images = node.getChildrenByTag("mj-carousel-image");
+    images = node.getChildrenByTag("mj-carousel-image");
     if (images.isEmpty()) {
       return "";
     }
 
-    int count = images.size();
-    String carouselId = "mj-carousel-" + hexId;
+    count = images.size();
+    carouselId = "mj-carousel-" + hexId;
+    borderRadius = getAttribute("border-radius", "6px");
+    containerWidth = (int) renderContext.getContainerWidth();
+
     String iconWidth = getAttribute("icon-width", "44px");
     String iconWidthNum = iconWidth.replace("px", "");
-    String leftIcon = getAttribute("left-icon");
-    String rightIcon = getAttribute("right-icon");
-    String borderRadius = getAttribute("border-radius", "6px");
-    String tbHoverBorderColor = getAttribute("tb-hover-border-color", "");
-    String tbSelectedBorderColor = getAttribute("tb-selected-border-color", "");
     boolean showThumbnails = "visible".equals(getAttribute("thumbnails", "visible"));
 
-    int containerWidth = (int) renderContext.getContainerWidth();
-
-    // Inject carousel CSS into global context
-    globalContext
-      .styles()
-      .addComponentStyle(
-        buildCarouselCss(carouselId, count, iconWidthNum, tbHoverBorderColor, tbSelectedBorderColor));
+    globalContext.styles().addComponentStyle(buildCarouselCss(iconWidthNum));
 
     HtmlBuilder html = new HtmlBuilder();
 
     html.rawVerbatim("<!--[if !mso]><!-->\n");
-    html.rawVerbatim("<div class=\"mj-carousel\">");
+    html.openInline("div", attrs("class", "mj-carousel"));
+    html.indent();
 
-    renderRadioInputs(html, carouselId, count);
+    renderRadioInputs(html);
+    html.newline();
 
-    html.rawVerbatim("\n");
-
-    html.rawVerbatim("  <div class=\"mj-carousel-content "
-      + carouselId
-      + "-content\" style=\"display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;\">");
+    html.openInline("div", attrs("class", "mj-carousel-content " + carouselId + "-content",
+      "style", "display:table;width:100%;table-layout:fixed;text-align:center;font-size:0px;"));
+    html.indent();
 
     if (showThumbnails) {
-      renderThumbnails(html, images, carouselId, count);
+      renderThumbnails(html);
     }
 
-    renderMainTable(
-      html, images, carouselId, count, iconWidthNum, leftIcon, rightIcon, borderRadius, containerWidth);
+    renderMainTable(html, iconWidthNum, getAttribute("left-icon"), getAttribute("right-icon"));
 
-    html.rawVerbatim("  </div>\n");
-    html.rawVerbatim("</div>");
+    html.close("div");
+    html.close("div");
     html.rawVerbatim("<!--<![endif]-->\n");
 
-    renderMsoFallback(html, images, borderRadius, containerWidth);
+    renderMsoFallback(html);
 
     return html.toString();
   }
 
   /** Renders the hidden radio inputs that track carousel state. */
-  private void renderRadioInputs(HtmlBuilder html, String carouselId, int count) {
+  private void renderRadioInputs(HtmlBuilder html) {
     for (int i = 1; i <= count; i++) {
-      String radioClass = "mj-carousel-radio " + carouselId + "-radio " + carouselId + "-radio-" + i;
-      html.rawVerbatim("<input"
-        + attrs("class", radioClass)
-        + (i == 1 ? " checked=\"checked\"" : "")
-        + " type=\"radio\""
-        + " name=\"mj-carousel-radio-"
-        + hexId
-        + "\""
-        + " id=\""
-        + carouselId
-        + "-radio-"
-        + i
-        + "\""
-        + " style=\"display:none;mso-hide:all;\" />");
+      var inputAttrs = new LinkedHashMap<String, String>();
+      inputAttrs.put("class", "mj-carousel-radio " + carouselId + "-radio " + carouselId + "-radio-" + i);
+      if (i == 1) {
+        inputAttrs.put("checked", "checked");
+      }
+      inputAttrs.put("type", "radio");
+      inputAttrs.put("name", "mj-carousel-radio-" + hexId);
+      inputAttrs.put("id", carouselId + "-radio-" + i);
+      inputAttrs.put("style", "display:none;mso-hide:all;");
+      html.rawVerbatim("<input" + unsortedAttrs(inputAttrs) + " />");
     }
   }
 
   /** Renders the thumbnail strip with labeled anchor elements. */
-  private void renderThumbnails(HtmlBuilder html, List<MjmlNode> images, String carouselId, int count) {
+  private void renderThumbnails(HtmlBuilder html) {
     String tbBorder = getAttribute("tb-border", "0");
     String tbBorderRadius = getAttribute("tb-border-radius", "0");
     String tbWidth = getAttribute("tb-width", "");
@@ -171,120 +166,95 @@ public class MjCarousel extends BodyComponent {
         "mj-carousel-thumbnail " + carouselId + "-thumbnail " + carouselId + "-thumbnail-" + i + " ";
       String imgWidth = String.valueOf(tbWidthInt > 0 ? tbWidthInt : tbWidth.replace("px", ""));
 
-      html.rawVerbatim("<a"
-        + attrs("style", tbStyle, "href", "#" + i, "target", "_blank", "class", tbClass)
-        + ">"
-        + "<label for=\""
-        + carouselId
-        + "-radio-"
-        + i
-        + "\">"
-        + "<img style=\"display:block;width:100%;height:auto;\""
-        + attrs("src", escapeAttr(thumbSrc), "alt", escapeAttr(alt), "width", imgWidth)
-        + " />"
+      var anchorAttrs = new LinkedHashMap<String, String>();
+      anchorAttrs.put("style", tbStyle);
+      anchorAttrs.put("href", "#" + i);
+      anchorAttrs.put("target", "_blank");
+      anchorAttrs.put("class", tbClass);
+
+      var imgAttrs = new LinkedHashMap<String, String>();
+      imgAttrs.put("style", "display:block;width:100%;height:auto;");
+      imgAttrs.put("src", escapeAttr(thumbSrc));
+      imgAttrs.put("alt", escapeAttr(alt));
+      imgAttrs.put("width", imgWidth);
+
+      // Thumbnail: <a><label><img/></label></a> — all inline
+      html.rawVerbatim("<a" + unsortedAttrs(anchorAttrs) + ">"
+        + "<label for=\"" + carouselId + "-radio-" + i + "\">"
+        + "<img" + unsortedAttrs(imgAttrs) + " />"
         + "</label>"
         + "</a>");
     }
-    html.rawVerbatim("\n");
+    html.newline();
   }
 
   /** Renders the main carousel table with previous/next icon columns and image cells. */
-  private void renderMainTable(
-    HtmlBuilder html,
-    List<MjmlNode> images,
-    String carouselId,
-    int count,
-    String iconWidthNum,
-    String leftIcon,
-    String rightIcon,
-    String borderRadius,
-    int containerWidth) {
-    html.rawVerbatim("    <table style=\"caption-side:top;display:table-caption;table-layout:fixed;width:100%;\""
-      + " border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\""
-      + " role=\"presentation\" class=\"mj-carousel-main\">\n"
-      + "      <tbody>\n"
-      + "        <tr>\n");
+  private void renderMainTable(HtmlBuilder html, String iconWidthNum, String leftIcon, String rightIcon) {
+    String mainTableAttrs = attrs("style", "caption-side:top;display:table-caption;table-layout:fixed;width:100%;",
+      "border", "0", "cellpadding", "0", "cellspacing", "0", "width", "100%",
+      "role", "presentation", "class", "mj-carousel-main");
+    html.wrap("table", mainTableAttrs,
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr", () -> {
+          renderIconCell(html, iconWidthNum, leftIcon, "previous", "mj-carousel-previous-icons");
 
-    renderIconCell(html, carouselId, count, iconWidthNum, leftIcon, "previous", "mj-carousel-previous-icons");
+          html.wrap("td", attrs("style", "padding:0px;"),
+            () -> html.wrap("div", attrs("class", "mj-carousel-images"), () -> {
+              for (int i = 1; i <= count; i++) {
+                MjmlNode imgNode = images.get(i - 1);
+                RenderContext childContext = renderContext.withPosition(i - 1, i == 1, i == count);
+                BaseComponent component = registry.createComponent(imgNode, globalContext, childContext);
+                String imageHtml = renderCarouselImage(component);
+                String divStyle = (i == 1) ? "" : "display:none;mso-hide:all;";
+                html.openInline("div",
+                  attrs("class", "mj-carousel-image mj-carousel-image-" + i + " ", "style", divStyle))
+                  .text(imageHtml)
+                  .closeInlineLn("div");
+              }
+            }));
 
-    html.rawVerbatim("          <td style=\"padding:0px;\">\n");
-    html.rawVerbatim("            <div class=\"mj-carousel-images\">\n");
-    for (int i = 1; i <= count; i++) {
-      MjmlNode imgNode = images.get(i - 1);
-      RenderContext childContext = renderContext.withPosition(i - 1, i == 1, i == count);
-      BaseComponent component = registry.createComponent(imgNode, globalContext, childContext);
-
-      String imageHtml = renderCarouselImage(component, borderRadius, containerWidth);
-
-      String divStyle = (i == 1) ? "" : "display:none;mso-hide:all;";
-      html.rawVerbatim("              <div class=\"mj-carousel-image mj-carousel-image-"
-        + i
-        + " \" style=\""
-        + divStyle
-        + "\">"
-        + imageHtml
-        + "</div>\n");
-    }
-    html.rawVerbatim("            </div>\n");
-    html.rawVerbatim("          </td>\n");
-
-    renderIconCell(html, carouselId, count, iconWidthNum, rightIcon, "next", "mj-carousel-next-icons");
-
-    html.rawVerbatim("        </tr>\n      </tbody>\n    </table>\n");
+          renderIconCell(html, iconWidthNum, rightIcon, "next", "mj-carousel-next-icons");
+        })));
   }
 
-  /** Renders a previous or next icon cell with labeled navigation images. */
-  private void renderIconCell(
-    HtmlBuilder html,
-    String carouselId,
-    int count,
-    String iconWidthNum,
-    String iconSrc,
-    String direction,
+  private void renderIconCell(HtmlBuilder html, String iconWidthNum, String iconSrc, String direction,
     String wrapperClass) {
-    html.rawVerbatim("          <td class=\""
-      + carouselId
-      + "-icons-cell\" style=\"font-size:0px;display:none;mso-hide:all;padding:0px;\">\n");
-    html.rawVerbatim("            <div class=\"" + wrapperClass + "\" style=\"display:none;mso-hide:all;\">");
-    for (int i = 1; i <= count; i++) {
-      String labelClass = "mj-carousel-" + direction + " mj-carousel-" + direction + "-" + i;
-      html.rawVerbatim("<label for=\""
-        + carouselId
-        + "-radio-"
-        + i
-        + "\" class=\""
-        + labelClass
-        + "\">"
-        + "<img"
-        + attrs("src", escapeAttr(iconSrc), "alt", direction)
-        + " style=\"display:block;width:"
-        + iconWidthNum
-        + "px;height:auto;\""
-        + " width=\""
-        + iconWidthNum
-        + "\" />"
-        + "</label>");
-    }
-    html.rawVerbatim("</div>\n");
-    html.rawVerbatim("          </td>\n");
+    String tdStyle = "font-size:0px;display:none;mso-hide:all;padding:0px;";
+    html.wrap("td", attrs("class", carouselId + "-icons-cell", "style", tdStyle), () -> {
+      html.wrap("div", attrs("class", wrapperClass, "style", "display:none;mso-hide:all;"), () -> {
+        var imgAttrs = new LinkedHashMap<String, String>();
+        imgAttrs.put("src", escapeAttr(iconSrc));
+        imgAttrs.put("alt", direction);
+        imgAttrs.put("style", "display:block;width:" + iconWidthNum + "px;height:auto;");
+        imgAttrs.put("width", iconWidthNum);
+
+        for (int i = 1; i <= count; i++) {
+          String labelClass = "mj-carousel-" + direction + " mj-carousel-" + direction + "-" + i;
+          html.openInline("label", attrs("for", carouselId + "-radio-" + i, "class", labelClass));
+          html.selfClose("img", unsortedAttrs(imgAttrs));
+          html.closeInline("label");
+        }
+      });
+    });
   }
 
   /** Renders the MSO/Outlook fallback showing only the first image. */
-  private void renderMsoFallback(HtmlBuilder html, List<MjmlNode> images, String borderRadius, int containerWidth) {
-    int count = images.size();
+  private void renderMsoFallback(HtmlBuilder html) {
     MjmlNode firstImgNode = images.get(0);
     RenderContext firstContext = renderContext.withPosition(0, true, count == 1);
     BaseComponent firstComponent = registry.createComponent(firstImgNode, globalContext, firstContext);
 
-    String firstImageHtml = renderCarouselImage(firstComponent, borderRadius, containerWidth);
+    String firstImageHtml = renderCarouselImage(firstComponent);
 
-    html.rawVerbatim("<!--[if mso]><div class=\"mj-carousel-image mj-carousel-image-1 \" style=\"\" >"
-      + firstImageHtml
-      + "</div><![endif]-->");
+    // Uses <!--[if mso]> (not mso | IE) — Outlook-only fallback
+    html.rawVerbatim("<!--[if mso]>");
+    html.wrap("div", attrs("class", "mj-carousel-image mj-carousel-image-1 ", "style", "") + " ",
+      () -> html.text(firstImageHtml));
+    html.rawVerbatim("<![endif]-->");
   }
 
   /** Renders a single carousel image from its component. */
-  private String renderCarouselImage(BaseComponent component, String borderRadius, int containerWidth) {
+  private String renderCarouselImage(BaseComponent component) {
     if (component instanceof MjCarouselImage carouselImage) {
       return carouselImage.renderImage(borderRadius, containerWidth);
     } else if (component instanceof BodyComponent bodyComponent) {
@@ -294,51 +264,51 @@ public class MjCarousel extends BodyComponent {
   }
 
   /** Builds the complete carousel CSS for injection into the document head. */
-  private String buildCarouselCss(
-    String carouselId,
-    int count,
-    String iconWidthNum,
-    String tbHoverBorderColor,
-    String tbSelectedBorderColor) {
+  private String buildCarouselCss(String iconWidthNum) {
+    String tbHoverBorderColor = getAttribute("tb-hover-border-color", "");
+    String tbSelectedBorderColor = getAttribute("tb-selected-border-color", "");
+
     StringBuilder css = new StringBuilder();
 
-    appendBaseCss(css, carouselId, iconWidthNum);
-    appendRadioVisibilityCss(css, carouselId, count);
-    appendNavigationCss(css, carouselId, count);
-    appendThumbnailCss(css, carouselId, count, tbHoverBorderColor, tbSelectedBorderColor);
-    appendFallbackCss(css, carouselId, count);
+    appendBaseCss(css, iconWidthNum);
+    appendRadioVisibilityCss(css);
+    appendNavigationCss(css);
+    appendThumbnailCss(css, tbHoverBorderColor, tbSelectedBorderColor);
+    appendFallbackCss(css);
 
     return css.toString();
   }
 
-  /** Appends base carousel styles: user-select, icon cell width, radio/nav defaults. */
-  private void appendBaseCss(StringBuilder css, String carouselId, String iconWidthNum) {
-    css.append(".mj-carousel {\n");
-    css.append("  -webkit-user-select: none;\n");
-    css.append("  -moz-user-select: none;\n");
-    css.append("  user-select: none;\n");
-    css.append("}\n\n");
+  private void appendBaseCss(StringBuilder css, String iconWidthNum) {
+    css.append("""
+      .mj-carousel {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
 
-    css.append(".").append(carouselId).append("-icons-cell {\n");
-    css.append("  display: table-cell !important;\n");
-    css.append("  width: ").append(iconWidthNum).append("px !important;\n");
-    css.append("}\n\n");
+      .%s-icons-cell {
+        display: table-cell !important;
+        width: %spx !important;
+      }
 
-    css.append(".mj-carousel-radio,\n");
-    css.append(".mj-carousel-next,\n");
-    css.append(".mj-carousel-previous {\n");
-    css.append("  display: none !important;\n");
-    css.append("}\n\n");
+      .mj-carousel-radio,
+      .mj-carousel-next,
+      .mj-carousel-previous {
+        display: none !important;
+      }
 
-    css.append(".mj-carousel-thumbnail,\n");
-    css.append(".mj-carousel-next,\n");
-    css.append(".mj-carousel-previous {\n");
-    css.append("  touch-action: manipulation;\n");
-    css.append("}\n\n");
+      .mj-carousel-thumbnail,
+      .mj-carousel-next,
+      .mj-carousel-previous {
+        touch-action: manipulation;
+      }
+
+      """.formatted(carouselId, iconWidthNum));
   }
 
   /** Appends CSS rules for hiding all images and showing the active image per radio state. */
-  private void appendRadioVisibilityCss(StringBuilder css, String carouselId, int count) {
+  private void appendRadioVisibilityCss(StringBuilder css) {
     // Hide all images when any radio is checked
     appendCssRuleBlock(
       css,
@@ -368,7 +338,7 @@ public class MjCarousel extends BodyComponent {
   }
 
   /** Appends CSS rules for previous/next navigation icon visibility. */
-  private void appendNavigationCss(StringBuilder css, String carouselId, int count) {
+  private void appendNavigationCss(StringBuilder css) {
     css.append(".mj-carousel-previous-icons,\n");
     css.append(".mj-carousel-next-icons,\n");
 
@@ -400,8 +370,7 @@ public class MjCarousel extends BodyComponent {
   }
 
   /** Appends CSS rules for thumbnail selected border, hover behavior, and visibility. */
-  private void appendThumbnailCss(
-    StringBuilder css, String carouselId, int count, String tbHoverBorderColor, String tbSelectedBorderColor) {
+  private void appendThumbnailCss(StringBuilder css, String tbHoverBorderColor, String tbSelectedBorderColor) {
     // Active thumbnail selected border color
     if (!tbSelectedBorderColor.isEmpty()) {
       appendCssRuleBlock(
@@ -439,11 +408,13 @@ public class MjCarousel extends BodyComponent {
       },
       "  display: inline-block !important;\n");
 
-    // Hide image+div siblings
-    css.append(".mj-carousel-image img+div,\n");
-    css.append(".mj-carousel-thumbnail img+div {\n");
-    css.append("  display: none !important;\n");
-    css.append("}\n\n");
+    css.append("""
+      .mj-carousel-image img+div,
+      .mj-carousel-thumbnail img+div {
+        display: none !important;
+      }
+
+      """);
 
     // Thumbnail hover: hide all images (iterates count-1 down to 0)
     appendCssRuleBlock(
@@ -459,9 +430,12 @@ public class MjCarousel extends BodyComponent {
 
     // Thumbnail hover border color
     if (!tbHoverBorderColor.isEmpty()) {
-      css.append(".mj-carousel-thumbnail:hover {\n");
-      css.append("  border-color: ").append(tbHoverBorderColor).append(" !important;\n");
-      css.append("}\n\n");
+      css.append("""
+        .mj-carousel-thumbnail:hover {
+          border-color: %s !important;
+        }
+
+        """.formatted(tbHoverBorderColor));
     }
 
     // Thumbnail hover: show specific image
@@ -510,36 +484,42 @@ public class MjCarousel extends BodyComponent {
   }
 
   /** Appends fallback CSS rules: noinput, OWA, and Yahoo media query. */
-  private void appendFallbackCss(StringBuilder css, String carouselId, int count) {
-    css.append(".mj-carousel noinput {\n");
-    css.append("  display: block !important;\n");
-    css.append("}\n\n");
+  private void appendFallbackCss(StringBuilder css) {
+    String yahooSelector = "." + carouselId + "-radio-1:checked"
+      + siblingChain(count - 1)
+      + "+.mj-carousel-content ." + carouselId + "-thumbnail-1";
 
-    css.append(".mj-carousel noinput .mj-carousel-image-1 {\n");
-    css.append("  display: block !important;\n");
-    css.append("}\n\n");
+    css.append("""
+      .mj-carousel noinput {
+        display: block !important;
+      }
 
-    css.append(".mj-carousel noinput .mj-carousel-arrows,\n");
-    css.append(".mj-carousel noinput .mj-carousel-thumbnails {\n");
-    css.append("  display: none !important;\n");
-    css.append("}\n\n");
+      .mj-carousel noinput .mj-carousel-image-1 {
+        display: block !important;
+      }
 
-    css.append("[owa] .mj-carousel-thumbnail {\n");
-    css.append("  display: none !important;\n");
-    css.append("}\n\n");
+      .mj-carousel noinput .mj-carousel-arrows,
+      .mj-carousel noinput .mj-carousel-thumbnails {
+        display: none !important;
+      }
 
-    css.append("@media screen yahoo {\n\n");
-    css.append("  .").append(carouselId).append("-icons-cell,\n");
-    css.append("  .mj-carousel-previous-icons,\n");
-    css.append("  .mj-carousel-next-icons {\n");
-    css.append("    display: none !important;\n");
-    css.append("  }\n\n");
-    css.append("  .").append(carouselId).append("-radio-1:checked");
-    css.append(siblingChain(count - 1));
-    css.append("+.mj-carousel-content .").append(carouselId).append("-thumbnail-1 {\n");
-    css.append("    border-color: transparent;\n");
-    css.append("  }\n");
-    css.append("}\n");
+      [owa] .mj-carousel-thumbnail {
+        display: none !important;
+      }
+
+      @media screen yahoo {
+
+        .%s-icons-cell,
+        .mj-carousel-previous-icons,
+        .mj-carousel-next-icons {
+          display: none !important;
+        }
+
+        %s {
+          border-color: transparent;
+        }
+      }
+      """.formatted(carouselId, yahooSelector));
   }
 
   /**

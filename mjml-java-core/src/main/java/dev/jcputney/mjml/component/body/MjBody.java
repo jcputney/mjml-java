@@ -63,27 +63,26 @@ public class MjBody extends BodyComponent {
 
     var divAttrs = buildDivAttributes(title, cssClass, style, lang);
 
-    HtmlBuilder html = new HtmlBuilder();
-    html.open("div", unsortedAttrs(divAttrs));
-
     RenderContext bodyContext = new RenderContext(containerWidth);
-    var children = node.getChildren();
-    for (int i = 0; i < children.size(); i++) {
-      MjmlNode child = children.get(i);
-      if (child.getTagName().startsWith("#")) {
-        if ("#comment".equals(child.getTagName())) {
-          html.line("<!-- " + child.getTextContent().trim().replace("--", "") + " -->");
-        }
-        continue;
-      }
-      RenderContext childContext = bodyContext.withPosition(i, i == 0, i == children.size() - 1);
-      BaseComponent component = registry.createComponent(child, globalContext, childContext);
-      if (component instanceof BodyComponent bodyComponent) {
-        html.rawVerbatim(bodyComponent.render());
-      }
-    }
 
-    html.close("div");
+    HtmlBuilder html = new HtmlBuilder();
+    html.wrap("div", unsortedAttrs(divAttrs), () -> {
+      var children = node.getChildren();
+      for (int i = 0; i < children.size(); i++) {
+        MjmlNode child = children.get(i);
+        if (child.getTagName().startsWith("#")) {
+          if ("#comment".equals(child.getTagName())) {
+            html.line("<!-- " + child.getTextContent().trim().replace("--", "") + " -->");
+          }
+          continue;
+        }
+        RenderContext childContext = bodyContext.withPosition(i, i == 0, i == children.size() - 1);
+        BaseComponent component = registry.createComponent(child, globalContext, childContext);
+        if (component instanceof BodyComponent bodyComponent) {
+          html.rawVerbatim(bodyComponent.render());
+        }
+      }
+    });
 
     return html.toString();
   }
@@ -91,10 +90,10 @@ public class MjBody extends BodyComponent {
   /**
    * Builds a map of attributes for a <div> element with various accessibility, styling, and language properties.
    *
-   * @param title the title or description of the div, used as the value for the "aria-label" attribute
+   * @param title    the title or description of the div, used as the value for the "aria-label" attribute
    * @param cssClass the class name(s) for the div, used as the value for the "class" attribute
-   * @param style the inline style for the div, used as the value for the "style" attribute
-   * @param lang the language of the content, used as the value for the "lang" attribute
+   * @param style    the inline style for the div, used as the value for the "style" attribute
+   * @param lang     the language of the content, used as the value for the "lang" attribute
    * @return a map containing the generated attributes and their corresponding values for the div element
    */
   private LinkedHashMap<String, String> buildDivAttributes(String title, String cssClass, String style,

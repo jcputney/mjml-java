@@ -73,10 +73,9 @@ public class MjAccordionText extends BodyComponent {
     HtmlBuilder html = new HtmlBuilder();
     html.wrap("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle),
       () -> html.wrap("tbody",
-        () -> html.wrap("tr", () ->
-          html.openInline("td", attrs("style", tdStyle))
-            .text(" " + content + " ")
-            .closeInlineLn("td"))));
+        () -> html.wrap("tr", () -> html.openInline("td", attrs("style", tdStyle))
+          .text(" " + content + " ")
+          .closeInlineLn("td"))));
 
     return html.toString();
   }
