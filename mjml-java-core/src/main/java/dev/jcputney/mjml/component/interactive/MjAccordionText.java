@@ -71,15 +71,12 @@ public class MjAccordionText extends BodyComponent {
       "padding", padding));
 
     HtmlBuilder html = new HtmlBuilder();
-    html.open("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle));
-    html.open("tbody");
-    html.open("tr");
-    html.openInline("td", attrs("style", tdStyle));
-    html.text(" " + content + " ");
-    html.closeInlineLn("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
+    html.wrap("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr", () ->
+          html.openInline("td", attrs("style", tdStyle))
+            .text(" " + content + " ")
+            .closeInlineLn("td"))));
 
     return html.toString();
   }

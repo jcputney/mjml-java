@@ -93,23 +93,23 @@ public class MjNavbar extends BodyComponent {
     String uniqueId = renderContext.nextUniqueId("navbar");
 
     if (hasHamburger) {
-      html.rawVerbatim("<!--[if !mso]><!-->"
-        + "<input"
-        + attrs("type", "checkbox", "id", uniqueId, "class", "mj-menu-checkbox")
-        + " style=\"display:none !important; max-height:0; visibility:hidden;\" />"
-        + "<!--<![endif]-->\n");
+      html.notMso(() ->
+        html.selfClose("input",
+          attrs("type", "checkbox", "id", uniqueId, "class", "mj-menu-checkbox",
+            "style", "display:none !important; max-height:0; visibility:hidden;")));
       renderHamburgerTrigger(html, uniqueId);
     }
 
     // Inline links container — style="" must be present even when empty
-    html.rawVerbatim("<div class=\"mj-inline-links\" style=\"\">\n");
+    html.open("div", attrs("class", "mj-inline-links", "style", ""));
 
     // MSO table wrapper around all links
     html.mso(() -> {
-      html.rawVerbatim(
-        "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>");
+      html.open("table",
+        attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0", "align", "center"));
+      html.open("tr");
       if (!linkPaddings.isEmpty()) {
-        html.rawVerbatim("<td style=\"padding:" + linkPaddings.get(0) + ";\" class=\"\" >");
+        html.open("td", attrs("style", "padding:" + linkPaddings.get(0) + ";") + " class=\"\" ");
       }
     });
 
@@ -122,7 +122,7 @@ public class MjNavbar extends BodyComponent {
     }
 
     html.mso(MsoHelper.msoTableClosing());
-    html.rawVerbatim("</div>\n");
+    html.close("div");
 
     return html.toString();
   }
@@ -176,10 +176,13 @@ public class MjNavbar extends BodyComponent {
       attrs("for", uniqueId, "class", "mj-menu-label", "style", labelStyle) + " align=\"" + icoAlign + "\"");
 
     String icoOpen = encodeNonAscii(getAttribute("ico-open", "&#9776;"));
-    html.rawVerbatim("<span class=\"mj-menu-icon-open\" style=\"mso-hide:all;\"> " + icoOpen + " </span>\n");
+    html.openInline("span", attrs("class", "mj-menu-icon-open", "style", "mso-hide:all;"))
+      .text(" " + icoOpen + " ")
+      .closeInlineLn("span");
     String icoClose = encodeNonAscii(getAttribute("ico-close", "&#8855;"));
-    html.rawVerbatim(
-      "<span class=\"mj-menu-icon-close\" style=\"display:none;mso-hide:all;\"> " + icoClose + " </span>\n");
+    html.openInline("span", attrs("class", "mj-menu-icon-close", "style", "display:none;mso-hide:all;"))
+      .text(" " + icoClose + " ")
+      .closeInlineLn("span");
 
     html.close("label");
     html.close("div");

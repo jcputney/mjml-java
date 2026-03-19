@@ -58,16 +58,13 @@ public class MjTable extends BodyComponent {
       "border", getAttribute("border", "none")));
 
     HtmlBuilder html = new HtmlBuilder();
-    html.open(
-      "table",
-      attrs(
-        "cellpadding", escapeAttr(getAttribute("cellpadding", "0")),
+    html.wrap("table",
+      attrs("cellpadding", escapeAttr(getAttribute("cellpadding", "0")),
         "cellspacing", escapeAttr(getAttribute("cellspacing", "0")),
         "width", escapeAttr(getAttribute("width", "100%")),
         "border", "0",
-        "style", tableStyle));
-    html.rawVerbatim(sanitizeContent(node.getInnerHtml()));
-    html.close("table");
+        "style", tableStyle),
+      () -> html.rawVerbatim(sanitizeContent(node.getInnerHtml())));
 
     return html.toString();
   }

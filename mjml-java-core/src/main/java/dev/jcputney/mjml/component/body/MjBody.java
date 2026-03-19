@@ -1,8 +1,7 @@
 
 package dev.jcputney.mjml.component.body;
 
-import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
-import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+import static dev.jcputney.mjml.util.HtmlBuilder.unsortedAttrs;
 
 import dev.jcputney.mjml.component.BaseComponent;
 import dev.jcputney.mjml.component.BodyComponent;
@@ -11,6 +10,7 @@ import dev.jcputney.mjml.context.GlobalContext;
 import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.HtmlBuilder;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -61,17 +61,10 @@ public class MjBody extends BodyComponent {
     String cssClass = getAttribute("css-class", "");
     String style = bgColor.isEmpty() ? "" : "background-color:" + escapeAttr(bgColor) + ";";
 
+    var divAttrs = buildDivAttributes(title, cssClass, style, lang);
+
     HtmlBuilder html = new HtmlBuilder();
-    // style="" must always be present even when empty
-    html.open(
-      "div",
-      attrIf("aria-label", title != null && !title.isEmpty() ? escapeAttr(title) : null)
-        + attrs("aria-roledescription", "email")
-        + attrIf("class", escapeAttr(cssClass))
-        + " style=\""
-        + style
-        + "\""
-        + attrs("role", "article", "lang", escapeAttr(lang), "dir", "auto"));
+    html.open("div", unsortedAttrs(divAttrs));
 
     RenderContext bodyContext = new RenderContext(containerWidth);
     var children = node.getChildren();
@@ -93,5 +86,32 @@ public class MjBody extends BodyComponent {
     html.close("div");
 
     return html.toString();
+  }
+
+  /**
+   * Builds a map of attributes for a <div> element with various accessibility, styling, and language properties.
+   *
+   * @param title the title or description of the div, used as the value for the "aria-label" attribute
+   * @param cssClass the class name(s) for the div, used as the value for the "class" attribute
+   * @param style the inline style for the div, used as the value for the "style" attribute
+   * @param lang the language of the content, used as the value for the "lang" attribute
+   * @return a map containing the generated attributes and their corresponding values for the div element
+   */
+  private LinkedHashMap<String, String> buildDivAttributes(String title, String cssClass, String style,
+    String lang) {
+    // Body div attrs — non-alphabetical order matches MJML reference
+    var divAttrs = new LinkedHashMap<String, String>();
+    if (title != null && !title.isEmpty()) {
+      divAttrs.put("aria-label", escapeAttr(title));
+    }
+    divAttrs.put("aria-roledescription", "email");
+    if (!cssClass.isEmpty()) {
+      divAttrs.put("class", escapeAttr(cssClass));
+    }
+    divAttrs.put("style", style);
+    divAttrs.put("role", "article");
+    divAttrs.put("lang", escapeAttr(lang));
+    divAttrs.put("dir", "auto");
+    return divAttrs;
   }
 }

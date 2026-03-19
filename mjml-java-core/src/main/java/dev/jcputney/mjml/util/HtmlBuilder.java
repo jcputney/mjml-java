@@ -33,6 +33,13 @@ public final class HtmlBuilder {
   private final StringBuilder sb;
   private int depth;
 
+  /**
+   * When true, builder methods (open, close, wrap, selfClose) produce compact output with no
+   * newlines or indentation. Set by conditional block methods (mso, notMso, notMsoIE) since
+   * MSO conditional content must be inline.
+   */
+  private boolean compact;
+
   /** Creates a builder at indent depth 0. */
   public HtmlBuilder() {
     this(0);
@@ -51,13 +58,18 @@ public final class HtmlBuilder {
    * {indent}<tag attrs>\n}
    */
   public HtmlBuilder open(String tag, String attrs) {
-    appendIndent();
+    if (!compact) {
+      appendIndent();
+    }
     sb.append('<').append(tag);
     if (attrs != null && !attrs.isEmpty()) {
       sb.append(attrs);
     }
-    sb.append(">\n");
-    depth += INDENT_SIZE;
+    sb.append('>');
+    if (!compact) {
+      sb.append('\n');
+      depth += INDENT_SIZE;
+    }
     return this;
   }
 
@@ -68,9 +80,14 @@ public final class HtmlBuilder {
 
   /** Closes a tag: decreases indent, writes {@code {indent}</tag>\n}. */
   public HtmlBuilder close(String tag) {
-    depth = Math.max(0, depth - INDENT_SIZE);
-    appendIndent();
-    sb.append("</").append(tag).append(">\n");
+    if (!compact) {
+      depth = Math.max(0, depth - INDENT_SIZE);
+      appendIndent();
+    }
+    sb.append("</").append(tag).append('>');
+    if (!compact) {
+      sb.append('\n');
+    }
     return this;
   }
 
@@ -177,7 +194,10 @@ public final class HtmlBuilder {
    */
   public HtmlBuilder mso(Runnable block) {
     sb.append(MSO_START);
+    boolean wasCompact = compact;
+    compact = true;
     block.run();
+    compact = wasCompact;
     sb.append(MSO_END).append('\n');
     return this;
   }
@@ -291,11 +311,13 @@ public final class HtmlBuilder {
    * ({@code <!--[if !mso]><!-->...<!--<![endif]-->}). Content is visible to all clients except Outlook desktop.
    * Followed by a newline.
    */
-  public HtmlBuilder notMso(Runnable block) {
+  public void notMso(Runnable block) {
     sb.append(NOT_MSO_START);
+    boolean wasCompact = compact;
+    compact = true;
     block.run();
+    compact = wasCompact;
     sb.append(NOT_MSO_END).append('\n');
-    return this;
   }
 
   /**
@@ -303,11 +325,13 @@ public final class HtmlBuilder {
    * ({@code <!--[if !mso | IE]><!-->...<!--<![endif]-->}). Content is hidden from both Outlook desktop and IE. Followed
    * by a newline.
    */
-  public HtmlBuilder notMsoIE(Runnable block) {
+  public void notMsoIE(Runnable block) {
     sb.append(NOT_MSO_IE_START);
+    boolean wasCompact = compact;
+    compact = true;
     block.run();
+    compact = wasCompact;
     sb.append(NOT_MSO_END).append('\n');
-    return this;
   }
 
   /**
@@ -318,12 +342,17 @@ public final class HtmlBuilder {
    * @param attrs the attribute string to include within the tag; if null or empty, no attributes are added
    */
   public void selfClose(String tag, String attrs) {
-    appendIndent();
+    if (!compact) {
+      appendIndent();
+    }
     sb.append('<').append(tag);
     if (attrs != null && !attrs.isEmpty()) {
       sb.append(attrs);
     }
-    sb.append(" />\n");
+    sb.append(" />");
+    if (!compact) {
+      sb.append('\n');
+    }
   }
 
   /**
@@ -335,17 +364,27 @@ public final class HtmlBuilder {
    * @param block the block that produces the tag's inner content
    */
   public HtmlBuilder wrap(String tag, String attrs, Runnable block) {
-    appendIndent();
+    if (!compact) {
+      appendIndent();
+    }
     sb.append('<').append(tag);
     if (attrs != null && !attrs.isEmpty()) {
       sb.append(attrs);
     }
-    sb.append(">\n");
-    depth += INDENT_SIZE;
+    sb.append('>');
+    if (!compact) {
+      sb.append('\n');
+      depth += INDENT_SIZE;
+    }
     block.run();
-    depth = Math.max(0, depth - INDENT_SIZE);
-    appendIndent();
-    sb.append("</").append(tag).append(">\n");
+    if (!compact) {
+      depth = Math.max(0, depth - INDENT_SIZE);
+      appendIndent();
+    }
+    sb.append("</").append(tag).append('>');
+    if (!compact) {
+      sb.append('\n');
+    }
     return this;
   }
 
@@ -406,6 +445,17 @@ public final class HtmlBuilder {
   }
 
   /**
+   * Creates an HTML table element with the specified attributes and content block.
+   *
+   * @param attrs the attributes to be applied to the table element
+   * @param block a runnable block that defines the content of the table
+   * @return an HtmlBuilder instance with the table element wrapped
+   */
+  public HtmlBuilder table(String attrs, Runnable block) {
+    return wrap("table", attrs, block);
+  }
+
+  /**
    * Wraps content in an HTML `{@code <table>}` tag, applying attributes and executing the provided block within the
    * table. Adds default presentation table attributes unless overridden by the input.
    *
@@ -429,13 +479,23 @@ public final class HtmlBuilder {
    * @return this {@code HtmlBuilder} instance for method chaining
    */
   public HtmlBuilder wrap(String tag, Runnable block) {
-    appendIndent();
-    sb.append('<').append(tag).append(">\n");
-    depth += INDENT_SIZE;
+    if (!compact) {
+      appendIndent();
+    }
+    sb.append('<').append(tag).append('>');
+    if (!compact) {
+      sb.append('\n');
+      depth += INDENT_SIZE;
+    }
     block.run();
-    depth = Math.max(0, depth - INDENT_SIZE);
-    appendIndent();
-    sb.append("</").append(tag).append(">\n");
+    if (!compact) {
+      depth = Math.max(0, depth - INDENT_SIZE);
+      appendIndent();
+    }
+    sb.append("</").append(tag).append('>');
+    if (!compact) {
+      sb.append('\n');
+    }
     return this;
   }
 

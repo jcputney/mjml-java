@@ -12,7 +12,6 @@ import dev.jcputney.mjml.util.HtmlBuilder;
 import dev.jcputney.mjml.util.MsoHelper;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
 import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 /**
@@ -144,13 +143,14 @@ public class MjHero extends BodyComponent {
     HtmlBuilder html = new HtmlBuilder();
 
     // MSO wrapper with v:image
+    var msoTableMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    msoTableMap.put("align", "center");
+    msoTableMap.put("style", "width:" + containerWidth + "px;");
+    msoTableMap.put("width", String.valueOf(containerWidth));
     html.mso(() -> {
-      html.rawVerbatim(
-        "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"width:"
-          + containerWidth
-          + "px;\" width=\""
-          + containerWidth
-          + "\" ><tr><td style=\"line-height:0;font-size:0;mso-line-height-rule:exactly;\">");
+      html.open("table", attrs(msoTableMap) + " ");
+      html.open("tr");
+      html.open("td", attrs("style", "line-height:0;font-size:0;mso-line-height-rule:exactly;"));
       appendVmlImage(html, backgroundUrl, vImageHeight, containerWidth);
     });
 
@@ -218,7 +218,8 @@ public class MjHero extends BodyComponent {
   }
 
   private void appendSpacerTd(HtmlBuilder html, String paddingPct) {
-    html.rawVerbatim("<td style=\"width:0.01%;padding-bottom:" + paddingPct + "%;mso-padding-bottom-alt:0;\" />\n");
+    html.selfClose("td",
+      attrs("style", "width:0.01%;padding-bottom:" + paddingPct + "%;mso-padding-bottom-alt:0;"));
   }
 
   private void appendContentTd(HtmlBuilder html, String backgroundUrl, String backgroundColor,
@@ -235,15 +236,15 @@ public class MjHero extends BodyComponent {
       tdStyles.put("height", innerHeight + "px");
     }
 
-    // open() would add indent+newline; we need to stay in the builder's flow
-    html.rawVerbatim("<td"
-      + attrIf("background", backgroundUrl != null && !backgroundUrl.isEmpty() ? escapeAttr(backgroundUrl) : null)
-      + " style=\""
-      + buildStyle(tdStyles)
-      + "\""
-      + (innerHeight > 0 ? " height=\"" + innerHeight + "\"" : "")
-      + ">\n");
-    html.indent(); // track depth for children
+    var tdAttrMap = new LinkedHashMap<String, String>();
+    if (backgroundUrl != null && !backgroundUrl.isEmpty()) {
+      tdAttrMap.put("background", escapeAttr(backgroundUrl));
+    }
+    tdAttrMap.put("style", buildStyle(tdStyles));
+    if (innerHeight > 0) {
+      tdAttrMap.put("height", String.valueOf(innerHeight));
+    }
+    html.open("td", attrs(tdAttrMap, "height"));
   }
 
   private void appendHeroContent(HtmlBuilder html) {

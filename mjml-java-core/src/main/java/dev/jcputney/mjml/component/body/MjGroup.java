@@ -67,13 +67,16 @@ public class MjGroup extends BodyComponent {
 
     for (int i = 0; i < columns.size(); i++) {
       MjmlNode col = columns.get(i);
-      String msoTdOpen = "<td style=\"vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;\" >";
+      String msoTdStyle = "vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;";
 
       if (i == 0) {
-        html.mso("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>"
-          + msoTdOpen);
+        html.mso(() -> {
+          html.open("table", attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation") + " ");
+          html.open("tr");
+          html.open("td", attrs("style", msoTdStyle) + " ");
+        });
       } else {
-        html.mso("</td>" + msoTdOpen);
+        html.mso("</td><td style=\"" + msoTdStyle + "\" >");
       }
 
       RenderContext colContext = renderContext

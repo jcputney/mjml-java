@@ -39,9 +39,7 @@ public class MjSpacer extends BodyComponent {
   public String render() {
     String height = getAttribute("height", "0px");
 
-    String style = buildStyle(orderedMap(
-      "height", height,
-      "line-height", height));
+    String style = buildStyle(orderedMap("height", height, "line-height", height));
 
     HtmlBuilder html = new HtmlBuilder();
     html.openInline("div", attrs("style", style)).text("&#8202;").closeInline("div");

@@ -2,6 +2,7 @@
 package dev.jcputney.mjml.component.content;
 
 import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
+import static dev.jcputney.mjml.util.HtmlBuilder.unsortedAttrs;
 
 import dev.jcputney.mjml.component.BodyComponent;
 import dev.jcputney.mjml.context.GlobalContext;
@@ -9,6 +10,7 @@ import dev.jcputney.mjml.context.RenderContext;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -88,14 +90,23 @@ public class MjDivider extends BodyComponent {
     // MSO conditional table
     String msoStyle = buildStyle(
       orderedMap("border-top", borderTop, "font-size", "1px", "margin", margin, "width", msoWidth + "px"));
-    html.rawVerbatim("<!--[if mso | IE]><table"
-      + attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0")
-      + " style=\""
-      + msoStyle
-      + "\" role=\"presentation\" width=\""
-      + msoWidth
-      + "px\" ><tr><td style=\"height:0;line-height:0;\"> &nbsp;\n"
-      + "</td></tr></table><![endif]-->");
+    var msoTableAttrs = new LinkedHashMap<String, String>();
+    msoTableAttrs.put("align", align);
+    msoTableAttrs.put("border", "0");
+    msoTableAttrs.put("cellpadding", "0");
+    msoTableAttrs.put("cellspacing", "0");
+    msoTableAttrs.put("style", msoStyle);
+    msoTableAttrs.put("role", "presentation");
+    msoTableAttrs.put("width", msoWidth + "px");
+    html.mso(
+      () -> html.table(unsortedAttrs(msoTableAttrs) + " ",
+        () -> html.wrap("tr",
+          () -> html.wrap("td", attrs("style", "height:0;line-height:0;"),
+            () -> html.text(" &nbsp;\n")
+          )
+        )
+      )
+    );
 
     return html.toString();
   }

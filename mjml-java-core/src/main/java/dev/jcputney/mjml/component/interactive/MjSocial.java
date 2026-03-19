@@ -83,9 +83,11 @@ public class MjSocial extends BodyComponent {
   }
 
   private void renderHorizontal(HtmlBuilder html, List<MjmlNode> elements, String align) {
-    html.mso(() -> html.rawVerbatim("<table"
-      + attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation")
-      + " ><tr><td>"));
+    html.mso(() -> {
+      html.open("table", attrs("align", align, "border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation") + " ");
+      html.open("tr");
+      html.open("td");
+    });
 
     for (int i = 0; i < elements.size(); i++) {
       MjmlNode elem = elements.get(i);

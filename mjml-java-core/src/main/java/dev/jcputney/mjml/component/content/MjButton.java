@@ -2,7 +2,6 @@
 package dev.jcputney.mjml.component.content;
 
 import static dev.jcputney.mjml.util.CssUnitParser.WHITESPACE;
-import static dev.jcputney.mjml.util.HtmlBuilder.attrIf;
 import static dev.jcputney.mjml.util.HtmlBuilder.attrs;
 
 import dev.jcputney.mjml.component.BodyComponent;
@@ -13,6 +12,7 @@ import dev.jcputney.mjml.util.CssUnitParser;
 import dev.jcputney.mjml.util.HtmlBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import static dev.jcputney.mjml.util.HtmlBuilder.unsortedAttrs;
 
 /**
  * The button component (&lt;mj-button&gt;). Renders an anchor styled as a button with configurable
@@ -119,62 +119,39 @@ public class MjButton extends BodyComponent {
     }
     outerTableStyles.put("line-height", "100%");
 
-    HtmlBuilder html = new HtmlBuilder(24);
+    var tableAttrMap = new LinkedHashMap<>(HtmlBuilder.PRESENTATION_TABLE_ATTRS);
+    tableAttrMap.put("style", buildStyle(outerTableStyles));
 
-    html.open(
-      "table",
-      attrs(
-        "border",
-        "0",
-        "cellpadding",
-        "0",
-        "cellspacing",
-        "0",
-        "role",
-        "presentation",
-        "style",
-        buildStyle(outerTableStyles)));
-    html.open("tbody");
-    html.open("tr");
-    html.open(
-      "td",
-      attrs(
-        "align",
-        "center",
-        "bgcolor",
-        escapeAttr(backgroundColor),
-        "role",
-        "presentation",
-        "style",
-        innerTableStyle,
-        "valign",
-        escapeAttr(verticalAlign)));
+    var tdAttrMap = new LinkedHashMap<String, String>();
+    tdAttrMap.put("align", "center");
+    tdAttrMap.put("bgcolor", escapeAttr(backgroundColor));
+    tdAttrMap.put("role", "presentation");
+    tdAttrMap.put("style", innerTableStyle);
+    tdAttrMap.put("valign", escapeAttr(verticalAlign));
 
     String buttonContent =
       WHITESPACE.matcher(node.getInnerHtml()).replaceAll(" ").trim();
-    if (hasHref) {
-      String rel = getAttribute("rel", "");
-      html.openInline(
-        "a",
-        attrs("href", escapeHref(href))
-          + attrIf("rel", escapeAttr(rel))
-          + attrs(
-            "style",
-            anchorStyle,
-            "target",
-            escapeAttr(getAttribute("target", "_blank"))))
-        .text(" " + sanitizeContent(buttonContent) + " ")
-        .closeInlineLn("a");
-    } else {
-      html.openInline("p", attrs("style", anchorStyle))
-        .text(" " + sanitizeContent(buttonContent) + " ")
-        .closeInlineLn("p");
-    }
 
-    html.close("td");
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
+    HtmlBuilder html = new HtmlBuilder(24);
+    html.wrap("table", attrs(tableAttrMap),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr",
+          () -> html.wrap("td", attrs(tdAttrMap), () -> {
+            if (hasHref) {
+              var anchorAttrMap = new LinkedHashMap<String, String>();
+              anchorAttrMap.put("href", escapeHref(href));
+              anchorAttrMap.put("rel", escapeAttr(getAttribute("rel", "")));
+              anchorAttrMap.put("style", anchorStyle);
+              anchorAttrMap.put("target", escapeAttr(getAttribute("target", "_blank")));
+              html.openInline("a", attrs(anchorAttrMap))
+                .text(" " + sanitizeContent(buttonContent) + " ")
+                .closeInlineLn("a");
+            } else {
+              html.openInline("p", attrs("style", anchorStyle))
+                .text(" " + sanitizeContent(buttonContent) + " ")
+                .closeInlineLn("p");
+            }
+          }))));
 
     return html.toString();
   }

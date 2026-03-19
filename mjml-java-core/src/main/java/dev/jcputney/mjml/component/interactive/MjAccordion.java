@@ -135,21 +135,9 @@ public class MjAccordion extends BodyComponent {
       "font-family", fontFamily));
 
     HtmlBuilder html = new HtmlBuilder();
-
-    html.open(
-      "table",
-      attrs(
-        "cellspacing", "0",
-        "cellpadding", "0",
-        "class", "mj-accordion",
-        "style", tableStyle));
-    html.open("tbody");
-
-    // Render accordion element children
-    html.rawVerbatim(renderChildren(registry));
-
-    html.close("tbody");
-    html.close("table");
+    html.wrap("table", attrs("cellspacing", "0", "cellpadding", "0", "class", "mj-accordion", "style", tableStyle),
+      () -> html.wrap("tbody",
+        () -> html.rawVerbatim(renderChildren(registry))));
 
     return html.toString();
   }

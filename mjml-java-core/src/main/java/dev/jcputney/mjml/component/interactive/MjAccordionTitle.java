@@ -74,43 +74,23 @@ public class MjAccordionTitle extends BodyComponent {
       "padding", padding));
 
     HtmlBuilder html = new HtmlBuilder();
-    html.open("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle));
-    html.open("tbody");
-    html.open("tr");
+    html.wrap("table", attrs("cellspacing", "0", "cellpadding", "0", "style", tableStyle),
+      () -> html.wrap("tbody",
+        () -> html.wrap("tr", () -> {
+          if ("left".equals(iconPosition)) {
+            renderIcon(html, iconAlign, backgroundColor, iconWidth, iconHeight,
+              iconUnwrappedUrl, iconUnwrappedAlt, iconWrappedUrl, iconWrappedAlt);
+          }
 
-    if ("left".equals(iconPosition)) {
-      renderIcon(
-        html,
-        iconAlign,
-        backgroundColor,
-        iconWidth,
-        iconHeight,
-        iconUnwrappedUrl,
-        iconUnwrappedAlt,
-        iconWrappedUrl,
-        iconWrappedAlt);
-    }
+          html.openInline("td", attrs("style", tdStyle))
+            .text(" " + content + " ")
+            .closeInlineLn("td");
 
-    html.openInline("td", attrs("style", tdStyle));
-    html.text(" " + content + " ");
-    html.closeInlineLn("td");
-
-    if (!"left".equals(iconPosition)) {
-      renderIcon(
-        html,
-        iconAlign,
-        backgroundColor,
-        iconWidth,
-        iconHeight,
-        iconUnwrappedUrl,
-        iconUnwrappedAlt,
-        iconWrappedUrl,
-        iconWrappedAlt);
-    }
-
-    html.close("tr");
-    html.close("tbody");
-    html.close("table");
+          if (!"left".equals(iconPosition)) {
+            renderIcon(html, iconAlign, backgroundColor, iconWidth, iconHeight,
+              iconUnwrappedUrl, iconUnwrappedAlt, iconWrappedUrl, iconWrappedAlt);
+          }
+        })));
 
     return html.toString();
   }
@@ -130,22 +110,15 @@ public class MjAccordionTitle extends BodyComponent {
       buildStyle(orderedMap("padding", "16px", "background", backgroundColor, "vertical-align", align));
     String imgStyle = buildStyle(orderedMap("display", "none", "width", width, "height", height));
 
-    html.rawVerbatim("<!--[if !mso | IE]><!-->\n");
-    html.rawVerbatim("<td class=\"mj-accordion-ico\""
-      + attrs("style", iconTdStyle)
-      + ">"
-      + "<img"
-      + attrs("src", escapeAttr(wrappedUrl), "alt", escapeAttr(wrappedAlt))
-      + " class=\"mj-accordion-more\""
-      + attrs("style", imgStyle)
-      + " />"
-      + "<img"
-      + attrs("src", escapeAttr(unwrappedUrl), "alt", escapeAttr(unwrappedAlt))
-      + " class=\"mj-accordion-less\""
-      + attrs("style", imgStyle)
-      + " />"
-      + "</td>"
-      + "<!--<![endif]-->\n");
+    html.notMsoIE(() ->
+      html.wrap("td", attrs("class", "mj-accordion-ico", "style", iconTdStyle), () -> {
+        html.selfClose("img",
+          attrs("src", escapeAttr(wrappedUrl), "alt", escapeAttr(wrappedAlt),
+            "class", "mj-accordion-more", "style", imgStyle));
+        html.selfClose("img",
+          attrs("src", escapeAttr(unwrappedUrl), "alt", escapeAttr(unwrappedAlt),
+            "class", "mj-accordion-less", "style", imgStyle));
+      }));
   }
 
   private String resolveAncestorAttr(String name, String fallback) {
