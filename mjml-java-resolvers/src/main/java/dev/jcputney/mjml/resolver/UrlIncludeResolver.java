@@ -205,6 +205,19 @@ public final class UrlIncludeResolver implements IncludeResolver {
     return (bytes[0] & 0xFF) == 0xFE && (bytes[1] & 0xC0) == 0xC0;
   }
 
+  /**
+   * Lazy holder for the shared default HttpClient. Avoids creating a new thread pool per
+   * {@link Builder#build()} call when no custom client is provided.
+   */
+  private static final class DefaultClientHolder {
+
+    static final HttpClient INSTANCE = HttpClient.newBuilder()
+      .connectTimeout(Duration.ofSeconds(5))
+      .followRedirects(HttpClient.Redirect.NEVER)
+      .build();
+  }
+
+
   /** Builder for {@link UrlIncludeResolver}. */
   public static final class Builder {
 
@@ -318,7 +331,10 @@ public final class UrlIncludeResolver implements IncludeResolver {
     }
 
     /**
-     * Builds the URL resolver.
+     * Builds the URL resolver. When no custom {@link #httpClient(HttpClient)} is set, a shared
+     * default client is reused to avoid creating a new thread pool per resolver instance. Set a
+     * custom connect timeout via {@link #httpClient(HttpClient)} if the default 5-second timeout is
+     * not appropriate.
      *
      * @return a new {@link UrlIncludeResolver}
      */
@@ -328,10 +344,7 @@ public final class UrlIncludeResolver implements IncludeResolver {
       }
       HttpClient client = this.httpClient;
       if (client == null) {
-        client = HttpClient.newBuilder()
-          .connectTimeout(connectTimeout)
-          .followRedirects(HttpClient.Redirect.NEVER)
-          .build();
+        client = DefaultClientHolder.INSTANCE;
       }
       return new UrlIncludeResolver(
         client, allowedHosts, deniedHosts, connectTimeout, readTimeout, maxResponseSize, httpsOnly);

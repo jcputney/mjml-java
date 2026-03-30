@@ -246,10 +246,11 @@ public final class HtmlSkeleton {
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
+      String safeWidth = sanitizeCssValue(query.widthValue());
       sb.append("      .").append(sanitizeClassName(query.className())).append(" {\n");
-      sb.append("        width: ").append(query.widthValue()).append(unit).append(" !important;\n");
+      sb.append("        width: ").append(safeWidth).append(unit).append(" !important;\n");
       sb.append("        max-width: ")
-        .append(query.widthValue())
+        .append(safeWidth)
         .append(unit)
         .append(";\n");
       sb.append("      }\n");
@@ -268,12 +269,13 @@ public final class HtmlSkeleton {
     for (int i = 0; i < queryArr.length; i++) {
       MediaQuery query = queryArr[i];
       String unit = query.widthUnit().isEmpty() ? "" : query.widthUnit();
+      String safeWidth = sanitizeCssValue(query.widthValue());
       sb.append("    .moz-text-html .")
         .append(sanitizeClassName(query.className()))
         .append(" {\n");
-      sb.append("      width: ").append(query.widthValue()).append(unit).append(" !important;\n");
+      sb.append("      width: ").append(safeWidth).append(unit).append(" !important;\n");
       sb.append("      max-width: ")
-        .append(query.widthValue())
+        .append(safeWidth)
         .append(unit)
         .append(";\n");
       sb.append("    }\n");
@@ -370,6 +372,19 @@ public final class HtmlSkeleton {
 
   private static String sanitizeClassName(String className) {
     return className.replaceAll("[^a-zA-Z0-9_\\-]", "");
+  }
+
+  /**
+   * Sanitizes a CSS numeric value (with optional unit suffix) by stripping characters that could
+   * enable CSS injection. Allows digits, dots, minus, percent, and lowercase letters (for units
+   * like {@code px}, {@code em}, {@code rem}). Blocks {@code {}:;()/'"} and other special
+   * characters.
+   */
+  private static String sanitizeCssValue(String value) {
+    if (value == null) {
+      return "";
+    }
+    return value.replaceAll("[^0-9a-z.\\-%]", "");
   }
 
   private static String escapeText(String text) {

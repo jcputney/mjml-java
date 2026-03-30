@@ -48,10 +48,20 @@ public final class CachingIncludeResolver implements IncludeResolver {
       return entry.content;
     }
 
-    // Cache miss or expired — resolve from delegate
+    // Cache miss or expired — resolve from delegate without holding any lock.
+    // Two threads may resolve the same path concurrently; putIfAbsent ensures
+    // only one result is cached while both callers get correct content.
     String content = delegate.resolve(path, context);
     evictIfNeeded();
-    cache.put(key, new CacheEntry(content, Instant.now().plus(ttl)));
+    CacheEntry newEntry = new CacheEntry(content, Instant.now().plus(ttl));
+    CacheEntry existing = cache.putIfAbsent(key, newEntry);
+    if (existing != null && !existing.isExpired()) {
+      return existing.content;
+    }
+    // Either no previous entry or it was expired — use ours
+    if (existing != null) {
+      cache.put(key, newEntry);
+    }
     return content;
   }
 

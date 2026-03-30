@@ -62,6 +62,9 @@ final class FontScanner {
 
   private Map<String, String> getComponentDefaults(String tagName) {
     return defaultsCache.computeIfAbsent(tagName, tag -> {
+      if (!registry.hasFactory(tag)) {
+        return Map.of();
+      }
       try {
         BaseComponent component = registry.createComponent(new MjmlNode(tag), dummyGlobalContext, dummyContext);
         return component != null ? component.getDefaultAttributes() : Map.of();

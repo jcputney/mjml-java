@@ -220,7 +220,17 @@ public final class RenderPipeline {
   }
 
   private ComponentRegistry getOrCreateRegistry(MjmlConfiguration config) {
-    return REGISTRY_CACHE.computeIfAbsent(config, this::createAndFreezeRegistry);
+    // synchronized block required: Collections.synchronizedMap does not override
+    // computeIfAbsent, so the default Map implementation's get+put is not atomic.
+    synchronized (REGISTRY_CACHE) {
+      ComponentRegistry cached = REGISTRY_CACHE.get(config);
+      if (cached != null) {
+        return cached;
+      }
+      ComponentRegistry reg = createAndFreezeRegistry(config);
+      REGISTRY_CACHE.put(config, reg);
+      return reg;
+    }
   }
 
   private ComponentRegistry createAndFreezeRegistry(MjmlConfiguration config) {

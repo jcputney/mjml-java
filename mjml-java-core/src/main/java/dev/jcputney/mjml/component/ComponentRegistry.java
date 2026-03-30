@@ -43,6 +43,16 @@ public class ComponentRegistry {
   }
 
   /**
+   * Returns whether a factory is registered for the given tag name.
+   *
+   * @param tagName the MJML tag name to check
+   * @return {@code true} if a factory is registered for the tag
+   */
+  public boolean hasFactory(String tagName) {
+    return factories.containsKey(tagName);
+  }
+
+  /**
    * Creates a component instance for the given node. Returns null if no factory is registered for
    * the tag.
    *
