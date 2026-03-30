@@ -28,7 +28,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-core</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -37,13 +37,13 @@ Add the following dependency to your `pom.xml`:
 Add the following to your `build.gradle`:
 
 ```groovy
-implementation 'dev.jcputney:mjml-java-core:1.0.1-SNAPSHOT'
+implementation 'dev.jcputney:mjml-java-core:1.0.1'
 ```
 
 Or for Kotlin DSL (`build.gradle.kts`):
 
 ```kotlin
-implementation("dev.jcputney:mjml-java-core:1.0.1-SNAPSHOT")
+implementation("dev.jcputney:mjml-java-core:1.0.1")
 ```
 
 ## Using the BOM
@@ -58,7 +58,7 @@ To manage versions across multiple modules, import the BOM:
         <dependency>
             <groupId>dev.jcputney</groupId>
             <artifactId>mjml-java-bom</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -81,7 +81,7 @@ To manage versions across multiple modules, import the BOM:
 
 ```groovy
 dependencies {
-    implementation platform('dev.jcputney:mjml-java-bom:1.0.1-SNAPSHOT')
+    implementation platform('dev.jcputney:mjml-java-bom:1.0.1')
     implementation 'dev.jcputney:mjml-java-core'
     implementation 'dev.jcputney:mjml-java-resolvers'
 }

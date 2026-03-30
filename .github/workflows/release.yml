@@ -47,6 +47,33 @@ jobs:
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
+      - name: Update docs with released version
+        run: |
+          VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
+          # Strip leading 'v' if present (e.g., v1.0.1 -> 1.0.1)
+          RELEASE_VERSION="${VERSION#v}"
+
+          FILES=(
+            README.md
+            docs/docs/getting-started/installation.md
+            docs/docs/guides/resolvers.md
+            docs/docs/guides/spring-boot.md
+          )
+          for f in "${FILES[@]}"; do
+            if [ -f "$f" ]; then
+              # Replace any semver or semver-SNAPSHOT with the released version
+              sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+\(-SNAPSHOT\)\{0,1\}/${RELEASE_VERSION}/g" "$f"
+            fi
+          done
+
+          if git diff --quiet; then
+            echo "No doc version changes needed"
+          else
+            git add "${FILES[@]}"
+            git commit -m "docs: update version references to ${RELEASE_VERSION}"
+            git push
+          fi
+
       - name: Create GitHub Release
         run: |
           VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
