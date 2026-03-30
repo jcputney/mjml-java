@@ -309,6 +309,12 @@ public final class MjmlConfiguration {
     /**
      * Sets the include resolver used to resolve {@code mj-include} paths.
      *
+     * <p><strong>Caching note:</strong> The renderer caches component registries keyed by
+     * configuration. Because Java lambdas do not support structural equality, each distinct lambda
+     * instance produces a cache miss. For best cache effectiveness, store the resolver in a field
+     * and reuse the same {@link MjmlConfiguration} instance, or use the instance API via {@link
+     * dev.jcputney.mjml.MjmlRenderer#create(MjmlConfiguration)}.
+     *
      * @param resolver the include resolver
      * @return this builder
      */
@@ -412,6 +418,12 @@ public final class MjmlConfiguration {
      * Sets an optional content sanitizer that is applied to the inner HTML of {@code <mj-text>},
      * {@code <mj-button>}, and {@code <mj-raw>} elements. Pass {@code null} to disable (the
      * default).
+     *
+     * <p><strong>Caching note:</strong> The renderer caches component registries keyed by
+     * configuration. Because Java lambdas do not support structural equality, each distinct lambda
+     * instance produces a cache miss. For best cache effectiveness, store the sanitizer in a field
+     * and reuse the same {@link MjmlConfiguration} instance, or use the instance API via {@link
+     * dev.jcputney.mjml.MjmlRenderer#create(MjmlConfiguration)}.
      *
      * @param contentSanitizer the content sanitizer, or {@code null} to disable
      * @return this builder

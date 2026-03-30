@@ -49,8 +49,9 @@ import dev.jcputney.mjml.parser.MjmlDocument;
 import dev.jcputney.mjml.parser.MjmlNode;
 import dev.jcputney.mjml.parser.MjmlParser;
 import dev.jcputney.mjml.util.CssUnitParser;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -74,14 +75,27 @@ public final class RenderPipeline {
   /**
    * Cache of frozen registries keyed by configuration. The registry is stateless once built and
    * frozen, so it can be safely shared across threads and render calls. Uses a synchronized
-   * access-ordered LinkedHashMap to provide a bounded LRU-style cache. Keys use MjmlConfiguration's
-   * equals/hashCode, which compares value fields by equality and functional fields
-   * (includeResolver, contentSanitizer) by reference identity.
+   * access-ordered LinkedHashMap to provide a bounded LRU cache that evicts the least-recently-used
+   * entry when the maximum size is exceeded. Keys use MjmlConfiguration's equals/hashCode, which
+   * compares value fields by equality and functional fields (includeResolver, contentSanitizer) by
+   * reference identity — reuse MjmlConfiguration instances for cache effectiveness.
    */
   private static final int REGISTRY_CACHE_MAX_SIZE = 256;
 
-  private static final ConcurrentHashMap<MjmlConfiguration, ComponentRegistry> REGISTRY_CACHE =
-    new ConcurrentHashMap<>();
+  @SuppressWarnings("serial")
+  private static final Map<MjmlConfiguration, ComponentRegistry> REGISTRY_CACHE =
+    Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
+      @Override
+      protected boolean removeEldestEntry(Map.Entry<MjmlConfiguration, ComponentRegistry> eldest) {
+        if (size() > REGISTRY_CACHE_MAX_SIZE) {
+          LOG.fine(() -> "Registry cache full (" + REGISTRY_CACHE_MAX_SIZE
+            + " entries); evicting least-recently-used entry. If this happens frequently, "
+            + "reuse MjmlConfiguration instances — functional fields use identity comparison.");
+          return true;
+        }
+        return false;
+      }
+    });
   // Pre-compiled patterns for MSO transition merging. Use \s+ between the closing
   // conditional and the opening conditional so that indentation changes don't break the merge.
   private static final Pattern MSO_SECTION_MERGE = Pattern.compile(
@@ -206,15 +220,7 @@ public final class RenderPipeline {
   }
 
   private ComponentRegistry getOrCreateRegistry(MjmlConfiguration config) {
-    ComponentRegistry result = REGISTRY_CACHE.computeIfAbsent(config, this::createAndFreezeRegistry);
-    // Evict an arbitrary entry if cache exceeds max size
-    if (REGISTRY_CACHE.size() > REGISTRY_CACHE_MAX_SIZE) {
-      var it = REGISTRY_CACHE.keys().asIterator();
-      if (it.hasNext()) {
-        REGISTRY_CACHE.remove(it.next());
-      }
-    }
-    return result;
+    return REGISTRY_CACHE.computeIfAbsent(config, this::createAndFreezeRegistry);
   }
 
   private ComponentRegistry createAndFreezeRegistry(MjmlConfiguration config) {

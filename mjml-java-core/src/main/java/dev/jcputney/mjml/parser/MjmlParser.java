@@ -54,6 +54,19 @@ public final class MjmlParser {
   }
 
   /**
+   * Removes the thread-local {@link DocumentBuilder} for the current thread. Call this in
+   * application-server environments where threads are recycled (e.g., in a servlet filter's
+   * {@code destroy()} or a thread-pool shutdown hook) to avoid retaining ~50-100KB of XML parser
+   * infrastructure per thread.
+   *
+   * <p>Not required in short-lived applications or environments with fixed thread pools, where
+   * keeping the DocumentBuilder warm avoids repeated construction overhead.
+   */
+  public static void cleanUp() {
+    BUILDER_TL.remove();
+  }
+
+  /**
    * Parses raw MJML source into an MjmlDocument using the default maximum nesting depth. The source
    * is preprocessed (CDATA wrapping, entity replacement) before XML parsing.
    *
