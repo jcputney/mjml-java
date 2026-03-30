@@ -39,9 +39,10 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mvn -B -ntp -Dstyle.color=always release:prepare -P sign
           cat release.properties
-          VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
+          RELEASE_TAG=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
+          echo "RELEASE_TAG=${RELEASE_TAG}" >> "$GITHUB_ENV"
           mvn -B -ntp -Dstyle.color=always release:perform -P sign -DconnectionUrl=scm:git:https://github.com/${{ github.repository }}.git
-          echo "Released ${VERSION} 🚀" >> "$GITHUB_STEP_SUMMARY"
+          echo "Released ${RELEASE_TAG} 🚀" >> "$GITHUB_STEP_SUMMARY"
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
@@ -49,9 +50,8 @@ jobs:
 
       - name: Update docs with released version
         run: |
-          VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
           # Strip leading 'v' if present (e.g., v1.0.1 -> 1.0.1)
-          RELEASE_VERSION="${VERSION#v}"
+          RELEASE_VERSION="${RELEASE_TAG#v}"
 
           FILES=(
             README.md
@@ -76,16 +76,14 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          VERSION=$(grep '^scm.tag=' release.properties | cut -d'=' -f2)
-
           # Find previous release tag
-          PREV_TAG=$(git describe --tags --abbrev=0 "${VERSION}^" 2>/dev/null || echo "")
+          PREV_TAG=$(git describe --tags --abbrev=0 "${RELEASE_TAG}^" 2>/dev/null || echo "")
 
           if [ -n "$PREV_TAG" ]; then
-            COMMITS=$(git log "${PREV_TAG}..${VERSION}" --pretty=format:"- %s" \
+            COMMITS=$(git log "${PREV_TAG}..${RELEASE_TAG}" --pretty=format:"- %s" \
               | grep -v '\[maven-release-plugin\]')
           else
-            COMMITS=$(git log "${VERSION}" --pretty=format:"- %s" \
+            COMMITS=$(git log "${RELEASE_TAG}" --pretty=format:"- %s" \
               | grep -v '\[maven-release-plugin\]')
           fi
 
@@ -100,8 +98,8 @@ jobs:
               messages: [{role: "user", content: ("Categorize these git commits into GitHub release notes. Use these sections as needed: ## New Features, ## Bug Fixes, ## Dependency Updates, ## Other Changes. Use bulleted markdown lists. Only include sections that have entries. Do not add any preamble or explanation, just the categorized notes.\n\nCommits:\n" + $commits)}]
             }')" | jq -r '.content[0].text') || NOTES="${COMMITS}"
 
-          gh release create "${VERSION}" \
-            --title "${VERSION}" \
+          gh release create "${RELEASE_TAG}" \
+            --title "${RELEASE_TAG}" \
             --notes "${NOTES}" \
             --latest
         env:
