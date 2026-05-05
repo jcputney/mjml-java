@@ -119,7 +119,7 @@
                     <configuration>
                         <projectType>library</projectType>
                         <schemaVersion>1.6</schemaVersion>
-                        <includeBomSerialNumber>true</includeBomSerialNumber>
+                        <includeBomSerialNumber>false</includeBomSerialNumber>
                         <includeCompileScope>true</includeCompileScope>
                         <includeProvidedScope>true</includeProvidedScope>
                         <includeRuntimeScope>true</includeRuntimeScope>
