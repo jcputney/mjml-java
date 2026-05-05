@@ -48,6 +48,8 @@
         <maven.compiler.release>17</maven.compiler.release>
         <junit.version>6.0.3</junit.version>
         <version.plugin.central-publishing>0.10.0</version.plugin.central-publishing>
+        <version.plugin.cyclonedx>2.9.1</version.plugin.cyclonedx>
+        <version.plugin.findsecbugs>1.13.0</version.plugin.findsecbugs>
         <version.plugin.gpg>3.2.8</version.plugin.gpg>
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
         <version.plugin.release>3.3.1</version.plugin.release>
@@ -101,7 +103,40 @@
                         <effort>Max</effort>
                         <threshold>High</threshold>
                         <failOnError>true</failOnError>
+                        <plugins>
+                            <plugin>
+                                <groupId>com.h3xstream.findsecbugs</groupId>
+                                <artifactId>findsecbugs-plugin</artifactId>
+                                <version>${version.plugin.findsecbugs}</version>
+                            </plugin>
+                        </plugins>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.cyclonedx</groupId>
+                    <artifactId>cyclonedx-maven-plugin</artifactId>
+                    <version>${version.plugin.cyclonedx}</version>
+                    <configuration>
+                        <projectType>library</projectType>
+                        <schemaVersion>1.6</schemaVersion>
+                        <includeBomSerialNumber>true</includeBomSerialNumber>
+                        <includeCompileScope>true</includeCompileScope>
+                        <includeProvidedScope>true</includeProvidedScope>
+                        <includeRuntimeScope>true</includeRuntimeScope>
+                        <includeSystemScope>true</includeSystemScope>
+                        <includeTestScope>false</includeTestScope>
+                        <outputName>bom</outputName>
+                        <outputFormat>all</outputFormat>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-bom</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>makeBom</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
