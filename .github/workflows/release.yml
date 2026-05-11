@@ -52,7 +52,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Generate build provenance attestation
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
             target/checkout/mjml-java-core/target/mjml-java-core-${{ env.RELEASE_VERSION }}.jar
