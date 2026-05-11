@@ -60,19 +60,19 @@ jobs:
             target/checkout/mjml-java-spring/target/mjml-java-spring-${{ env.RELEASE_VERSION }}.jar
 
       - name: Generate SBOM attestation (core)
-        uses: actions/attest-sbom@v3
+        uses: actions/attest-sbom@v4
         with:
           subject-path: target/checkout/mjml-java-core/target/mjml-java-core-${{ env.RELEASE_VERSION }}.jar
           sbom-path: target/checkout/mjml-java-core/target/bom.json
 
       - name: Generate SBOM attestation (resolvers)
-        uses: actions/attest-sbom@v3
+        uses: actions/attest-sbom@v4
         with:
           subject-path: target/checkout/mjml-java-resolvers/target/mjml-java-resolvers-${{ env.RELEASE_VERSION }}.jar
           sbom-path: target/checkout/mjml-java-resolvers/target/bom.json
 
       - name: Generate SBOM attestation (spring)
-        uses: actions/attest-sbom@v3
+        uses: actions/attest-sbom@v4
         with:
           subject-path: target/checkout/mjml-java-spring/target/mjml-java-spring-${{ env.RELEASE_VERSION }}.jar
           sbom-path: target/checkout/mjml-java-spring/target/bom.json
