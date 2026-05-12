@@ -28,6 +28,10 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot:*"
 
   - package-ecosystem: "npm"
     directory: "/docs"
@@ -43,3 +47,8 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    groups:
+      docusaurus:
+        patterns:
+          - "@docusaurus/*"
+          - "docusaurus*"
