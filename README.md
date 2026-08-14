@@ -8,11 +8,6 @@
 
 ---
 
-> [!TIP]
-> **Working on multi-tenant SaaS or AI on AWS?** I do one-week, fixed-price code audits. [audits.putney.io →](https://audits.putney.io)
-
----
-
 mjml-java converts [MJML](https://mjml.io/) email markup into responsive HTML entirely
 in Java. No Node.js runtime, no native binaries, no external libraries -- just add the
 JAR and call `MjmlRenderer.render()`.
