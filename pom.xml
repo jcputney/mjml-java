@@ -54,7 +54,7 @@
         <version.plugin.javadoc>3.12.0</version.plugin.javadoc>
         <version.plugin.release>3.3.1</version.plugin.release>
         <version.plugin.source>3.4.0</version.plugin.source>
-        <version.plugin.spotbugs>4.10.3.0</version.plugin.spotbugs>
+        <version.plugin.spotbugs>4.10.4.0</version.plugin.spotbugs>
         <version.plugin.spotless>3.9.0</version.plugin.spotless>
     </properties>
 
