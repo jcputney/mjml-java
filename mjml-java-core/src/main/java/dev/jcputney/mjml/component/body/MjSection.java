@@ -239,20 +239,29 @@ public class MjSection extends AbstractSectionComponent {
     HtmlBuilder html = new HtmlBuilder();
     List<MjmlNode> columns = getColumnChildren();
 
-    if (columns.isEmpty()) {
-      html.mso(() -> html.wrap("table",
-        attrs("role", "presentation", "border", "0", "cellpadding", "0", "cellspacing", "0"),
-        () -> html.wrap("tr", () -> {
-        })));
-      return html.toString();
-    }
-
     double contentWidth = getContentWidth();
     double[] widths = ColumnWidthCalculator.calculatePixelWidths(columns, contentWidth, true);
     String[] widthSpecs = ColumnWidthCalculator.calculateWidthSpecs(columns);
 
-    for (int i = 0; i < columns.size(); i++) {
-      MjmlNode col = columns.get(i);
+    // Delay conditional markup so adjacent columns share a block, while raw children
+    // are emitted outside column cells without changing the column index or sizing.
+    String pendingMso = "<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>";
+    int i = 0;
+    for (MjmlNode col : node.getChildren()) {
+      if ("mj-raw".equals(col.getTagName())) {
+        if (!pendingMso.isEmpty()) {
+          html.mso(pendingMso);
+          pendingMso = "";
+        }
+        BaseComponent raw = registry.createComponent(col, globalContext, renderContext);
+        if (raw instanceof BodyComponent bodyComponent) {
+          html.rawVerbatim(bodyComponent.render());
+        }
+        continue;
+      }
+      if (!COLUMN_TAGS.contains(col.getTagName())) {
+        continue;
+      }
       boolean isGroup = "mj-group".equals(col.getTagName());
 
       String colCssClass = col.getAttribute("css-class", "");
@@ -265,14 +274,8 @@ public class MjSection extends AbstractSectionComponent {
 
       String msoTdOpen = "<td class=\"" + escapeAttr(msoColClass) + "\" style=\"" + msoStyle + "\" >";
 
-      // MSO: open table (first) or close-prev + open-next (subsequent)
-      if (i == 0) {
-        html.mso("<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>"
-          + msoTdOpen);
-      } else {
-        // Close previous td + open this td in one conditional (no split)
-        html.mso("</td>" + msoTdOpen);
-      }
+      html.mso(pendingMso + msoTdOpen);
+      pendingMso = "</td>";
 
       RenderContext colContext = renderContext
         .withColumnWidth(widths[i], widthSpecs[i])
@@ -282,12 +285,10 @@ public class MjSection extends AbstractSectionComponent {
       if (component instanceof BodyComponent bodyComponent) {
         html.rawVerbatim(bodyComponent.render());
       }
+      i++;
     }
 
-    // Close last td + table after the loop
-    if (!columns.isEmpty()) {
-      html.mso("</td></tr></table>");
-    }
+    html.mso(pendingMso + "</tr></table>");
 
     return html.toString();
   }

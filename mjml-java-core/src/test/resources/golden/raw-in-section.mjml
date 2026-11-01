@@ -1,0 +1,11 @@
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-raw><span>RAW_BEFORE</span></mj-raw>
+      <mj-column><mj-text>Column one</mj-text></mj-column>
+      <mj-raw><span>RAW_BETWEEN</span></mj-raw>
+      <mj-column><mj-text>Column two</mj-text></mj-column>
+      <mj-raw><span>RAW_AFTER</span></mj-raw>
+    </mj-section>
+  </mj-body>
+</mjml>
