@@ -4,38 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build Commands
 
-Maven is installed via sdkman. Always use the absolute path:
-
 ```bash
-MVN=~/.sdkman/candidates/maven/current/bin/mvn
-
 # Full build with tests, SpotBugs, JaCoCo, Spotless, and Javadoc
-$MVN verify
+mvn verify
 
 # Tests only
-$MVN test
+mvn test
 
 # Single module
-$MVN test -pl mjml-java-core
+mvn test -pl mjml-java-core
 
 # Single test class
-$MVN test -pl mjml-java-core -Dtest=MjmlRendererTest
+mvn test -pl mjml-java-core -Dtest=MjmlRendererTest
 
 # Single test method
-$MVN test -pl mjml-java-core -Dtest=MjmlRendererTest#rendersSimpleTextTemplate
+mvn test -pl mjml-java-core -Dtest=MjmlRendererTest#rendersSimpleTextTemplate
 
-# Format code (Google Java Format)
-$MVN spotless:apply
+# Format code (Eclipse formatter, java_style.xml)
+mvn spotless:apply
 
 # Check formatting without fixing
-$MVN spotless:check
+mvn spotless:check
 ```
 
 ## Quality Gates
 
 All enforced on `mvn verify` and will fail the build:
 
-- **Spotless** — Google Java Format 1.34.1
+- **Spotless** — Eclipse formatter using `java_style.xml` at the repo root
 - **SpotBugs** — Max effort, High threshold, failOnError=true
 - **JaCoCo** — Line coverage minimums: core 80%, resolvers 80%, spring 70%
 - **Javadoc** — failOnError=true
