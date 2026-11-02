@@ -129,8 +129,9 @@ class MjmlRendererInstanceApiTest {
   // -- renderTemplate(Path) --
 
   @Test
-  void renderTemplatePathRendersFileContent(@TempDir
-  Path tempDir) throws IOException {
+  void renderTemplatePathRendersFileContent(
+    @TempDir
+    Path tempDir) throws IOException {
     Path mjmlFile = tempDir.resolve("test.mjml");
     Files.writeString(mjmlFile, SIMPLE_MJML);
 
@@ -142,8 +143,9 @@ class MjmlRendererInstanceApiTest {
   }
 
   @Test
-  void renderTemplatePathThrowsForMissingFile(@TempDir
-  Path tempDir) {
+  void renderTemplatePathThrowsForMissingFile(
+    @TempDir
+    Path tempDir) {
     Path missingFile = tempDir.resolve("nonexistent.mjml");
     MjmlRenderer renderer = MjmlRenderer.create();
     assertThrows(
@@ -195,8 +197,9 @@ class MjmlRendererInstanceApiTest {
   // -- renderTemplate(String, IncludeResolver) --
 
   @Test
-  void renderTemplateWithResolverOverride(@TempDir
-  Path tempDir) throws IOException {
+  void renderTemplateWithResolverOverride(
+    @TempDir
+    Path tempDir) throws IOException {
     Path partialFile = tempDir.resolve("partial.mjml");
     Files.writeString(partialFile, """
       <mj-text>Included Content</mj-text>
