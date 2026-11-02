@@ -36,6 +36,7 @@ jobs:
           gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
 
       - name: Publish package to Maven Central
+        id: publish
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -52,6 +53,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Stage SBOMs for release upload
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         run: |
           mkdir -p sboms
           for module in mjml-java-core mjml-java-resolvers mjml-java-spring; do
@@ -60,6 +62,7 @@ jobs:
           done
 
       - name: Update docs with released version
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         run: |
           # Strip leading 'v' if present (e.g., v1.0.1 -> 1.0.1)
           RELEASE_VERSION="${RELEASE_TAG#v}"
@@ -82,10 +85,13 @@ jobs:
           else
             git add "${FILES[@]}"
             git commit -m "docs: update version references to ${RELEASE_VERSION}"
-            git push
+            # Push over SSH with the release deploy key; GITHUB_TOKEN cannot
+            # push to the protected main branch.
+            git push "git@github.com:${GITHUB_REPOSITORY}.git" HEAD:main
           fi
 
       - name: Create GitHub Release
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         run: |
           # Find previous release tag
           PREV_TAG=$(git describe --tags --abbrev=0 "${RELEASE_TAG}^" 2>/dev/null || echo "")
@@ -121,9 +127,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
-      # Attestations run last so a failure here cannot block the docs
-      # update or GitHub Release for artifacts already on Maven Central.
+      # Steps after publishing each run whenever publishing succeeded, so one
+      # failure cannot skip the rest for artifacts already on Maven Central.
       - name: Generate build provenance attestation
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
@@ -132,18 +139,21 @@ jobs:
             target/checkout/mjml-java-spring/target/mjml-java-spring-${{ env.RELEASE_VERSION }}.jar
 
       - name: Generate SBOM attestation (core)
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         uses: actions/attest@v4
         with:
           subject-path: target/checkout/mjml-java-core/target/mjml-java-core-${{ env.RELEASE_VERSION }}.jar
           sbom-path: target/checkout/mjml-java-core/target/bom.json
 
       - name: Generate SBOM attestation (resolvers)
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         uses: actions/attest@v4
         with:
           subject-path: target/checkout/mjml-java-resolvers/target/mjml-java-resolvers-${{ env.RELEASE_VERSION }}.jar
           sbom-path: target/checkout/mjml-java-resolvers/target/bom.json
 
       - name: Generate SBOM attestation (spring)
+        if: ${{ !cancelled() && steps.publish.outcome == 'success' }}
         uses: actions/attest@v4
         with:
           subject-path: target/checkout/mjml-java-spring/target/mjml-java-spring-${{ env.RELEASE_VERSION }}.jar
