@@ -64,20 +64,31 @@ public class MjGroup extends BodyComponent {
     HtmlBuilder html = new HtmlBuilder();
     html.wrap("div", attrs("class", responsiveClass + " mj-outlook-group-fix", "style", buildOuterStyle(direction)),
       () -> {
-        for (int i = 0; i < columns.size(); i++) {
-          MjmlNode col = columns.get(i);
-          String msoTdStyle = "vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;";
-
-          if (i == 0) {
-            html.mso(() -> {
-              html.open("table",
-                attrs("border", "0", "cellpadding", "0", "cellspacing", "0", "role", "presentation") + " ");
-              html.open("tr");
-              html.open("td", attrs("style", msoTdStyle) + " ");
-            });
-          } else {
-            html.mso("</td><td style=\"" + msoTdStyle + "\" >");
+        // Delay conditional markup so adjacent columns share a block, while raw children
+        // are emitted outside column cells without changing the column index or sizing.
+        String pendingMso = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" ><tr>";
+        int i = 0;
+        boolean hasChildren = false;
+        for (MjmlNode col : node.getChildren()) {
+          if ("mj-raw".equals(col.getTagName())) {
+            hasChildren = true;
+            if (!pendingMso.isEmpty()) {
+              html.mso(pendingMso);
+              pendingMso = "";
+            }
+            BaseComponent raw = registry.createComponent(col, globalContext, renderContext);
+            if (raw instanceof BodyComponent bodyComponent) {
+              html.rawVerbatim(bodyComponent.render());
+            }
+            continue;
           }
+          if (!COLUMN_TAGS.contains(col.getTagName())) {
+            continue;
+          }
+          hasChildren = true;
+          String msoTdStyle = "vertical-align:top;width:" + CssUnitParser.formatInt(widths[i]) + "px;";
+          html.mso(pendingMso + "<td style=\"" + msoTdStyle + "\" >");
+          pendingMso = "</td>";
 
           RenderContext colContext = renderContext
             .withColumnWidth(widths[i], widthSpecs[i])
@@ -88,10 +99,11 @@ public class MjGroup extends BodyComponent {
           if (component instanceof BodyComponent bodyComponent) {
             html.rawVerbatim(bodyComponent.render());
           }
+          i++;
         }
 
-        if (!columns.isEmpty()) {
-          html.mso("</td></tr></table>");
+        if (hasChildren) {
+          html.mso(pendingMso + "</tr></table>");
         }
       });
 
