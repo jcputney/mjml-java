@@ -14,6 +14,10 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      # v5.2 fails in its own script with "unexpected argument '-F' found"
+      - dependency-name: "PavanMudigonda/jacoco-reporter"
+        versions: ["5.2"]
 
   - package-ecosystem: "maven"
     directory: "/"
