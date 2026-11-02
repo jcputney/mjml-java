@@ -15,7 +15,7 @@ Add the Spring module to your project:
 <dependency>
     <groupId>dev.jcputney</groupId>
     <artifactId>mjml-java-spring</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
