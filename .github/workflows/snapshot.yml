@@ -52,7 +52,7 @@ jobs:
       - uses: qltysh/qlty-action/coverage@main
         if: github.event_name != 'pull_request'
         with:
-          coverage-token: ${{secrets.QLTY_COVERAGE_TOKEN}}
+          token: ${{secrets.QLTY_COVERAGE_TOKEN}}
           files: "**/target/site/jacoco/jacoco.xml"
 
       - name: Merge JaCoCo reports
